@@ -1,0 +1,16 @@
+{
+  "name": "bmad-marketplace",
+  "owner": {
+    "name": "PabloLION",
+    "email": "pablolion@example.com",
+    "url": "https://github.com/PabloLION"
+  },
+  "plugins": [
+    {
+      "name": "bmad",
+      "source": "./",
+      "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
+      "version": "6.0.0-alpha.1"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+# BMAD Plugin for Claude Code
+
+> BMAD Method - Breakthrough Method for Agile AI-Driven Development
+
+A Claude Code plugin that transforms Claude into a complete agile development
+environment with specialized agents, structured workflows, and intelligent
+context management.
+
+## Installation
+
+### From Self-Hosted Marketplace
+
+```bash
+# Add marketplace
+/plugin marketplace add PabloLION/bmad-plugin
+
+# Install plugin
+/plugin install bmad@bmad-marketplace
+```
+
+### From Official Registry
+
+Coming soon - pending submission to the official Anthropic plugin registry.
+
+## Features
+
+- **9 Specialized Agents**: Business Analyst, Product Manager, UX Designer,
+  System Architect, Scrum Master, Developer, Test Architect, Tech Writer, and
+  Solo Dev
+- **27+ Guided Workflows**: From brainstorming to implementation
+- **4 Development Phases**: Analysis, Planning, Solutioning, Implementation
+- **Progressive Disclosure**: Step-by-step workflow execution
+- **State Tracking**: Resume workflows across sessions
+
+## Quick Start
+
+```bash
+# Initialize BMAD in your project
+/bmad:init
+
+# Check workflow status
+/bmad:status
+
+# Start a workflow
+/bmad:product-brief
+```
+
+## Agents
+
+| Agent                   | Role                        | Key Workflows                       |
+| ----------------------- | --------------------------- | ----------------------------------- |
+| **Analyst** (Mary)      | Business analysis, research | product-brief, research, brainstorm |
+| **PM** (John)           | Product requirements        | create-prd, validate-prd, epics     |
+| **UX Designer** (Sally) | User experience             | create-ux-design                    |
+| **Architect** (Winston) | System design               | create-architecture                 |
+| **SM** (Bob)            | Sprint management           | sprint-planning, create-story       |
+| **DEV** (Amelia)        | Implementation              | dev-story, code-review              |
+| **TEA** (Murat)         | Test architecture           | test-framework, atdd                |
+| **Tech Writer** (Paige) | Documentation               | document-project                    |
+| **Barry**               | Solo dev quick flow         | quick-spec, quick-dev               |
+
+## Workflow Phases
+
+### Phase 1: Analysis
+
+- Brainstorming and ideation
+- Market and competitive research
+- Product brief creation
+
+### Phase 2: Planning
+
+- Product Requirements Document (PRD)
+- UX design specifications
+
+### Phase 3: Solutioning
+
+- System architecture
+- Epic and story breakdown
+- Implementation readiness
+
+### Phase 4: Implementation
+
+- Sprint planning
+- Story development
+- Code review
+
+## Attribution
+
+This plugin implements the **BMAD Method** created by **BMad Code, LLC**.
+
+- [Original Repository](https://github.com/bmadcode/BMAD-METHOD)
+- [Website](https://bmadcodes.com/bmad-method/)
+- [YouTube](https://www.youtube.com/@BMadCode)
+- [Discord](https://discord.gg/gk8jAdXWmj)
+
+## License
+
+MIT License - See [LICENSE](LICENSE) for details.
+
+BMad, BMad Method, and BMad Core are trademarks of BMad Code, LLC.
