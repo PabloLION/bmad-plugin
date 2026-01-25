@@ -1,6 +1,7 @@
 ---
 name: status
-description: Show BMAD workflow status and recommend next steps
+description: Show BMAD workflow status and recommend next steps. Use to check project progress and what to do next.
+user-invocable: true
 ---
 
 # BMAD Workflow Status

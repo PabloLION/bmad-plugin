@@ -1,6 +1,7 @@
 ---
 name: init
-description: Initialize BMAD Method in the current project
+description: Initialize BMAD Method in the current project. Creates config and directory structure for BMAD workflows.
+user-invocable: true
 ---
 
 # BMAD Initialization

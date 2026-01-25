@@ -1,23 +1,8 @@
 {
   "name": "bmad",
-  "version": "6.0.0-alpha.1",
-  "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development. Transform Claude Code into a complete agile development environment with specialized agents, structured workflows, and intelligent context management.",
+  "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
   "author": {
     "name": "PabloLION",
-    "url": "https://github.com/PabloLION"
-  },
-  "repository": "https://github.com/PabloLION/bmad-plugin",
-  "license": "MIT",
-  "keywords": [
-    "bmad",
-    "agile",
-    "development",
-    "methodology",
-    "agents",
-    "workflows"
-  ],
-  "upstream": {
-    "repository": "https://github.com/bmadcode/BMAD-METHOD",
-    "version": "6.0.0-alpha.23"
+    "email": "pablolion@example.com"
   }
 }

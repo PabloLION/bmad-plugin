@@ -1,6 +1,7 @@
 ---
 name: help
-description: Show available BMAD commands and workflows
+description: Show available BMAD skills and workflows. Use when user asks for help with BMAD or wants to see available options.
+user-invocable: true
 ---
 
 # BMAD Method Help
