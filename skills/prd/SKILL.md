@@ -141,11 +141,11 @@ Check invocation for mode flags or keywords.
 Based on mode, read and execute the appropriate entry step file:
 
 **Create:**
-`${CLAUDE_PLUGIN_ROOT}/skills/2-planning/prd/steps-c/step-01-init.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-c/step-01-init.md`
 **Validate:**
-`${CLAUDE_PLUGIN_ROOT}/skills/2-planning/prd/steps-v/step-v-01-discovery.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-v/step-v-01-discovery.md`
 **Edit:**
-`${CLAUDE_PLUGIN_ROOT}/skills/2-planning/prd/steps-e/step-e-01-discovery.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-e/step-e-01-discovery.md`
 
 ---
 

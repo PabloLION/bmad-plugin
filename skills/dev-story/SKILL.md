@@ -166,4 +166,4 @@ Stop execution if:
 ## INSTRUCTIONS FILE
 
 For detailed step-by-step XML instructions, see:
-`${CLAUDE_PLUGIN_ROOT}/skills/4-implementation/dev-story/instructions.xml`
+`${CLAUDE_PLUGIN_ROOT}/skills/dev-story/instructions.xml`

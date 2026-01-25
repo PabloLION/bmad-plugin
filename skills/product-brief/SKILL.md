@@ -67,7 +67,7 @@ If no config exists, suggest running `/bmad:init` first.
 ### 2. Begin Workflow
 
 Read and execute the first step file:
-`${CLAUDE_PLUGIN_ROOT}/skills/1-analysis/product-brief/steps/step-01-init.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/product-brief/steps/step-01-init.md`
 
 ---
 

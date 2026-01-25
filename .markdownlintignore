@@ -1,9 +1,9 @@
 # Ignore imported BMAD content from upstream
 # These files are copied from bmadcode/BMAD-METHOD and should be preserved as-is
-skills/**/steps*/*.md
-skills/**/steps/*.md
-skills/**/checklist.md
-skills/**/*.xml
+skills/*/steps*/*.md
+skills/*/steps/*.md
+skills/*/checklist.md
+skills/*/*.xml
 
 # Ignore reference repos
 .upstream/
