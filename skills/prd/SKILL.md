@@ -1,8 +1,10 @@
 ---
 name: prd
 description:
-  PRD tri-modal workflow - Create, Validate, or Edit comprehensive Product
-  Requirements Documents
+  This skill should be used when the user asks to "create a prd", "write prd",
+  "validate prd", "edit prd", "product requirements document", or needs to
+  create, validate, or edit comprehensive PRDs. Phase 2 Planning workflow with
+  tri-modal operation.
 user-invocable: true
 disable-model-invocation: true
 ---
@@ -36,7 +38,7 @@ workflows.
 
 Present selection menu:
 
-```
+```text
 **PRD Workflow - Select Mode:**
 
 **[C] Create** - Create a new PRD from scratch
@@ -140,12 +142,9 @@ Check invocation for mode flags or keywords.
 
 Based on mode, read and execute the appropriate entry step file:
 
-**Create:**
-`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-c/step-01-init.md`
-**Validate:**
-`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-v/step-v-01-discovery.md`
-**Edit:**
-`${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-e/step-e-01-discovery.md`
+**Create:** `${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-c/step-01-init.md`
+**Validate:** `${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-v/step-v-01-discovery.md`
+**Edit:** `${CLAUDE_PLUGIN_ROOT}/skills/prd/steps-e/step-e-01-discovery.md`
 
 ---
 

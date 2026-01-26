@@ -1,8 +1,9 @@
 ---
 name: dev-story
 description:
-  Execute a story by implementing tasks/subtasks, writing tests
-  (red-green-refactor), and updating story file per acceptance criteria
+  This skill should be used when the user asks to "implement story", "dev
+  story", "execute story", "implement tasks", or needs to implement a story with
+  test-driven development (red-green-refactor). Phase 4 Implementation workflow.
 user-invocable: true
 disable-model-invocation: true
 ---

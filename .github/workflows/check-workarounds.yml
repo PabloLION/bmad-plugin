@@ -1,0 +1,45 @@
+name: Check Workaround Issues
+
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9am UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check isHidden bug status
+        id: check-17271
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          STATE=$(gh issue view 17271 --repo anthropics/claude-code --json state -q '.state')
+          echo "state=$STATE" >> $GITHUB_OUTPUT
+          echo "Issue #17271 state: $STATE"
+
+      - name: Create notification issue if fixed
+        if: steps.check-17271.outputs.state == 'CLOSED'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Check if notification already exists
+          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Workaround can be removed: isHidden bug" --state open --json number -q '.[0].number')
+
+          if [ -z "$EXISTING" ]; then
+            gh issue create \
+              --repo ${{ github.repository }} \
+              --title "Workaround can be removed: isHidden bug fixed" \
+              --body "The upstream issue [anthropics/claude-code#17271](https://github.com/anthropics/claude-code/issues/17271) has been closed.
+
+          ## Action Required
+
+          Remove the workaround from \`.claude-plugin/plugin.json\`:
+
+          1. Remove the \`commands\` array that lists skill directories
+          2. Test that skills now appear in \`/\` autocomplete with \`/bmad:\` prefix
+          3. Update \`docs/workarounds.md\`
+
+          See \`docs/workarounds.md\` for full removal steps." \
+              --label "tech-debt"
+          fi

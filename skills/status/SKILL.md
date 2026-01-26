@@ -1,6 +1,9 @@
 ---
 name: status
-description: Show BMAD workflow status and recommend next steps. Use to check project progress and what to do next.
+description:
+  This skill should be used when the user asks for "bmad status", "project
+  status", "what's next", "workflow progress", or needs to check BMAD project
+  progress and get recommendations for next steps.
 user-invocable: true
 ---
 

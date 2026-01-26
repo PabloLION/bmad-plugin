@@ -1,6 +1,9 @@
 ---
 name: init
-description: Initialize BMAD Method in the current project. Creates config and directory structure for BMAD workflows.
+description:
+  This skill should be used when the user asks to "initialize bmad", "setup
+  bmad", "start bmad project", "bmad init", or needs to create BMAD config and
+  directory structure for a new project.
 user-invocable: true
 ---
 

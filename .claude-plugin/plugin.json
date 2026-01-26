@@ -4,5 +4,13 @@
   "author": {
     "name": "PabloLION",
     "email": "pablolion@example.com"
-  }
+  },
+  "commands": [
+    "./skills/help/",
+    "./skills/init/",
+    "./skills/status/",
+    "./skills/product-brief/",
+    "./skills/prd/",
+    "./skills/dev-story/"
+  ]
 }
