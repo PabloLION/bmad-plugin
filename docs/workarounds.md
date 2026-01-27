@@ -13,32 +13,44 @@ Track temporary fixes that should be removed when upstream issues are resolved.
 `user-invocable` frontmatter. Skills don't appear in `/` autocomplete menu even
 with `user-invocable: true`.
 
-**Workaround Applied:** Added skill directories to `commands` array in
-`.claude-plugin/plugin.json`:
+**Workaround Applied:** Two changes required:
+
+1. In `plugin.json`, use `skills` as a string path (not array) and add skill
+   directories to `commands` array with trailing slashes:
 
 ```json
-"commands": [
-  "./skills/help/",
-  "./skills/init/",
-  "./skills/status/",
-  "./skills/product-brief/",
-  "./skills/prd/",
-  "./skills/dev-story/"
-]
+{
+  "skills": "./skills/",
+  "commands": ["./skills/help/", "./skills/init/", "./skills/prd/"]
+}
 ```
 
-**Side Effect:** Commands appear without plugin prefix (`/help` instead of
-`/bmad:help`).
+1. In each `SKILL.md` frontmatter, add a `bmad-` prefix to the `name` field:
+
+```yaml
+name: bmad-prd
+```
+
+**Result:** Skills appear as `/bmad-prd` in autocomplete (~250 tokens overhead).
+
+**Key details:**
+
+- Commands array must use **directory paths** with trailing `/`, not file paths
+- File paths (e.g., `./skills/prd/SKILL.md`) do not work
+- The `name` prefix prevents conflicts with built-in commands (e.g., `init`,
+  `status`)
 
 **When to Remove:** When issue #17271 is closed and plugin skills respect
 `user-invocable: true`.
 
 **Removal Steps:**
 
-1. Remove the `commands` array from `.claude-plugin/plugin.json`
-2. Verify skills appear in autocomplete with proper `/bmad:` prefix
-3. Test all skills still work
-4. Delete this workaround entry
+1. Remove the `commands` array from `plugin.json`
+2. Change `skills` back to array format if needed
+3. Remove `bmad-` prefix from `name` fields in SKILL.md frontmatter
+4. Verify skills appear in autocomplete with proper `/bmad:` prefix
+5. Test all skills still work
+6. Delete this workaround entry
 
 **Date Applied:** 2026-01-26
 

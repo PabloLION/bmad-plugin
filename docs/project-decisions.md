@@ -184,7 +184,35 @@ bmad-plugin/
 
 ---
 
-## 10. References
+## 10. Reference Commit Workflow
+
+When experimenting with approaches that may not work, use git commits as
+documentation:
+
+1. Commit working baseline
+2. Experiment with new approach
+3. If it works: commit as reference snapshot
+4. Revert to clean state (before experiments)
+5. Reapply the correct solution cleanly
+
+This creates a git history where future developers can see what was tried, what
+worked, and what didn't. Dead-end commits document failed approaches so they
+aren't retried.
+
+**Example from this project:**
+
+```text
+9171e5c test: confirmed working workaround (REFERENCE — reverted after capture)
+fa262be feat: commands/ wrappers approach (dead end — reverted)
+91ee90f refactor: reorganize into plugins/bmad/ (KEEP)
+```
+
+Commits `fa262be` and `9171e5c` were reverted after confirming the working
+approach. The clean workaround was then reapplied on top of `91ee90f`.
+
+---
+
+## 11. References
 
 | Resource                        | URL                                                                                                      |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------- |

@@ -5,20 +5,13 @@
     "name": "PabloLION",
     "email": "pablolion@example.com"
   },
-  "skills": [
-    "./skills/help",
-    "./skills/init",
-    "./skills/status",
-    "./skills/product-brief",
-    "./skills/prd",
-    "./skills/dev-story"
-  ],
+  "skills": "./skills/",
   "commands": [
-    "./skills/help/SKILL.md",
-    "./skills/init/SKILL.md",
-    "./skills/status/SKILL.md",
-    "./skills/product-brief/SKILL.md",
-    "./skills/prd/SKILL.md",
-    "./skills/dev-story/SKILL.md"
+    "./skills/help/",
+    "./skills/init/",
+    "./skills/status/",
+    "./skills/product-brief/",
+    "./skills/prd/",
+    "./skills/dev-story/"
   ]
 }
