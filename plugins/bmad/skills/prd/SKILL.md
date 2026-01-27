@@ -1,5 +1,5 @@
 ---
-name: prd
+name: bmad-prd
 description:
   This skill should be used when the user asks to "create a prd", "write prd",
   "validate prd", "edit prd", "product requirements document", or needs to

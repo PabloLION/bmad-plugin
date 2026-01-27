@@ -1,5 +1,5 @@
 ---
-name: status
+name: bmad-status
 description:
   This skill should be used when the user asks for "bmad status", "project
   status", "what's next", "workflow progress", or needs to check BMAD project

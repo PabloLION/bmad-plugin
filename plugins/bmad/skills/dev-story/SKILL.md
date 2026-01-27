@@ -1,5 +1,5 @@
 ---
-name: dev-story
+name: bmad-dev-story
 description:
   This skill should be used when the user asks to "implement story", "dev
   story", "execute story", "implement tasks", or needs to implement a story with

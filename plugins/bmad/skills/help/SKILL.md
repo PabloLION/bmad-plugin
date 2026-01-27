@@ -1,5 +1,5 @@
 ---
-name: help
+name: bmad-help
 description:
   This skill should be used when the user asks for "bmad help", "what can bmad
   do", "show bmad commands", "list bmad workflows", or wants to see available

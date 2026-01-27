@@ -1,0 +1,24 @@
+{
+  "name": "bmad",
+  "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
+  "author": {
+    "name": "PabloLION",
+    "email": "pablolion@example.com"
+  },
+  "skills": [
+    "./skills/help",
+    "./skills/init",
+    "./skills/status",
+    "./skills/product-brief",
+    "./skills/prd",
+    "./skills/dev-story"
+  ],
+  "commands": [
+    "./skills/help/SKILL.md",
+    "./skills/init/SKILL.md",
+    "./skills/status/SKILL.md",
+    "./skills/product-brief/SKILL.md",
+    "./skills/prd/SKILL.md",
+    "./skills/dev-story/SKILL.md"
+  ]
+}
