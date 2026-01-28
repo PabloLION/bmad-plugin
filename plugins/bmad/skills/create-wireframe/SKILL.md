@@ -1,8 +1,6 @@
 ---
 name: bmad-create-wireframe
-description:
-  'This skill should be used when the user asks to "create wireframe",
-  "wireframe", or needs an Excalidraw wireframe.'
+description: Create an Excalidraw wireframe
 user-invocable: true
 disable-model-invocation: true
 ---

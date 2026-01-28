@@ -1,9 +1,7 @@
 ---
 name: bmad-sprint-planning
 description:
-  'This skill should be used when the user asks to "sprint planning", "plan
-  sprint", "generate sprint status", or needs to generate or update sprint
-  status tracking. Phase 4 Implementation workflow.'
+  Generate or update sprint planning and status tracking. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true
 ---

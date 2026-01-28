@@ -1,9 +1,6 @@
 ---
 name: bmad-test-trace
-description:
-  'This skill should be used when the user asks to "trace requirements", "test
-  traceability", "requirement mapping", or needs to map requirements to tests.
-  Test Architecture workflow.'
+description: Map requirements to tests for traceability. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

@@ -1,10 +1,8 @@
 ---
 name: bmad-prd
 description:
-  This skill should be used when the user asks to "create a prd", "write prd",
-  "validate prd", "edit prd", "product requirements document", or needs to
-  create, validate, or edit comprehensive PRDs. Phase 2 Planning workflow with
-  tri-modal operation.
+  Create, validate, or edit product requirements documents. Tri-modal. Phase 2
+  Planning
 user-invocable: true
 disable-model-invocation: true
 ---

@@ -1,9 +1,7 @@
 ---
 name: bmad-dev-story
 description:
-  This skill should be used when the user asks to "implement story", "dev
-  story", "execute story", "implement tasks", or needs to implement a story with
-  test-driven development (red-green-refactor). Phase 4 Implementation workflow.
+  Implement a story with test-driven development. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true
 ---

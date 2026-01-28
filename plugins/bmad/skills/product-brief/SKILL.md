@@ -1,10 +1,8 @@
 ---
 name: bmad-product-brief
 description:
-  This skill should be used when the user asks to "create a product brief",
-  "write a product brief", "start product brief", "define product vision", or
-  needs to establish project vision through collaborative discovery. Phase 1
-  Analysis workflow.
+  Create executive product brief through collaborative discovery. Phase 1
+  Analysis
 user-invocable: true
 disable-model-invocation: true
 ---

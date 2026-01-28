@@ -1,9 +1,7 @@
 ---
 name: bmad-create-story
 description:
-  'This skill should be used when the user asks to "create story", "prepare
-  story", "story preparation", or needs a story with all required context for
-  implementation. Phase 4 Implementation workflow.'
+  Prepare a story with full context for implementation. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true
 ---

@@ -1,9 +1,7 @@
 ---
 name: bmad-ux-design
 description:
-  'This skill should be used when the user asks to "create ux design", "design
-  ux", "user experience design", or needs to plan UX to inform architecture and
-  implementation. Phase 2 Planning workflow.'
+  Plan UX design to inform architecture and implementation. Phase 2 Planning
 user-invocable: true
 disable-model-invocation: true
 ---

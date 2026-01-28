@@ -1,9 +1,6 @@
 ---
 name: bmad-test-automate
-description:
-  'This skill should be used when the user asks to "test automation", "automate
-  tests", "automation framework", or needs comprehensive test automation. Test
-  Architecture workflow.'
+description: Comprehensive test automation setup. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

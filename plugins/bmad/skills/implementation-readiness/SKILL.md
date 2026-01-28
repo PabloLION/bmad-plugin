@@ -1,9 +1,8 @@
 ---
 name: bmad-implementation-readiness
 description:
-  'This skill should be used when the user asks to "check readiness",
-  "implementation readiness", "validate readiness", or needs to ensure PRD, UX,
-  Architecture, and Epics are aligned. Phase 3 Solutioning workflow.'
+  Validate PRD, UX, Architecture, and Epics alignment before implementation.
+  Phase 3 Solutioning
 user-invocable: true
 disable-model-invocation: true
 ---

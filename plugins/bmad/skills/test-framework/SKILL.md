@@ -1,9 +1,7 @@
 ---
 name: bmad-test-framework
 description:
-  'This skill should be used when the user asks to "setup test framework",
-  "initialize tests", "test framework", or needs production-ready test framework
-  architecture. Test Architecture workflow.'
+  Initialize production-ready test framework architecture. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

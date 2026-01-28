@@ -1,9 +1,7 @@
 ---
 name: bmad-create-architecture
 description:
-  'This skill should be used when the user asks to "create architecture",
-  "design architecture", "system architecture", "technical design", or needs to
-  document technical decisions for implementation. Phase 3 Solutioning workflow.'
+  Document system architecture and technical decisions. Phase 3 Solutioning
 user-invocable: true
 disable-model-invocation: true
 ---

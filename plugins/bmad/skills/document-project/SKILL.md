@@ -1,9 +1,6 @@
 ---
 name: bmad-document-project
-description:
-  'This skill should be used when the user asks to "document project", "generate
-  documentation", "analyze existing project", or needs comprehensive project
-  documentation. Documentation workflow.'
+description: Generate comprehensive documentation for an existing project
 user-invocable: true
 disable-model-invocation: true
 ---

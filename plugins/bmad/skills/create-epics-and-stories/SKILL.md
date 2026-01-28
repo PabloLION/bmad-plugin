@@ -1,10 +1,8 @@
 ---
 name: bmad-create-epics-and-stories
 description:
-  'This skill should be used when the user asks to "create epics", "create
-  stories", "write user stories", "epic planning", or needs to break down
-  architecture into implementable epics and stories. Phase 3 Solutioning
-  workflow.'
+  Break down architecture into implementable epics and stories. Phase 3
+  Solutioning
 user-invocable: true
 disable-model-invocation: true
 ---

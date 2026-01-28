@@ -1,9 +1,6 @@
 ---
 name: bmad-quick-dev
-description:
-  'This skill should be used when the user asks to "quick dev", "implement
-  story", "quick flow develop", or needs to implement a story tech spec
-  end-to-end. Quick Flow workflow.'
+description: Implement a story tech spec end-to-end. Quick Flow
 user-invocable: true
 disable-model-invocation: true
 ---

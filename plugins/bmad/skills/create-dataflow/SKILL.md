@@ -1,8 +1,6 @@
 ---
 name: bmad-create-dataflow
-description:
-  'This skill should be used when the user asks to "create dataflow diagram",
-  "data flow", or needs an Excalidraw data flow diagram.'
+description: Create an Excalidraw data flow diagram
 user-invocable: true
 disable-model-invocation: true
 ---

@@ -1,9 +1,8 @@
 ---
 name: bmad-research
 description:
-  'This skill should be used when the user asks to "conduct research", "market
-  research", "domain research", "technical research", or needs comprehensive
-  web-based research with verified sources. Phase 1 Analysis workflow.'
+  Conduct market, domain, or technical research with verified sources. Phase 1
+  Analysis
 user-invocable: true
 disable-model-invocation: true
 ---

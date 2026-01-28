@@ -1,9 +1,6 @@
 ---
 name: bmad-test-review
-description:
-  'This skill should be used when the user asks to "review tests", "test
-  review", "check tests", or needs quality checks against written tests. Test
-  Architecture workflow.'
+description: Quality checks against written tests. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

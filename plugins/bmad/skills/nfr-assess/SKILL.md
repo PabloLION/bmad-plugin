@@ -1,9 +1,7 @@
 ---
 name: bmad-nfr-assess
 description:
-  'This skill should be used when the user asks to "nfr assessment",
-  "non-functional requirements", "validate nfr", or needs to validate NFRs
-  against implementation. Test Architecture workflow.'
+  Validate non-functional requirements against implementation. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

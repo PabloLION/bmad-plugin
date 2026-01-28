@@ -1,9 +1,6 @@
 ---
 name: bmad-quick-spec
-description:
-  'This skill should be used when the user asks to "create tech spec", "quick
-  spec", "technical specification", or needs a quick but complete technical
-  spec. Quick Flow workflow.'
+description: Create a quick but complete technical specification. Quick Flow
 user-invocable: true
 disable-model-invocation: true
 ---

@@ -1,9 +1,6 @@
 ---
 name: bmad-brainstorm
-description:
-  'This skill should be used when the user asks to "brainstorm", "ideate",
-  "generate ideas", "brainstorming session", or needs expert guided facilitation
-  through brainstorming techniques. Phase 1 Analysis workflow.'
+description: Expert-guided brainstorming and ideation session. Phase 1 Analysis
 user-invocable: true
 disable-model-invocation: true
 ---

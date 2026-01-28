@@ -1,9 +1,6 @@
 ---
 name: bmad-epic-retrospective
-description:
-  'This skill should be used when the user asks to "epic retrospective",
-  "retrospective", "review epic", or needs a review of all work completed across
-  an epic. Phase 4 Implementation workflow.'
+description: Review all work completed across an epic. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true
 ---

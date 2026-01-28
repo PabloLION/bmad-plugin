@@ -1,8 +1,6 @@
 ---
 name: bmad-create-diagram
-description:
-  'This skill should be used when the user asks to "create diagram", "excalidraw
-  diagram", or needs a general Excalidraw diagram.'
+description: Create a general Excalidraw diagram
 user-invocable: true
 disable-model-invocation: true
 ---

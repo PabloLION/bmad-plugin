@@ -1,9 +1,7 @@
 ---
 name: bmad-test-design
 description:
-  'This skill should be used when the user asks to "design tests", "test
-  design", "test scenarios", or needs comprehensive test scenarios ahead of
-  development. Test Architecture workflow.'
+  Design comprehensive test scenarios ahead of development. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
