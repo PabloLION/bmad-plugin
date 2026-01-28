@@ -225,9 +225,16 @@ async function checkWorkflows(): Promise<void> {
 /** Files that are structurally different between upstream and plugin */
 const SKIP_CONTENT_FILES = new Set(["workflow.md", "workflow.yaml", "SKILL.md"]);
 
-/** Normalize whitespace for content comparison: collapse runs of whitespace */
+/**
+ * Normalize for content comparison:
+ * - Collapse whitespace runs (handles Prettier line-wrapping)
+ * - Normalize quotes (Prettier converts 'single' to "double" in YAML)
+ */
 function normalize(text: string): string {
-  return text.replace(/\s+/g, " ").trim();
+  return text
+    .replace(/\s+/g, " ")
+    .replace(/'/g, '"')
+    .trim();
 }
 
 /**
