@@ -4,10 +4,9 @@
  * Checks:
  * 0. Upstream sync — pull latest upstream before validating
  * 1. Agent coverage — upstream agents ↔ plugin agent .md files
- * 2. Workflow/skill coverage — upstream workflows ↔ plugin skill directories
- * 3. Content consistency — shared files between upstream and plugin match
- * 4. Manifest consistency — plugin.json commands ↔ actual skill directories
- * 5. Version consistency — .upstream-version ↔ upstream package.json
+ * 2. Skill coverage — three-set: upstream workflows ↔ plugin directories ↔ manifest
+ * 3. Content consistency — supporting files match (not SKILL.md vs workflow.md)
+ * 4. Version consistency — .upstream-version ↔ upstream package.json
  *
  * Known workarounds are documented in config.ts and printed with ⚠ markers.
  * Exit 0 = pass, Exit 1 = gaps found.
@@ -20,7 +19,6 @@ import {
   checkAgents,
   checkWorkflows,
   checkContent,
-  checkManifest,
   checkVersion,
 } from "./lib/checks/index.ts";
 
@@ -30,7 +28,6 @@ await checkSync();
 await checkAgents();
 await checkWorkflows();
 await checkContent();
-await checkManifest();
 await checkVersion();
 
 const workaroundCount =
