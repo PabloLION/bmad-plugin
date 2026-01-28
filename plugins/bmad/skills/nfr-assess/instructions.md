@@ -1,24 +1,19 @@
 # Non-Functional Requirements Assessment - Instructions v4.0
 
-**Workflow:** `testarch-nfr` **Purpose:** Assess non-functional requirements
-(performance, security, reliability, maintainability) before release with
-evidence-based validation **Agent:** Test Architect (TEA) **Format:** Pure
-Markdown v4.0 (no XML blocks)
+**Workflow:** `testarch-nfr`
+**Purpose:** Assess non-functional requirements (performance, security, reliability, maintainability) before release with evidence-based validation
+**Agent:** Test Architect (TEA)
+**Format:** Pure Markdown v4.0 (no XML blocks)
 
 ---
 
 ## Overview
 
-This workflow performs a comprehensive assessment of non-functional requirements
-(NFRs) to validate that the implementation meets performance, security,
-reliability, and maintainability standards before release. It uses
-evidence-based validation with deterministic PASS/CONCERNS/FAIL rules and
-provides actionable recommendations for remediation.
+This workflow performs a comprehensive assessment of non-functional requirements (NFRs) to validate that the implementation meets performance, security, reliability, and maintainability standards before release. It uses evidence-based validation with deterministic PASS/CONCERNS/FAIL rules and provides actionable recommendations for remediation.
 
 **Key Capabilities:**
 
-- Assess multiple NFR categories (performance, security, reliability,
-  maintainability, custom)
+- Assess multiple NFR categories (performance, security, reliability, maintainability, custom)
 - Validate NFRs against defined thresholds from tech specs, PRD, or defaults
 - Classify status deterministically (PASS/CONCERNS/FAIL) based on evidence
 - Never guess thresholds - mark as CONCERNS if unknown
@@ -44,10 +39,8 @@ provides actionable recommendations for remediation.
 
 **Halt Conditions:**
 
-- If NFR targets are undefined and cannot be obtained, halt and request
-  definition
-- If implementation is not accessible for evaluation, halt and request
-  deployment
+- If NFR targets are undefined and cannot be obtained, halt and request definition
+- If implementation is not accessible for evaluation, halt and request deployment
 
 ---
 
@@ -57,22 +50,12 @@ provides actionable recommendations for remediation.
 
 **Actions:**
 
-1. Load relevant knowledge fragments from
-   `{project-root}/_bmad/bmm/testarch/tea-index.csv`:
-   - `adr-quality-readiness-checklist.md` - 8-category 29-criteria NFR framework
-     (testability, test data, scalability, DR, security, monitorability,
-     QoS/QoE, deployability, ~450 lines)
-   - `ci-burn-in.md` - CI/CD burn-in patterns for reliability validation
-     (10-iteration detection, sharding, selective execution, 678 lines, 4
-     examples)
-   - `test-quality.md` - Test quality expectations for maintainability
-     (deterministic, isolated, explicit assertions, length/time limits, 658
-     lines, 5 examples)
-   - `playwright-config.md` - Performance configuration patterns:
-     parallelization, timeout standards, artifact output (722 lines, 5 examples)
-   - `error-handling.md` - Reliability validation patterns: scoped exceptions,
-     retry validation, telemetry logging, graceful degradation (736 lines, 4
-     examples)
+1. Load relevant knowledge fragments from `{project-root}/_bmad/bmm/testarch/tea-index.csv`:
+   - `adr-quality-readiness-checklist.md` - 8-category 29-criteria NFR framework (testability, test data, scalability, DR, security, monitorability, QoS/QoE, deployability, ~450 lines)
+   - `ci-burn-in.md` - CI/CD burn-in patterns for reliability validation (10-iteration detection, sharding, selective execution, 678 lines, 4 examples)
+   - `test-quality.md` - Test quality expectations for maintainability (deterministic, isolated, explicit assertions, length/time limits, 658 lines, 5 examples)
+   - `playwright-config.md` - Performance configuration patterns: parallelization, timeout standards, artifact output (722 lines, 5 examples)
+   - `error-handling.md` - Reliability validation patterns: scoped exceptions, retry validation, telemetry logging, graceful degradation (736 lines, 4 examples)
 
 2. Read story file (if provided):
    - Extract NFR requirements
@@ -84,8 +67,7 @@ provides actionable recommendations for remediation.
    - `PRD.md` - Product-level NFR context (user expectations)
    - `test-design.md` - NFR test plan and priorities
 
-**Output:** Complete understanding of NFR targets, evidence sources, and
-validation criteria
+**Output:** Complete understanding of NFR targets, evidence sources, and validation criteria
 
 ---
 
@@ -93,25 +75,17 @@ validation criteria
 
 **Actions:**
 
-1. Determine which NFR categories to assess using ADR Quality Readiness
-   Checklist (8 standard categories):
-   - **1. Testability & Automation**: Isolation, headless interaction, state
-     control, sample requests (4 criteria)
+1. Determine which NFR categories to assess using ADR Quality Readiness Checklist (8 standard categories):
+   - **1. Testability & Automation**: Isolation, headless interaction, state control, sample requests (4 criteria)
    - **2. Test Data Strategy**: Segregation, generation, teardown (3 criteria)
-   - **3. Scalability & Availability**: Statelessness, bottlenecks, SLA
-     definitions, circuit breakers (4 criteria)
+   - **3. Scalability & Availability**: Statelessness, bottlenecks, SLA definitions, circuit breakers (4 criteria)
    - **4. Disaster Recovery**: RTO/RPO, failover, backups (3 criteria)
-   - **5. Security**: AuthN/AuthZ, encryption, secrets, input validation (4
-     criteria)
-   - **6. Monitorability, Debuggability & Manageability**: Tracing, logs,
-     metrics, config (4 criteria)
-   - **7. QoS & QoE**: Latency, throttling, perceived performance, degradation
-     (4 criteria)
-   - **8. Deployability**: Zero downtime, backward compatibility, rollback (3
-     criteria)
+   - **5. Security**: AuthN/AuthZ, encryption, secrets, input validation (4 criteria)
+   - **6. Monitorability, Debuggability & Manageability**: Tracing, logs, metrics, config (4 criteria)
+   - **7. QoS & QoE**: Latency, throttling, perceived performance, degradation (4 criteria)
+   - **8. Deployability**: Zero downtime, backward compatibility, rollback (3 criteria)
 
-2. Add custom NFR categories if specified (e.g., accessibility,
-   internationalization, compliance) beyond the 8 standard categories
+2. Add custom NFR categories if specified (e.g., accessibility, internationalization, compliance) beyond the 8 standard categories
 
 3. Gather thresholds for each NFR:
    - From tech-spec.md (primary source)
@@ -187,8 +161,7 @@ validation criteria
    - Evidence is MISSING or INCOMPLETE
    - Evidence is close to threshold (within 10%)
    - Evidence shows intermittent issues
-   - Example: Response time is 480ms (threshold: 500ms, 96% of threshold) →
-     CONCERNS
+   - Example: Response time is 480ms (threshold: 500ms, 96% of threshold) → CONCERNS
 
    **FAIL Criteria:**
    - Evidence exists BUT does not meet threshold
@@ -203,10 +176,8 @@ validation criteria
    - Justification for status classification
 
 3. Classify severity based on category:
-   - **CRITICAL**: Security failures, reliability failures (affect users
-     immediately)
-   - **HIGH**: Performance failures, maintainability failures (affect users
-     soon)
+   - **CRITICAL**: Security failures, reliability failures (affect users immediately)
+   - **HIGH**: Performance failures, maintainability failures (affect users soon)
    - **MEDIUM**: Concerns without failures (may affect users eventually)
    - **LOW**: Missing evidence for non-critical NFRs
 
@@ -264,13 +235,13 @@ validation criteria
 
    ```yaml
    nfr_assessment:
-     date: "2025-10-14"
+     date: '2025-10-14'
      categories:
-       performance: "PASS"
-       security: "CONCERNS"
-       reliability: "PASS"
-       maintainability: "PASS"
-     overall_status: "CONCERNS"
+       performance: 'PASS'
+       security: 'CONCERNS'
+       reliability: 'PASS'
+       maintainability: 'PASS'
+     overall_status: 'CONCERNS'
      critical_issues: 0
      high_priority_issues: 1
      concerns: 2
@@ -289,16 +260,13 @@ validation criteria
    - Include overall status and critical issues
    - Add gate status
 
-**Output:** Complete NFR assessment documentation ready for review and CI/CD
-integration
+**Output:** Complete NFR assessment documentation ready for review and CI/CD integration
 
 ---
 
 ## Non-Prescriptive Approach
 
-**Minimal Examples:** This workflow provides principles and patterns, not rigid
-templates. Teams should adapt NFR categories, thresholds, and assessment
-criteria to their needs.
+**Minimal Examples:** This workflow provides principles and patterns, not rigid templates. Teams should adapt NFR categories, thresholds, and assessment criteria to their needs.
 
 **Key Patterns to Follow:**
 
@@ -437,8 +405,10 @@ criteria to their needs.
 **Example:**
 
 ```markdown
-NFR: Response Time p95 Threshold: 500ms Evidence: Load test result shows 350ms
-p95 Status: PASS ✅
+NFR: Response Time p95
+Threshold: 500ms
+Evidence: Load test result shows 350ms p95
+Status: PASS ✅
 ```
 
 ---
@@ -454,9 +424,11 @@ p95 Status: PASS ✅
 **Example:**
 
 ```markdown
-NFR: Response Time p95 Threshold: 500ms Evidence: Load test result shows 480ms
-p95 (96% of threshold) Status: CONCERNS ⚠️ Recommendation: Optimize before
-production - very close to threshold
+NFR: Response Time p95
+Threshold: 500ms
+Evidence: Load test result shows 480ms p95 (96% of threshold)
+Status: CONCERNS ⚠️
+Recommendation: Optimize before production - very close to threshold
 ```
 
 ---
@@ -471,9 +443,11 @@ production - very close to threshold
 **Example:**
 
 ```markdown
-NFR: Response Time p95 Threshold: 500ms Evidence: Load test result shows 750ms
-p95 (150% of threshold) Status: FAIL ❌ Recommendation: BLOCKER - optimize
-performance before release
+NFR: Response Time p95
+Threshold: 500ms
+Evidence: Load test result shows 750ms p95 (150% of threshold)
+Status: FAIL ❌
+Recommendation: BLOCKER - optimize performance before release
 ```
 
 ---
@@ -533,14 +507,16 @@ performance before release
 ````markdown
 # NFR Assessment - Story 1.3
 
-**Feature:** User Authentication **Date:** 2025-10-14 **Overall Status:**
-CONCERNS ⚠️ (1 HIGH issue)
+**Feature:** User Authentication
+**Date:** 2025-10-14
+**Overall Status:** CONCERNS ⚠️ (1 HIGH issue)
 
 ## Executive Summary
 
-**Assessment:** 3 PASS, 1 CONCERNS, 0 FAIL **Blockers:** None **High Priority
-Issues:** 1 (Security - MFA not enforced) **Recommendation:** Address security
-concern before release
+**Assessment:** 3 PASS, 1 CONCERNS, 0 FAIL
+**Blockers:** None
+**High Priority Issues:** 1 (Security - MFA not enforced)
+**Recommendation:** Address security concern before release
 
 ## Performance Assessment
 
@@ -569,8 +545,7 @@ concern before release
 - **Actual:** MFA optional (not enforced)
 - **Evidence:** Security audit (security-audit-2025-10-14.md)
 - **Findings:** MFA is implemented but not enforced by default
-- **Recommendation:** HIGH - Enforce MFA for all new accounts, provide migration
-  path for existing users
+- **Recommendation:** HIGH - Enforce MFA for all new accounts, provide migration path for existing users
 
 ### Data Protection
 
@@ -654,21 +629,21 @@ concern before release
 
 ```yaml
 nfr_assessment:
-  date: "2025-10-14"
-  story_id: "1.3"
+  date: '2025-10-14'
+  story_id: '1.3'
   categories:
-    performance: "PASS"
-    security: "CONCERNS"
-    reliability: "PASS"
-    maintainability: "PASS"
-  overall_status: "CONCERNS"
+    performance: 'PASS'
+    security: 'CONCERNS'
+    reliability: 'PASS'
+    maintainability: 'PASS'
+  overall_status: 'CONCERNS'
   critical_issues: 0
   high_priority_issues: 1
   medium_priority_issues: 0
   concerns: 1
   blockers: false
   recommendations:
-    - "Enforce MFA for all new accounts (HIGH - 4 hours)"
+    - 'Enforce MFA for all new accounts (HIGH - 4 hours)'
   evidence_gaps: 2
 ```
 ````

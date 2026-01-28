@@ -2,19 +2,17 @@
 
 # Test Design and Risk Assessment
 
-**Workflow ID**: `_bmad/bmm/testarch/test-design` **Version**: 4.0 (BMad v6)
+**Workflow ID**: `_bmad/bmm/testarch/test-design`
+**Version**: 4.0 (BMad v6)
 
 ---
 
 ## Overview
 
-Plans comprehensive test coverage strategy with risk assessment, priority
-classification, and execution ordering. This workflow operates in **two modes**:
+Plans comprehensive test coverage strategy with risk assessment, priority classification, and execution ordering. This workflow operates in **two modes**:
 
-- **System-Level Mode (Phase 3)**: Testability review of architecture before
-  solutioning gate check
-- **Epic-Level Mode (Phase 4)**: Per-epic test planning with risk assessment
-  (current behavior)
+- **System-Level Mode (Phase 3)**: Testability review of architecture before solutioning gate check
+- **Epic-Level Mode (Phase 4)**: Per-epic test planning with risk assessment (current behavior)
 
 The workflow auto-detects which mode to use based on project phase.
 
@@ -33,13 +31,8 @@ TEA test-design workflow supports TWO modes, detected automatically:
    **Deterministic Rules:**
    - User provided **PRD+ADR only** (no Epic+Stories) → **System-Level Mode**
    - User provided **Epic+Stories only** (no PRD+ADR) → **Epic-Level Mode**
-   - User provided **BOTH PRD+ADR AND Epic+Stories** → **Prefer System-Level
-     Mode** (architecture review comes first in Phase 3, then epic planning in
-     Phase 4). If mode preference is unclear, ask user: "Should I create (A)
-     System-level test design (PRD + ADR → Architecture doc + QA doc) or (B)
-     Epic-level test design (Epic → Single test plan)?"
-   - If user intent is clear from context, use that mode regardless of file
-     structure
+   - User provided **BOTH PRD+ADR AND Epic+Stories** → **Prefer System-Level Mode** (architecture review comes first in Phase 3, then epic planning in Phase 4). If mode preference is unclear, ask user: "Should I create (A) System-level test design (PRD + ADR → Architecture doc + QA doc) or (B) Epic-level test design (Epic → Single test plan)?"
+   - If user intent is clear from context, use that mode regardless of file structure
 
 2. **Fallback to File-Based Detection (Priority 2 - BMad-Integrated)**
    - Check for `{implementation_artifacts}/sprint-status.yaml`
@@ -54,9 +47,7 @@ TEA test-design workflow supports TWO modes, detected automatically:
 **Mode Descriptions:**
 
 **System-Level Mode (PRD + ADR Input)**
-
-- **When to use:** Early in project (Phase 3 Solutioning), architecture being
-  designed
+- **When to use:** Early in project (Phase 3 Solutioning), architecture being designed
 - **Input:** PRD, ADR, architecture.md (optional)
 - **Output:** TWO documents
   - `test-design-architecture.md` (for Architecture/Dev teams)
@@ -64,7 +55,6 @@ TEA test-design workflow supports TWO modes, detected automatically:
 - **Focus:** Testability assessment, ASRs, NFR requirements, Sprint 0 setup
 
 **Epic-Level Mode (Epic + Stories Input)**
-
 - **When to use:** During implementation (Phase 4), per-epic planning
 - **Input:** Epic, Stories, tech-specs (optional)
 - **Output:** ONE document
@@ -74,28 +64,22 @@ TEA test-design workflow supports TWO modes, detected automatically:
 **Key Insight: TEA Works Standalone OR Integrated**
 
 **Standalone (No BMad artifacts):**
-
 - User provides PRD + ADR → System-Level Mode
 - User provides Epic description → Epic-Level Mode
 - TEA doesn't mandate full BMad workflow
 
 **BMad-Integrated (Full workflow):**
-
 - BMad creates `sprint-status.yaml` → Automatic Epic-Level detection
 - BMad creates PRD, ADR, architecture.md → Automatic System-Level detection
 - TEA leverages BMad artifacts for richer context
 
 **Message to User:**
+> You don't need to follow full BMad methodology to use TEA test-design.
+> Just provide PRD + ADR for system-level, or Epic for epic-level.
+> TEA will auto-detect and produce appropriate documents.
 
-> You don't need to follow full BMad methodology to use TEA test-design. Just
-> provide PRD + ADR for system-level, or Epic for epic-level. TEA will
-> auto-detect and produce appropriate documents.
-
-**Halt Condition:** If mode cannot be determined AND user intent unclear AND
-required files missing, HALT and notify user:
-
-- "Please provide either: (A) PRD + ADR for system-level test design, OR (B)
-  Epic + Stories for epic-level test design"
+**Halt Condition:** If mode cannot be determined AND user intent unclear AND required files missing, HALT and notify user:
+- "Please provide either: (A) PRD + ADR for system-level test design, OR (B) Epic + Stories for epic-level test design"
 
 ---
 
@@ -109,8 +93,7 @@ required files missing, HALT and notify user:
    - Load architecture.md or tech-spec (REQUIRED)
    - Load PRD.md for functional and non-functional requirements
    - Load epics.md for feature scope
-   - Identify technology stack decisions (frameworks, databases, deployment
-     targets)
+   - Identify technology stack decisions (frameworks, databases, deployment targets)
    - Note integration points and external system dependencies
    - Extract NFR requirements (performance SLOs, security requirements, etc.)
 
@@ -118,14 +101,12 @@ required files missing, HALT and notify user:
 
    Read `{config_source}` and check `config.tea_use_playwright_utils`.
 
-   If true, note that `@seontechnologies/playwright-utils` provides utilities
-   for test implementation. Reference in test design where relevant.
+   If true, note that `@seontechnologies/playwright-utils` provides utilities for test implementation. Reference in test design where relevant.
 
 3. **Load Knowledge Base Fragments (System-Level)**
 
    **Critical:** Consult `src/bmm/testarch/tea-index.csv` to load:
-   - `adr-quality-readiness-checklist.md` - 8-category 29-criteria NFR framework
-     (testability, security, scalability, DR, QoS, deployability, etc.)
+   - `adr-quality-readiness-checklist.md` - 8-category 29-criteria NFR framework (testability, security, scalability, DR, QoS, deployability, etc.)
    - `test-levels-framework.md` - Test levels strategy guidance
    - `risk-governance.md` - Testability risk identification
    - `test-quality.md` - Quality standards and Definition of Done
@@ -146,8 +127,7 @@ required files missing, HALT and notify user:
 2. **Load Architecture Context**
    - Read architecture.md for system design
    - Read tech-spec for implementation details
-   - Read test-design-architecture.md and test-design-qa.md (if exist from Phase
-     3 system-level test design)
+   - Read test-design-architecture.md and test-design-qa.md (if exist from Phase 3 system-level test design)
    - Identify technical constraints and dependencies
    - Note integration points and external systems
 
@@ -160,30 +140,18 @@ required files missing, HALT and notify user:
 4. **Load Knowledge Base Fragments (Epic-Level)**
 
    **Critical:** Consult `src/bmm/testarch/tea-index.csv` to load:
-   - `risk-governance.md` - Risk classification framework (6 categories: TECH,
-     SEC, PERF, DATA, BUS, OPS), automated scoring, gate decision engine, owner
-     tracking (625 lines, 4 examples)
-   - `probability-impact.md` - Risk scoring methodology (probability × impact
-     matrix, automated classification, dynamic re-assessment, gate integration,
-     604 lines, 4 examples)
-   - `test-levels-framework.md` - Test level selection guidance (E2E vs API vs
-     Component vs Unit with decision matrix, characteristics, when to use each,
-     467 lines, 4 examples)
-   - `test-priorities-matrix.md` - P0-P3 prioritization criteria (automated
-     priority calculation, risk-based mapping, tagging strategy, time budgets,
-     389 lines, 2 examples)
+   - `risk-governance.md` - Risk classification framework (6 categories: TECH, SEC, PERF, DATA, BUS, OPS), automated scoring, gate decision engine, owner tracking (625 lines, 4 examples)
+   - `probability-impact.md` - Risk scoring methodology (probability × impact matrix, automated classification, dynamic re-assessment, gate integration, 604 lines, 4 examples)
+   - `test-levels-framework.md` - Test level selection guidance (E2E vs API vs Component vs Unit with decision matrix, characteristics, when to use each, 467 lines, 4 examples)
+   - `test-priorities-matrix.md` - P0-P3 prioritization criteria (automated priority calculation, risk-based mapping, tagging strategy, time budgets, 389 lines, 2 examples)
 
-**Halt Condition (Epic-Level only):** If story data or acceptance criteria are
-missing, check if brownfield exploration is needed. If neither requirements NOR
-exploration possible, HALT with message: "Epic-level test design requires clear
-requirements, acceptance criteria, or brownfield app URL for exploration"
+**Halt Condition (Epic-Level only):** If story data or acceptance criteria are missing, check if brownfield exploration is needed. If neither requirements NOR exploration possible, HALT with message: "Epic-level test design requires clear requirements, acceptance criteria, or brownfield app URL for exploration"
 
 ---
 
 ## Step 1.5: System-Level Testability Review (Phase 3 Only)
 
-**Skip this step if Epic-Level Mode.** This step only executes in System-Level
-Mode.
+**Skip this step if Epic-Level Mode.** This step only executes in System-Level Mode.
 
 ### Actions
 
@@ -198,8 +166,7 @@ Mode.
    **Testability Criteria:**
 
    **Controllability:**
-   - Can we control system state for testing? (API seeding, factories, database
-     reset)
+   - Can we control system state for testing? (API seeding, factories, database reset)
    - Are external dependencies mockable? (interfaces, dependency injection)
    - Can we trigger error conditions? (chaos engineering, fault injection)
 
@@ -226,26 +193,19 @@ Mode.
    **CRITICAL: ASRs must indicate if ACTIONABLE or FYI**
 
    From PRD NFRs and architecture decisions, identify quality requirements that:
-   - Drive architecture decisions (e.g., "Must handle 10K concurrent users" →
-     caching architecture)
-   - Pose testability challenges (e.g., "Sub-second response time" → performance
-     test infrastructure)
-   - Require special test environments (e.g., "Multi-region deployment" →
-     regional test instances)
+   - Drive architecture decisions (e.g., "Must handle 10K concurrent users" → caching architecture)
+   - Pose testability challenges (e.g., "Sub-second response time" → performance test infrastructure)
+   - Require special test environments (e.g., "Multi-region deployment" → regional test instances)
 
    Score each ASR using risk matrix (probability × impact).
 
    **In Architecture Doc, categorize ASRs:**
-   - **ACTIONABLE ASRs** (require architecture changes): Include in "Quick
-     Guide" 🚨 or ⚠️ sections
-   - **FYI ASRs** (already satisfied by architecture): Include in "Quick Guide"
-     📋 section OR omit if obvious
+   - **ACTIONABLE ASRs** (require architecture changes): Include in "Quick Guide" 🚨 or ⚠️ sections
+   - **FYI ASRs** (already satisfied by architecture): Include in "Quick Guide" 📋 section OR omit if obvious
 
    **Example:**
-   - ASR-001 (Score 9): "Multi-region deployment requires region-specific test
-     infrastructure" → **ACTIONABLE** (goes in 🚨 BLOCKERS)
-   - ASR-002 (Score 4): "OAuth 2.1 authentication already implemented in ADR-5"
-     → **FYI** (goes in 📋 INFO ONLY or omit)
+   - ASR-001 (Score 9): "Multi-region deployment requires region-specific test infrastructure" → **ACTIONABLE** (goes in 🚨 BLOCKERS)
+   - ASR-002 (Score 4): "OAuth 2.1 authentication already implemented in ADR-5" → **FYI** (goes in 📋 INFO ONLY or omit)
 
    **Structure Principle:** Actionable ASRs at TOP, FYI ASRs at BOTTOM (or omit)
 
@@ -254,17 +214,12 @@ Mode.
    **IMPORTANT: This section goes in QA doc ONLY, NOT in Architecture doc**
 
    Based on architecture (mobile, web, API, microservices, monolith):
-   - Recommend unit/integration/E2E split (e.g., 70/20/10 for API-heavy,
-     40/30/30 for UI-heavy)
-   - Identify test environment needs (local, staging, ephemeral,
-     production-like)
-   - Define testing approach per technology (Playwright for web, Maestro for
-     mobile, k6 for performance)
+   - Recommend unit/integration/E2E split (e.g., 70/20/10 for API-heavy, 40/30/30 for UI-heavy)
+   - Identify test environment needs (local, staging, ephemeral, production-like)
+   - Define testing approach per technology (Playwright for web, Maestro for mobile, k6 for performance)
 
-   **In Architecture doc:** Only mention test level split if it's an ACTIONABLE
-   concern
-   - Example: "API response time <100ms requires load testing infrastructure"
-     (concern)
+   **In Architecture doc:** Only mention test level split if it's an ACTIONABLE concern
+   - Example: "API response time <100ms requires load testing infrastructure" (concern)
    - DO NOT include full test level strategy table in Architecture doc
 
 4. **Assess NFR Requirements (MINIMAL in Architecture Doc)**
@@ -276,36 +231,27 @@ Mode.
    - Focus on WHAT architecture must provide, not HOW to test
    - Keep it brief - 1-2 sentences per NFR category at most
 
-   **Example - Security NFR in Architecture doc (if there's a concern):** ✅
-   CORRECT (concern-focused, brief, WHAT/WHY only):
-   - "System must prevent cross-customer data access (GDPR requirement).
-     Requires test infrastructure for multi-tenant isolation in Sprint 0."
-   - "OAuth tokens must expire after 1 hour (ADR-5). Requires test harness for
-     token expiration validation."
+   **Example - Security NFR in Architecture doc (if there's a concern):**
+   ✅ CORRECT (concern-focused, brief, WHAT/WHY only):
+   - "System must prevent cross-customer data access (GDPR requirement). Requires test infrastructure for multi-tenant isolation in Sprint 0."
+   - "OAuth tokens must expire after 1 hour (ADR-5). Requires test harness for token expiration validation."
 
    ❌ INCORRECT (too detailed, belongs in QA doc):
    - Full table of security test scenarios
    - Test scripts with code examples
    - Detailed test procedures
    - Tool selection (e.g., "use Playwright E2E + OWASP ZAP")
-   - Specific test approaches (e.g., "Test approach: Playwright E2E for
-     auth/authz")
+   - Specific test approaches (e.g., "Test approach: Playwright E2E for auth/authz")
 
    **In QA Doc (full NFR testing approach):**
-   - **Security**: Full test scenarios, tooling (Playwright + OWASP ZAP), test
-     procedures
-   - **Performance**: Load/stress/spike test scenarios, k6 scripts, SLO
-     thresholds
-   - **Reliability**: Error handling tests, retry logic validation, circuit
-     breaker tests
-   - **Maintainability**: Coverage targets, code quality gates, observability
-     validation
+   - **Security**: Full test scenarios, tooling (Playwright + OWASP ZAP), test procedures
+   - **Performance**: Load/stress/spike test scenarios, k6 scripts, SLO thresholds
+   - **Reliability**: Error handling tests, retry logic validation, circuit breaker tests
+   - **Maintainability**: Coverage targets, code quality gates, observability validation
 
    **Rule of Thumb:**
-   - Architecture doc: "What NFRs exist and what concerns they create" (1-2
-     sentences)
-   - QA doc: "How to test those NFRs" (full sections with tables, code,
-     procedures)
+   - Architecture doc: "What NFRs exist and what concerns they create" (1-2 sentences)
+   - QA doc: "How to test those NFRs" (full sections with tables, code, procedures)
 
 5. **Flag Testability Concerns**
 
@@ -316,9 +262,7 @@ Mode.
    - ❌ Missing observability (can't validate NFRs)
    - ❌ Stateful designs (can't parallelize tests)
 
-   **Critical:** If testability concerns are blockers (e.g., "Architecture makes
-   performance testing impossible"), document as CONCERNS or FAIL recommendation
-   for gate check.
+   **Critical:** If testability concerns are blockers (e.g., "Architecture makes performance testing impossible"), document as CONCERNS or FAIL recommendation for gate check.
 
 6. **Output System-Level Test Design (TWO Documents)**
 
@@ -326,8 +270,7 @@ Mode.
 
    **Document 1: test-design-architecture.md** (for Architecture/Dev teams)
    - Purpose: Architectural concerns, testability gaps, NFR requirements
-   - Audience: Architects, Backend Devs, Frontend Devs, DevOps, Security
-     Engineers
+   - Audience: Architects, Backend Devs, Frontend Devs, DevOps, Security Engineers
    - Focus: What architecture must deliver for testability
    - Template: `test-design-architecture-template.md`
 
@@ -342,62 +285,46 @@ Mode.
    **test-design-architecture.md sections (in this order):**
 
    **STRUCTURE PRINCIPLE: Actionable items FIRST, FYI items LAST**
+
    1. Executive Summary (scope, business context, architecture, risk summary)
    2. Quick Guide (🚨 BLOCKERS / ⚠️ HIGH PRIORITY / 📋 INFO ONLY)
-   3. Risk Assessment (high/medium/low-priority risks with scoring) -
-      **ACTIONABLE**
-   4. Testability Concerns and Architectural Gaps - **ACTIONABLE** (what arch
-      team must do)
+   3. Risk Assessment (high/medium/low-priority risks with scoring) - **ACTIONABLE**
+   4. Testability Concerns and Architectural Gaps - **ACTIONABLE** (what arch team must do)
       - Sub-section: Blockers to Fast Feedback (ACTIONABLE - concerns FIRST)
       - Sub-section: Architectural Improvements Needed (ACTIONABLE)
-      - Sub-section: Testability Assessment Summary (FYI - passing items LAST,
-        only if worth mentioning)
-   5. Risk Mitigation Plans (detailed for high-priority risks ≥6) -
-      **ACTIONABLE**
+      - Sub-section: Testability Assessment Summary (FYI - passing items LAST, only if worth mentioning)
+   5. Risk Mitigation Plans (detailed for high-priority risks ≥6) - **ACTIONABLE**
    6. Assumptions and Dependencies - **FYI**
 
    **SECTIONS THAT DO NOT BELONG IN ARCHITECTURE DOC:**
-   - ❌ Test Levels Strategy (unit/integration/E2E split) - This is a RECIPE,
-     belongs in QA doc ONLY
-   - ❌ NFR Testing Approach with test examples - This is a RECIPE, belongs in
-     QA doc ONLY
+   - ❌ Test Levels Strategy (unit/integration/E2E split) - This is a RECIPE, belongs in QA doc ONLY
+   - ❌ NFR Testing Approach with test examples - This is a RECIPE, belongs in QA doc ONLY
    - ❌ Test Environment Requirements - This is a RECIPE, belongs in QA doc ONLY
-   - ❌ Recommendations for Sprint 0 (test framework setup, factories) - This is
-     a RECIPE, belongs in QA doc ONLY
-   - ❌ Quality Gate Criteria (pass rates, coverage targets) - This is a RECIPE,
-     belongs in QA doc ONLY
-   - ❌ Tool Selection (Playwright, k6, etc.) - This is a RECIPE, belongs in QA
-     doc ONLY
+   - ❌ Recommendations for Sprint 0 (test framework setup, factories) - This is a RECIPE, belongs in QA doc ONLY
+   - ❌ Quality Gate Criteria (pass rates, coverage targets) - This is a RECIPE, belongs in QA doc ONLY
+   - ❌ Tool Selection (Playwright, k6, etc.) - This is a RECIPE, belongs in QA doc ONLY
 
    **WHAT BELONGS IN ARCHITECTURE DOC:**
    - ✅ Testability CONCERNS (what makes it hard to test)
    - ✅ Architecture GAPS (what's missing for testability)
    - ✅ What architecture team must DO (blockers, improvements)
    - ✅ Risks and mitigation plans
-   - ✅ ASRs (Architecturally Significant Requirements) - but clarify if FYI or
-     actionable
+   - ✅ ASRs (Architecturally Significant Requirements) - but clarify if FYI or actionable
 
    **test-design-qa.md sections (in this order):**
    1. Executive Summary (risk summary, coverage summary)
-   2. **Dependencies & Test Blockers** (CRITICAL: RIGHT AFTER SUMMARY - what QA
-      needs from other teams)
-   3. Risk Assessment (scored risks with categories - reference Arch doc, don't
-      duplicate)
+   2. **Dependencies & Test Blockers** (CRITICAL: RIGHT AFTER SUMMARY - what QA needs from other teams)
+   3. Risk Assessment (scored risks with categories - reference Arch doc, don't duplicate)
    4. Test Coverage Plan (P0/P1/P2/P3 with detailed scenarios + checkboxes)
-   5. **Execution Strategy** (SIMPLE: Organized by TOOL TYPE: PR (Playwright) /
-      Nightly (k6) / Weekly (chaos/manual))
-   6. QA Effort Estimate (QA effort ONLY - no DevOps, Data Eng, Finance,
-      Backend)
-   7. Appendices (code examples with playwright-utils, tagging strategy,
-      knowledge base refs)
+   5. **Execution Strategy** (SIMPLE: Organized by TOOL TYPE: PR (Playwright) / Nightly (k6) / Weekly (chaos/manual))
+   6. QA Effort Estimate (QA effort ONLY - no DevOps, Data Eng, Finance, Backend)
+   7. Appendices (code examples with playwright-utils, tagging strategy, knowledge base refs)
 
    **SECTIONS TO EXCLUDE FROM QA DOC:**
-   - ❌ Quality Gate Criteria (pass/fail thresholds - teams decide for
-     themselves)
+   - ❌ Quality Gate Criteria (pass/fail thresholds - teams decide for themselves)
    - ❌ Follow-on Workflows (bloat - BMAD commands are self-explanatory)
    - ❌ Approval section (unnecessary formality)
-   - ❌ Test Environment Requirements (remove as separate section - integrate
-     into Dependencies if needed)
+   - ❌ Test Environment Requirements (remove as separate section - integrate into Dependencies if needed)
    - ❌ NFR Readiness Summary (bloat - covered in Risk Assessment)
    - ❌ Testability Assessment (bloat - covered in Dependencies)
    - ❌ Test Levels Strategy (bloat - obvious from test scenarios)
@@ -412,18 +339,13 @@ Mode.
    - ✅ Clear ownership (each blocker/ASR has owner + timeline)
    - ✅ Testability requirements (what architecture must support)
    - ✅ Mitigation plans (for each high-risk item ≥6)
-   - ✅ Brief conceptual examples ONLY if needed to clarify architecture
-     concerns (5-10 lines max)
-   - ✅ **Target length**: ~150-200 lines max (focus on actionable concerns
-     only)
-   - ✅ **Professional tone**: Avoid AI slop (excessive ✅/❌ emojis,
-     "absolutely", "excellent", overly enthusiastic language)
+   - ✅ Brief conceptual examples ONLY if needed to clarify architecture concerns (5-10 lines max)
+   - ✅ **Target length**: ~150-200 lines max (focus on actionable concerns only)
+   - ✅ **Professional tone**: Avoid AI slop (excessive ✅/❌ emojis, "absolutely", "excellent", overly enthusiastic language)
 
    **Architecture doc (DON'T) - CRITICAL:**
-   - ❌ NO test scripts or test implementation code AT ALL - This is a
-     communication doc for architects, not a testing guide
-   - ❌ NO Playwright test examples (e.g., test('...', async ({ request }) =>
-     ...))
+   - ❌ NO test scripts or test implementation code AT ALL - This is a communication doc for architects, not a testing guide
+   - ❌ NO Playwright test examples (e.g., test('...', async ({ request }) => ...))
    - ❌ NO assertion logic (e.g., expect(...).toBe(...))
    - ❌ NO test scenario checklists with checkboxes (belongs in QA doc)
    - ❌ NO implementation details about HOW QA will test
@@ -432,40 +354,26 @@ Mode.
    **QA doc (DO):**
    - ✅ Test scenario recipes (clear P0/P1/P2/P3 with checkboxes)
    - ✅ Full test implementation code samples when helpful
-   - ✅ **IMPORTANT: If config.tea_use_playwright_utils is true, ALL code
-     samples MUST use @seontechnologies/playwright-utils fixtures and
-     utilities**
-   - ✅ Import test fixtures from
-     '@seontechnologies/playwright-utils/api-request/fixtures'
-   - ✅ Import expect from '@playwright/test' (playwright-utils does not
-     re-export expect)
-   - ✅ Use apiRequest fixture with schema validation, retry logic, and
-     structured responses
-   - ✅ Dependencies & Test Blockers section RIGHT AFTER Executive Summary (what
-     QA needs from other teams)
-   - ✅ **QA effort estimates ONLY** (no DevOps, Data Eng, Finance, Backend
-     effort - out of scope)
+   - ✅ **IMPORTANT: If config.tea_use_playwright_utils is true, ALL code samples MUST use @seontechnologies/playwright-utils fixtures and utilities**
+   - ✅ Import test fixtures from '@seontechnologies/playwright-utils/api-request/fixtures'
+   - ✅ Import expect from '@playwright/test' (playwright-utils does not re-export expect)
+   - ✅ Use apiRequest fixture with schema validation, retry logic, and structured responses
+   - ✅ Dependencies & Test Blockers section RIGHT AFTER Executive Summary (what QA needs from other teams)
+   - ✅ **QA effort estimates ONLY** (no DevOps, Data Eng, Finance, Backend effort - out of scope)
    - ✅ Cross-references to Architecture doc (not duplication)
-   - ✅ **Professional tone**: Avoid AI slop (excessive ✅/❌ emojis,
-     "absolutely", "excellent", overly enthusiastic language)
+   - ✅ **Professional tone**: Avoid AI slop (excessive ✅/❌ emojis, "absolutely", "excellent", overly enthusiastic language)
 
    **QA doc (DON'T):**
    - ❌ NO architectural theory (just reference Architecture doc)
    - ❌ NO ASR explanations (link to Architecture doc instead)
    - ❌ NO duplicate risk assessments (reference Architecture doc)
-   - ❌ NO Quality Gate Criteria section (teams decide pass/fail thresholds for
-     themselves)
-   - ❌ NO Follow-on Workflows section (bloat - BMAD commands are
-     self-explanatory)
+   - ❌ NO Quality Gate Criteria section (teams decide pass/fail thresholds for themselves)
+   - ❌ NO Follow-on Workflows section (bloat - BMAD commands are self-explanatory)
    - ❌ NO Approval section (unnecessary formality)
-   - ❌ NO effort estimates for other teams (DevOps, Backend, Data Eng,
-     Finance - out of scope, QA effort only)
-   - ❌ NO Sprint breakdowns (too prescriptive - e.g., "Sprint 0: 40 hours,
-     Sprint 1: 48 hours")
-   - ❌ NO mitigation plans for Backend/Arch/DevOps work (those belong in
-     Architecture doc)
-   - ❌ NO architectural assumptions or debates (those belong in Architecture
-     doc)
+   - ❌ NO effort estimates for other teams (DevOps, Backend, Data Eng, Finance - out of scope, QA effort only)
+   - ❌ NO Sprint breakdowns (too prescriptive - e.g., "Sprint 0: 40 hours, Sprint 1: 48 hours")
+   - ❌ NO mitigation plans for Backend/Arch/DevOps work (those belong in Architecture doc)
+   - ❌ NO architectural assumptions or debates (those belong in Architecture doc)
 
    **Anti-Patterns to Avoid (Cross-Document Redundancy):**
 
@@ -476,19 +384,15 @@ Mode.
    - QA doc: Re-explain why OAuth 2.1 is required
 
    ✅ **DO cross-reference instead:**
-   - Architecture doc: "ASR-1: OAuth 2.1 required (see QA doc for 12 test
-     scenarios)"
-   - QA doc: "OAuth tests: 12 P0 scenarios (see Architecture doc R-001 for risk
-     details)"
+   - Architecture doc: "ASR-1: OAuth 2.1 required (see QA doc for 12 test scenarios)"
+   - QA doc: "OAuth tests: 12 P0 scenarios (see Architecture doc R-001 for risk details)"
 
    ❌ **DON'T repeat the same note 10+ times:**
-   - Example: "Timing is pessimistic until R-005 is fixed" repeated on every P0,
-     P1, P2 section
+   - Example: "Timing is pessimistic until R-005 is fixed" repeated on every P0, P1, P2 section
    - This creates bloat and makes docs hard to read
 
    ✅ **DO consolidate repeated information:**
-   - Write once at the top: "**Note**: All timing estimates are pessimistic
-     pending R-005 resolution"
+   - Write once at the top: "**Note**: All timing estimates are pessimistic pending R-005 resolution"
    - Reference briefly if needed: "(pessimistic timing)"
 
    ❌ **DON'T include excessive detail that doesn't add value:**
@@ -508,9 +412,7 @@ Mode.
 
    ### 🚨 R-001: Multi-Tenant Isolation (Score: 9)
 
-   **Test Coverage:** 8 P0 tests (see
-   [QA doc - Multi-Tenant Isolation](test-design-qa.md#multi-tenant-isolation-8-tests-security-critical)
-   for detailed scenarios)
+   **Test Coverage:** 8 P0 tests (see [QA doc - Multi-Tenant Isolation](test-design-qa.md#multi-tenant-isolation-8-tests-security-critical) for detailed scenarios)
 
    ---
 
@@ -519,18 +421,12 @@ Mode.
    ## Testability Assessment
 
    **Prerequisites from Architecture Doc:**
-
-   - [ ] R-001: Multi-tenant isolation validated (see
-         [Architecture doc R-001](test-design-architecture.md#r-001-multi-tenant-isolation-score-9)
-         for mitigation plan)
-   - [ ] R-002: Test customer provisioned (see
-         [Architecture doc 🚨 BLOCKERS](test-design-architecture.md#blockers---team-must-decide-cant-proceed-without))
+   - [ ] R-001: Multi-tenant isolation validated (see [Architecture doc R-001](test-design-architecture.md#r-001-multi-tenant-isolation-score-9) for mitigation plan)
+   - [ ] R-002: Test customer provisioned (see [Architecture doc 🚨 BLOCKERS](test-design-architecture.md#blockers---team-must-decide-cant-proceed-without))
 
    ## Sprint 0 Setup Requirements
 
-   **Source:** See
-   [Architecture doc "Quick Guide"](test-design-architecture.md#quick-guide) for
-   detailed mitigation plans
+   **Source:** See [Architecture doc "Quick Guide"](test-design-architecture.md#quick-guide) for detailed mitigation plans
    ```
 
    **Key Points:**
@@ -561,32 +457,23 @@ Mode.
 
 **Common Over-Engineering to Avoid:**
 
-**In QA Doc:**
+   **In QA Doc:**
+   1. ❌ Quality gate thresholds ("P0 must be 100%, P1 ≥95%") - Let teams decide for themselves
+   2. ❌ Effort estimates for other teams - QA doc should only estimate QA effort
+   3. ❌ Sprint breakdowns ("Sprint 0: 40 hours, Sprint 1: 48 hours") - Too prescriptive
+   4. ❌ Approval sections - Unnecessary formality
+   5. ❌ Assumptions about architecture (SLO targets, replication lag) - These are architectural concerns, belong in Arch doc
+   6. ❌ Mitigation plans for Backend/Arch/DevOps - Those belong in Arch doc
+   7. ❌ Follow-on workflows section - Bloat, BMAD commands are self-explanatory
+   8. ❌ NFR Readiness Summary - Bloat, covered in Risk Assessment
 
-1.  ❌ Quality gate thresholds ("P0 must be 100%, P1 ≥95%") - Let teams decide
-    for themselves
-2.  ❌ Effort estimates for other teams - QA doc should only estimate QA effort
-3.  ❌ Sprint breakdowns ("Sprint 0: 40 hours, Sprint 1: 48 hours") - Too
-    prescriptive
-4.  ❌ Approval sections - Unnecessary formality
-5.  ❌ Assumptions about architecture (SLO targets, replication lag) - These are
-    architectural concerns, belong in Arch doc
-6.  ❌ Mitigation plans for Backend/Arch/DevOps - Those belong in Arch doc
-7.  ❌ Follow-on workflows section - Bloat, BMAD commands are self-explanatory
-8.  ❌ NFR Readiness Summary - Bloat, covered in Risk Assessment
+   **Test Coverage Numbers Reality Check:**
+   - With Playwright parallelization, running ALL Playwright tests is as fast as running just P0
+   - Don't split Playwright tests by priority into different CI gates - it adds no value
+   - Tool type matters, not priority labels
+   - Defer based on infrastructure cost, not importance
 
-**Test Coverage Numbers Reality Check:**
-
-- With Playwright parallelization, running ALL Playwright tests is as fast as
-  running just P0
-- Don't split Playwright tests by priority into different CI gates - it adds no
-  value
-- Tool type matters, not priority labels
-- Defer based on infrastructure cost, not importance
-
-**After System-Level Mode:** Workflow COMPLETE. System-level outputs
-(test-design-architecture.md + test-design-qa.md) are written in this step.
-Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
+**After System-Level Mode:** Workflow COMPLETE. System-level outputs (test-design-architecture.md + test-design-qa.md) are written in this step. Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
 ---
 
@@ -621,8 +508,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    **A. Check MCP Availability**
 
-   If config.tea_use_mcp_enhancements is true AND Playwright MCP tools
-   available:
+   If config.tea_use_mcp_enhancements is true AND Playwright MCP tools available:
    - Use MCP-assisted exploration (Step 3.B)
 
    If MCP unavailable OR config.tea_use_mcp_enhancements is false:
@@ -665,8 +551,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    - Transform discoveries into testable requirements
    - Prioritize based on user flow criticality
    - Identify risks from discovered functionality
-   - Continue with Step 2 (Assess and Classify Risks) using discovered
-     requirements
+   - Continue with Step 2 (Assess and Classify Risks) using discovered requirements
 
    **C. Manual Exploration Fallback (If MCP Unavailable)**
 
@@ -690,8 +575,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    4. Provide exploration findings to continue workflow
 
-   **Alternative:** Disable exploratory_mode and provide requirements
-   documentation
+   **Alternative:** Disable exploratory_mode and provide requirements documentation
    ```
 
    Wait for user to provide exploration findings, then:
@@ -703,8 +587,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    After mode selection (Requirements-Based OR Exploratory):
    - Continue to Step 2: Assess and Classify Risks
-   - Use requirements from documentation (Requirements-Based) OR discoveries
-     (Exploratory)
+   - Use requirements from documentation (Requirements-Based) OR discoveries (Exploratory)
 
 ---
 
@@ -773,8 +656,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    Rate severity (1-3):
    - **1 (Minor)**: Cosmetic, workaround exists, limited users
-   - **2 (Degraded)**: Feature impaired, workaround difficult, affects many
-     users
+   - **2 (Degraded)**: Feature impaired, workaround difficult, affects many users
    - **3 (Critical)**: System failure, data loss, no workaround, blocks usage
 
 5. **Calculate Risk Score**
@@ -813,11 +695,9 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    **Architecture Doc:**
    - Mitigations owned by Backend, DevOps, Architecture, Security, Data Eng
-   - Example: "Add authorization layer for customer-scoped access" (Backend
-     work)
+   - Example: "Add authorization layer for customer-scoped access" (Backend work)
    - Example: "Configure AWS Fault Injection Simulator" (DevOps work)
-   - Example: "Define CloudWatch log schema for backfill events" (Architecture
-     work)
+   - Example: "Define CloudWatch log schema for backfill events" (Architecture work)
 
    **QA Doc:**
    - Mitigations owned by QA (test development work)
@@ -828,22 +708,18 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    **Rule of Thumb:**
    - If mitigation requires production code changes → Architecture doc
    - If mitigation is test infrastructure/code → QA doc
-   - If mitigation involves multiple teams → Architecture doc with QA validation
-     approach
+   - If mitigation involves multiple teams → Architecture doc with QA validation approach
 
    **Assumptions Placement:**
 
    **Architecture Doc:**
-   - Architectural assumptions (SLO targets, replication lag, system design
-     assumptions)
+   - Architectural assumptions (SLO targets, replication lag, system design assumptions)
    - Example: "P95 <500ms inferred from <2s timeout (requires Product approval)"
-   - Example: "Multi-region replication lag <1s assumed (ADR doesn't specify
-     SLA)"
+   - Example: "Multi-region replication lag <1s assumed (ADR doesn't specify SLA)"
    - Example: "Recent Cache hit ratio >80% assumed (not in PRD/ADR)"
 
    **QA Doc:**
-   - Test execution assumptions (test infrastructure readiness, test data
-     availability)
+   - Test execution assumptions (test infrastructure readiness, test data availability)
    - Example: "Assumes test factories already created"
    - Example: "Assumes CI/CD pipeline configured"
    - Brief reference to Architecture doc for architectural assumptions
@@ -896,13 +772,11 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    - Error handling
    - Fastest, most granular
 
-   **Avoid duplicate coverage**: Don't test same behavior at multiple levels
-   unless necessary.
+   **Avoid duplicate coverage**: Don't test same behavior at multiple levels unless necessary.
 
 3. **Assign Priority Levels**
 
-   **CRITICAL: P0/P1/P2/P3 indicates priority and risk level, NOT execution
-   timing**
+   **CRITICAL: P0/P1/P2/P3 indicates priority and risk level, NOT execution timing**
 
    **Knowledge Base Reference**: `test-priorities-matrix.md`
 
@@ -932,10 +806,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    - Performance benchmarks
    - Documentation validation
 
-   **NOTE:** Priority classification is separate from execution timing. A P1
-   test might run in PRs if it's fast, or nightly if it requires expensive
-   infrastructure (e.g., k6 performance test). See "Execution Strategy" section
-   for timing guidance.
+   **NOTE:** Priority classification is separate from execution timing. A P1 test might run in PRs if it's fast, or nightly if it requires expensive infrastructure (e.g., k6 performance test). See "Execution Strategy" section for timing guidance.
 
 4. **Outline Data and Tooling Prerequisites**
 
@@ -963,31 +834,24 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    ```markdown
    ## Execution Strategy
 
-   **Philosophy**: Run everything in PRs unless significant infrastructure
-   overhead. Playwright with parallelization is extremely fast (100s of tests in
-   ~10-15 min).
+   **Philosophy**: Run everything in PRs unless significant infrastructure overhead.
+   Playwright with parallelization is extremely fast (100s of tests in ~10-15 min).
 
    **Organized by TOOL TYPE:**
 
    ### Every PR: Playwright Tests (~10-15 min)
-
    All functional tests (from any priority level):
-
    - All E2E, API, integration, unit tests using Playwright
    - Parallelized across {N} shards
    - Total: ~{N} tests (includes P0, P1, P2, P3)
 
    ### Nightly: k6 Performance Tests (~30-60 min)
-
    All performance tests (from any priority level):
-
    - Load, stress, spike, endurance
    - Reason: Expensive infrastructure, long-running (10-40 min per test)
 
    ### Weekly: Chaos & Long-Running (~hours)
-
    Special infrastructure tests (from any priority level):
-
    - Multi-region failover, disaster recovery, endurance
    - Reason: Very expensive, very long (4+ hours)
    ```
@@ -999,10 +863,8 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
    **Avoid:**
    - ❌ Don't organize by priority (smoke → P0 → P1 → P2 → P3)
-   - ❌ Don't say "P1 runs on PR to main" (some P1 are Playwright/PR, some are
-     k6/Nightly)
-   - ❌ Don't create artificial tiers - organize by tool type and infrastructure
-     overhead
+   - ❌ Don't say "P1 runs on PR to main" (some P1 are Playwright/PR, some are k6/Nightly)
+   - ❌ Don't create artificial tiers - organize by tool type and infrastructure overhead
 
 ---
 
@@ -1036,18 +898,15 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
    ## Execution Strategy
 
    **Default: Run all functional tests in PRs (~10-15 min)**
-
    - All Playwright tests (parallelized across 4 shards)
    - Includes E2E, API, integration, unit tests
    - Total: ~{N} tests
 
    **Nightly: Performance & Infrastructure tests**
-
    - k6 load/stress/spike tests (~30-60 min)
    - Reason: Expensive infrastructure, long-running
 
    **Weekly: Chaos & Disaster Recovery**
-
    - Endurance tests (4+ hours)
    - Multi-region failover (requires AWS FIS)
    - Backup restore validation
@@ -1104,8 +963,7 @@ Steps 2-4 are epic-level only - do NOT execute them in system-level mode.
 
 6. **Write to Output File**
 
-   Save to `{output_folder}/test-design-epic-{epic_num}.md` using template
-   structure.
+   Save to `{output_folder}/test-design-epic-{epic_num}.md` using template structure.
 
 ---
 
@@ -1197,23 +1055,15 @@ Examples:
 
 **Core Fragments (Auto-loaded in Step 1):**
 
-- `risk-governance.md` - Risk classification (6 categories), automated scoring,
-  gate decision engine, coverage traceability, owner tracking (625 lines, 4
-  examples)
-- `probability-impact.md` - Probability × impact matrix, automated
-  classification thresholds, dynamic re-assessment, gate integration (604 lines,
-  4 examples)
-- `test-levels-framework.md` - E2E vs API vs Component vs Unit decision
-  framework with characteristics matrix (467 lines, 4 examples)
-- `test-priorities-matrix.md` - P0-P3 automated priority calculation, risk-based
-  mapping, tagging strategy, time budgets (389 lines, 2 examples)
+- `risk-governance.md` - Risk classification (6 categories), automated scoring, gate decision engine, coverage traceability, owner tracking (625 lines, 4 examples)
+- `probability-impact.md` - Probability × impact matrix, automated classification thresholds, dynamic re-assessment, gate integration (604 lines, 4 examples)
+- `test-levels-framework.md` - E2E vs API vs Component vs Unit decision framework with characteristics matrix (467 lines, 4 examples)
+- `test-priorities-matrix.md` - P0-P3 automated priority calculation, risk-based mapping, tagging strategy, time budgets (389 lines, 2 examples)
 
 **Reference for Test Planning:**
 
-- `selective-testing.md` - Execution strategy: tag-based, spec filters,
-  diff-based selection, promotion rules (727 lines, 4 examples)
-- `fixture-architecture.md` - Data setup patterns: pure function → fixture →
-  mergeTests, auto-cleanup (406 lines, 5 examples)
+- `selective-testing.md` - Execution strategy: tag-based, spec filters, diff-based selection, promotion rules (727 lines, 4 examples)
+- `fixture-architecture.md` - Data setup patterns: pure function → fixture → mergeTests, auto-cleanup (406 lines, 5 examples)
 
 **Manual Reference (Optional):**
 
@@ -1248,7 +1098,8 @@ After completing this workflow, provide a summary:
 ```markdown
 ## Test Design Complete
 
-**Epic**: {epic_num} **Scope**: {design_level}
+**Epic**: {epic_num}
+**Scope**: {design_level}
 
 **Risk Assessment**:
 
@@ -1283,8 +1134,7 @@ After completing this workflow, provide a summary:
 
 1. Review risk assessment with team
 2. Prioritize mitigation for high-risk items (score ≥6)
-3. Run `*atdd` to generate failing tests for P0 scenarios (separate workflow;
-   not auto-run by `*test-design`)
+3. Run `*atdd` to generate failing tests for P0 scenarios (separate workflow; not auto-run by `*test-design`)
 4. Allocate resources per effort estimates
 5. Set up test data factories and fixtures
 ```

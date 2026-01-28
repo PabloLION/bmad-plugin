@@ -1,12 +1,9 @@
 # Sprint Status - Multi-Mode Service
 
-<critical>The workflow execution engine is governed by:
-{project-root}/\_bmad/core/tasks/workflow.xml</critical> <critical>You MUST have
-already loaded and processed:
-{project-root}/\_bmad/bmm/workflows/4-implementation/sprint-status/workflow.yaml</critical>
-<critical>Modes: interactive (default), validate, data</critical> <critical>⚠️
-ABSOLUTELY NO TIME ESTIMATES. Do NOT mention hours, days, weeks, or
-timelines.</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: {project-root}/_bmad/bmm/workflows/4-implementation/sprint-status/workflow.yaml</critical>
+<critical>Modes: interactive (default), validate, data</critical>
+<critical>⚠️ ABSOLUTELY NO TIME ESTIMATES. Do NOT mention hours, days, weeks, or timelines.</critical>
 
 <workflow>
 
@@ -51,8 +48,7 @@ Run `/bmad:bmm:workflows:sprint-planning` to generate it, then rerun sprint-stat
 
 <action>Validate all statuses against known values:</action>
 
-- Valid story statuses: backlog, ready-for-dev, in-progress, review, done,
-  drafted (legacy)
+- Valid story statuses: backlog, ready-for-dev, in-progress, review, done, drafted (legacy)
 - Valid epic statuses: backlog, in-progress, done, contexted (legacy)
 - Valid retrospective statuses: optional, done
 
@@ -61,34 +57,36 @@ Run `/bmad:bmm:workflows:sprint-planning` to generate it, then rerun sprint-stat
 ⚠️ **Unknown status detected:**
 {{#each invalid_entries}}
 
-- `{{key}}`: "{{status}}" (not recognized) {{/each}}
+- `{{key}}`: "{{status}}" (not recognized)
+  {{/each}}
 
 **Valid statuses:**
 
 - Stories: backlog, ready-for-dev, in-progress, review, done
 - Epics: backlog, in-progress, done
-- Retrospectives: optional, done </output> <ask>How should these be corrected?
-  {{#each invalid_entries}} {{@index}}. {{key}}: "{{status}}" → [select valid
-  status] {{/each}}
+- Retrospectives: optional, done
+  </output>
+  <ask>How should these be corrected?
+  {{#each invalid_entries}}
+  {{@index}}. {{key}}: "{{status}}" → [select valid status]
+  {{/each}}
 
-Enter corrections (e.g., "1=in-progress, 2=backlog") or "skip" to continue
-without fixing:</ask> <check if="user provided corrections"> <action>Update
-sprint-status.yaml with corrected values</action> <action>Re-parse the file with
-corrected statuses</action> </check> </check>
+Enter corrections (e.g., "1=in-progress, 2=backlog") or "skip" to continue without fixing:</ask>
+<check if="user provided corrections">
+<action>Update sprint-status.yaml with corrected values</action>
+<action>Re-parse the file with corrected statuses</action>
+</check>
+</check>
 
 <action>Detect risks:</action>
 
 - IF any story has status "review": suggest `/bmad:bmm:workflows:code-review`
-- IF any story has status "in-progress" AND no stories have status
-  "ready-for-dev": recommend staying focused on active story
-- IF all epics have status "backlog" AND no stories have status "ready-for-dev":
-  prompt `/bmad:bmm:workflows:create-story`
-- IF `generated` timestamp is more than 7 days old: warn "sprint-status.yaml may
-  be stale"
-- IF any story key doesn't match an epic pattern (e.g., story "5-1-..." but no
-  "epic-5"): warn "orphaned story detected"
-- IF any epic has status in-progress but has no associated stories: warn
-  "in-progress epic has no stories" </step>
+- IF any story has status "in-progress" AND no stories have status "ready-for-dev": recommend staying focused on active story
+- IF all epics have status "backlog" AND no stories have status "ready-for-dev": prompt `/bmad:bmm:workflows:create-story`
+- IF `generated` timestamp is more than 7 days old: warn "sprint-status.yaml may be stale"
+- IF any story key doesn't match an epic pattern (e.g., story "5-1-..." but no "epic-5"): warn "orphaned story detected"
+- IF any epic has status in-progress but has no associated stories: warn "in-progress epic has no stories"
+  </step>
 
 <step n="3" goal="Select next action recommendation">
   <action>Pick the next recommended workflow using priority:</action>
@@ -110,18 +108,19 @@ corrected statuses</action> </check> </check>
 - Tracking: {{tracking_system}}
 - Status file: {sprint_status_file}
 
-**Stories:** backlog {{count_backlog}}, ready-for-dev {{count_ready}},
-in-progress {{count_in_progress}}, review {{count_review}}, done {{count_done}}
+**Stories:** backlog {{count_backlog}}, ready-for-dev {{count_ready}}, in-progress {{count_in_progress}}, review {{count_review}}, done {{count_done}}
 
-**Epics:** backlog {{epic_backlog}}, in-progress {{epic_in_progress}}, done
-{{epic_done}}
+**Epics:** backlog {{epic_backlog}}, in-progress {{epic_in_progress}}, done {{epic_done}}
 
-**Next Recommendation:** /bmad:bmm:workflows:{{next_workflow_id}}
-({{next_story_id}})
+**Next Recommendation:** /bmad:bmm:workflows:{{next_workflow_id}} ({{next_story_id}})
 
-{{#if risks}} **Risks:** {{#each risks}}
+{{#if risks}}
+**Risks:**
+{{#each risks}}
 
-- {{this}} {{/each}} {{/if}}
+- {{this}}
+  {{/each}}
+  {{/if}}
 
   </output>
   </step>
@@ -195,33 +194,36 @@ If the command targets a story, set `story_key={{next_story_id}}` when prompted.
 
 <action>Read and parse {sprint_status_file}</action>
 
-<action>Validate required metadata fields exist: generated, project,
-project_key, tracking_system, story_location</action>
-<check if="any required field missing"> <template-output>is_valid =
-false</template-output> <template-output>error = "Missing required field(s):
-{{missing_fields}}"</template-output> <template-output>suggestion = "Re-run
-sprint-planning or add missing fields manually"</template-output>
-<action>Return</action> </check>
+<action>Validate required metadata fields exist: generated, project, project_key, tracking_system, story_location</action>
+<check if="any required field missing">
+<template-output>is_valid = false</template-output>
+<template-output>error = "Missing required field(s): {{missing_fields}}"</template-output>
+<template-output>suggestion = "Re-run sprint-planning or add missing fields manually"</template-output>
+<action>Return</action>
+</check>
 
-<action>Verify development_status section exists with at least one
-entry</action> <check if="development_status missing or empty">
-<template-output>is_valid = false</template-output> <template-output>error =
-"development_status missing or empty"</template-output>
-<template-output>suggestion = "Re-run sprint-planning or repair the file
-manually"</template-output> <action>Return</action> </check>
+<action>Verify development_status section exists with at least one entry</action>
+<check if="development_status missing or empty">
+<template-output>is_valid = false</template-output>
+<template-output>error = "development_status missing or empty"</template-output>
+<template-output>suggestion = "Re-run sprint-planning or repair the file manually"</template-output>
+<action>Return</action>
+</check>
 
 <action>Validate all status values against known valid statuses:</action>
 
 - Stories: backlog, ready-for-dev, in-progress, review, done (legacy: drafted)
 - Epics: backlog, in-progress, done (legacy: contexted)
-- Retrospectives: optional, done <check if="any invalid status found">
-  <template-output>is_valid = false</template-output> <template-output>error =
-  "Invalid status values: {{invalid_entries}}"</template-output>
-  <template-output>suggestion = "Fix invalid statuses in
-  sprint-status.yaml"</template-output> <action>Return</action> </check>
+- Retrospectives: optional, done
+  <check if="any invalid status found">
+  <template-output>is_valid = false</template-output>
+  <template-output>error = "Invalid status values: {{invalid_entries}}"</template-output>
+  <template-output>suggestion = "Fix invalid statuses in sprint-status.yaml"</template-output>
+  <action>Return</action>
+  </check>
 
-<template-output>is_valid = true</template-output> <template-output>message =
-"sprint-status.yaml valid: metadata complete, all statuses
-recognized"</template-output> </step>
+<template-output>is_valid = true</template-output>
+<template-output>message = "sprint-status.yaml valid: metadata complete, all statuses recognized"</template-output>
+</step>
 
 </workflow>

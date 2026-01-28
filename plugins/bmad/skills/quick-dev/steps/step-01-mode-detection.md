@@ -1,19 +1,16 @@
 ---
-name: "step-01-mode-detection"
-description:
-  "Determine execution mode (tech-spec vs direct), handle escalation, set state
-  variables"
+name: 'step-01-mode-detection'
+description: 'Determine execution mode (tech-spec vs direct), handle escalation, set state variables'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev"
-thisStepFile: "./step-01-mode-detection.md"
-nextStepFile_modeA: "./step-03-execute.md"
-nextStepFile_modeB: "./step-02-context-gathering.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev'
+thisStepFile: './step-01-mode-detection.md'
+nextStepFile_modeA: './step-03-execute.md'
+nextStepFile_modeB: './step-02-context-gathering.md'
 ---
 
 # Step 1: Mode Detection
 
-**Goal:** Determine execution mode, capture baseline, handle escalation if
-needed.
+**Goal:** Determine execution mode, capture baseline, handle escalation if needed.
 
 ---
 
@@ -21,8 +18,7 @@ needed.
 
 These variables MUST be set in this step and available to all subsequent steps:
 
-- `{baseline_commit}` - Git HEAD at workflow start (or "NO_GIT" if not a git
-  repo)
+- `{baseline_commit}` - Git HEAD at workflow start (or "NO_GIT" if not a git repo)
 - `{execution_mode}` - "tech-spec" or "direct"
 - `{tech_spec_path}` - Path to tech-spec file (if Mode A)
 
@@ -34,8 +30,7 @@ These variables MUST be set in this step and available to all subsequent steps:
 
 First, check if the project uses Git version control:
 
-**If Git repo exists** (`.git` directory present or
-`git rev-parse --is-inside-work-tree` succeeds):
+**If Git repo exists** (`.git` directory present or `git rev-parse --is-inside-work-tree` succeeds):
 
 - Run `git rev-parse HEAD` and store result as `{baseline_commit}`
 
@@ -45,8 +40,7 @@ First, check if the project uses Git version control:
 
 ### 2. Load Project Context
 
-Check if `{project_context}` exists (`**/project-context.md`). If found, load it
-as a foundational reference for ALL implementation decisions.
+Check if `{project_context}` exists (`**/project-context.md`). If found, load it as a foundational reference for ALL implementation decisions.
 
 ### 3. Parse User Input
 
@@ -99,8 +93,7 @@ Display: "**Select:** [P] Plan first (tech-spec) [E] Execute directly"
 #### Menu Handling Logic:
 
 - IF P: Direct user to `{quick_spec_workflow}`. **EXIT Quick Dev.**
-- IF E: Ask for any additional guidance, then **NEXT:** Read fully and follow:
-  `step-02-context-gathering.md`
+- IF E: Ask for any additional guidance, then **NEXT:** Read fully and follow: `step-02-context-gathering.md`
 
 #### EXECUTION RULES:
 
@@ -115,15 +108,15 @@ Present: "This looks like a focused feature with multiple components."
 
 Display:
 
-**[P] Plan first (tech-spec)** (recommended) **[W] Seems bigger than
-quick-dev** - Recommend the Full BMad Flow PRD Process **[E] Execute directly**
+**[P] Plan first (tech-spec)** (recommended)
+**[W] Seems bigger than quick-dev** - Recommend the Full BMad Flow PRD Process
+**[E] Execute directly**
 
 #### Menu Handling Logic:
 
 - IF P: Direct to `{quick_spec_workflow}`. **EXIT Quick Dev.**
 - IF W: Direct user to run the PRD workflow instead. **EXIT Quick Dev.**
-- IF E: Ask for guidance, then **NEXT:** Read fully and follow:
-  `step-02-context-gathering.md`
+- IF E: Ask for guidance, then **NEXT:** Read fully and follow: `step-02-context-gathering.md`
 
 #### EXECUTION RULES:
 
@@ -138,15 +131,15 @@ Present: "This sounds like platform/system work."
 
 Display:
 
-**[W] Start BMad Method** (recommended) **[P] Plan first (tech-spec)** (lighter
-planning) **[E] Execute directly** - feeling lucky
+**[W] Start BMad Method** (recommended)
+**[P] Plan first (tech-spec)** (lighter planning)
+**[E] Execute directly** - feeling lucky
 
 #### Menu Handling Logic:
 
 - IF P: Direct to `{quick_spec_workflow}`. **EXIT Quick Dev.**
 - IF W: Direct user to run the PRD workflow instead. **EXIT Quick Dev.**
-- IF E: Ask for guidance, then **NEXT:** Read fully and follow:
-  `step-02-context-gathering.md`
+- IF E: Ask for guidance, then **NEXT:** Read fully and follow: `step-02-context-gathering.md`
 
 #### EXECUTION RULES:
 
@@ -160,10 +153,8 @@ planning) **[E] Execute directly** - feeling lucky
 **CRITICAL:** When this step completes, explicitly state which step to load:
 
 - Mode A (tech-spec): "**NEXT:** read fully and follow: `step-03-execute.md`"
-- Mode B (direct, [E] selected): "**NEXT:** Read fully and follow:
-  `step-02-context-gathering.md`"
-- Escalation ([P] or [W]): "**EXITING Quick Dev.** Follow the directed
-  workflow."
+- Mode B (direct, [E] selected): "**NEXT:** Read fully and follow: `step-02-context-gathering.md`"
+- Escalation ([P] or [W]): "**EXITING Quick Dev.** Follow the directed workflow."
 
 ---
 

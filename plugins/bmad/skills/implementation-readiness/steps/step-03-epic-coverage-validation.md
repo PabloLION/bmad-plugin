@@ -1,23 +1,22 @@
 ---
-name: "step-03-epic-coverage-validation"
-description: "Validate that all PRD FRs are covered in epics and stories"
+name: 'step-03-epic-coverage-validation'
+description: 'Validate that all PRD FRs are covered in epics and stories'
 
 # Path Definitions
-workflow_path: "{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness"
+workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: "./step-03-epic-coverage-validation.md"
-nextStepFile: "./step-04-ux-alignment.md"
-workflowFile: "{workflow_path}/workflow.md"
-outputFile: "{planning_artifacts}/implementation-readiness-report-{{date}}.md"
+thisStepFile: './step-03-epic-coverage-validation.md'
+nextStepFile: './step-04-ux-alignment.md'
+workflowFile: '{workflow_path}/workflow.md'
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
 ---
 
 # Step 3: Epic Coverage Validation
 
 ## STEP GOAL:
 
-To validate that all Functional Requirements from the PRD are captured in the
-epics and stories document, identifying any gaps in coverage.
+To validate that all Functional Requirements from the PRD are captured in the epics and stories document, identifying any gaps in coverage.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -27,8 +26,7 @@ epics and stories document, identifying any gaps in coverage.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 

@@ -1,16 +1,15 @@
 ---
-name: "step-04-self-check"
-description: "Self-audit implementation against tasks, tests, AC, and patterns"
+name: 'step-04-self-check'
+description: 'Self-audit implementation against tasks, tests, AC, and patterns'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev"
-thisStepFile: "./step-04-self-check.md"
-nextStepFile: "./step-05-adversarial-review.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev'
+thisStepFile: './step-04-self-check.md'
+nextStepFile: './step-05-adversarial-review.md'
 ---
 
 # Step 4: Self-Check
 
-**Goal:** Audit completed work against tasks, tests, AC, and patterns before
-external review.
+**Goal:** Audit completed work against tasks, tests, AC, and patterns before external review.
 
 ---
 

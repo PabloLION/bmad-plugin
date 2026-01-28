@@ -1,7 +1,6 @@
 # ATDD Workflow Validation Checklist
 
-Use this checklist to validate that the ATDD workflow has been executed
-correctly and all deliverables meet quality standards.
+Use this checklist to validate that the ATDD workflow has been executed correctly and all deliverables meet quality standards.
 
 ## Prerequisites
 
@@ -10,8 +9,7 @@ Before starting this workflow, verify:
 - [ ] Story approved with clear acceptance criteria (AC must be testable)
 - [ ] Development sandbox/environment ready
 - [ ] Framework scaffolding exists (run `framework` workflow if missing)
-- [ ] Test framework configuration available (playwright.config.ts or
-      cypress.config.ts)
+- [ ] Test framework configuration available (playwright.config.ts or cypress.config.ts)
 - [ ] Package.json has test dependencies installed (Playwright or Cypress)
 
 **Halt if missing:** Framework scaffolding or story acceptance criteria
@@ -45,8 +43,7 @@ Before starting this workflow, verify:
 - [ ] API tests: Business logic and service contracts identified
 - [ ] Component tests: UI component behavior and interactions identified
 - [ ] Unit tests: Pure logic and edge cases identified (if applicable)
-- [ ] Duplicate coverage avoided (same behavior not tested at multiple levels
-      unnecessarily)
+- [ ] Duplicate coverage avoided (same behavior not tested at multiple levels unnecessarily)
 - [ ] Tests prioritized using P0-P3 framework (if test-design document exists)
 - [ ] Primary test level set in `primary_level` variable (typically E2E or API)
 - [ ] Test levels documented in ATDD checklist
@@ -110,8 +107,7 @@ Before starting this workflow, verify:
 ### Data Factories Created
 
 - [ ] Factory files created in `tests/support/factories/`
-- [ ] All factories use `@faker-js/faker` for random data generation (no
-      hardcoded values)
+- [ ] All factories use `@faker-js/faker` for random data generation (no hardcoded values)
 - [ ] Factories support overrides for specific test scenarios
 - [ ] Factories generate complete valid objects matching API contracts
 - [ ] Helper functions for bulk creation provided (e.g., `createUsers(count)`)
@@ -282,8 +278,7 @@ Before starting this workflow, verify:
 
 All of the following must be true before marking this workflow as complete:
 
-- [ ] **Story acceptance criteria analyzed** and mapped to appropriate test
-      levels
+- [ ] **Story acceptance criteria analyzed** and mapped to appropriate test levels
 - [ ] **Failing tests created** at all appropriate levels (E2E, API, Component)
 - [ ] **Given-When-Then format** used consistently across all tests
 - [ ] **RED phase verified** by local test run (all tests failing as expected)
@@ -298,8 +293,7 @@ All of the following must be true before marking this workflow as complete:
 - [ ] **ATDD checklist document created** and saved to correct location
 - [ ] **Output file formatted correctly** using template structure
 - [ ] **Knowledge base references applied** and documented in summary
-- [ ] **No test quality issues** (flaky patterns, race conditions, hardcoded
-      data)
+- [ ] **No test quality issues** (flaky patterns, race conditions, hardcoded data)
 
 ---
 
@@ -311,16 +305,14 @@ All of the following must be true before marking this workflow as complete:
 
 **Resolution:**
 
-- Review test to ensure it's testing actual behavior, not mocked/stubbed
-  behavior
+- Review test to ensure it's testing actual behavior, not mocked/stubbed behavior
 - Check if test is accidentally using existing functionality
 - Verify test assertions are correct and meaningful
 - Rewrite test to fail until implementation is complete
 
 ### Issue: Network-first pattern not applied
 
-**Problem:** Route interception happens after navigation, causing race
-conditions.
+**Problem:** Route interception happens after navigation, causing race conditions.
 
 **Resolution:**
 
@@ -373,16 +365,10 @@ conditions.
 
 ## Notes for TEA Agent
 
-- **Preflight halt is critical:** Do not proceed if story has no acceptance
-  criteria or framework is missing
-- **RED phase verification is mandatory:** Tests must fail before sharing with
-  DEV team
-- **Network-first pattern:** Route interception BEFORE navigation prevents race
-  conditions
+- **Preflight halt is critical:** Do not proceed if story has no acceptance criteria or framework is missing
+- **RED phase verification is mandatory:** Tests must fail before sharing with DEV team
+- **Network-first pattern:** Route interception BEFORE navigation prevents race conditions
 - **One assertion per test:** Atomic tests provide clear failure diagnosis
-- **Auto-cleanup is non-negotiable:** Every fixture must clean up data in
-  teardown
-- **Use knowledge base:** Load relevant fragments (fixture-architecture,
-  data-factories, network-first, component-tdd, test-quality) for guidance
-- **Share with DEV agent:** ATDD checklist provides implementation roadmap from
-  red to green
+- **Auto-cleanup is non-negotiable:** Every fixture must clean up data in teardown
+- **Use knowledge base:** Load relevant fragments (fixture-architecture, data-factories, network-first, component-tdd, test-quality) for guidance
+- **Share with DEV agent:** ATDD checklist provides implementation roadmap from red to green

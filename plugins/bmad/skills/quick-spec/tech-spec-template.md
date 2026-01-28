@@ -1,8 +1,8 @@
 ---
-title: "{title}"
-slug: "{slug}"
-created: "{date}"
-status: "in-progress"
+title: '{title}'
+slug: '{slug}'
+created: '{date}'
+status: 'in-progress'
 stepsCompleted: []
 tech_stack: []
 files_to_modify: []
@@ -26,9 +26,11 @@ test_patterns: []
 
 ### Scope
 
-**In Scope:** {in_scope}
+**In Scope:**
+{in_scope}
 
-**Out of Scope:** {out_of_scope}
+**Out of Scope:**
+{out_of_scope}
 
 ## Context for Development
 

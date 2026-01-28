@@ -9,8 +9,7 @@
 - [ ] Team agrees on CI platform
 - [ ] Access to CI platform settings (if updating)
 
-Note: CI setup is typically a one-time task per repo and can be run any time
-after the test framework is configured.
+Note: CI setup is typically a one-time task per repo and can be run any time after the test framework is configured.
 
 ## Process Steps
 
@@ -25,8 +24,7 @@ after the test framework is configured.
 
 ### Step 2: CI Pipeline Configuration
 
-- [ ] CI configuration file created (`.github/workflows/test.yml` or
-      `.gitlab-ci.yml`)
+- [ ] CI configuration file created (`.github/workflows/test.yml` or `.gitlab-ci.yml`)
 - [ ] File is syntactically valid (no YAML errors)
 - [ ] Correct framework commands configured
 - [ ] Node version matches project
@@ -243,5 +241,7 @@ If workflow fails:
 
 **Checklist Complete**: Sign off when all items validated.
 
-**Completed by:** {name} **Date:** {date} **Platform:** {GitHub Actions, GitLab
-CI, Other} **Notes:** {notes}
+**Completed by:** {name}
+**Date:** {date}
+**Platform:** {GitHub Actions, GitLab CI, Other}
+**Notes:** {notes}

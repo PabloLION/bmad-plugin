@@ -2,34 +2,28 @@
 
 # CI/CD Pipeline Setup
 
-**Workflow ID**: `_bmad/bmm/testarch/ci` **Version**: 4.0 (BMad v6)
+**Workflow ID**: `_bmad/bmm/testarch/ci`
+**Version**: 4.0 (BMad v6)
 
 ---
 
 ## Overview
 
-Scaffolds a production-ready CI/CD quality pipeline with test execution, burn-in
-loops for flaky test detection, parallel sharding, artifact collection, and
-notification configuration. This workflow creates platform-specific CI
-configuration optimized for fast feedback and reliable test execution.
+Scaffolds a production-ready CI/CD quality pipeline with test execution, burn-in loops for flaky test detection, parallel sharding, artifact collection, and notification configuration. This workflow creates platform-specific CI configuration optimized for fast feedback and reliable test execution.
 
-Note: This is typically a one-time setup per repo; run it any time after the
-test framework exists, ideally before feature work starts.
+Note: This is typically a one-time setup per repo; run it any time after the test framework exists, ideally before feature work starts.
 
 ---
 
 ## Preflight Requirements
 
-**Critical:** Verify these requirements before proceeding. If any fail, HALT and
-notify the user.
+**Critical:** Verify these requirements before proceeding. If any fail, HALT and notify the user.
 
 - ✅ Git repository is initialized (`.git/` directory exists)
 - ✅ Local test suite passes (`npm run test:e2e` succeeds)
 - ✅ Test framework is configured (from `framework` workflow)
-- ✅ Team agrees on target CI platform (GitHub Actions, GitLab CI, Circle CI,
-  etc.)
-- ✅ Access to CI platform settings/secrets available (if updating existing
-  pipeline)
+- ✅ Team agrees on target CI platform (GitHub Actions, GitLab CI, Circle CI, etc.)
+- ✅ Access to CI platform settings/secrets available (if updating existing pipeline)
 
 ---
 
@@ -40,8 +34,7 @@ notify the user.
 1. **Verify Git Repository**
    - Check for `.git/` directory
    - Confirm remote repository configured (`git remote -v`)
-   - If not initialized, HALT with message: "Git repository required for CI/CD
-     setup"
+   - If not initialized, HALT with message: "Git repository required for CI/CD setup"
 
 2. **Validate Test Framework**
    - Look for `playwright.config.*` or `cypress.config.*`
@@ -50,14 +43,12 @@ notify the user.
      - Test command
      - Reporter configuration
      - Timeout settings
-   - If not found, HALT with message: "Run `framework` workflow first to set up
-     test infrastructure"
+   - If not found, HALT with message: "Run `framework` workflow first to set up test infrastructure"
 
 3. **Run Local Tests**
    - Execute `npm run test:e2e` (or equivalent from package.json)
    - Ensure tests pass before CI setup
-   - If tests fail, HALT with message: "Fix failing tests before setting up
-     CI/CD"
+   - If tests fail, HALT with message: "Fix failing tests before setting up CI/CD"
 
 4. **Detect CI Platform**
    - Check for existing CI configuration:
@@ -73,12 +64,10 @@ notify the user.
 
 5. **Read Environment Configuration**
    - Use `.nvmrc` for Node version if present
-   - If missing, default to a current LTS (Node 24) or newer instead of a fixed
-     old version
+   - If missing, default to a current LTS (Node 24) or newer instead of a fixed old version
    - Read `package.json` to identify dependencies (affects caching strategy)
 
-**Halt Condition:** If preflight checks fail, stop immediately and report which
-requirement failed.
+**Halt Condition:** If preflight checks fail, stop immediately and report which requirement failed.
 
 ---
 
@@ -138,13 +127,10 @@ requirement failed.
 
    steps:
      - name: Run tests
-       run:
-         npm run test:e2e -- --shard=${{ matrix.shard }}/${{ strategy.job-total
-         }}
+       run: npm run test:e2e -- --shard=${{ matrix.shard }}/${{ strategy.job-total }}
    ```
 
-   **Purpose:** Splits tests into N parallel jobs for faster execution (target:
-   <10 min per shard)
+   **Purpose:** Splits tests into N parallel jobs for faster execution (target: <10 min per shard)
 
 4. **Add Burn-In Loop**
 
@@ -160,7 +146,7 @@ requirement failed.
        - name: Setup Node
          uses: actions/setup-node@v4
          with:
-           node-version-file: ".nvmrc"
+           node-version-file: '.nvmrc'
 
        - name: Install dependencies
          run: npm ci
@@ -181,8 +167,7 @@ requirement failed.
            retention-days: 30
    ```
 
-   **Purpose:** Runs tests multiple times to catch non-deterministic failures
-   before they reach main branch.
+   **Purpose:** Runs tests multiple times to catch non-deterministic failures before they reach main branch.
 
    **When to run:**
    - On pull requests to main/develop
@@ -262,8 +247,7 @@ requirement failed.
      uses: 8398a7/action-slack@v3
      with:
        status: ${{ job.status }}
-       text:
-         "Test failures detected in PR #${{ github.event.pull_request.number }}"
+       text: 'Test failures detected in PR #${{ github.event.pull_request.number }}'
        webhook_url: ${{ secrets.SLACK_WEBHOOK }}
    ```
 
@@ -363,8 +347,7 @@ requirement failed.
 - **Burn-in stage**: <30 minutes (10 iterations)
 - **Total pipeline**: <45 minutes
 
-**Speedup:** 20× faster than sequential execution through parallelism and
-caching.
+**Speedup:** 20× faster than sequential execution through parallelism and caching.
 
 ---
 
@@ -378,27 +361,18 @@ Read `{config_source}` and check `config.tea_use_playwright_utils`.
 
 **Core CI Patterns (Always load):**
 
-- `ci-burn-in.md` - Burn-in loop patterns: 10-iteration detection, GitHub
-  Actions workflow, shard orchestration, selective execution (678 lines, 4
-  examples)
-- `selective-testing.md` - Changed test detection strategies: tag-based, spec
-  filters, diff-based selection, promotion rules (727 lines, 4 examples)
-- `visual-debugging.md` - Artifact collection best practices: trace viewer, HAR
-  recording, custom artifacts, accessibility integration (522 lines, 5 examples)
-- `test-quality.md` - CI-specific test quality criteria: deterministic tests,
-  isolated with cleanup, explicit assertions, length/time optimization (658
-  lines, 5 examples)
-- `playwright-config.md` - CI-optimized configuration: parallelization, artifact
-  output, project dependencies, sharding (722 lines, 5 examples)
+- `ci-burn-in.md` - Burn-in loop patterns: 10-iteration detection, GitHub Actions workflow, shard orchestration, selective execution (678 lines, 4 examples)
+- `selective-testing.md` - Changed test detection strategies: tag-based, spec filters, diff-based selection, promotion rules (727 lines, 4 examples)
+- `visual-debugging.md` - Artifact collection best practices: trace viewer, HAR recording, custom artifacts, accessibility integration (522 lines, 5 examples)
+- `test-quality.md` - CI-specific test quality criteria: deterministic tests, isolated with cleanup, explicit assertions, length/time optimization (658 lines, 5 examples)
+- `playwright-config.md` - CI-optimized configuration: parallelization, artifact output, project dependencies, sharding (722 lines, 5 examples)
 
 **If `config.tea_use_playwright_utils: true`:**
 
 Load playwright-utils CI-relevant fragments:
 
-- `burn-in.md` - Smart test selection with git diff analysis (very important for
-  CI optimization)
-- `network-error-monitor.md` - Automatic HTTP 4xx/5xx detection (recommend in CI
-  pipelines)
+- `burn-in.md` - Smart test selection with git diff analysis (very important for CI optimization)
+- `network-error-monitor.md` - Automatic HTTP 4xx/5xx detection (recommend in CI pipelines)
 
 Recommend:
 
@@ -530,11 +504,9 @@ After completing this workflow, provide a summary:
 
 **Next Steps**:
 
-1. Commit CI configuration:
-   `git add .github/workflows/test.yml && git commit -m "ci: add test pipeline"`
+1. Commit CI configuration: `git add .github/workflows/test.yml && git commit -m "ci: add test pipeline"`
 2. Push to remote: `git push`
-3. Configure required secrets in CI platform settings (see
-   docs/ci-secrets-checklist.md)
+3. Configure required secrets in CI platform settings (see docs/ci-secrets-checklist.md)
 4. Open a PR to trigger first CI run
 5. Monitor pipeline execution and adjust parallelism if needed
 

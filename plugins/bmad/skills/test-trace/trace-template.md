@@ -1,12 +1,12 @@
 # Traceability Matrix & Gate Decision - Story {STORY_ID}
 
-**Story:** {STORY_TITLE} **Date:** {DATE} **Evaluator:** {user_name or TEA
-Agent}
+**Story:** {STORY_TITLE}
+**Date:** {DATE}
+**Evaluator:** {user_name or TEA Agent}
 
 ---
 
-Note: This workflow does not generate tests. If gaps exist, run `*atdd` or
-`*automate` to create coverage.
+Note: This workflow does not generate tests. If gaps exist, run `*atdd` or `*automate` to create coverage.
 
 ## PHASE 1: REQUIREMENTS TRACEABILITY
 
@@ -81,9 +81,7 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or
   - Missing: Invalid token handling (security test)
   - Missing: Unit test for token generation logic
 
-- **Recommendation:** Add `1.3-API-001` for email service integration testing
-  and `1.3-UNIT-003` for token generation logic. Add `1.3-E2E-004` for error
-  path validation (expired/invalid tokens).
+- **Recommendation:** Add `1.3-API-001` for email service integration testing and `1.3-UNIT-003` for token generation logic. Add `1.3-E2E-004` for error path validation (expired/invalid tokens).
 
 ---
 
@@ -154,22 +152,18 @@ Note: This workflow does not generate tests. If gaps exist, run `*atdd` or
 
 **WARNING Issues** ⚠️
 
-- `1.3-E2E-001` - 145 seconds (exceeds 90s target) - Optimize fixture setup to
-  reduce test duration
-- `1.3-UNIT-005` - 320 lines (exceeds 300 line limit) - Split into multiple
-  focused test files
+- `1.3-E2E-001` - 145 seconds (exceeds 90s target) - Optimize fixture setup to reduce test duration
+- `1.3-UNIT-005` - 320 lines (exceeds 300 line limit) - Split into multiple focused test files
 
 **INFO Issues** ℹ️
 
-- `1.3-E2E-002` - Missing Given-When-Then structure - Refactor describe block to
-  use BDD format
+- `1.3-E2E-002` - Missing Given-When-Then structure - Refactor describe block to use BDD format
 
 ---
 
 #### Tests Passing Quality Gates
 
-**{PASSING_TEST_COUNT}/{TOTAL_TEST_COUNT} tests ({PASSING_PCT}%) meet all
-quality criteria** ✅
+**{PASSING_TEST_COUNT}/{TOTAL_TEST_COUNT} tests ({PASSING_PCT}%) meet all quality criteria** ✅
 
 ---
 
@@ -220,30 +214,24 @@ quality criteria** ✅
 
 **Immediate Actions (Before PR Merge)**
 
-1. **Add P1 Password Reset Tests** - Implement `1.3-API-001` for email service
-   integration and `1.3-E2E-004` for error path validation. P1 coverage
-   currently at 80%, target is 90%.
-2. **Optimize Slow E2E Test** - Refactor `1.3-E2E-001` to use faster fixture
-   setup. Currently 145s, target is <90s.
+1. **Add P1 Password Reset Tests** - Implement `1.3-API-001` for email service integration and `1.3-E2E-004` for error path validation. P1 coverage currently at 80%, target is 90%.
+2. **Optimize Slow E2E Test** - Refactor `1.3-E2E-001` to use faster fixture setup. Currently 145s, target is <90s.
 
 **Short-term Actions (This Sprint)**
 
-1. **Enhance P2 Coverage** - Add E2E validation for session timeout
-   (`1.3-E2E-005`). Currently UNIT-ONLY coverage.
-2. **Split Large Test File** - Break `1.3-UNIT-005` (320 lines) into multiple
-   focused test files (<300 lines each).
+1. **Enhance P2 Coverage** - Add E2E validation for session timeout (`1.3-E2E-005`). Currently UNIT-ONLY coverage.
+2. **Split Large Test File** - Break `1.3-UNIT-005` (320 lines) into multiple focused test files (<300 lines each).
 
 **Long-term Actions (Backlog)**
 
-1. **Enrich P3 Coverage** - Add tests for edge cases in P3 criteria if time
-   permits.
+1. **Enrich P3 Coverage** - Add tests for edge cases in P3 criteria if time permits.
 
 ---
 
 ## PHASE 2: QUALITY GATE DECISION
 
-**Gate Type:** {story | epic | release | hotfix} **Decision Mode:**
-{deterministic | manual}
+**Gate Type:** {story | epic | release | hotfix}
+**Decision Mode:** {deterministic | manual}
 
 ---
 
@@ -274,12 +262,9 @@ quality criteria** ✅
 
 **Requirements Coverage:**
 
-- **P0 Acceptance Criteria**: {p0_covered}/{p0_total} covered ({p0_coverage}%)
-  {✅ | ❌}
-- **P1 Acceptance Criteria**: {p1_covered}/{p1_total} covered ({p1_coverage}%)
-  {✅ | ⚠️ | ❌}
-- **P2 Acceptance Criteria**: {p2_covered}/{p2_total} covered ({p2_coverage}%)
-  {informational}
+- **P0 Acceptance Criteria**: {p0_covered}/{p0_total} covered ({p0_coverage}%) {✅ | ❌}
+- **P1 Acceptance Criteria**: {p1_covered}/{p1_total} covered ({p1_coverage}%) {✅ | ⚠️ | ❌}
+- **P2 Acceptance Criteria**: {p2_covered}/{p2_total} covered ({p2_coverage}%) {informational}
 - **Overall Coverage**: {overall_coverage}%
 
 **Code Coverage** (if available):
@@ -384,18 +369,11 @@ quality criteria** ✅
 
 **Example (PASS):**
 
-> All P0 criteria met with 100% coverage and pass rates across critical tests.
-> All P1 criteria exceeded thresholds with 98% overall pass rate and 92%
-> coverage. No security issues detected. No flaky tests in validation. Feature
-> is ready for production deployment with standard monitoring.
+> All P0 criteria met with 100% coverage and pass rates across critical tests. All P1 criteria exceeded thresholds with 98% overall pass rate and 92% coverage. No security issues detected. No flaky tests in validation. Feature is ready for production deployment with standard monitoring.
 
 **Example (CONCERNS):**
 
-> All P0 criteria met, ensuring critical user journeys are protected. However,
-> P1 coverage (88%) falls below threshold (90%) due to missing E2E test for AC-5
-> edge case. Overall pass rate (96%) is excellent. Issues are non-critical and
-> have acceptable workarounds. Risk is low enough to deploy with enhanced
-> monitoring.
+> All P0 criteria met, ensuring critical user journeys are protected. However, P1 coverage (88%) falls below threshold (90%) due to missing E2E test for AC-5 edge case. Overall pass rate (96%) is excellent. Issues are non-critical and have acceptable workarounds. Risk is low enough to deploy with enhanced monitoring.
 
 **Example (FAIL):**
 
@@ -405,15 +383,11 @@ quality criteria** ✅
 > 2. P0 test failures (75% pass rate) in core search functionality
 > 3. Unresolved SQL injection vulnerability in search filter (CRITICAL)
 >
-> Release MUST BE BLOCKED until P0 issues are resolved. Security vulnerability
-> cannot be waived.
+> Release MUST BE BLOCKED until P0 issues are resolved. Security vulnerability cannot be waived.
 
 **Example (WAIVED):**
 
-> Original decision was FAIL due to P0 test failure in legacy Excel 2007 export
-> module (affects <1% of users). However, release contains critical GDPR
-> compliance features required by regulatory deadline (Oct 15). Business has
-> approved waiver given:
+> Original decision was FAIL due to P0 test failure in legacy Excel 2007 export module (affects <1% of users). However, release contains critical GDPR compliance features required by regulatory deadline (Oct 15). Business has approved waiver given:
 >
 > - Regulatory priority overrides legacy module risk
 > - Workaround available (use Excel 2010+)
@@ -468,7 +442,8 @@ List unresolved P1/P2 issues that don't block release but should be tracked:
 - **Owner**: {team_or_person}
 - **Verification**: {how_fix_will_be_verified}
 
-**Business Justification**: {detailed_explanation_of_why_waiver_is_acceptable}
+**Business Justification**:
+{detailed_explanation_of_why_waiver_is_acceptable}
 
 ---
 
@@ -482,8 +457,7 @@ Top blockers requiring immediate attention:
 | P0       | {issue_title} | {brief_description} | {owner_name} | {YYYY-MM-DD} | {OPEN/IN_PROGRESS} |
 | P1       | {issue_title} | {brief_description} | {owner_name} | {YYYY-MM-DD} | {OPEN/IN_PROGRESS} |
 
-**Blocking Issues Count**: {p0_blocker_count} P0 blockers, {p1_blocker_count} P1
-issues
+**Blocking Issues Count**: {p0_blocker_count} P0 blockers, {p1_blocker_count} P1 issues
 
 ---
 
@@ -693,8 +667,8 @@ traceability_and_gate:
 - If FAIL ❌: Block deployment, fix critical issues, re-run workflow
 - If WAIVED 🔓: Deploy with business approval and aggressive monitoring
 
-**Generated:** {DATE} **Workflow:** testarch-trace v4.0 (Enhanced with Gate
-Decision)
+**Generated:** {DATE}
+**Workflow:** testarch-trace v4.0 (Enhanced with Gate Decision)
 
 ---
 

@@ -1,8 +1,7 @@
 # Requirements Traceability & Gate Decision - Validation Checklist
 
-**Workflow:** `testarch-trace` **Purpose:** Ensure complete traceability matrix
-with actionable gap analysis AND make deployment readiness decision
-(PASS/CONCERNS/FAIL/WAIVED)
+**Workflow:** `testarch-trace`
+**Purpose:** Ensure complete traceability matrix with actionable gap analysis AND make deployment readiness decision (PASS/CONCERNS/FAIL/WAIVED)
 
 This checklist covers **two sequential phases**:
 
@@ -17,8 +16,7 @@ This checklist covers **two sequential phases**:
 
 - [ ] Acceptance criteria are available (from story file OR inline)
 - [ ] Test suite exists (or gaps are acknowledged and documented)
-- [ ] If tests are missing, recommend `*atdd` (trace does not run it
-      automatically)
+- [ ] If tests are missing, recommend `*atdd` (trace does not run it automatically)
 - [ ] Test directory path is correct (`test_dir` variable)
 - [ ] Story file is accessible (if using BMad mode)
 - [ ] Knowledge base is loaded (test-priorities, traceability, risk-governance)
@@ -39,8 +37,7 @@ This checklist covers **two sequential phases**:
 
 ## Test Discovery and Cataloging
 
-- [ ] Tests auto-discovered using multiple strategies (test IDs, describe
-      blocks, file paths)
+- [ ] Tests auto-discovered using multiple strategies (test IDs, describe blocks, file paths)
 - [ ] Tests categorized by level (E2E, API, Component, Unit)
 - [ ] Test metadata extracted:
   - [ ] Test IDs (e.g., 1.3-E2E-001)
@@ -75,8 +72,7 @@ This checklist covers **two sequential phases**:
   - [ ] **PARTIAL** - Some coverage but missing edge cases or levels
   - [ ] **NONE** - No test coverage at any level
   - [ ] **UNIT-ONLY** - Only unit tests (missing integration/E2E validation)
-  - [ ] **INTEGRATION-ONLY** - Only API/Component tests (missing unit
-        confidence)
+  - [ ] **INTEGRATION-ONLY** - Only API/Component tests (missing unit confidence)
 - [ ] Classification justifications provided
 - [ ] Edge cases considered in FULL vs PARTIAL determination
 
@@ -139,8 +135,7 @@ For each mapped test, verify:
 
 Quality issues flagged:
 
-- [ ] **BLOCKER** issues identified (missing assertions, hard waits, flaky
-      patterns)
+- [ ] **BLOCKER** issues identified (missing assertions, hard waits, flaky patterns)
 - [ ] **WARNING** issues identified (large files, slow tests, unclear structure)
 - [ ] **INFO** issues identified (style inconsistencies, missing documentation)
 
@@ -193,8 +188,7 @@ Knowledge fragments referenced:
 
 - [ ] All test levels considered (E2E, API, Component, Unit)
 - [ ] All priorities considered (P0, P1, P2, P3)
-- [ ] All coverage statuses used appropriately (FULL, PARTIAL, NONE, UNIT-ONLY,
-      INTEGRATION-ONLY)
+- [ ] All coverage statuses used appropriately (FULL, PARTIAL, NONE, UNIT-ONLY, INTEGRATION-ONLY)
 - [ ] All gaps have recommendations
 - [ ] All quality issues have severity and remediation guidance
 
@@ -231,16 +225,14 @@ Knowledge fragments referenced:
 - [ ] Test execution results obtained (CI/CD pipeline, test framework reports)
 - [ ] Story/epic/release file identified and read
 - [ ] Test design document discovered or explicitly provided (if available)
-- [ ] Traceability matrix discovered or explicitly provided (available from
-      Phase 1)
+- [ ] Traceability matrix discovered or explicitly provided (available from Phase 1)
 - [ ] NFR assessment discovered or explicitly provided (if available)
 - [ ] Code coverage report discovered or explicitly provided (if available)
 - [ ] Burn-in results discovered or explicitly provided (if available)
 
 ### Evidence Validation
 
-- [ ] Evidence freshness validated (warn if >7 days old, recommend re-running
-      workflows)
+- [ ] Evidence freshness validated (warn if >7 days old, recommend re-running workflows)
 - [ ] All required assessments available or user acknowledged gaps
 - [ ] Test results are complete (not partial or interrupted runs)
 - [ ] Test results match current codebase (not from outdated branch)
@@ -282,10 +274,8 @@ Knowledge fragments referenced:
 
 - [ ] P0/P1/P2/P3 scenarios extracted from test-design.md (if available)
 - [ ] Risk scores extracted from test-design.md (if available)
-- [ ] Coverage percentages extracted from traceability-matrix.md (available from
-      Phase 1)
-- [ ] Coverage gaps extracted from traceability-matrix.md (available from
-      Phase 1)
+- [ ] Coverage percentages extracted from traceability-matrix.md (available from Phase 1)
+- [ ] Coverage gaps extracted from traceability-matrix.md (available from Phase 1)
 - [ ] NFR status extracted from nfr-assessment.md (if available)
 - [ ] Security issues count extracted from nfr-assessment.md (if available)
 
@@ -323,10 +313,8 @@ Knowledge fragments referenced:
 
 **P2/P3 Criteria Evaluation:**
 
-- [ ] P2 failures tracked (informational, don't block if allow_p2_failures:
-      true)
-- [ ] P3 failures tracked (informational, don't block if allow_p3_failures:
-      true)
+- [ ] P2 failures tracked (informational, don't block if allow_p2_failures: true)
+- [ ] P3 failures tracked (informational, don't block if allow_p3_failures: true)
 - [ ] Residual risks documented
 
 **Final Decision:**
@@ -348,8 +336,7 @@ Knowledge fragments referenced:
 
 - [ ] Test results summary complete (total, passed, failed, pass rates)
 - [ ] Coverage summary complete (P0/P1 criteria, code coverage)
-- [ ] NFR validation summary complete (security, performance, reliability,
-      maintainability)
+- [ ] NFR validation summary complete (security, performance, reliability, maintainability)
 - [ ] Flakiness summary complete (burn-in iterations, flaky test count)
 
 **Rationale Documented:**
@@ -416,8 +403,7 @@ Knowledge fragments referenced:
 
 **Completeness:**
 
-- [ ] All required sections present (info, decision, evidence, rationale, next
-      steps)
+- [ ] All required sections present (info, decision, evidence, rationale, next steps)
 - [ ] No placeholder text or TODOs left in document
 - [ ] All evidence references are accurate and complete
 - [ ] All links to artifacts are valid
@@ -442,8 +428,7 @@ Knowledge fragments referenced:
 **Format:**
 
 - [ ] YAML is valid (no syntax errors)
-- [ ] All required fields present (target, decision, date, evaluator, criteria,
-      evidence)
+- [ ] All required fields present (target, decision, date, evaluator, criteria, evidence)
 - [ ] Field values are correct data types (numbers, strings, dates)
 
 **Content:**
@@ -460,8 +445,7 @@ Knowledge fragments referenced:
 
 - [ ] Decision is deterministic (follows rules, not arbitrary)
 - [ ] P0 failures result in FAIL decision (unless waived)
-- [ ] Security issues result in FAIL decision (unless waived - but should never
-      be waived)
+- [ ] Security issues result in FAIL decision (unless waived - but should never be waived)
 - [ ] Waivers have business justification and approver (if WAIVED)
 - [ ] Residual risks are documented (if CONCERNS or WAIVED)
 
@@ -536,10 +520,8 @@ Knowledge fragments referenced:
 
 ### Missing Evidence
 
-- [ ] If test-design.md missing, decision still possible with test results +
-      trace
-- [ ] If traceability-matrix.md missing, decision still possible with test
-      results (but Phase 1 should provide it)
+- [ ] If test-design.md missing, decision still possible with test results + trace
+- [ ] If traceability-matrix.md missing, decision still possible with test results (but Phase 1 should provide it)
 - [ ] If nfr-assessment.md missing, NFR validation marked as NOT ASSESSED
 - [ ] If code coverage missing, coverage criterion marked as NOT ASSESSED
 - [ ] User acknowledged gaps in evidence or provided alternative proof
@@ -640,19 +622,16 @@ Knowledge fragments referenced:
 
 - If PASS (both phases): Proceed to deployment
 - If WARN/CONCERNS: Address gaps/issues, proceed with monitoring
-- If FAIL (either phase): Run `*atdd` for missing tests, fix issues, re-run
-  `*trace`
+- If FAIL (either phase): Run `*atdd` for missing tests, fix issues, re-run `*trace`
 - If WAIVED: Deploy with approved waiver, schedule remediation
 
 ---
 
 ## Notes
 
-Record any issues, deviations, or important observations during workflow
-execution:
+Record any issues, deviations, or important observations during workflow execution:
 
-- **Phase 1 Issues**: [Note any traceability mapping challenges, missing tests,
-  quality concerns]
+- **Phase 1 Issues**: [Note any traceability mapping challenges, missing tests, quality concerns]
 - **Phase 2 Issues**: [Note any missing, stale, or conflicting evidence]
 - **Decision Rationale**: [Document any nuanced reasoning or edge cases]
 - **Waiver Details**: [Document waiver negotiations or approvals]

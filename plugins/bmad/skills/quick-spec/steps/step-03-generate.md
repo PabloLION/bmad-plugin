@@ -1,11 +1,10 @@
 ---
-name: "step-03-generate"
-description:
-  "Build the implementation plan based on the technical mapping of constraints"
+name: 'step-03-generate'
+description: 'Build the implementation plan based on the technical mapping of constraints'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/create-tech-spec"
-nextStepFile: "./step-04-review.md"
-wipFile: "{implementation_artifacts}/tech-spec-wip.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-spec'
+nextStepFile: './step-04-review.md'
+wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---
 
 # Step 3: Generate Implementation Plan
@@ -18,15 +17,12 @@ wipFile: "{implementation_artifacts}/tech-spec-wip.md"
 - MUST NOT optimize sequence.
 - MUST follow exact instructions.
 - MUST NOT implement anything - just document.
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## CONTEXT:
 
-- Requires `{wipFile}` with defined "Overview" and "Context for Development"
-  sections.
-- Focus: Create the implementation sequence that addresses the requirement delta
-  using the captured technical context.
+- Requires `{wipFile}` with defined "Overview" and "Context for Development" sections.
+- Focus: Create the implementation sequence that addresses the requirement delta using the captured technical context.
 - Output: Implementation-ready tasks with specific files and instructions.
 - Target: Meet the **READY FOR DEVELOPMENT** standard defined in `workflow.md`.
 
@@ -106,15 +102,14 @@ a) **Update `{wipFile}` with all generated content:**
 - Ensure all template sections are filled in
 - No placeholder text remaining
 - All frontmatter values current
-- Update status to 'review' (NOT 'ready-for-dev' - that happens after user
-  review in Step 4)
+- Update status to 'review' (NOT 'ready-for-dev' - that happens after user review in Step 4)
 
 b) **Update frontmatter:**
 
 ```yaml
 ---
 # ... existing values ...
-status: "review"
+status: 'review'
 stepsCompleted: [1, 2, 3]
 ---
 ```

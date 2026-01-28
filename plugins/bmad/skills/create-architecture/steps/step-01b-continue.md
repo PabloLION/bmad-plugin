@@ -4,18 +4,14 @@
 
 - 🛑 NEVER generate content without user input
 
-- 📖 CRITICAL: ALWAYS read the complete step file before taking any action -
-  partial understanding leads to incomplete decisions
-- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read
-  and understood before proceeding
+- 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete decisions
+- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
 - ✅ ALWAYS treat this as collaborative discovery between architectural peers
 - 📋 YOU ARE A FACILITATOR, not a content generator
 - 💬 FOCUS on understanding current state and getting user confirmation
 - 🚪 HANDLE workflow resumption smoothly and transparently
-- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally
-  changed
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -33,8 +29,7 @@
 
 ## YOUR TASK:
 
-Handle workflow continuation by analyzing existing work and guiding the user to
-resume at the appropriate step.
+Handle workflow continuation by analyzing existing work and guiding the user to resume at the appropriate step.
 
 ## CONTINUATION SEQUENCE:
 
@@ -60,8 +55,7 @@ Read the existing architecture document completely and analyze:
 
 Show the user their current progress:
 
-"Welcome back {{user_name}}! I found your Architecture work for
-{{project_name}}.
+"Welcome back {{user_name}}! I found your Architecture work for {{project_name}}.
 
 **Current Progress:**
 
@@ -69,15 +63,21 @@ Show the user their current progress:
 - Last step worked on: Step {{lastStep}}
 - Input documents loaded: {{number of inputDocuments}} files
 
-**Document Sections Found:** {list all H2/H3 sections found in the document}
+**Document Sections Found:**
+{list all H2/H3 sections found in the document}
 
-{if_incomplete_sections} **Incomplete Areas:**
+{if_incomplete_sections}
+**Incomplete Areas:**
 
-- {areas that appear incomplete or have placeholders} {/if_incomplete_sections}
+- {areas that appear incomplete or have placeholders}
+  {/if_incomplete_sections}
 
-**What would you like to do?** [R] Resume from where we left off [C] Continue to
-next logical step [O] Overview of all remaining steps [X] Start over (will
-overwrite existing work) "
+**What would you like to do?**
+[R] Resume from where we left off
+[C] Continue to next logical step
+[O] Overview of all remaining steps
+[X] Start over (will overwrite existing work)
+"
 
 ### 3. Handle User Choice
 
@@ -102,8 +102,7 @@ overwrite existing work) "
 
 #### If 'X' (Start over):
 
-- Confirm: "This will delete all existing architectural decisions. Are you sure?
-  (y/n)"
+- Confirm: "This will delete all existing architectural decisions. Are you sure? (y/n)"
 - If confirmed: Delete existing document and return to step-01-init.md
 - If not confirmed: Return to continuation menu
 
@@ -128,43 +127,38 @@ After user makes choice:
 #### If `stepsCompleted` is empty but document has content:
 
 - This suggests an interrupted workflow
-- Ask user: "I see the document has content but no steps are marked as complete.
-  Should I analyze what's here and set the appropriate step status?"
+- Ask user: "I see the document has content but no steps are marked as complete. Should I analyze what's here and set the appropriate step status?"
 
 #### If document appears corrupted or incomplete:
 
-- Ask user: "The document seems incomplete. Would you like me to try to recover
-  what's here, or would you prefer to start fresh?"
+- Ask user: "The document seems incomplete. Would you like me to try to recover what's here, or would you prefer to start fresh?"
 
 #### If document is complete but workflow not marked as done:
 
-- Ask user: "The architecture looks complete! Should I mark this workflow as
-  finished, or is there more you'd like to work on?"
+- Ask user: "The architecture looks complete! Should I mark this workflow as finished, or is there more you'd like to work on?"
 
 ## SUCCESS METRICS:
 
-✅ Existing document state properly analyzed and understood ✅ User presented
-with clear continuation options ✅ User choice handled appropriately and
-transparently ✅ Workflow state preserved and updated correctly ✅ Navigation to
-appropriate step handled smoothly
+✅ Existing document state properly analyzed and understood
+✅ User presented with clear continuation options
+✅ User choice handled appropriately and transparently
+✅ Workflow state preserved and updated correctly
+✅ Navigation to appropriate step handled smoothly
 
 ## FAILURE MODES:
 
-❌ Not reading the complete existing document before making suggestions ❌
-Losing track of what steps were actually completed ❌ Automatically proceeding
-without user confirmation of next steps ❌ Not checking for incomplete or
-placeholder content ❌ Losing existing document content during resumption
+❌ Not reading the complete existing document before making suggestions
+❌ Losing track of what steps were actually completed
+❌ Automatically proceeding without user confirmation of next steps
+❌ Not checking for incomplete or placeholder content
+❌ Losing existing document content during resumption
 
-❌ **CRITICAL**: Reading only partial step file - leads to incomplete
-understanding and poor decisions ❌ **CRITICAL**: Proceeding with 'C' without
-fully reading and understanding the next step file ❌ **CRITICAL**: Making
-decisions without complete understanding of step requirements and protocols
+❌ **CRITICAL**: Reading only partial step file - leads to incomplete understanding and poor decisions
+❌ **CRITICAL**: Proceeding with 'C' without fully reading and understanding the next step file
+❌ **CRITICAL**: Making decisions without complete understanding of step requirements and protocols
 
 ## NEXT STEP:
 
-After user selects their continuation option, load the appropriate step file
-based on their choice. The step file will handle the detailed work from that
-point forward.
+After user selects their continuation option, load the appropriate step file based on their choice. The step file will handle the detailed work from that point forward.
 
-Remember: The goal is smooth, transparent resumption that respects the work
-already done while giving the user control over how to proceed.
+Remember: The goal is smooth, transparent resumption that respects the work already done while giving the user control over how to proceed.

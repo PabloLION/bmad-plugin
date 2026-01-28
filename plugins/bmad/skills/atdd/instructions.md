@@ -2,33 +2,27 @@
 
 # Acceptance Test-Driven Development (ATDD)
 
-**Workflow ID**: `_bmad/bmm/testarch/atdd` **Version**: 4.0 (BMad v6)
+**Workflow ID**: `_bmad/bmm/testarch/atdd`
+**Version**: 4.0 (BMad v6)
 
 ---
 
 ## Overview
 
-Generates failing acceptance tests BEFORE implementation following TDD's
-red-green-refactor cycle. This workflow creates comprehensive test coverage at
-appropriate levels (E2E, API, Component) with supporting infrastructure
-(fixtures, factories, mocks) and provides an implementation checklist to guide
-development.
+Generates failing acceptance tests BEFORE implementation following TDD's red-green-refactor cycle. This workflow creates comprehensive test coverage at appropriate levels (E2E, API, Component) with supporting infrastructure (fixtures, factories, mocks) and provides an implementation checklist to guide development.
 
-**Core Principle**: Tests fail first (red phase), then guide development to
-green, then enable confident refactoring.
+**Core Principle**: Tests fail first (red phase), then guide development to green, then enable confident refactoring.
 
 ---
 
 ## Preflight Requirements
 
-**Critical:** Verify these requirements before proceeding. If any fail, HALT and
-notify the user.
+**Critical:** Verify these requirements before proceeding. If any fail, HALT and notify the user.
 
 - ✅ Story approved with clear acceptance criteria
 - ✅ Development sandbox/environment ready
 - ✅ Framework scaffolding exists (run `framework` workflow if missing)
-- ✅ Test framework configuration available (playwright.config.ts or
-  cypress.config.ts)
+- ✅ Test framework configuration available (playwright.config.ts or cypress.config.ts)
 
 ---
 
@@ -60,27 +54,15 @@ notify the user.
 
 5. **Load Knowledge Base Fragments**
 
-   **Critical:** Consult `{project-root}/_bmad/bmm/testarch/tea-index.csv` to
-   load:
+   **Critical:** Consult `{project-root}/_bmad/bmm/testarch/tea-index.csv` to load:
 
    **Core Patterns (Always load):**
-   - `data-factories.md` - Factory patterns using faker (override patterns,
-     nested factories, API seeding, 498 lines, 5 examples)
-   - `component-tdd.md` - Component test strategies (red-green-refactor,
-     provider isolation, accessibility, visual regression, 480 lines, 4
-     examples)
-   - `test-quality.md` - Test design principles (deterministic tests, isolated
-     with cleanup, explicit assertions, length limits, execution time
-     optimization, 658 lines, 5 examples)
-   - `test-healing-patterns.md` - Common failure patterns and healing strategies
-     (stale selectors, race conditions, dynamic data, network errors, hard
-     waits, 648 lines, 5 examples)
-   - `selector-resilience.md` - Selector best practices (data-testid > ARIA >
-     text > CSS hierarchy, dynamic patterns, anti-patterns, 541 lines, 4
-     examples)
-   - `timing-debugging.md` - Race condition prevention and async debugging
-     (network-first, deterministic waiting, anti-patterns, 370 lines, 3
-     examples)
+   - `data-factories.md` - Factory patterns using faker (override patterns, nested factories, API seeding, 498 lines, 5 examples)
+   - `component-tdd.md` - Component test strategies (red-green-refactor, provider isolation, accessibility, visual regression, 480 lines, 4 examples)
+   - `test-quality.md` - Test design principles (deterministic tests, isolated with cleanup, explicit assertions, length limits, execution time optimization, 658 lines, 5 examples)
+   - `test-healing-patterns.md` - Common failure patterns and healing strategies (stale selectors, race conditions, dynamic data, network errors, hard waits, 648 lines, 5 examples)
+   - `selector-resilience.md` - Selector best practices (data-testid > ARIA > text > CSS hierarchy, dynamic patterns, anti-patterns, 541 lines, 4 examples)
+   - `timing-debugging.md` - Race condition prevention and async debugging (network-first, deterministic waiting, anti-patterns, 370 lines, 3 examples)
 
    **If `config.tea_use_playwright_utils: true` (All Utilities):**
    - `overview.md` - Playwright utils for ATDD patterns
@@ -95,14 +77,10 @@ notify the user.
    - `fixtures-composition.md` - Composing utilities for ATDD
 
    **If `config.tea_use_playwright_utils: false`:**
-   - `fixture-architecture.md` - Test fixture patterns with auto-cleanup (pure
-     function → fixture → mergeTests composition, 406 lines, 5 examples)
-   - `network-first.md` - Route interception patterns (intercept before
-     navigate, HAR capture, deterministic waiting, 489 lines, 5 examples)
+   - `fixture-architecture.md` - Test fixture patterns with auto-cleanup (pure function → fixture → mergeTests composition, 406 lines, 5 examples)
+   - `network-first.md` - Route interception patterns (intercept before navigate, HAR capture, deterministic waiting, 489 lines, 5 examples)
 
-**Halt Condition:** If story has no acceptance criteria or framework is missing,
-HALT with message: "ATDD requires clear acceptance criteria and test framework
-setup"
+**Halt Condition:** If story has no acceptance criteria or framework is missing, HALT with message: "ATDD requires clear acceptance criteria and test framework setup"
 
 ---
 
@@ -209,8 +187,7 @@ setup"
 
    After mode selection:
    - AI Generation: Continue to Step 2 (Select Test Levels and Strategy)
-   - Recording: Skip to Step 4 (Build Data Infrastructure) - tests already
-     generated
+   - Recording: Skip to Step 4 (Build Data Infrastructure) - tests already generated
 
 ---
 
@@ -269,8 +246,7 @@ setup"
    - P1 scenarios → Should cover if time permits
    - P2/P3 scenarios → Optional for this iteration
 
-**Decision Point:** Set `primary_level` variable to main test level for this
-story (typically E2E or API)
+**Decision Point:** Set `primary_level` variable to main test level for this story (typically E2E or API)
 
 ---
 
@@ -299,22 +275,20 @@ story (typically E2E or API)
    **Use Given-When-Then format:**
 
    ```typescript
-   import { test, expect } from "@playwright/test";
+   import { test, expect } from '@playwright/test';
 
-   test.describe("User Login", () => {
-     test("should display error for invalid credentials", async ({ page }) => {
+   test.describe('User Login', () => {
+     test('should display error for invalid credentials', async ({ page }) => {
        // GIVEN: User is on login page
-       await page.goto("/login");
+       await page.goto('/login');
 
        // WHEN: User submits invalid credentials
-       await page.fill('[data-testid="email-input"]', "invalid@example.com");
-       await page.fill('[data-testid="password-input"]', "wrongpassword");
+       await page.fill('[data-testid="email-input"]', 'invalid@example.com');
+       await page.fill('[data-testid="password-input"]', 'wrongpassword');
        await page.click('[data-testid="login-button"]');
 
        // THEN: Error message is displayed
-       await expect(page.locator('[data-testid="error-message"]')).toHaveText(
-         "Invalid email or password",
-       );
+       await expect(page.locator('[data-testid="error-message"]')).toHaveText('Invalid email or password');
      });
    });
    ```
@@ -331,39 +305,37 @@ story (typically E2E or API)
    **Knowledge Base Reference**: `network-first.md`
 
    ```typescript
-   test("should load user dashboard after login", async ({ page }) => {
+   test('should load user dashboard after login', async ({ page }) => {
      // CRITICAL: Intercept routes BEFORE navigation
-     await page.route("**/api/user", (route) =>
+     await page.route('**/api/user', (route) =>
        route.fulfill({
          status: 200,
-         body: JSON.stringify({ id: 1, name: "Test User" }),
+         body: JSON.stringify({ id: 1, name: 'Test User' }),
        }),
      );
 
      // NOW navigate
-     await page.goto("/dashboard");
+     await page.goto('/dashboard');
 
-     await expect(page.locator('[data-testid="user-name"]')).toHaveText(
-       "Test User",
-     );
+     await expect(page.locator('[data-testid="user-name"]')).toHaveText('Test User');
    });
    ```
 
 4. **Write Failing API Tests (If Applicable)**
 
    ```typescript
-   import { test, expect } from "@playwright/test";
+   import { test, expect } from '@playwright/test';
 
-   test.describe("User API", () => {
-     test("POST /api/users - should create new user", async ({ request }) => {
+   test.describe('User API', () => {
+     test('POST /api/users - should create new user', async ({ request }) => {
        // GIVEN: Valid user data
        const userData = {
-         email: "newuser@example.com",
-         name: "New User",
+         email: 'newuser@example.com',
+         name: 'New User',
        };
 
        // WHEN: Creating user via API
-       const response = await request.post("/api/users", {
+       const response = await request.post('/api/users', {
          data: userData,
        });
 
@@ -409,8 +381,7 @@ story (typically E2E or API)
    - Failure messages should be clear and actionable
    - All tests must be in RED phase before sharing with DEV
 
-**Important:** Tests MUST fail initially. If a test passes before
-implementation, it's not a valid acceptance test.
+**Important:** Tests MUST fail initially. If a test passes before implementation, it's not a valid acceptance test.
 
 ---
 
@@ -424,7 +395,7 @@ implementation, it's not a valid acceptance test.
 
    ```typescript
    // tests/support/factories/user.factory.ts
-   import { faker } from "@faker-js/faker";
+   import { faker } from '@faker-js/faker';
 
    export const createUser = (overrides = {}) => ({
      id: faker.number.int(),
@@ -434,8 +405,7 @@ implementation, it's not a valid acceptance test.
      ...overrides,
    });
 
-   export const createUsers = (count: number) =>
-     Array.from({ length: count }, () => createUser());
+   export const createUsers = (count: number) => Array.from({ length: count }, () => createUser());
    ```
 
    **Factory principles:**
@@ -450,17 +420,17 @@ implementation, it's not a valid acceptance test.
 
    ```typescript
    // tests/support/fixtures/auth.fixture.ts
-   import { test as base } from "@playwright/test";
+   import { test as base } from '@playwright/test';
 
    export const test = base.extend({
      authenticatedUser: async ({ page }, use) => {
        // Setup: Create and authenticate user
        const user = await createUser();
-       await page.goto("/login");
+       await page.goto('/login');
        await page.fill('[data-testid="email"]', user.email);
-       await page.fill('[data-testid="password"]', "password123");
+       await page.fill('[data-testid="password"]', 'password123');
        await page.click('[data-testid="login-button"]');
-       await page.waitForURL("/dashboard");
+       await page.waitForURL('/dashboard');
 
        // Provide to test
        await use(user);
@@ -535,8 +505,7 @@ implementation, it's not a valid acceptance test.
    - [ ] Implement login form component
    - [ ] Add email/password validation
    - [ ] Integrate authentication API
-   - [ ] Add `data-testid` attributes: `email-input`, `password-input`,
-         `login-button`
+   - [ ] Add `data-testid` attributes: `email-input`, `password-input`, `login-button`
    - [ ] Implement error handling
    - [ ] Run test: `npm run test:e2e -- login.spec.ts`
    - [ ] ✅ Test passes (green phase)
@@ -682,12 +651,12 @@ implementation, it's not a valid acceptance test.
 
 ```typescript
 // ✅ CORRECT: Intercept BEFORE navigation
-await page.route("**/api/data", handler);
-await page.goto("/page");
+await page.route('**/api/data', handler);
+await page.goto('/page');
 
 // ❌ WRONG: Navigate then intercept (race condition)
-await page.goto("/page");
-await page.route("**/api/data", handler); // Too late!
+await page.goto('/page');
+await page.route('**/api/data', handler); // Too late!
 ```
 
 ### Data Factory Best Practices
@@ -699,7 +668,7 @@ await page.route("**/api/data", handler); // Too late!
 email: faker.internet.email();
 
 // ❌ WRONG: Hardcoded data (collisions, maintenance burden)
-email: "test@example.com";
+email: 'test@example.com';
 ```
 
 **Auto-cleanup principle:**
@@ -714,16 +683,14 @@ email: "test@example.com";
 
 ```typescript
 // ✅ CORRECT: One assertion
-test("should display user name", async ({ page }) => {
-  await expect(page.locator('[data-testid="user-name"]')).toHaveText("John");
+test('should display user name', async ({ page }) => {
+  await expect(page.locator('[data-testid="user-name"]')).toHaveText('John');
 });
 
 // ❌ WRONG: Multiple assertions (not atomic)
-test("should display user info", async ({ page }) => {
-  await expect(page.locator('[data-testid="user-name"]')).toHaveText("John");
-  await expect(page.locator('[data-testid="user-email"]')).toHaveText(
-    "john@example.com",
-  );
+test('should display user info', async ({ page }) => {
+  await expect(page.locator('[data-testid="user-name"]')).toHaveText('John');
+  await expect(page.locator('[data-testid="user-email"]')).toHaveText('john@example.com');
 });
 ```
 
@@ -748,27 +715,18 @@ test("should display user info", async ({ page }) => {
 
 **Core Fragments (Auto-loaded in Step 1):**
 
-- `fixture-architecture.md` - Pure function → fixture → mergeTests patterns (406
-  lines, 5 examples)
-- `data-factories.md` - Factory patterns with faker, overrides, API seeding (498
-  lines, 5 examples)
-- `component-tdd.md` - Red-green-refactor, provider isolation, accessibility,
-  visual regression (480 lines, 4 examples)
-- `network-first.md` - Intercept before navigate, HAR capture, deterministic
-  waiting (489 lines, 5 examples)
-- `test-quality.md` - Deterministic tests, cleanup, explicit assertions,
-  length/time limits (658 lines, 5 examples)
-- `test-healing-patterns.md` - Common failure patterns: stale selectors, race
-  conditions, dynamic data, network errors, hard waits (648 lines, 5 examples)
-- `selector-resilience.md` - Selector hierarchy (data-testid > ARIA > text >
-  CSS), dynamic patterns, anti-patterns (541 lines, 4 examples)
-- `timing-debugging.md` - Race condition prevention, deterministic waiting,
-  async debugging (370 lines, 3 examples)
+- `fixture-architecture.md` - Pure function → fixture → mergeTests patterns (406 lines, 5 examples)
+- `data-factories.md` - Factory patterns with faker, overrides, API seeding (498 lines, 5 examples)
+- `component-tdd.md` - Red-green-refactor, provider isolation, accessibility, visual regression (480 lines, 4 examples)
+- `network-first.md` - Intercept before navigate, HAR capture, deterministic waiting (489 lines, 5 examples)
+- `test-quality.md` - Deterministic tests, cleanup, explicit assertions, length/time limits (658 lines, 5 examples)
+- `test-healing-patterns.md` - Common failure patterns: stale selectors, race conditions, dynamic data, network errors, hard waits (648 lines, 5 examples)
+- `selector-resilience.md` - Selector hierarchy (data-testid > ARIA > text > CSS), dynamic patterns, anti-patterns (541 lines, 4 examples)
+- `timing-debugging.md` - Race condition prevention, deterministic waiting, async debugging (370 lines, 3 examples)
 
 **Reference for Test Level Selection:**
 
-- `test-levels-framework.md` - E2E vs API vs Component vs Unit decision
-  framework (467 lines, 4 examples)
+- `test-levels-framework.md` - E2E vs API vs Component vs Unit decision framework (467 lines, 4 examples)
 
 **Manual Reference (Optional):**
 
@@ -783,7 +741,8 @@ After completing this workflow, provide a summary:
 ```markdown
 ## ATDD Complete - Tests in RED Phase
 
-**Story**: {story_id} **Primary Test Level**: {primary_level}
+**Story**: {story_id}
+**Primary Test Level**: {primary_level}
 
 **Failing Tests Created**:
 
@@ -812,8 +771,8 @@ After completing this workflow, provide a summary:
 4. Refactor with confidence (tests provide safety net)
 5. Share progress in daily standup
 
-**Output File**: {output_file} **Manual Handoff**: Share `{output_file}` and
-failing tests with the dev workflow (not auto-consumed).
+**Output File**: {output_file}
+**Manual Handoff**: Share `{output_file}` and failing tests with the dev workflow (not auto-consumed).
 
 **Knowledge Base References Applied**:
 

@@ -1,32 +1,24 @@
 # Sprint Planning - Sprint Status Generator
 
-<critical>The workflow execution engine is governed by:
-{project-root}/\_bmad/core/tasks/workflow.xml</critical> <critical>You MUST have
-already loaded and processed:
-{project-root}/\_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml</critical>
+<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: {project-root}/_bmad/bmm/workflows/4-implementation/sprint-planning/workflow.yaml</critical>
 
 ## 📚 Document Discovery - Full Epic Loading
 
-**Strategy**: Sprint planning needs ALL epics and stories to build complete
-status tracking.
+**Strategy**: Sprint planning needs ALL epics and stories to build complete status tracking.
 
 **Epic Discovery Process:**
 
-1. **Search for whole document first** - Look for `epics.md`, `bmm-epics.md`, or
-   any `*epic*.md` file
-2. **Check for sharded version** - If whole document not found, look for
-   `epics/index.md`
+1. **Search for whole document first** - Look for `epics.md`, `bmm-epics.md`, or any `*epic*.md` file
+2. **Check for sharded version** - If whole document not found, look for `epics/index.md`
 3. **If sharded version found**:
    - Read `index.md` to understand the document structure
-   - Read ALL epic section files listed in the index (e.g., `epic-1.md`,
-     `epic-2.md`, etc.)
+   - Read ALL epic section files listed in the index (e.g., `epic-1.md`, `epic-2.md`, etc.)
    - Process all epics and their stories from the combined content
    - This ensures complete sprint status coverage
-4. **Priority**: If both whole and sharded versions exist, use the whole
-   document
+4. **Priority**: If both whole and sharded versions exist, use the whole document
 
-**Fuzzy matching**: Be flexible with document names - users may use variations
-like `epics.md`, `bmm-epics.md`, `user-stories.md`, etc.
+**Fuzzy matching**: Be flexible with document names - users may use variations like `epics.md`, `bmm-epics.md`, `user-stories.md`, etc.
 
 <workflow>
 
@@ -39,8 +31,7 @@ like `epics.md`, `bmm-epics.md`, `user-stories.md`, etc.
 
 - Epic numbers from headers like `## Epic 1:` or `## Epic 2:`
 - Story IDs and titles from patterns like `### Story 1.1: User Authentication`
-- Convert story format from `Epic.Story: Title` to kebab-case key:
-  `epic-story-title`
+- Convert story format from `Epic.Story: Title` to kebab-case key: `epic-story-title`
 
 **Story ID Conversion Rules:**
 
@@ -49,8 +40,8 @@ like `epics.md`, `bmm-epics.md`, `user-stories.md`, etc.
 - Convert title to kebab-case: `user-authentication`
 - Final key: `1-1-user-authentication`
 
-<action>Build complete inventory of all epics and stories from all epic
-files</action> </step>
+<action>Build complete inventory of all epics and stories from all epic files</action>
+</step>
 
   <step n="0.5" goal="Discover and load project documents">
     <invoke-protocol name="discover_inputs" />
@@ -62,8 +53,7 @@ files</action> </step>
 
 1. **Epic entry** - Key: `epic-{num}`, Default status: `backlog`
 2. **Story entries** - Key: `{epic}-{story}-{title}`, Default status: `backlog`
-3. **Retrospective entry** - Key: `epic-{num}-retrospective`, Default status:
-   `optional`
+3. **Retrospective entry** - Key: `epic-{num}-retrospective`, Default status: `optional`
 
 **Example structure:**
 
@@ -82,8 +72,7 @@ development_status:
 
 **Story file detection:**
 
-- Check: `{story_location_absolute}/{story-key}.md` (e.g.,
-  `stories/1-1-user-authentication.md`)
+- Check: `{story_location_absolute}/{story-key}.md` (e.g., `stories/1-1-user-authentication.md`)
 - If exists → upgrade status to at least `ready-for-dev`
 
 **Preservation rule:**
@@ -95,7 +84,8 @@ development_status:
 
 - Epic: `backlog` → `in-progress` → `done`
 - Story: `backlog` → `ready-for-dev` → `in-progress` → `review` → `done`
-- Retrospective: `optional` ↔ `done` </step>
+- Retrospective: `optional` ↔ `done`
+  </step>
 
 <step n="4" goal="Generate sprint status file">
 <action>Create or update {status_file} with:</action>
@@ -149,10 +139,9 @@ development_status:
 ```
 
 <action>Write the complete sprint status YAML to {status_file}</action>
-<action>CRITICAL: Metadata appears TWICE - once as comments (#) for
-documentation, once as YAML key:value fields for parsing</action> <action>Ensure
-all items are ordered: epic, its stories, its retrospective, next
-epic...</action> </step>
+<action>CRITICAL: Metadata appears TWICE - once as comments (#) for documentation, once as YAML key:value fields for parsing</action>
+<action>Ensure all items are ordered: epic, its stories, its retrospective, next epic...</action>
+</step>
 
 <step n="5" goal="Validate and report">
 <action>Perform validation checks:</action>
@@ -171,8 +160,7 @@ epic...</action> </step>
 - Epics in-progress: {{in_progress_count}}
 - Stories done: {{done_count}}
 
-<action>Display completion summary to {user_name} in
-{communication_language}:</action>
+<action>Display completion summary to {user_name} in {communication_language}:</action>
 
 **Sprint Status Generated Successfully**
 
@@ -204,8 +192,7 @@ backlog → in-progress → done
 ```
 
 - **backlog**: Epic not yet started
-- **in-progress**: Epic actively being worked on (stories being
-  created/implemented)
+- **in-progress**: Epic actively being worked on (stories being created/implemented)
 - **done**: All stories in epic completed
 
 **Story Status Flow:**
@@ -231,12 +218,8 @@ optional ↔ done
 
 ### Guidelines
 
-1. **Epic Activation**: Mark epic as `in-progress` when starting work on its
-   first story
-2. **Sequential Default**: Stories are typically worked in order, but parallel
-   work is supported
-3. **Parallel Work Supported**: Multiple stories can be `in-progress` if team
-   capacity allows
+1. **Epic Activation**: Mark epic as `in-progress` when starting work on its first story
+2. **Sequential Default**: Stories are typically worked in order, but parallel work is supported
+3. **Parallel Work Supported**: Multiple stories can be `in-progress` if team capacity allows
 4. **Review Before Done**: Stories should pass through `review` before `done`
-5. **Learning Transfer**: SM typically creates next story after previous one is
-   `done` to incorporate learnings
+5. **Learning Transfer**: SM typically creates next story after previous one is `done` to incorporate learnings

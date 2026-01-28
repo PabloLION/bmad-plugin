@@ -1,32 +1,29 @@
 ---
-name: "step-02-design-epics"
-description:
-  "Design and approve the epics_list that will organize all requirements into
-  user-value-focused epics"
+name: 'step-02-design-epics'
+description: 'Design and approve the epics_list that will organize all requirements into user-value-focused epics'
 
 # Path Definitions
-workflow_path: "{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories"
+workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories'
 
 # File References
-thisStepFile: "./step-02-design-epics.md"
-nextStepFile: "./step-03-create-stories.md"
-workflowFile: "{workflow_path}/workflow.md"
-outputFile: "{planning_artifacts}/epics.md"
+thisStepFile: './step-02-design-epics.md'
+nextStepFile: './step-03-create-stories.md'
+workflowFile: '{workflow_path}/workflow.md'
+outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
-advancedElicitationTask: "{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml"
-partyModeWorkflow: "{project-root}/_bmad/core/workflows/party-mode/workflow.md"
+advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
 
 # Template References
-epicsTemplate: "{workflow_path}/templates/epics-template.md"
+epicsTemplate: '{workflow_path}/templates/epics-template.md'
 ---
 
 # Step 2: Design Epic List
 
 ## STEP GOAL:
 
-To design and get approval for the epics_list that will organize all
-requirements into user-value-focused epics.
+To design and get approval for the epics_list that will organize all requirements into user-value-focused epics.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -36,14 +33,12 @@ requirements into user-value-focused epics.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
 - ✅ You are a product strategist and technical specifications writer
-- ✅ If you already have been given communication or persona patterns, continue
-  to use those while playing this new role
+- ✅ If you already have been given communication or persona patterns, continue to use those while playing this new role
 - ✅ We engage in collaborative dialogue, not command-response
 - ✅ You bring product strategy and epic design expertise
 - ✅ User brings their product vision and priorities
@@ -54,8 +49,7 @@ requirements into user-value-focused epics.
 - 🚫 FORBIDDEN to create individual stories in this step
 - 💬 Organize epics around user value, not technical layers
 - 🚪 GET explicit approval for the epics_list
-- 🔗 **CRITICAL: Each epic must be standalone and enable future epics without
-  requiring future epics to function**
+- 🔗 **CRITICAL: Each epic must be standalone and enable future epics without requiring future epics to function**
 
 ## EXECUTION PROTOCOLS:
 
@@ -78,27 +72,21 @@ Load {outputFile} and review:
 
 **EPIC DESIGN PRINCIPLES:**
 
-1. **User-Value First**: Each epic must enable users to accomplish something
-   meaningful
-2. **Requirements Grouping**: Group related FRs that deliver cohesive user
-   outcomes
+1. **User-Value First**: Each epic must enable users to accomplish something meaningful
+2. **Requirements Grouping**: Group related FRs that deliver cohesive user outcomes
 3. **Incremental Delivery**: Each epic should deliver value independently
 4. **Logical Flow**: Natural progression from user's perspective
-5. **🔗 Dependency-Free Within Epic**: Stories within an epic must NOT depend on
-   future stories
+5. **🔗 Dependency-Free Within Epic**: Stories within an epic must NOT depend on future stories
 
-**⚠️ CRITICAL PRINCIPLE:** Organize by USER VALUE, not technical layers:
+**⚠️ CRITICAL PRINCIPLE:**
+Organize by USER VALUE, not technical layers:
 
 **✅ CORRECT Epic Examples (Standalone & Enable Future Epics):**
 
-- Epic 1: User Authentication & Profiles (users can register, login, manage
-  profiles) - **Standalone: Complete auth system**
-- Epic 2: Content Creation (users can create, edit, publish content) -
-  **Standalone: Uses auth, creates content**
-- Epic 3: Social Interaction (users can follow, comment, like content) -
-  **Standalone: Uses auth + content**
-- Epic 4: Search & Discovery (users can find content and other users) -
-  **Standalone: Uses all previous**
+- Epic 1: User Authentication & Profiles (users can register, login, manage profiles) - **Standalone: Complete auth system**
+- Epic 2: Content Creation (users can create, edit, publish content) - **Standalone: Uses auth, creates content**
+- Epic 3: Social Interaction (users can follow, comment, like content) - **Standalone: Uses auth + content**
+- Epic 4: Search & Discovery (users can find content and other users) - **Standalone: Uses all previous**
 
 **❌ WRONG Epic Examples (Technical Layers or Dependencies):**
 
@@ -121,7 +109,8 @@ Load {outputFile} and review:
 - Identify user journeys or workflows
 - Consider user types and their goals
 
-**Step B: Propose Epic Structure** For each proposed epic:
+**Step B: Propose Epic Structure**
+For each proposed epic:
 
 1. **Epic Title**: User-centric, value-focused
 2. **User Outcome**: What users can accomplish after this epic
@@ -181,8 +170,8 @@ Ask user:
 
 ### 7. Get Final Approval
 
-**CRITICAL:** Must get explicit user approval: "Do you approve this epic
-structure for proceeding to story creation?"
+**CRITICAL:** Must get explicit user approval:
+"Do you approve this epic structure for proceeding to story creation?"
 
 If user wants changes:
 
@@ -201,30 +190,25 @@ After approval, update {outputFile}:
 
 ### 8. Present MENU OPTIONS
 
-Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C]
-Continue"
+Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C] Continue"
 
 #### Menu Handling Logic:
 
 - IF A: Read fully and follow: {advancedElicitationTask}
 - IF P: Read fully and follow: {partyModeWorkflow}
-- IF C: Save approved epics_list to {outputFile}, update frontmatter, then read
-  fully and follow: {nextStepFile}
-- IF Any other comments or queries: help user respond then
-  [Redisplay Menu Options](#8-present-menu-options)
+- IF C: Save approved epics_list to {outputFile}, update frontmatter, then read fully and follow: {nextStepFile}
+- IF Any other comments or queries: help user respond then [Redisplay Menu Options](#8-present-menu-options)
 
 #### EXECUTION RULES:
 
 - ALWAYS halt and wait for user input after presenting menu
 - ONLY proceed to next step when user selects 'C'
 - After other menu items execution completes, redisplay the menu
-- User can chat or ask questions - always respond when conversation ends,
-  redisplay the menu options
+- User can chat or ask questions - always respond when conversation ends, redisplay the menu options
 
 ## CRITICAL STEP COMPLETION NOTE
 
-ONLY WHEN C is selected and the approved epics_list is saved to document, will
-you then read fully and follow: {nextStepFile} to begin story creation step.
+ONLY WHEN C is selected and the approved epics_list is saved to document, will you then read fully and follow: {nextStepFile} to begin story creation step.
 
 ---
 
@@ -246,5 +230,4 @@ you then read fully and follow: {nextStepFile} to begin story creation step.
 - No user approval obtained
 - epics_list not saved to document
 
-**Master Rule:** Skipping steps, optimizing sequences, or not following exact
-instructions is FORBIDDEN and constitutes SYSTEM FAILURE.
+**Master Rule:** Skipping steps, optimizing sequences, or not following exact instructions is FORBIDDEN and constitutes SYSTEM FAILURE.

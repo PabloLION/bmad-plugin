@@ -4,18 +4,14 @@
 
 - 🛑 NEVER generate content without user input
 
-- 📖 CRITICAL: ALWAYS read the complete step file before taking any action -
-  partial understanding leads to incomplete decisions
-- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read
-  and understood before proceeding
+- 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete decisions
+- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
 - ✅ ALWAYS treat this as collaborative discovery between architectural peers
 - 📋 YOU ARE A FACILITATOR, not a content generator
 - 💬 FOCUS on defining complete project structure and clear boundaries
 - 🗺️ MAP requirements/epics to architectural components
-- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally
-  changed
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -23,28 +19,22 @@
 - 🗺️ Create complete project tree, not generic placeholders
 - ⚠️ Present A/P/C menu after generating project structure
 - 💾 ONLY save when user chooses C (Continue)
-- 📖 Update frontmatter `stepsCompleted: [1, 2, 3, 4, 5, 6]` before loading next
-  step
+- 📖 Update frontmatter `stepsCompleted: [1, 2, 3, 4, 5, 6]` before loading next step
 - 🚫 FORBIDDEN to load next step until C is selected
 
 ## COLLABORATION MENUS (A/P/C):
 
 This step will generate content and present choices:
 
-- **A (Advanced Elicitation)**: Use discovery protocols to explore innovative
-  project organization approaches
-- **P (Party Mode)**: Bring multiple perspectives to evaluate project structure
-  trade-offs
+- **A (Advanced Elicitation)**: Use discovery protocols to explore innovative project organization approaches
+- **P (Party Mode)**: Bring multiple perspectives to evaluate project structure trade-offs
 - **C (Continue)**: Save the project structure and proceed to validation
 
 ## PROTOCOL INTEGRATION:
 
-- When 'A' selected: Read fully and follow:
-  {project-root}/\_bmad/core/workflows/advanced-elicitation/workflow.xml
-- When 'P' selected: Read fully and follow:
-  {project-root}/\_bmad/core/workflows/party-mode/workflow.md
-- PROTOCOLS always return to display this step's A/P/C menu after the A or P
-  have completed
+- When 'A' selected: Read fully and follow: {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml
+- When 'P' selected: Read fully and follow: {project-root}/_bmad/core/workflows/party-mode/workflow.md
+- PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 
 ## CONTEXT BOUNDARIES:
@@ -56,8 +46,7 @@ This step will generate content and present choices:
 
 ## YOUR TASK:
 
-Define the complete project structure and architectural boundaries based on all
-decisions made, creating a concrete implementation guide for AI agents.
+Define the complete project structure and architectural boundaries based on all decisions made, creating a concrete implementation guide for AI agents.
 
 ## PROJECT STRUCTURE SEQUENCE:
 
@@ -65,15 +54,15 @@ decisions made, creating a concrete implementation guide for AI agents.
 
 Map project requirements to architectural components:
 
-**From Epics (if available):** "Epic: {{epic_name}} → Lives in
-{{module/directory/service}}"
+**From Epics (if available):**
+"Epic: {{epic_name}} → Lives in {{module/directory/service}}"
 
 - User stories within the epic
 - Cross-epic dependencies
 - Shared components needed
 
-**From FR Categories (if no epics):** "FR Category: {{fr_category_name}} → Lives
-in {{module/directory/service}}"
+**From FR Categories (if no epics):**
+"FR Category: {{fr_category_name}} → Lives in {{module/directory/service}}"
 
 - Related functional requirements
 - Shared functionality across categories
@@ -224,7 +213,8 @@ project-name/
 
 Create explicit mapping from project requirements to specific files/directories:
 
-**Epic/Feature Mapping:** "Epic: User Management
+**Epic/Feature Mapping:**
+"Epic: User Management
 
 - Components: src/components/features/users/
 - Services: src/services/users/
@@ -232,7 +222,8 @@ Create explicit mapping from project requirements to specific files/directories:
 - Database: prisma/migrations/_*users*_
 - Tests: tests/features/users/"
 
-**Cross-Cutting Concerns:** "Authentication System
+**Cross-Cutting Concerns:**
+"Authentication System
 
 - Components: src/components/auth/
 - Services: src/services/auth/
@@ -319,25 +310,22 @@ Prepare the content to append to the document:
 
 Show the generated project structure content and present choices:
 
-"I've created a complete project structure based on all our architectural
-decisions.
+"I've created a complete project structure based on all our architectural decisions.
 
 **Here's what I'll add to the document:**
 
 [Show the complete markdown content from step 6]
 
-**What would you like to do?** [A] Advanced Elicitation - Explore innovative
-project organization approaches [P] Party Mode - Review structure from different
-development perspectives [C] Continue - Save this structure and move to
-architecture validation"
+**What would you like to do?**
+[A] Advanced Elicitation - Explore innovative project organization approaches
+[P] Party Mode - Review structure from different development perspectives
+[C] Continue - Save this structure and move to architecture validation"
 
 ### 8. Handle Menu Selection
 
 #### If 'A' (Advanced Elicitation):
 
-- Read fully and follow:
-  {project-root}/\_bmad/core/workflows/advanced-elicitation/workflow.xml with
-  current project structure
+- Read fully and follow: {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml with current project structure
 - Process enhanced organizational insights that come back
 - Ask user: "Accept these changes to the project structure? (y/n)"
 - If yes: Update content, then return to A/P/C menu
@@ -345,9 +333,7 @@ architecture validation"
 
 #### If 'P' (Party Mode):
 
-- Read fully and follow:
-  {project-root}/\_bmad/core/workflows/party-mode/workflow.md with project
-  structure context
+- Read fully and follow: {project-root}/_bmad/core/workflows/party-mode/workflow.md with project structure context
 - Process collaborative insights about organization trade-offs
 - Ask user: "Accept these changes to the project structure? (y/n)"
 - If yes: Update content, then return to A/P/C menu
@@ -361,34 +347,33 @@ architecture validation"
 
 ## APPEND TO DOCUMENT:
 
-When user selects 'C', append the content directly to the document using the
-structure from step 6.
+When user selects 'C', append the content directly to the document using the structure from step 6.
 
 ## SUCCESS METRICS:
 
-✅ Complete project tree defined with all files and directories ✅ All
-architectural boundaries clearly documented ✅ Requirements/epics mapped to
-specific locations ✅ Integration points and communication patterns defined ✅
-Project structure aligned with chosen technology stack ✅ A/P/C menu presented
-and handled correctly ✅ Content properly appended to document when C selected
+✅ Complete project tree defined with all files and directories
+✅ All architectural boundaries clearly documented
+✅ Requirements/epics mapped to specific locations
+✅ Integration points and communication patterns defined
+✅ Project structure aligned with chosen technology stack
+✅ A/P/C menu presented and handled correctly
+✅ Content properly appended to document when C selected
 
 ## FAILURE MODES:
 
-❌ Creating generic placeholder structure instead of specific, complete tree ❌
-Not mapping requirements to specific files and directories ❌ Missing important
-integration boundaries ❌ Not considering the chosen technology stack in
-structure design ❌ Not defining how components communicate across boundaries ❌
-Not presenting A/P/C menu after content generation
+❌ Creating generic placeholder structure instead of specific, complete tree
+❌ Not mapping requirements to specific files and directories
+❌ Missing important integration boundaries
+❌ Not considering the chosen technology stack in structure design
+❌ Not defining how components communicate across boundaries
+❌ Not presenting A/P/C menu after content generation
 
-❌ **CRITICAL**: Reading only partial step file - leads to incomplete
-understanding and poor decisions ❌ **CRITICAL**: Proceeding with 'C' without
-fully reading and understanding the next step file ❌ **CRITICAL**: Making
-decisions without complete understanding of step requirements and protocols
+❌ **CRITICAL**: Reading only partial step file - leads to incomplete understanding and poor decisions
+❌ **CRITICAL**: Proceeding with 'C' without fully reading and understanding the next step file
+❌ **CRITICAL**: Making decisions without complete understanding of step requirements and protocols
 
 ## NEXT STEP:
 
-After user selects 'C' and content is saved to document, load
-`./step-07-validation.md` to validate architectural coherence and completeness.
+After user selects 'C' and content is saved to document, load `./step-07-validation.md` to validate architectural coherence and completeness.
 
-Remember: Do NOT proceed to step-07 until user explicitly selects 'C' from the
-A/P/C menu and content is saved!
+Remember: Do NOT proceed to step-07 until user explicitly selects 'C' from the A/P/C menu and content is saved!

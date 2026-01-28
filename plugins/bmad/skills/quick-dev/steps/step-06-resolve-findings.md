@@ -1,17 +1,14 @@
 ---
-name: "step-06-resolve-findings"
-description:
-  "Handle review findings interactively, apply fixes, update tech-spec with
-  final status"
+name: 'step-06-resolve-findings'
+description: 'Handle review findings interactively, apply fixes, update tech-spec with final status'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev"
-thisStepFile: "./step-06-resolve-findings.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev'
+thisStepFile: './step-06-resolve-findings.md'
 ---
 
 # Step 6: Resolve Findings
 
-**Goal:** Handle adversarial review findings interactively, apply fixes,
-finalize tech-spec.
+**Goal:** Handle adversarial review findings interactively, apply fixes, finalize tech-spec.
 
 ---
 
@@ -32,9 +29,9 @@ Present: "How would you like to handle these findings?"
 
 Display:
 
-**[W] Walk through** - Discuss each finding individually **[F] Fix
-automatically** - Automatically fix issues classified as "real" **[S] Skip** -
-Acknowledge and proceed to commit
+**[W] Walk through** - Discuss each finding individually
+**[F] Fix automatically** - Automatically fix issues classified as "real"
+**[S] Skip** - Acknowledge and proceed to commit
 
 ### Menu Handling Logic:
 

@@ -1,21 +1,17 @@
 ---
-name: "step-02-context-gathering"
-description:
-  "Quick context gathering for direct mode - identify files, patterns,
-  dependencies"
+name: 'step-02-context-gathering'
+description: 'Quick context gathering for direct mode - identify files, patterns, dependencies'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev"
-thisStepFile: "./step-02-context-gathering.md"
-nextStepFile: "./step-03-execute.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-dev'
+thisStepFile: './step-02-context-gathering.md'
+nextStepFile: './step-03-execute.md'
 ---
 
 # Step 2: Context Gathering (Direct Mode)
 
-**Goal:** Quickly gather context for direct instructions - files, patterns,
-dependencies.
+**Goal:** Quickly gather context for direct instructions - files, patterns, dependencies.
 
-**Note:** This step only runs for Mode B (direct instructions). If
-`{execution_mode}` is "tech-spec", this step was skipped.
+**Note:** This step only runs for Mode B (direct instructions). If `{execution_mode}` is "tech-spec", this step was skipped.
 
 ---
 

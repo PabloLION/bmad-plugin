@@ -3,18 +3,14 @@
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
 - 🛑 NEVER generate content without user input
-- 📖 CRITICAL: ALWAYS read the complete step file before taking any action -
-  partial understanding leads to incomplete decisions
-- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read
-  and understood before proceeding
+- 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete decisions
+- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
 - ✅ ALWAYS treat this as collaborative discovery between architectural peers
 - 📋 YOU ARE A FACILITATOR, not a content generator
 - 💬 FOCUS on initialization and setup only - don't look ahead to future steps
 - 🚪 DETECT existing workflow state and handle continuation properly
-- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally
-  changed
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -32,9 +28,7 @@
 
 ## YOUR TASK:
 
-Initialize the Architecture workflow by detecting continuation state,
-discovering input documents, and setting up the document for collaborative
-architectural decision making.
+Initialize the Architecture workflow by detecting continuation state, discovering input documents, and setting up the document for collaborative architectural decision making.
 
 ## INITIALIZATION SEQUENCE:
 
@@ -60,41 +54,29 @@ If no document exists or no `stepsCompleted` in frontmatter:
 
 #### A. Input Document Discovery
 
-Discover and load context documents using smart discovery. Documents can be in
-the following locations:
+Discover and load context documents using smart discovery. Documents can be in the following locations:
+- {planning_artifacts}/**
+- {output_folder}/**
+- {product_knowledge}/**
+- docs/**
 
-- {planning_artifacts}/\*\*
-- {output_folder}/\*\*
-- {product_knowledge}/\*\*
-- docs/\*\*
-
-Also - when searching - documents can be a single markdown file, or a folder
-with an index and multiple files. For Example, if searching for `*foo*.md` and
-not found, also search for a folder called _foo_/index.md (which indicates
-sharded content)
+Also - when searching - documents can be a single markdown file, or a folder with an index and multiple files. For Example, if searching for `*foo*.md` and not found, also search for a folder called *foo*/index.md (which indicates sharded content)
 
 Try to discover the following:
-
 - Product Brief (`*brief*.md`)
 - Product Requirements Document (`*prd*.md`)
 - UX Design (`*ux-design*.md`) and other
 - Research Documents (`*research*.md`)
-- Project Documentation (generally multiple documents might be found for this in
-  the `{product_knowledge}` or `docs` folder.)
+- Project Documentation (generally multiple documents might be found for this in the `{product_knowledge}` or `docs` folder.)
 - Project Context (`**/project-context.md`)
 
-<critical>Confirm what you have found with the user, along with asking if the
-user wants to provide anything else. Only after this confirmation will you
-proceed to follow the loading rules</critical>
+<critical>Confirm what you have found with the user, along with asking if the user wants to provide anything else. Only after this confirmation will you proceed to follow the loading rules</critical>
 
 **Loading Rules:**
 
-- Load ALL discovered files completely that the user confirmed or provided (no
-  offset/limit)
-- If there is a project context, whatever is relevant should try to be biased in
-  the remainder of this whole workflow process
-- For sharded folders, load ALL files to get complete picture, using the index
-  first to potentially know the potential of each document
+- Load ALL discovered files completely that the user confirmed or provided (no offset/limit)
+- If there is a project context, whatever is relevant should try to be biased in the remainder of this whole workflow process
+- For sharded folders, load ALL files to get complete picture, using the index first to potentially know the potential of each document
 - index.md is a guide to what's relevant whenever available
 - Track all successfully loaded files in frontmatter `inputDocuments` array
 
@@ -104,8 +86,7 @@ Before proceeding, verify we have the essential inputs:
 
 **PRD Validation:**
 
-- If no PRD found: "Architecture requires a PRD to work from. Please run the PRD
-  workflow first or provide the PRD file path."
+- If no PRD found: "Architecture requires a PRD to work from. Please run the PRD workflow first or provide the PRD file path."
 - Do NOT proceed without PRD
 
 **Other Input that might exist:**
@@ -114,8 +95,7 @@ Before proceeding, verify we have the essential inputs:
 
 #### C. Create Initial Document
 
-Copy the template from `{installed_path}/architecture-decision-template.md` to
-`{planning_artifacts}/architecture.md`
+Copy the template from `{installed_path}/architecture-decision-template.md` to `{planning_artifacts}/architecture.md`
 
 #### D. Complete Initialization and Report
 
@@ -126,8 +106,9 @@ Complete setup and report to user:
 - Created: `{planning_artifacts}/architecture.md` from template
 - Initialized frontmatter with workflow state
 
-**Input Documents Discovered:** Report what was found: "Welcome {{user_name}}!
-I've set up your Architecture workspace for {{project_name}}.
+**Input Documents Discovered:**
+Report what was found:
+"Welcome {{user_name}}! I've set up your Architecture workspace for {{project_name}}.
 
 **Documents Found:**
 
@@ -137,40 +118,36 @@ I've set up your Architecture workspace for {{project_name}}.
 - Project docs: {number of project files loaded or "None found"}
 - Project context: {project_context_rules count of rules for AI agents found}
 
-**Files loaded:** {list of specific file names or "No additional documents
-found"}
+**Files loaded:** {list of specific file names or "No additional documents found"}
 
-Ready to begin architectural decision making. Do you have any other documents
-you'd like me to include?
+Ready to begin architectural decision making. Do you have any other documents you'd like me to include?
 
 [C] Continue to project context analysis
 
 ## SUCCESS METRICS:
 
-✅ Existing workflow detected and handed off to step-01b correctly ✅ Fresh
-workflow initialized with template and frontmatter ✅ Input documents discovered
-and loaded using sharded-first logic ✅ All discovered files tracked in
-frontmatter `inputDocuments` ✅ PRD requirement validated and communicated ✅
-User confirmed document setup and can proceed
+✅ Existing workflow detected and handed off to step-01b correctly
+✅ Fresh workflow initialized with template and frontmatter
+✅ Input documents discovered and loaded using sharded-first logic
+✅ All discovered files tracked in frontmatter `inputDocuments`
+✅ PRD requirement validated and communicated
+✅ User confirmed document setup and can proceed
 
 ## FAILURE MODES:
 
-❌ Proceeding with fresh initialization when existing workflow exists ❌ Not
-updating frontmatter with discovered input documents ❌ Creating document
-without proper template ❌ Not checking sharded folders first before whole files
-❌ Not reporting what documents were found to user ❌ Proceeding without
-validating PRD requirement
+❌ Proceeding with fresh initialization when existing workflow exists
+❌ Not updating frontmatter with discovered input documents
+❌ Creating document without proper template
+❌ Not checking sharded folders first before whole files
+❌ Not reporting what documents were found to user
+❌ Proceeding without validating PRD requirement
 
-❌ **CRITICAL**: Reading only partial step file - leads to incomplete
-understanding and poor decisions ❌ **CRITICAL**: Proceeding with 'C' without
-fully reading and understanding the next step file ❌ **CRITICAL**: Making
-decisions without complete understanding of step requirements and protocols
+❌ **CRITICAL**: Reading only partial step file - leads to incomplete understanding and poor decisions
+❌ **CRITICAL**: Proceeding with 'C' without fully reading and understanding the next step file
+❌ **CRITICAL**: Making decisions without complete understanding of step requirements and protocols
 
 ## NEXT STEP:
 
-After user selects [C] to continue, only after ensuring all the template output
-has been created, then load `./step-02-context.md` to analyze the project
-context and begin architectural decision making.
+After user selects [C] to continue, only after ensuring all the template output has been created, then load `./step-02-context.md` to analyze the project context and begin architectural decision making.
 
-Remember: Do NOT proceed to step-02 until user explicitly selects [C] from the
-menu and setup is confirmed!
+Remember: Do NOT proceed to step-02 until user explicitly selects [C] from the menu and setup is confirmed!

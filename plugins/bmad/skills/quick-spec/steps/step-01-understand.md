@@ -1,14 +1,12 @@
 ---
-name: "step-01-understand"
-description:
-  "Analyze the requirement delta between current state and what user wants to
-  build"
+name: 'step-01-understand'
+description: 'Analyze the requirement delta between current state and what user wants to build'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/create-tech-spec"
-nextStepFile: "./step-02-investigate.md"
-skipToStepFile: "./step-03-generate.md"
-templateFile: "{workflow_path}/tech-spec-template.md"
-wipFile: "{implementation_artifacts}/tech-spec-wip.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-spec'
+nextStepFile: './step-02-investigate.md'
+skipToStepFile: './step-03-generate.md'
+templateFile: '{workflow_path}/tech-spec-template.md'
+wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---
 
 # Step 1: Analyze Requirement Delta
@@ -21,17 +19,14 @@ wipFile: "{implementation_artifacts}/tech-spec-wip.md"
 - MUST NOT optimize sequence.
 - MUST follow exact instructions.
 - MUST NOT look ahead to future steps.
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## CONTEXT:
 
 - Variables from `workflow.md` are available in memory.
 - Focus: Define the technical requirement delta and scope.
-- Investigation: Perform surface-level code scans ONLY to verify the delta.
-  Reserve deep dives into implementation consequences for Step 2.
-- Objective: Establish a verifiable delta between current state and target
-  state.
+- Investigation: Perform surface-level code scans ONLY to verify the delta. Reserve deep dives into implementation consequences for Step 2.
+- Objective: Establish a verifiable delta between current state and target state.
 
 ## SEQUENCE OF INSTRUCTIONS
 
@@ -66,8 +61,7 @@ a) **Menu Handling:**
     - `[1, 2]` → Load `{skipToStepFile}` (Step 3)
     - `[1, 2, 3]` → Load `./step-04-review.md` (Step 4)
 - **[N] Archive and start fresh:**
-  - Rename `{wipFile}` to
-    `{implementation_artifacts}/tech-spec-{slug}-archived-{date}.md`
+  - Rename `{wipFile}` to `{implementation_artifacts}/tech-spec-{slug}-archived-{date}.md`
 
 ### 1. Greet and Ask for Initial Request
 
@@ -75,20 +69,16 @@ a) **Greet the user briefly:**
 
 "Hey {user_name}! What are we building today?"
 
-b) **Get their initial description.** Don't ask detailed questions yet - just
-understand enough to know where to look.
+b) **Get their initial description.** Don't ask detailed questions yet - just understand enough to know where to look.
 
 ### 2. Quick Orient Scan
 
-a) **Before asking detailed questions, do a rapid scan to understand the
-landscape:**
+a) **Before asking detailed questions, do a rapid scan to understand the landscape:**
 
 b) **Check for existing context docs:**
 
-- Check `{output_folder}` and `{planning_artifacts}`for planning documents (PRD,
-  architecture, epics, research)
-- Check for `**/project-context.md` - if it exists, skim for patterns and
-  conventions
+- Check `{output_folder}` and `{planning_artifacts}`for planning documents (PRD, architecture, epics, research)
+- Check for `**/project-context.md` - if it exists, skim for patterns and conventions
 - Check for any existing stories or specs related to user's request
 
 c) **If user mentioned specific code/features, do a quick scan:**
@@ -110,15 +100,11 @@ d) **Build mental model:**
 a) **Now ask clarifying questions - but make them INFORMED by what you found:**
 
 Instead of generic questions like "What's the scope?", ask specific ones like:
-
-- "`AuthService` handles validation in the controller — should the new field
-  follow that pattern or move it to a dedicated validator?"
-- "`NavigationSidebar` component uses local state for the 'collapsed' toggle —
-  should we stick with that or move it to the global store?"
+- "`AuthService` handles validation in the controller — should the new field follow that pattern or move it to a dedicated validator?"
+- "`NavigationSidebar` component uses local state for the 'collapsed' toggle — should we stick with that or move it to the global store?"
 - "The epics doc mentions X - is this related?"
 
-**Adapt to {user_skill_level}.** Technical users want technical questions.
-Non-technical users need translation.
+**Adapt to {user_skill_level}.** Technical users want technical questions. Non-technical users need translation.
 
 b) **If no existing code is found:**
 
@@ -147,10 +133,10 @@ a) **Create the tech-spec WIP file:**
 3. Update frontmatter with captured values:
    ```yaml
    ---
-   title: "{title}"
-   slug: "{slug}"
-   created: "{date}"
-   status: "in-progress"
+   title: '{title}'
+   slug: '{slug}'
+   created: '{date}'
+   status: 'in-progress'
    stepsCompleted: [1]
    tech_stack: []
    files_to_modify: []
@@ -159,8 +145,7 @@ a) **Create the tech-spec WIP file:**
    ---
    ```
 4. Fill in Overview section with Problem Statement, Solution, and Scope
-5. Fill in Context for Development section with any technical preferences or
-   constraints gathered during informed discovery.
+5. Fill in Context for Development section with any technical preferences or constraints gathered during informed discovery.
 6. Write the file
 
 b) **Report to user:**
@@ -177,23 +162,15 @@ b) **Report to user:**
 
 a) **Display menu:**
 
-Display: "**Select:** [A] Advanced Elicitation [P] Party Mode [C] Continue to
-Deep Investigation (Step 2 of 4)"
+Display: "**Select:** [A] Advanced Elicitation [P] Party Mode [C] Continue to Deep Investigation (Step 2 of 4)"
 
 b) **HALT and wait for user selection.**
 
 #### Menu Handling Logic:
 
-- IF A: Read fully and follow: `{advanced_elicitation}` with current tech-spec
-  content, process enhanced insights, ask user "Accept improvements? (y/n)", if
-  yes update WIP file then redisplay menu, if no keep original then redisplay
-  menu
-- IF P: Read fully and follow: `{party_mode_exec}` with current tech-spec
-  content, process collaborative insights, ask user "Accept changes? (y/n)", if
-  yes update WIP file then redisplay menu, if no keep original then redisplay
-  menu
-- IF C: Verify `{wipFile}` has `stepsCompleted: [1]`, then read fully and
-  follow: `{nextStepFile}`
+- IF A: Read fully and follow: `{advanced_elicitation}` with current tech-spec content, process enhanced insights, ask user "Accept improvements? (y/n)", if yes update WIP file then redisplay menu, if no keep original then redisplay menu
+- IF P: Read fully and follow: `{party_mode_exec}` with current tech-spec content, process collaborative insights, ask user "Accept changes? (y/n)", if yes update WIP file then redisplay menu, if no keep original then redisplay menu
+- IF C: Verify `{wipFile}` has `stepsCompleted: [1]`, then read fully and follow: `{nextStepFile}`
 - IF Any other comments or queries: respond helpfully then redisplay menu
 
 #### EXECUTION RULES:
@@ -211,6 +188,5 @@ b) **HALT and wait for user selection.**
 ## VERIFICATION CHECKLIST:
 
 - [ ] WIP check performed FIRST before any greeting.
-- [ ] `{wipFile}` created with correct frontmatter, Overview, Context for
-      Development, and `stepsCompleted: [1]`.
+- [ ] `{wipFile}` created with correct frontmatter, Overview, Context for Development, and `stepsCompleted: [1]`.
 - [ ] User selected [C] to continue.

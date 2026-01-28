@@ -1,26 +1,23 @@
 ---
-name: "step-01-document-discovery"
-description:
-  "Discover and inventory all project documents, handling duplicates and
-  organizing file structure"
+name: 'step-01-document-discovery'
+description: 'Discover and inventory all project documents, handling duplicates and organizing file structure'
 
 # Path Definitions
-workflow_path: "{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness"
+workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: "./step-01-document-discovery.md"
-nextStepFile: "./step-02-prd-analysis.md"
-workflowFile: "{workflow_path}/workflow.md"
-outputFile: "{planning_artifacts}/implementation-readiness-report-{{date}}.md"
-templateFile: "{workflow_path}/templates/readiness-report-template.md"
+thisStepFile: './step-01-document-discovery.md'
+nextStepFile: './step-02-prd-analysis.md'
+workflowFile: '{workflow_path}/workflow.md'
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
+templateFile: '{workflow_path}/templates/readiness-report-template.md'
 ---
 
 # Step 1: Document Discovery
 
 ## STEP GOAL:
 
-To discover, inventory, and organize all project documents, identifying
-duplicates and determining which versions to use for the assessment.
+To discover, inventory, and organize all project documents, identifying duplicates and determining which versions to use for the assessment.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -30,8 +27,7 @@ duplicates and determining which versions to use for the assessment.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -136,7 +132,8 @@ Initialize {outputFile} with {templateFile}.
 
 ### 6. Present Findings and Get Confirmation
 
-Display findings and ask: "**Document Discovery Complete**
+Display findings and ask:
+"**Document Discovery Complete**
 
 [Show organized file list]
 
@@ -165,15 +162,12 @@ Display: **Select an Option:** [C] Continue to File Validation
 
 #### Menu Handling Logic:
 
-- IF C: Save document inventory to {outputFile}, update frontmatter with
-  completed step and files being included, and then read fully and follow:
-  {nextStepFile}
+- IF C: Save document inventory to {outputFile}, update frontmatter with completed step and files being included, and then read fully and follow: {nextStepFile}
 - IF Any other comments or queries: help user respond then redisplay menu
 
 ## CRITICAL STEP COMPLETION NOTE
 
-ONLY WHEN C is selected and document inventory is saved will you load
-{nextStepFile} to begin file validation.
+ONLY WHEN C is selected and document inventory is saved will you load {nextStepFile} to begin file validation.
 
 ---
 

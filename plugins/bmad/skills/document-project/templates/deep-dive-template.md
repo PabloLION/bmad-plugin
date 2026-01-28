@@ -1,14 +1,17 @@
 # {{target_name}} - Deep Dive Documentation
 
-**Generated:** {{date}} **Scope:** {{target_path}} **Files Analyzed:**
-{{file_count}} **Lines of Code:** {{total_loc}} **Workflow Mode:** Exhaustive
-Deep-Dive
+**Generated:** {{date}}
+**Scope:** {{target_path}}
+**Files Analyzed:** {{file_count}}
+**Lines of Code:** {{total_loc}}
+**Workflow Mode:** Exhaustive Deep-Dive
 
 ## Overview
 
 {{target_description}}
 
-**Purpose:** {{target_purpose}} **Key Responsibilities:** {{responsibilities}}
+**Purpose:** {{target_purpose}}
+**Key Responsibilities:** {{responsibilities}}
 **Integration Points:** {{integration_summary}}
 
 ## Complete File Inventory
@@ -17,21 +20,29 @@ Deep-Dive
 
 ### {{file_path}}
 
-**Purpose:** {{purpose}} **Lines of Code:** {{loc}} **File Type:** {{file_type}}
+**Purpose:** {{purpose}}
+**Lines of Code:** {{loc}}
+**File Type:** {{file_type}}
 
 **What Future Contributors Must Know:** {{contributor_note}}
 
-**Exports:** {{#each exports}}
+**Exports:**
+{{#each exports}}
 
-- `{{signature}}` - {{description}} {{/each}}
+- `{{signature}}` - {{description}}
+  {{/each}}
 
-**Dependencies:** {{#each imports}}
+**Dependencies:**
+{{#each imports}}
 
-- `{{import_path}}` - {{reason}} {{/each}}
+- `{{import_path}}` - {{reason}}
+  {{/each}}
 
-**Used By:** {{#each dependents}}
+**Used By:**
+{{#each dependents}}
 
-- `{{dependent_path}}` {{/each}}
+- `{{dependent_path}}`
+  {{/each}}
 
 **Key Implementation Details:**
 
@@ -41,15 +52,19 @@ Deep-Dive
 
 {{implementation_notes}}
 
-**Patterns Used:** {{#each patterns}}
+**Patterns Used:**
+{{#each patterns}}
 
-- {{pattern_name}}: {{pattern_description}} {{/each}}
+- {{pattern_name}}: {{pattern_description}}
+  {{/each}}
 
 **State Management:** {{state_approach}}
 
-**Side Effects:** {{#each side_effects}}
+**Side Effects:**
+{{#each side_effects}}
 
-- {{effect_type}}: {{effect_description}} {{/each}}
+- {{effect_type}}: {{effect_description}}
+  {{/each}}
 
 **Error Handling:** {{error_handling_approach}}
 
@@ -59,9 +74,11 @@ Deep-Dive
 - Coverage: {{coverage_percentage}}%
 - Test Approach: {{test_approach}}
 
-**Comments/TODOs:** {{#each todos}}
+**Comments/TODOs:**
+{{#each todos}}
 
-- Line {{line_number}}: {{todo_text}} {{/each}}
+- Line {{line_number}}: {{todo_text}}
+  {{/each}}
 
 ---
 
@@ -83,7 +100,8 @@ Deep-Dive
 
 {{#each design_patterns}}
 
-- **{{pattern_name}}**: {{usage_description}} {{/each}}
+- **{{pattern_name}}**: {{usage_description}}
+  {{/each}}
 
 ### State Management Strategy
 
@@ -105,19 +123,22 @@ Deep-Dive
 
 {{#each entry_points}}
 
-- **{{entry_name}}**: {{entry_description}} {{/each}}
+- **{{entry_name}}**: {{entry_description}}
+  {{/each}}
 
 ### Data Transformations
 
 {{#each transformations}}
 
-- **{{transformation_name}}**: {{transformation_description}} {{/each}}
+- **{{transformation_name}}**: {{transformation_description}}
+  {{/each}}
 
 ### Data Exit Points
 
 {{#each exit_points}}
 
-- **{{exit_name}}**: {{exit_description}} {{/each}}
+- **{{exit_name}}**: {{exit_description}}
+  {{/each}}
 
 ## Integration Points
 
@@ -128,7 +149,8 @@ Deep-Dive
 - **{{api_endpoint}}**: {{api_description}}
   - Method: {{method}}
   - Authentication: {{auth_requirement}}
-  - Response: {{response_schema}} {{/each}}
+  - Response: {{response_schema}}
+    {{/each}}
 
 ### APIs Exposed
 
@@ -137,7 +159,8 @@ Deep-Dive
 - **{{api_endpoint}}**: {{api_description}}
   - Method: {{method}}
   - Request: {{request_schema}}
-  - Response: {{response_schema}} {{/each}}
+  - Response: {{response_schema}}
+    {{/each}}
 
 ### Shared State
 
@@ -145,7 +168,8 @@ Deep-Dive
 
 - **{{state_name}}**: {{state_description}}
   - Type: {{state_type}}
-  - Accessed By: {{accessors}} {{/each}}
+  - Accessed By: {{accessors}}
+    {{/each}}
 
 ### Events
 
@@ -153,7 +177,8 @@ Deep-Dive
 
 - **{{event_name}}**: {{event_description}}
   - Type: {{publish_or_subscribe}}
-  - Payload: {{payload_schema}} {{/each}}
+  - Payload: {{payload_schema}}
+    {{/each}}
 
 ### Database Access
 
@@ -161,7 +186,8 @@ Deep-Dive
 
 - **{{table_name}}**: {{operation_type}}
   - Queries: {{query_patterns}}
-  - Indexes Used: {{indexes}} {{/each}}
+  - Indexes Used: {{indexes}}
+    {{/each}}
 
 ## Dependency Graph
 
@@ -171,20 +197,26 @@ Deep-Dive
 
 {{#each entry_point_files}}
 
-- {{file_path}} {{/each}}
+- {{file_path}}
+  {{/each}}
 
 ### Leaf Nodes (Don't Import Others in Scope)
 
 {{#each leaf_files}}
 
-- {{file_path}} {{/each}}
+- {{file_path}}
+  {{/each}}
 
 ### Circular Dependencies
 
-{{#if has_circular_dependencies}} ⚠️ Circular dependencies detected:
+{{#if has_circular_dependencies}}
+⚠️ Circular dependencies detected:
 {{#each circular_deps}}
 
-- {{cycle_description}} {{/each}} {{else}} ✓ No circular dependencies detected
+- {{cycle_description}}
+  {{/each}}
+  {{else}}
+  ✓ No circular dependencies detected
   {{/if}}
 
 ## Testing Analysis
@@ -203,19 +235,22 @@ Deep-Dive
 - **{{test_file_path}}**
   - Tests: {{test_count}}
   - Approach: {{test_approach}}
-  - Mocking Strategy: {{mocking_strategy}} {{/each}}
+  - Mocking Strategy: {{mocking_strategy}}
+    {{/each}}
 
 ### Test Utilities Available
 
 {{#each test_utilities}}
 
-- `{{utility_name}}`: {{utility_description}} {{/each}}
+- `{{utility_name}}`: {{utility_description}}
+  {{/each}}
 
 ### Testing Gaps
 
 {{#each testing_gaps}}
 
-- {{gap_description}} {{/each}}
+- {{gap_description}}
+  {{/each}}
 
 ## Related Code & Reuse Opportunities
 
@@ -225,7 +260,8 @@ Deep-Dive
 
 - **{{feature_name}}** (`{{feature_path}}`)
   - Similarity: {{similarity_description}}
-  - Can Reference For: {{reference_use_case}} {{/each}}
+  - Can Reference For: {{reference_use_case}}
+    {{/each}}
 
 ### Reusable Utilities Available
 
@@ -233,7 +269,8 @@ Deep-Dive
 
 - **{{utility_name}}** (`{{utility_path}}`)
   - Purpose: {{utility_purpose}}
-  - How to Use: {{usage_example}} {{/each}}
+  - How to Use: {{usage_example}}
+    {{/each}}
 
 ### Patterns to Follow
 
@@ -248,31 +285,36 @@ Deep-Dive
 
 {{#each quality_observations}}
 
-- {{observation}} {{/each}}
+- {{observation}}
+  {{/each}}
 
 ### TODOs and Future Work
 
 {{#each all_todos}}
 
-- **{{file_path}}:{{line_number}}**: {{todo_text}} {{/each}}
+- **{{file_path}}:{{line_number}}**: {{todo_text}}
+  {{/each}}
 
 ### Known Issues
 
 {{#each known_issues}}
 
-- {{issue_description}} {{/each}}
+- {{issue_description}}
+  {{/each}}
 
 ### Optimization Opportunities
 
 {{#each optimizations}}
 
-- {{optimization_suggestion}} {{/each}}
+- {{optimization_suggestion}}
+  {{/each}}
 
 ### Technical Debt
 
 {{#each tech_debt_items}}
 
-- {{debt_description}} {{/each}}
+- {{debt_description}}
+  {{/each}}
 
 ## Modification Guidance
 
@@ -292,9 +334,12 @@ Deep-Dive
 
 {{#each testing_checklist_items}}
 
-- [ ] {{checklist_item}} {{/each}}
+- [ ] {{checklist_item}}
+      {{/each}}
 
 ---
 
-_Generated by `document-project` workflow (deep-dive mode)_ _Base Documentation:
-docs/index.md_ _Scan Date: {{date}}_ _Analysis Mode: Exhaustive_
+_Generated by `document-project` workflow (deep-dive mode)_
+_Base Documentation: docs/index.md_
+_Scan Date: {{date}}_
+_Analysis Mode: Exhaustive_

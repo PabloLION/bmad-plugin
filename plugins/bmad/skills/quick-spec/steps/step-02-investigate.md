@@ -1,10 +1,10 @@
 ---
-name: "step-02-investigate"
-description: "Map technical constraints and anchor points within the codebase"
+name: 'step-02-investigate'
+description: 'Map technical constraints and anchor points within the codebase'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/create-tech-spec"
-nextStepFile: "./step-03-generate.md"
-wipFile: "{implementation_artifacts}/tech-spec-wip.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-spec'
+nextStepFile: './step-03-generate.md'
+wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---
 
 # Step 2: Map Technical Constraints & Anchor Points
@@ -17,15 +17,13 @@ wipFile: "{implementation_artifacts}/tech-spec-wip.md"
 - MUST NOT optimize sequence.
 - MUST follow exact instructions.
 - MUST NOT generate the full spec yet (that's Step 3).
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## CONTEXT:
 
 - Requires `{wipFile}` from Step 1 with the "Problem Statement" defined.
 - Focus: Map the problem statement to specific anchor points in the codebase.
-- Output: Exact files to touch, classes/patterns to extend, and technical
-  constraints identified.
+- Output: Exact files to touch, classes/patterns to extend, and technical constraints identified.
 - Objective: Provide the implementation-ready ground truth for the plan.
 
 ## SEQUENCE OF INSTRUCTIONS
@@ -41,15 +39,13 @@ wipFile: "{implementation_artifacts}/tech-spec-wip.md"
 
 **Universal Code Investigation:**
 
-_Isolate deep exploration in sub-agents/tasks where available. Return distilled
-summaries only to prevent context snowballing._
+_Isolate deep exploration in sub-agents/tasks where available. Return distilled summaries only to prevent context snowballing._
 
 a) **Build on Step 1's Quick Scan**
 
 Review what was found in Step 1's orient scan. Then ask:
 
-"Based on my quick look, I see [files/patterns found]. Are there other files or
-directories I should investigate deeply?"
+"Based on my quick look, I see [files/patterns found]. Are there other files or directories I should investigate deeply?"
 
 b) **Read and Analyze Code**
 
@@ -65,8 +61,8 @@ For each file/directory provided:
 - Identify the target directory where the feature should live.
 - Scan parent directories for architectural context.
 - Identify standard project utilities or boilerplate that SHOULD be used.
-- Document this as "Confirmed Clean Slate" - establishing that no legacy
-  constraints exist.
+- Document this as "Confirmed Clean Slate" - establishing that no legacy constraints exist.
+
 
 c) **Document Technical Context**
 
@@ -74,8 +70,7 @@ Capture and confirm with user:
 
 - **Tech Stack**: Languages, frameworks, libraries
 - **Code Patterns**: Architecture patterns, naming conventions, file structure
-- **Files to Modify/Create**: Specific files that will need changes or new files
-  to be created
+- **Files to Modify/Create**: Specific files that will need changes or new files to be created
 - **Test Patterns**: How tests are structured, test frameworks used
 
 d) **Look for project-context.md**
@@ -94,10 +89,10 @@ If `**/project-context.md` exists and wasn't loaded in Step 1:
 ---
 # ... existing frontmatter ...
 stepsCompleted: [1, 2]
-tech_stack: ["{captured_tech_stack}"]
-files_to_modify: ["{captured_files}"]
-code_patterns: ["{captured_patterns}"]
-test_patterns: ["{captured_test_patterns}"]
+tech_stack: ['{captured_tech_stack}']
+files_to_modify: ['{captured_files}']
+code_patterns: ['{captured_patterns}']
+test_patterns: ['{captured_test_patterns}']
 ---
 ```
 
@@ -120,23 +115,15 @@ Fill in:
 
 ### 4. Present Checkpoint Menu
 
-Display: "**Select:** [A] Advanced Elicitation [P] Party Mode [C] Continue to
-Generate Spec (Step 3 of 4)"
+Display: "**Select:** [A] Advanced Elicitation [P] Party Mode [C] Continue to Generate Spec (Step 3 of 4)"
 
 **HALT and wait for user selection.**
 
 #### Menu Handling Logic:
 
-- IF A: Read fully and follow: `{advanced_elicitation}` with current tech-spec
-  content, process enhanced insights, ask user "Accept improvements? (y/n)", if
-  yes update WIP file then redisplay menu, if no keep original then redisplay
-  menu
-- IF P: Read fully and follow: `{party_mode_exec}` with current tech-spec
-  content, process collaborative insights, ask user "Accept changes? (y/n)", if
-  yes update WIP file then redisplay menu, if no keep original then redisplay
-  menu
-- IF C: Verify frontmatter updated with `stepsCompleted: [1, 2]`, then read
-  fully and follow: `{nextStepFile}`
+- IF A: Read fully and follow: `{advanced_elicitation}` with current tech-spec content, process enhanced insights, ask user "Accept improvements? (y/n)", if yes update WIP file then redisplay menu, if no keep original then redisplay menu
+- IF P: Read fully and follow: `{party_mode_exec}` with current tech-spec content, process collaborative insights, ask user "Accept changes? (y/n)", if yes update WIP file then redisplay menu, if no keep original then redisplay menu
+- IF C: Verify frontmatter updated with `stepsCompleted: [1, 2]`, then read fully and follow: `{nextStepFile}`
 - IF Any other comments or queries: respond helpfully then redisplay menu
 
 #### EXECUTION RULES:

@@ -4,18 +4,14 @@
 
 - 🛑 NEVER generate content without user input
 
-- 📖 CRITICAL: ALWAYS read the complete step file before taking any action -
-  partial understanding leads to incomplete decisions
-- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read
-  and understood before proceeding
+- 📖 CRITICAL: ALWAYS read the complete step file before taking any action - partial understanding leads to incomplete decisions
+- 🔄 CRITICAL: When loading next step with 'C', ensure the entire file is read and understood before proceeding
 - ✅ ALWAYS treat this as collaborative discovery between architectural peers
 - 📋 YOU ARE A FACILITATOR, not a content generator
 - 💬 FOCUS on understanding project scope and requirements for architecture
 - 🎯 ANALYZE loaded documents, don't assume or generate requirements
-- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally
-  changed
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
@@ -29,20 +25,15 @@
 
 This step will generate content and present choices:
 
-- **A (Advanced Elicitation)**: Use discovery protocols to develop deeper
-  insights about project context and architectural implications
-- **P (Party Mode)**: Bring multiple perspectives to analyze project
-  requirements from different architectural angles
+- **A (Advanced Elicitation)**: Use discovery protocols to develop deeper insights about project context and architectural implications
+- **P (Party Mode)**: Bring multiple perspectives to analyze project requirements from different architectural angles
 - **C (Continue)**: Save the content to the document and proceed to next step
 
 ## PROTOCOL INTEGRATION:
 
-- When 'A' selected: Read fully and follow:
-  {project-root}/\_bmad/core/workflows/advanced-elicitation/workflow.xml
-- When 'P' selected: Read fully and follow:
-  {project-root}/\_bmad/core/workflows/party-mode/workflow.md
-- PROTOCOLS always return to display this step's A/P/C menu after the A or P
-  have completed
+- When 'A' selected: Read fully and follow: {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml
+- When 'P' selected: Read fully and follow: {project-root}/_bmad/core/workflows/party-mode/workflow.md
+- PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 
 ## CONTEXT BOUNDARIES:
@@ -54,8 +45,7 @@ This step will generate content and present choices:
 
 ## YOUR TASK:
 
-Fully read and Analyze the loaded project documents to understand architectural
-scope, requirements, and constraints before beginning decision making.
+Fully read and Analyze the loaded project documents to understand architectural scope, requirements, and constraints before beginning decision making.
 
 ## CONTEXT ANALYSIS SEQUENCE:
 
@@ -64,8 +54,7 @@ scope, requirements, and constraints before beginning decision making.
 **From PRD Analysis:**
 
 - Extract and analyze Functional Requirements (FRs)
-- Identify Non-Functional Requirements (NFRs) like performance, security,
-  compliance
+- Identify Non-Functional Requirements (NFRs) like performance, security, compliance
 - Note any technical constraints or dependencies mentioned
 - Count and categorize requirements to understand project scale
 
@@ -107,11 +96,9 @@ Present your analysis back to user for validation:
 
 "I'm reviewing your project documentation for {{project_name}}.
 
-{if_epics_loaded}I see {{epic_count}} epics with {{story_count}} total
-stories.{/if_epics_loaded} {if_no_epics}I found {{fr_count}} functional
-requirements organized into {{fr_category_list}}.{/if_no_epics} {if_ux_loaded}I
-also found your UX specification which defines the user experience
-requirements.{/if_ux_loaded}
+{if_epics_loaded}I see {{epic_count}} epics with {{story_count}} total stories.{/if_epics_loaded}
+{if_no_epics}I found {{fr_count}} functional requirements organized into {{fr_category_list}}.{/if_no_epics}
+{if_ux_loaded}I also found your UX specification which defines the user experience requirements.{/if_ux_loaded}
 
 **Key architectural aspects I notice:**
 
@@ -127,8 +114,7 @@ requirements.{/if_ux_loaded}
 - Primary technical domain: [web/mobile/api/backend/full-stack/etc]
 - Cross-cutting concerns identified: [list major ones]
 
-This analysis will help me guide you through the architectural decisions needed
-to ensure AI agents implement this consistently.
+This analysis will help me guide you through the architectural decisions needed to ensure AI agents implement this consistently.
 
 Does this match your understanding of the project scope and requirements?"
 
@@ -149,7 +135,8 @@ Prepare the content to append to the document:
 **Non-Functional Requirements:**
 {{NFRs that will drive architectural decisions}}
 
-**Scale & Complexity:** {{project_scale_assessment}}
+**Scale & Complexity:**
+{{project_scale_assessment}}
 
 - Primary domain: {{technical_domain}}
 - Complexity level: {{complexity_level}}
@@ -168,25 +155,22 @@ Prepare the content to append to the document:
 
 Show the generated content and present choices:
 
-"I've drafted the Project Context Analysis based on your requirements. This sets
-the foundation for our architectural decisions.
+"I've drafted the Project Context Analysis based on your requirements. This sets the foundation for our architectural decisions.
 
 **Here's what I'll add to the document:**
 
 [Show the complete markdown content from step 4]
 
-**What would you like to do?** [A] Advanced Elicitation - Let's dive deeper into
-architectural implications [P] Party Mode - Bring different perspectives to
-analyze requirements [C] Continue - Save this analysis and begin architectural
-decisions"
+**What would you like to do?**
+[A] Advanced Elicitation - Let's dive deeper into architectural implications
+[P] Party Mode - Bring different perspectives to analyze requirements
+[C] Continue - Save this analysis and begin architectural decisions"
 
 ### 6. Handle Menu Selection
 
 #### If 'A' (Advanced Elicitation):
 
-- Read fully and follow:
-  {project-root}/\_bmad/core/workflows/advanced-elicitation/workflow.xml with
-  the current context analysis
+- Read fully and follow: {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml with the current context analysis
 - Process the enhanced architectural insights that come back
 - Ask user: "Accept these enhancements to the project context analysis? (y/n)"
 - If yes: Update content with improvements, then return to A/P/C menu
@@ -194,9 +178,7 @@ decisions"
 
 #### If 'P' (Party Mode):
 
-- Read fully and follow:
-  {project-root}/\_bmad/core/workflows/party-mode/workflow.md with the current
-  project context
+- Read fully and follow: {project-root}/_bmad/core/workflows/party-mode/workflow.md with the current project context
 - Process the collaborative improvements to architectural understanding
 - Ask user: "Accept these changes to the project context analysis? (y/n)"
 - If yes: Update content with improvements, then return to A/P/C menu
@@ -210,35 +192,33 @@ decisions"
 
 ## APPEND TO DOCUMENT:
 
-When user selects 'C', append the content directly to the document using the
-structure from step 4.
+When user selects 'C', append the content directly to the document using the structure from step 4.
 
 ## SUCCESS METRICS:
 
-✅ All input documents thoroughly analyzed for architectural implications ✅
-Project scope and complexity clearly assessed and validated ✅ Technical
-constraints and dependencies identified ✅ Cross-cutting concerns mapped for
-architectural planning ✅ User confirmation of project understanding ✅ A/P/C
-menu presented and handled correctly ✅ Content properly appended to document
-when C selected
+✅ All input documents thoroughly analyzed for architectural implications
+✅ Project scope and complexity clearly assessed and validated
+✅ Technical constraints and dependencies identified
+✅ Cross-cutting concerns mapped for architectural planning
+✅ User confirmation of project understanding
+✅ A/P/C menu presented and handled correctly
+✅ Content properly appended to document when C selected
 
 ## FAILURE MODES:
 
-❌ Skimming documents without deep architectural analysis ❌ Missing or
-misinterpreting critical NFRs ❌ Not validating project understanding with user
-❌ Underestimating complexity indicators ❌ Generating content without real
-analysis of loaded documents ❌ Not presenting A/P/C menu after content
-generation
+❌ Skimming documents without deep architectural analysis
+❌ Missing or misinterpreting critical NFRs
+❌ Not validating project understanding with user
+❌ Underestimating complexity indicators
+❌ Generating content without real analysis of loaded documents
+❌ Not presenting A/P/C menu after content generation
 
-❌ **CRITICAL**: Reading only partial step file - leads to incomplete
-understanding and poor decisions ❌ **CRITICAL**: Proceeding with 'C' without
-fully reading and understanding the next step file ❌ **CRITICAL**: Making
-decisions without complete understanding of step requirements and protocols
+❌ **CRITICAL**: Reading only partial step file - leads to incomplete understanding and poor decisions
+❌ **CRITICAL**: Proceeding with 'C' without fully reading and understanding the next step file
+❌ **CRITICAL**: Making decisions without complete understanding of step requirements and protocols
 
 ## NEXT STEP:
 
-After user selects 'C' and content is saved to document, load
-`./step-03-starter.md` to evaluate starter template options.
+After user selects 'C' and content is saved to document, load `./step-03-starter.md` to evaluate starter template options.
 
-Remember: Do NOT proceed to step-03 until user explicitly selects 'C' from the
-A/P/C menu and content is saved!
+Remember: Do NOT proceed to step-03 until user explicitly selects 'C' from the A/P/C menu and content is saved!

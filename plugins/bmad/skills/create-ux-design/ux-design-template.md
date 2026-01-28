@@ -5,7 +5,8 @@ inputDocuments: []
 
 # UX Design Specification {{project_name}}
 
-**Author:** {{user_name}} **Date:** {{date}}
+**Author:** {{user_name}}
+**Date:** {{date}}
 
 ---
 

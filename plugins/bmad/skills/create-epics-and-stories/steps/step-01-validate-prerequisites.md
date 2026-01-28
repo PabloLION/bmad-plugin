@@ -24,9 +24,7 @@ epicsTemplate: '{workflow_path}/templates/epics-template.md'
 
 ## STEP GOAL:
 
-To validate that all required input documents exist and extract all requirements
-(FRs, NFRs, and additional requirements from UX/Architecture) needed for epic
-and story creation.
+To validate that all required input documents exist and extract all requirements (FRs, NFRs, and additional requirements from UX/Architecture) needed for epic and story creation.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -36,14 +34,12 @@ and story creation.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
 - ✅ You are a product strategist and technical specifications writer
-- ✅ If you already have been given communication or persona patterns, continue
-  to use those while playing this new role
+- ✅ If you already have been given communication or persona patterns, continue to use those while playing this new role
 - ✅ We engage in collaborative dialogue, not command-response
 - ✅ You bring requirements extraction expertise
 - ✅ User brings their product vision and context
@@ -60,8 +56,7 @@ and story creation.
 - 🎯 Extract requirements systematically from all documents
 - 💾 Populate {outputFile} with extracted requirements
 - 📖 Update frontmatter with extraction progress
-- 🚫 FORBIDDEN to load next step until user selects 'C' and requirements are
-  extracted
+- 🚫 FORBIDDEN to load next step until user selects 'C' and requirements are extracted
 
 ## REQUIREMENTS EXTRACTION PROCESS:
 
@@ -74,16 +69,12 @@ Welcome {user_name} to comprehensive epic and story creation!
 Verify required documents exist and are complete:
 
 1. **PRD.md** - Contains requirements (FRs and NFRs) and product scope
-2. **Architecture.md** - Contains technical decisions, API contracts, data
-   models
-3. **UX Design.md** (if UI exists) - Contains interaction patterns, mockups,
-   user flows
+2. **Architecture.md** - Contains technical decisions, API contracts, data models
+3. **UX Design.md** (if UI exists) - Contains interaction patterns, mockups, user flows
 
 ### 2. Document Discovery and Validation
 
-Search for required documents using these patterns (sharded means a large
-document was split into multiple small files with an index.md into a folder) -
-if the whole document is found, use that instead of the sharded version:
+Search for required documents using these patterns (sharded means a large document was split into multiple small files with an index.md into a folder) - if the whole document is found, use that instead of the sharded version:
 
 **PRD Document Search Priority:**
 
@@ -100,15 +91,11 @@ if the whole document is found, use that instead of the sharded version:
 1. `{planning_artifacts}/*ux*.md` (whole document)
 2. `{planning_artifacts}/*ux*/index.md` (sharded version)
 
-Before proceeding, Ask the user if there are any other documents to include for
-analysis, and if anything found should be excluded. Wait for user confirmation.
-Once confirmed, create the {outputFile} from the {epicsTemplate} and in the
-front matter list the files in the array of `inputDocuments: []`.
+Before proceeding, Ask the user if there are any other documents to include for analysis, and if anything found should be excluded. Wait for user confirmation. Once confirmed, create the {outputFile} from the {epicsTemplate} and in the front matter list the files in the array of `inputDocuments: []`.
 
 ### 3. Extract Functional Requirements (FRs)
 
-From the PRD document (full or sharded), read then entire document and extract
-ALL functional requirements:
+From the PRD document (full or sharded), read then entire document and extract ALL functional requirements:
 
 **Extraction Method:**
 
@@ -144,13 +131,11 @@ NFR2: [Performance/Security/Usability requirement]
 
 ### 5. Extract Additional Requirements from Architecture
 
-Review the Architecture document for technical requirements that impact epic and
-story creation:
+Review the Architecture document for technical requirements that impact epic and story creation:
 
 **Look for:**
 
-- **Starter Template**: Does Architecture specify a starter/greenfield template?
-  If YES, document this for Epic 1 Story 1
+- **Starter Template**: Does Architecture specify a starter/greenfield template? If YES, document this for Epic 1 Story 1
 - Infrastructure and deployment requirements
 - Integration requirements with external systems
 - Data migration or setup requirements
@@ -158,8 +143,7 @@ story creation:
 - API versioning or compatibility requirements
 - Security implementation requirements
 
-**IMPORTANT**: If a starter template is mentioned in Architecture, note it
-prominently. This will impact Epic 1 Story 1.
+**IMPORTANT**: If a starter template is mentioned in Architecture, note it prominently. This will impact Epic 1 Story 1.
 
 **Format Additional Requirements as:**
 
@@ -195,8 +179,7 @@ Load {epicsTemplate} and initialize {outputFile}:
    - {{fr_list}} → extracted FRs
    - {{nfr_list}} → extracted NFRs
    - {{additional_requirements}} → extracted additional requirements
-4. Leave {{requirements_coverage_map}} and {{epics_list}} as placeholders for
-   now
+4. Leave {{requirements_coverage_map}} and {{epics_list}} as placeholders for now
 
 ### 8. Present Extracted Requirements
 
@@ -222,8 +205,7 @@ Display to user:
 
 ### 9. Get User Confirmation
 
-Ask: "Do these extracted requirements accurately represent what needs to be
-built? Any additions or corrections?"
+Ask: "Do these extracted requirements accurately represent what needs to be built? Any additions or corrections?"
 
 Update the requirements based on user feedback until confirmation is received.
 
@@ -237,28 +219,22 @@ After extraction and confirmation, update {outputFile} with:
 
 ### 10. Present MENU OPTIONS
 
-Display:
-`**Confirm the Requirements are complete and correct to [C] continue:**`
+Display: `**Confirm the Requirements are complete and correct to [C] continue:**`
 
 #### EXECUTION RULES:
 
 - ALWAYS halt and wait for user input after presenting menu
 - ONLY proceed to next step when user selects 'C'
-- User can chat or ask questions - always respond and then end with display
-  again of the menu option
+- User can chat or ask questions - always respond and then end with display again of the menu option
 
 #### Menu Handling Logic:
 
-- IF C: Save all to {outputFile}, update frontmatter, then read fully and
-  follow: {nextStepFile}
-- IF Any other comments or queries: help user respond then
-  [Redisplay Menu Options](#10-present-menu-options)
+- IF C: Save all to {outputFile}, update frontmatter, then read fully and follow: {nextStepFile}
+- IF Any other comments or queries: help user respond then [Redisplay Menu Options](#10-present-menu-options)
 
 ## CRITICAL STEP COMPLETION NOTE
 
-ONLY WHEN C is selected and all requirements are saved to document and
-frontmatter is updated, will you then read fully and follow: {nextStepFile} to
-begin epic design step.
+ONLY WHEN C is selected and all requirements are saved to document and frontmatter is updated, will you then read fully and follow: {nextStepFile} to begin epic design step.
 
 ---
 
@@ -280,5 +256,4 @@ begin epic design step.
 - Template not properly initialized
 - Not saving requirements to output file
 
-**Master Rule:** Skipping steps, optimizing sequences, or not following exact
-instructions is FORBIDDEN and constitutes SYSTEM FAILURE.
+**Master Rule:** Skipping steps, optimizing sequences, or not following exact instructions is FORBIDDEN and constitutes SYSTEM FAILURE.

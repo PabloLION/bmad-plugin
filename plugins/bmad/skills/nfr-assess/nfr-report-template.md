@@ -1,12 +1,12 @@
 # NFR Assessment - {FEATURE_NAME}
 
-**Date:** {DATE} **Story:** {STORY_ID} (if applicable) **Overall Status:**
-{OVERALL_STATUS} {STATUS_ICON}
+**Date:** {DATE}
+**Story:** {STORY_ID} (if applicable)
+**Overall Status:** {OVERALL_STATUS} {STATUS_ICON}
 
 ---
 
-Note: This assessment summarizes existing evidence; it does not run tests or CI
-workflows.
+Note: This assessment summarizes existing evidence; it does not run tests or CI workflows.
 
 ## Executive Summary
 
@@ -92,12 +92,9 @@ workflows.
 ### Vulnerability Management
 
 - **Status:** {STATUS} {STATUS_ICON}
-- **Threshold:** {THRESHOLD_DESCRIPTION} (e.g., "0 critical, <3 high
-  vulnerabilities")
-- **Actual:** {ACTUAL_DESCRIPTION} (e.g., "0 critical, 1 high, 5 medium
-  vulnerabilities")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Snyk scan results -
-  scan-2025-10-14.json")
+- **Threshold:** {THRESHOLD_DESCRIPTION} (e.g., "0 critical, <3 high vulnerabilities")
+- **Actual:** {ACTUAL_DESCRIPTION} (e.g., "0 critical, 1 high, 5 medium vulnerabilities")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Snyk scan results - scan-2025-10-14.json")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Compliance (if applicable)
@@ -117,8 +114,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., "99.9%")
 - **Actual:** {ACTUAL_VALUE} (e.g., "99.95%")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Uptime monitoring -
-  uptime-report-2025-10-14.csv")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Uptime monitoring - uptime-report-2025-10-14.csv")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Error Rate
@@ -150,8 +146,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., "100 consecutive successful runs")
 - **Actual:** {ACTUAL_VALUE} (e.g., "150 consecutive successful runs")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "CI burn-in results -
-  ci-burn-in-2025-10-14.log")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "CI burn-in results - ci-burn-in-2025-10-14.log")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Disaster Recovery (if applicable)
@@ -177,8 +172,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., ">=80%")
 - **Actual:** {ACTUAL_VALUE} (e.g., "87%")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Coverage report -
-  coverage/lcov-report/index.html")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Coverage report - coverage/lcov-report/index.html")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Code Quality
@@ -186,8 +180,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., ">=85/100")
 - **Actual:** {ACTUAL_VALUE} (e.g., "92/100")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "SonarQube analysis -
-  sonarqube-report-2025-10-14.pdf")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "SonarQube analysis - sonarqube-report-2025-10-14.pdf")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Technical Debt
@@ -195,8 +188,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., "<5% debt ratio")
 - **Actual:** {ACTUAL_VALUE} (e.g., "3.2% debt ratio")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "CodeClimate analysis -
-  codeclimate-2025-10-14.json")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "CodeClimate analysis - codeclimate-2025-10-14.json")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Documentation Completeness
@@ -204,8 +196,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_VALUE} (e.g., ">=90%")
 - **Actual:** {ACTUAL_VALUE} (e.g., "95%")
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Documentation audit -
-  docs-audit-2025-10-14.md")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Documentation audit - docs-audit-2025-10-14.md")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ### Test Quality (from test-review, if available)
@@ -213,8 +204,7 @@ workflows.
 - **Status:** {STATUS} {STATUS_ICON}
 - **Threshold:** {THRESHOLD_DESCRIPTION}
 - **Actual:** {ACTUAL_DESCRIPTION}
-- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Test review report -
-  test-review-2025-10-14.md")
+- **Evidence:** {EVIDENCE_SOURCE} (e.g., "Test review report - test-review-2025-10-14.md")
 - **Findings:** {FINDINGS_DESCRIPTION}
 
 ---
@@ -283,8 +273,7 @@ workflows.
 
 ## Monitoring Hooks
 
-{MONITORING_HOOK_COUNT} monitoring hooks recommended to detect issues before
-failures:
+{MONITORING_HOOK_COUNT} monitoring hooks recommended to detect issues before failures:
 
 ### Performance Monitoring
 
@@ -368,20 +357,19 @@ failures:
 
 **Based on ADR Quality Readiness Checklist (8 categories, 29 criteria)**
 
-| Category                                         | Criteria Met       | PASS             | CONCERNS             | FAIL             | Overall Status                      |
-| ------------------------------------------------ | ------------------ | ---------------- | -------------------- | ---------------- | ----------------------------------- |
-| 1. Testability & Automation                      | {T_MET}/4          | {T_PASS}         | {T_CONCERNS}         | {T_FAIL}         | {T_STATUS} {T_ICON}                 |
-| 2. Test Data Strategy                            | {TD_MET}/3         | {TD_PASS}        | {TD_CONCERNS}        | {TD_FAIL}        | {TD_STATUS} {TD_ICON}               |
-| 3. Scalability & Availability                    | {SA_MET}/4         | {SA_PASS}        | {SA_CONCERNS}        | {SA_FAIL}        | {SA_STATUS} {SA_ICON}               |
-| 4. Disaster Recovery                             | {DR_MET}/3         | {DR_PASS}        | {DR_CONCERNS}        | {DR_FAIL}        | {DR_STATUS} {DR_ICON}               |
-| 5. Security                                      | {SEC_MET}/4        | {SEC_PASS}       | {SEC_CONCERNS}       | {SEC_FAIL}       | {SEC_STATUS} {SEC_ICON}             |
-| 6. Monitorability, Debuggability & Manageability | {MON_MET}/4        | {MON_PASS}       | {MON_CONCERNS}       | {MON_FAIL}       | {MON_STATUS} {MON_ICON}             |
-| 7. QoS & QoE                                     | {QOS_MET}/4        | {QOS_PASS}       | {QOS_CONCERNS}       | {QOS_FAIL}       | {QOS_STATUS} {QOS_ICON}             |
-| 8. Deployability                                 | {DEP_MET}/3        | {DEP_PASS}       | {DEP_CONCERNS}       | {DEP_FAIL}       | {DEP_STATUS} {DEP_ICON}             |
-| **Total**                                        | **{TOTAL_MET}/29** | **{TOTAL_PASS}** | **{TOTAL_CONCERNS}** | **{TOTAL_FAIL}** | **{OVERALL_STATUS} {OVERALL_ICON}** |
+| Category | Criteria Met | PASS | CONCERNS | FAIL | Overall Status |
+|----------|--------------|------|----------|------|----------------|
+| 1. Testability & Automation | {T_MET}/4 | {T_PASS} | {T_CONCERNS} | {T_FAIL} | {T_STATUS} {T_ICON} |
+| 2. Test Data Strategy | {TD_MET}/3 | {TD_PASS} | {TD_CONCERNS} | {TD_FAIL} | {TD_STATUS} {TD_ICON} |
+| 3. Scalability & Availability | {SA_MET}/4 | {SA_PASS} | {SA_CONCERNS} | {SA_FAIL} | {SA_STATUS} {SA_ICON} |
+| 4. Disaster Recovery | {DR_MET}/3 | {DR_PASS} | {DR_CONCERNS} | {DR_FAIL} | {DR_STATUS} {DR_ICON} |
+| 5. Security | {SEC_MET}/4 | {SEC_PASS} | {SEC_CONCERNS} | {SEC_FAIL} | {SEC_STATUS} {SEC_ICON} |
+| 6. Monitorability, Debuggability & Manageability | {MON_MET}/4 | {MON_PASS} | {MON_CONCERNS} | {MON_FAIL} | {MON_STATUS} {MON_ICON} |
+| 7. QoS & QoE | {QOS_MET}/4 | {QOS_PASS} | {QOS_CONCERNS} | {QOS_FAIL} | {QOS_STATUS} {QOS_ICON} |
+| 8. Deployability | {DEP_MET}/3 | {DEP_PASS} | {DEP_CONCERNS} | {DEP_FAIL} | {DEP_STATUS} {DEP_ICON} |
+| **Total** | **{TOTAL_MET}/29** | **{TOTAL_PASS}** | **{TOTAL_CONCERNS}** | **{TOTAL_FAIL}** | **{OVERALL_STATUS} {OVERALL_ICON}** |
 
 **Criteria Met Scoring:**
-
 - ≥26/29 (90%+) = Strong foundation
 - 20-25/29 (69-86%) = Room for improvement
 - <20/29 (<69%) = Significant gaps
@@ -392,20 +380,20 @@ failures:
 
 ```yaml
 nfr_assessment:
-  date: "{DATE}"
-  story_id: "{STORY_ID}"
-  feature_name: "{FEATURE_NAME}"
-  adr_checklist_score: "{TOTAL_MET}/29" # ADR Quality Readiness Checklist
+  date: '{DATE}'
+  story_id: '{STORY_ID}'
+  feature_name: '{FEATURE_NAME}'
+  adr_checklist_score: '{TOTAL_MET}/29'  # ADR Quality Readiness Checklist
   categories:
-    testability_automation: "{T_STATUS}"
-    test_data_strategy: "{TD_STATUS}"
-    scalability_availability: "{SA_STATUS}"
-    disaster_recovery: "{DR_STATUS}"
-    security: "{SEC_STATUS}"
-    monitorability: "{MON_STATUS}"
-    qos_qoe: "{QOS_STATUS}"
-    deployability: "{DEP_STATUS}"
-  overall_status: "{OVERALL_STATUS}"
+    testability_automation: '{T_STATUS}'
+    test_data_strategy: '{TD_STATUS}'
+    scalability_availability: '{SA_STATUS}'
+    disaster_recovery: '{DR_STATUS}'
+    security: '{SEC_STATUS}'
+    monitorability: '{MON_STATUS}'
+    qos_qoe: '{QOS_STATUS}'
+    deployability: '{DEP_STATUS}'
+  overall_status: '{OVERALL_STATUS}'
   critical_issues: { CRITICAL_COUNT }
   high_priority_issues: { HIGH_COUNT }
   medium_priority_issues: { MEDIUM_COUNT }
@@ -414,9 +402,9 @@ nfr_assessment:
   quick_wins: { QUICK_WIN_COUNT }
   evidence_gaps: { EVIDENCE_GAP_COUNT }
   recommendations:
-    - "{RECOMMENDATION_1}"
-    - "{RECOMMENDATION_2}"
-    - "{RECOMMENDATION_3}"
+    - '{RECOMMENDATION_1}'
+    - '{RECOMMENDATION_2}'
+    - '{RECOMMENDATION_3}'
 ```
 
 ---
@@ -465,7 +453,8 @@ nfr_assessment:
 - If CONCERNS ⚠️: Address HIGH/CRITICAL issues, re-run `*nfr-assess`
 - If FAIL ❌: Resolve FAIL status NFRs, re-run `*nfr-assess`
 
-**Generated:** {DATE} **Workflow:** testarch-nfr v4.0
+**Generated:** {DATE}
+**Workflow:** testarch-nfr v4.0
 
 ---
 

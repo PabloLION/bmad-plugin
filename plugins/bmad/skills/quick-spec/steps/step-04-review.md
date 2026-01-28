@@ -1,9 +1,9 @@
 ---
-name: "step-04-review"
-description: "Review and finalize the tech-spec"
+name: 'step-04-review'
+description: 'Review and finalize the tech-spec'
 
-workflow_path: "{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-spec"
-wipFile: "{implementation_artifacts}/tech-spec-wip.md"
+workflow_path: '{project-root}/_bmad/bmm/workflows/bmad-quick-flow/quick-spec'
+wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---
 
 # Step 4: Review & Finalize
@@ -15,22 +15,19 @@ wipFile: "{implementation_artifacts}/tech-spec-wip.md"
 - MUST NOT skip steps.
 - MUST NOT optimize sequence.
 - MUST follow exact instructions.
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## CONTEXT:
 
-- Requires `{wipFile}` from Step 3.
+- Requires `{wipFile}` from Step 3. 
 - MUST present COMPLETE spec content. Iterate until user is satisfied.
-- **Criteria**: The spec MUST meet the **READY FOR DEVELOPMENT** standard
-  defined in `workflow.md`.
+- **Criteria**: The spec MUST meet the **READY FOR DEVELOPMENT** standard defined in `workflow.md`.
 
 ## SEQUENCE OF INSTRUCTIONS
 
 ### 1. Load and Present Complete Spec
 
-**Read `{wipFile}` completely and extract `slug` from frontmatter for later
-use.**
+**Read `{wipFile}` completely and extract `slug` from frontmatter for later use.**
 
 **Present to user:**
 
@@ -46,23 +43,17 @@ use.**
 
 **Present review menu:**
 
-Display: "**Select:** [C] Continue [E] Edit [Q] Questions [A] Advanced
-Elicitation [P] Party Mode"
+Display: "**Select:** [C] Continue [E] Edit [Q] Questions [A] Advanced Elicitation [P] Party Mode"
 
 **HALT and wait for user selection.**
 
 #### Menu Handling Logic:
 
 - IF C: Proceed to Section 3 (Finalize the Spec)
-- IF E: Proceed to Section 2 (Handle Review Feedback), then return here and
-  redisplay menu
+- IF E: Proceed to Section 2 (Handle Review Feedback), then return here and redisplay menu
 - IF Q: Answer questions, then redisplay this menu
-- IF A: Read fully and follow: `{advanced_elicitation}` with current spec
-  content, process enhanced insights, ask user "Accept improvements? (y/n)", if
-  yes update spec then redisplay menu, if no keep original then redisplay menu
-- IF P: Read fully and follow: `{party_mode_exec}` with current spec content,
-  process collaborative insights, ask user "Accept changes? (y/n)", if yes
-  update spec then redisplay menu, if no keep original then redisplay menu
+- IF A: Read fully and follow: `{advanced_elicitation}` with current spec content, process enhanced insights, ask user "Accept improvements? (y/n)", if yes update spec then redisplay menu, if no keep original then redisplay menu
+- IF P: Read fully and follow: `{party_mode_exec}` with current spec content, process collaborative insights, ask user "Accept changes? (y/n)", if yes update spec then redisplay menu, if no keep original then redisplay menu
 - IF Any other comments or queries: respond helpfully then redisplay menu
 
 #### EXECUTION RULES:
@@ -94,24 +85,22 @@ c) **If user has questions:**
 
 ### 3. Finalize the Spec
 
-**When user confirms the spec is good AND it meets the "Ready for Development"
-standard:**
+**When user confirms the spec is good AND it meets the "Ready for Development" standard:**
 
 a) Update `{wipFile}` frontmatter:
 
-```yaml
----
-# ... existing values ...
-status: "ready-for-dev"
-stepsCompleted: [1, 2, 3, 4]
----
-```
+   ```yaml
+   ---
+   # ... existing values ...
+   status: 'ready-for-dev'
+   stepsCompleted: [1, 2, 3, 4]
+   ---
+   ```
 
 b) **Rename WIP file to final filename:**
-
-- Using the `slug` extracted in Section 1
-- Rename `{wipFile}` → `{implementation_artifacts}/tech-spec-{slug}.md`
-- Store this as `finalFile` for use in menus below
+   - Using the `slug` extracted in Section 1
+   - Rename `{wipFile}` → `{implementation_artifacts}/tech-spec-{slug}.md`
+   - Store this as `finalFile` for use in menus below
 
 ### 4. Present Final Menu
 
@@ -126,11 +115,11 @@ Saved to: {finalFile}
 
 **Next Steps:**
 
-[D] Done - exit workflow
-[B] Begin Development - start implementing now (not recommended)
 [A] Advanced Elicitation - refine further
+[R] Adversarial Review - critique of the spec (highly recommended)
+[B] Begin Development - start implementing now (not recommended)
+[D] Done - exit workflow
 [P] Party Mode - get expert feedback before dev
-[R] Adversarial Review again - critique of the spec (highly recommended)
 
 ---
 
@@ -149,15 +138,10 @@ b) **HALT and wait for user selection.**
 
 #### Menu Handling Logic:
 
+- IF A: Read fully and follow: `{advanced_elicitation}` with current spec content, process enhanced insights, ask user "Accept improvements? (y/n)", if yes update spec then redisplay menu, if no keep original then redisplay menu
+- IF B: Read the entire workflow file at `{quick_dev_workflow}` and follow the instructions with the final spec file (warn: fresh context is better)
 - IF D: Exit workflow - display final confirmation and path to spec
-- IF B: Load and execute `{quick_dev_workflow}` with the final spec file (warn:
-  fresh context is better)
-- IF A: Read fully and follow: `{advanced_elicitation}` with current spec
-  content, process enhanced insights, ask user "Accept improvements? (y/n)", if
-  yes update spec then redisplay menu, if no keep original then redisplay menu
-- IF P: Read fully and follow: `{party_mode_exec}` with current spec content,
-  process collaborative insights, ask user "Accept changes? (y/n)", if yes
-  update spec then redisplay menu, if no keep original then redisplay menu
+- IF P: Read fully and follow: `{party_mode_exec}` with current spec content, process collaborative insights, ask user "Accept changes? (y/n)", if yes update spec then redisplay menu, if no keep original then redisplay menu
 - IF R: Execute Adversarial Review (see below)
 - IF Any other comments or queries: respond helpfully then redisplay menu
 
@@ -169,28 +153,21 @@ b) **HALT and wait for user selection.**
 #### Adversarial Review [R] Process:
 
 1. **Invoke Adversarial Review Task**:
+       > With `{finalFile}` constructed, invoke the review task. If possible, use information asymmetry: run this task, and only it, in a separate subagent or process with read access to the project, but no context except the `{finalFile}`.
+       <invoke-task>Review {finalFile} using {project-root}/_bmad/core/tasks/review-adversarial-general.xml</invoke-task>
+       > **Platform fallback:** If task invocation not available, load the task file and follow its instructions inline, passing `{finalFile}` as the content.
+       > The task should: review `{finalFile}` and return a list of findings.
 
-   > With `{finalFile}` constructed, invoke the review task. If possible, use
-   > information asymmetry: run this task, and only it, in a separate subagent
-   > or process with read access to the project, but no context except the
-   > `{finalFile}`. <invoke-task>Review {finalFile} using
-   > {project-root}/\_bmad/core/tasks/review-adversarial-general.xml</invoke-task>
-   > **Platform fallback:** If task invocation not available, load the task file
-   > and follow its instructions inline, passing `{finalFile}` as the content.
-   > The task should: review `{finalFile}` and return a list of findings.
-   2. **Process Findings**:
+    2. **Process Findings**:
+       > Capture the findings from the task output.
+       > **If zero findings:** HALT - this is suspicious. Re-analyze or request user guidance.
+       > Evaluate severity (Critical, High, Medium, Low) and validity (real, noise, undecided).
+       > DO NOT exclude findings based on severity or validity unless explicitly asked to do so.
+       > Order findings by severity.
+       > Number the ordered findings (F1, F2, F3, etc.).
+       > If TodoWrite or similar tool is available, turn each finding into a TODO, include ID, severity, validity, and description in the TODO; otherwise present findings as a table with columns: ID, Severity, Validity, Description
 
-      > Capture the findings from the task output. **If zero findings:** HALT -
-      > this is suspicious. Re-analyze or request user guidance. Evaluate
-      > severity (Critical, High, Medium, Low) and validity (real, noise,
-      > undecided). DO NOT exclude findings based on severity or validity unless
-      > explicitly asked to do so. Order findings by severity. Number the
-      > ordered findings (F1, F2, F3, etc.). If TodoWrite or similar tool is
-      > available, turn each finding into a TODO, include ID, severity,
-      > validity, and description in the TODO; otherwise present findings as a
-      > table with columns: ID, Severity, Validity, Description
-
-   3. Return here and redisplay menu.
+    3. Return here and redisplay menu.
 
 ### 5. Exit Workflow
 

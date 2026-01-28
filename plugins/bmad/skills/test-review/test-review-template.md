@@ -1,8 +1,9 @@
 # Test Quality Review: {test_filename}
 
-**Quality Score**: {score}/100 ({grade} - {assessment}) **Review Date**:
-{YYYY-MM-DD} **Review Scope**: {single | directory | suite} **Reviewer**:
-{user_name or TEA Agent}
+**Quality Score**: {score}/100 ({grade} - {assessment})
+**Review Date**: {YYYY-MM-DD}
+**Review Scope**: {single | directory | suite}
+**Reviewer**: {user_name or TEA Agent}
 
 ---
 
@@ -10,23 +11,25 @@ Note: This review audits existing tests; it does not generate tests.
 
 ## Executive Summary
 
-**Overall Assessment**: {Excellent | Good | Acceptable | Needs Improvement |
-Critical Issues}
+**Overall Assessment**: {Excellent | Good | Acceptable | Needs Improvement | Critical Issues}
 
 **Recommendation**: {Approve | Approve with Comments | Request Changes | Block}
 
 ### Key Strengths
 
-✅ {strength_1} ✅ {strength_2} ✅ {strength_3}
+✅ {strength_1}
+✅ {strength_2}
+✅ {strength_3}
 
 ### Key Weaknesses
 
-❌ {weakness_1} ❌ {weakness_2} ❌ {weakness_3}
+❌ {weakness_1}
+❌ {weakness_2}
+❌ {weakness_3}
 
 ### Summary
 
-{1-2 paragraph summary of overall test quality, highlighting major findings and
-recommendation rationale}
+{1-2 paragraph summary of overall test quality, highlighting major findings and recommendation rationale}
 
 ---
 
@@ -48,8 +51,7 @@ recommendation rationale}
 | Test Duration (≤1.5 min)             | {✅ PASS \| ⚠️ WARN \| ❌ FAIL} | {duration} | {brief_note} |
 | Flakiness Patterns                   | {✅ PASS \| ⚠️ WARN \| ❌ FAIL} | {count}    | {brief_note} |
 
-**Total Violations**: {critical_count} Critical, {high_count} High,
-{medium_count} Medium, {low_count} Low
+**Total Violations**: {critical_count} Critical, {high_count} High, {medium_count} Medium, {low_count} Low
 
 ---
 
@@ -86,12 +88,13 @@ Grade:                   {grade}
 
 ### {issue_number}. {Issue Title}
 
-**Severity**: P0 (Critical) **Location**: `{filename}:{line_number}`
-**Criterion**: {criterion_name} **Knowledge Base**:
-[{fragment_name}]({fragment_path})
+**Severity**: P0 (Critical)
+**Location**: `{filename}:{line_number}`
+**Criterion**: {criterion_name}
+**Knowledge Base**: [{fragment_name}]({fragment_path})
 
-**Issue Description**: {Detailed explanation of what the problem is and why it's
-critical}
+**Issue Description**:
+{Detailed explanation of what the problem is and why it's critical}
 
 **Current Code**:
 
@@ -111,27 +114,29 @@ critical}
 }
 ```
 
-**Why This Matters**: {Explanation of impact - flakiness risk, maintainability,
-reliability}
+**Why This Matters**:
+{Explanation of impact - flakiness risk, maintainability, reliability}
 
-**Related Violations**: {If similar issue appears elsewhere, note line numbers}
+**Related Violations**:
+{If similar issue appears elsewhere, note line numbers}
 
 ---
 
 ## Recommendations (Should Fix)
 
-{If no recommendations: "No additional recommendations. Test quality is
-excellent. ✅"}
+{If no recommendations: "No additional recommendations. Test quality is excellent. ✅"}
 
 {For each recommendation:}
 
 ### {rec_number}. {Recommendation Title}
 
-**Severity**: {P1 (High) | P2 (Medium) | P3 (Low)} **Location**:
-`{filename}:{line_number}` **Criterion**: {criterion_name} **Knowledge Base**:
-[{fragment_name}]({fragment_path})
+**Severity**: {P1 (High) | P2 (Medium) | P3 (Low)}
+**Location**: `{filename}:{line_number}`
+**Criterion**: {criterion_name}
+**Knowledge Base**: [{fragment_name}]({fragment_path})
 
-**Issue Description**: {Detailed explanation of what could be improved and why}
+**Issue Description**:
+{Detailed explanation of what could be improved and why}
 
 **Current Code**:
 
@@ -151,10 +156,11 @@ excellent. ✅"}
 }
 ```
 
-**Benefits**: {Explanation of benefits - maintainability, readability,
-reusability}
+**Benefits**:
+{Explanation of benefits - maintainability, readability, reusability}
 
-**Priority**: {Why this is P1/P2/P3 - urgency and impact}
+**Priority**:
+{Why this is P1/P2/P3 - urgency and impact}
 
 ---
 
@@ -166,10 +172,12 @@ reusability}
 
 ### {practice_number}. {Best Practice Title}
 
-**Location**: `{filename}:{line_number}` **Pattern**: {pattern_name} **Knowledge
-Base**: [{fragment_name}]({fragment_path})
+**Location**: `{filename}:{line_number}`
+**Pattern**: {pattern_name}
+**Knowledge Base**: [{fragment_name}]({fragment_path})
 
-**Why This Is Good**: {Explanation of why this pattern is excellent}
+**Why This Is Good**:
+{Explanation of why this pattern is excellent}
 
 **Code Example**:
 
@@ -180,7 +188,8 @@ Base**: [{fragment_name}]({fragment_path})
 }
 ```
 
-**Use as Reference**: {Encourage using this pattern in other tests}
+**Use as Reference**:
+{Encourage using this pattern in other tests}
 
 ---
 
@@ -244,8 +253,7 @@ Base**: [{fragment_name}]({fragment_path})
 | {AC_2}               | {test_id} | {✅ Covered \| ❌ Missing} | {notes} |
 | {AC_3}               | {test_id} | {✅ Covered \| ❌ Missing} | {notes} |
 
-**Coverage**: {covered_count}/{total_count} criteria covered
-({coverage_percentage}%)
+**Coverage**: {covered_count}/{total_count} criteria covered ({coverage_percentage}%)
 
 ---
 
@@ -253,30 +261,18 @@ Base**: [{fragment_name}]({fragment_path})
 
 This review consulted the following knowledge base fragments:
 
-- **[test-quality.md](../../../testarch/knowledge/test-quality.md)** -
-  Definition of Done for tests (no hard waits, <300 lines, <1.5 min,
-  self-cleaning)
-- **[fixture-architecture.md](../../../testarch/knowledge/fixture-architecture.md)** -
-  Pure function → Fixture → mergeTests pattern
-- **[network-first.md](../../../testarch/knowledge/network-first.md)** - Route
-  intercept before navigate (race condition prevention)
-- **[data-factories.md](../../../testarch/knowledge/data-factories.md)** -
-  Factory functions with overrides, API-first setup
-- **[test-levels-framework.md](../../../testarch/knowledge/test-levels-framework.md)** -
-  E2E vs API vs Component vs Unit appropriateness
-- **[tdd-cycles.md](../../../testarch/knowledge/tdd-cycles.md)** -
-  Red-Green-Refactor patterns
-- **[selective-testing.md](../../../testarch/knowledge/selective-testing.md)** -
-  Duplicate coverage detection
-- **[ci-burn-in.md](../../../testarch/knowledge/ci-burn-in.md)** - Flakiness
-  detection patterns (10-iteration loop)
-- **[test-priorities.md](../../../testarch/knowledge/test-priorities.md)** -
-  P0/P1/P2/P3 classification framework
-- **[traceability.md](../../../testarch/knowledge/traceability.md)** -
-  Requirements-to-tests mapping
+- **[test-quality.md](../../../testarch/knowledge/test-quality.md)** - Definition of Done for tests (no hard waits, <300 lines, <1.5 min, self-cleaning)
+- **[fixture-architecture.md](../../../testarch/knowledge/fixture-architecture.md)** - Pure function → Fixture → mergeTests pattern
+- **[network-first.md](../../../testarch/knowledge/network-first.md)** - Route intercept before navigate (race condition prevention)
+- **[data-factories.md](../../../testarch/knowledge/data-factories.md)** - Factory functions with overrides, API-first setup
+- **[test-levels-framework.md](../../../testarch/knowledge/test-levels-framework.md)** - E2E vs API vs Component vs Unit appropriateness
+- **[tdd-cycles.md](../../../testarch/knowledge/tdd-cycles.md)** - Red-Green-Refactor patterns
+- **[selective-testing.md](../../../testarch/knowledge/selective-testing.md)** - Duplicate coverage detection
+- **[ci-burn-in.md](../../../testarch/knowledge/ci-burn-in.md)** - Flakiness detection patterns (10-iteration loop)
+- **[test-priorities.md](../../../testarch/knowledge/test-priorities.md)** - P0/P1/P2/P3 classification framework
+- **[traceability.md](../../../testarch/knowledge/traceability.md)** - Requirements-to-tests mapping
 
-See [tea-index.csv](../../../testarch/tea-index.csv) for complete knowledge
-base.
+See [tea-index.csv](../../../testarch/tea-index.csv) for complete knowledge base.
 
 ---
 
@@ -306,9 +302,9 @@ base.
 
 ### Re-Review Needed?
 
-{✅ No re-review needed - approve as-is} {⚠️ Re-review after critical fixes -
-request changes, then re-review} {❌ Major refactor required - block merge, pair
-programming recommended}
+{✅ No re-review needed - approve as-is}
+{⚠️ Re-review after critical fixes - request changes, then re-review}
+{❌ Major refactor required - block merge, pair programming recommended}
 
 ---
 
@@ -316,31 +312,24 @@ programming recommended}
 
 **Recommendation**: {Approve | Approve with Comments | Request Changes | Block}
 
-**Rationale**: {1-2 paragraph explanation of recommendation based on findings}
+**Rationale**:
+{1-2 paragraph explanation of recommendation based on findings}
 
 **For Approve**:
 
-> Test quality is excellent/good with {score}/100 score. {Minor issues noted can
-> be addressed in follow-up PRs.} Tests are production-ready and follow best
-> practices.
+> Test quality is excellent/good with {score}/100 score. {Minor issues noted can be addressed in follow-up PRs.} Tests are production-ready and follow best practices.
 
 **For Approve with Comments**:
 
-> Test quality is acceptable with {score}/100 score. {High-priority
-> recommendations should be addressed but don't block merge.} Critical issues
-> resolved, but improvements would enhance maintainability.
+> Test quality is acceptable with {score}/100 score. {High-priority recommendations should be addressed but don't block merge.} Critical issues resolved, but improvements would enhance maintainability.
 
 **For Request Changes**:
 
-> Test quality needs improvement with {score}/100 score. {Critical issues must
-> be fixed before merge.} {X} critical violations detected that pose
-> flakiness/maintainability risks.
+> Test quality needs improvement with {score}/100 score. {Critical issues must be fixed before merge.} {X} critical violations detected that pose flakiness/maintainability risks.
 
 **For Block**:
 
-> Test quality is insufficient with {score}/100 score. {Multiple critical issues
-> make tests unsuitable for production.} Recommend pairing session with QA
-> engineer to apply patterns from knowledge base.
+> Test quality is insufficient with {score}/100 score. {Multiple critical issues make tests unsuitable for production.} Recommend pairing session with QA engineer to apply patterns from knowledge base.
 
 ---
 
@@ -381,9 +370,11 @@ programming recommended}
 
 ## Review Metadata
 
-**Generated By**: BMad TEA Agent (Test Architect) **Workflow**:
-testarch-test-review v4.0 **Review ID**: test-review-{filename}-{YYYYMMDD}
-**Timestamp**: {YYYY-MM-DD HH:MM:SS} **Version**: 1.0
+**Generated By**: BMad TEA Agent (Test Architect)
+**Workflow**: testarch-test-review v4.0
+**Review ID**: test-review-{filename}-{YYYYMMDD}
+**Timestamp**: {YYYY-MM-DD HH:MM:SS}
+**Version**: 1.0
 
 ---
 
@@ -396,5 +387,4 @@ If you have questions or feedback on this review:
 3. Request clarification on specific violations
 4. Pair with QA engineer to apply patterns
 
-This review is guidance, not rigid rules. Context matters - if a pattern is
-justified, document it with a comment.
+This review is guidance, not rigid rules. Context matters - if a pattern is justified, document it with a comment.

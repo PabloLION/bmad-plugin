@@ -1,26 +1,23 @@
 ---
-name: "step-02-prd-analysis"
-description:
-  "Read and analyze PRD to extract all FRs and NFRs for coverage validation"
+name: 'step-02-prd-analysis'
+description: 'Read and analyze PRD to extract all FRs and NFRs for coverage validation'
 
 # Path Definitions
-workflow_path: "{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness"
+workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/implementation-readiness'
 
 # File References
-thisStepFile: "./step-02-prd-analysis.md"
-nextStepFile: "./step-03-epic-coverage-validation.md"
-workflowFile: "{workflow_path}/workflow.md"
-outputFile: "{planning_artifacts}/implementation-readiness-report-{{date}}.md"
-epicsFile: "{planning_artifacts}/*epic*.md" # Will be resolved to actual file
+thisStepFile: './step-02-prd-analysis.md'
+nextStepFile: './step-03-epic-coverage-validation.md'
+workflowFile: '{workflow_path}/workflow.md'
+outputFile: '{planning_artifacts}/implementation-readiness-report-{{date}}.md'
+epicsFile: '{planning_artifacts}/*epic*.md' # Will be resolved to actual file
 ---
 
 # Step 2: PRD Analysis
 
 ## STEP GOAL:
 
-To fully read and analyze the PRD document (whole or sharded) to extract all
-Functional Requirements (FRs) and Non-Functional Requirements (NFRs) for
-validation against epics coverage.
+To fully read and analyze the PRD document (whole or sharded) to extract all Functional Requirements (FRs) and Non-Functional Requirements (NFRs) for validation against epics coverage.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -30,8 +27,7 @@ validation against epics coverage.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: When loading next step with 'C', ensure entire file is read
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
@@ -155,8 +151,7 @@ Append to {outputFile}:
 
 ### 7. Auto-Proceed to Next Step
 
-After PRD analysis complete, immediately load next step for epic coverage
-validation.
+After PRD analysis complete, immediately load next step for epic coverage validation.
 
 ## PROCEEDING TO EPIC COVERAGE VALIDATION
 
@@ -180,5 +175,4 @@ PRD analysis complete. Loading next step to validate epic coverage.
 - Summarizing instead of extracting full text
 - Not documenting findings in report
 
-**Master Rule:** Complete requirement extraction is essential for traceability
-validation.
+**Master Rule:** Complete requirement extraction is essential for traceability validation.

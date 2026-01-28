@@ -1,19 +1,15 @@
 # Test Quality Review - Instructions v4.0
 
-**Workflow:** `testarch-test-review` **Purpose:** Review test quality using
-TEA's comprehensive knowledge base and validate against best practices for
-maintainability, determinism, isolation, and flakiness prevention **Agent:**
-Test Architect (TEA) **Format:** Pure Markdown v4.0 (no XML blocks)
+**Workflow:** `testarch-test-review`
+**Purpose:** Review test quality using TEA's comprehensive knowledge base and validate against best practices for maintainability, determinism, isolation, and flakiness prevention
+**Agent:** Test Architect (TEA)
+**Format:** Pure Markdown v4.0 (no XML blocks)
 
 ---
 
 ## Overview
 
-This workflow performs comprehensive test quality reviews using TEA's knowledge
-base of best practices. It validates tests against proven patterns for fixture
-architecture, network-first safeguards, data factories, determinism, isolation,
-and flakiness prevention. The review generates actionable feedback with quality
-scoring.
+This workflow performs comprehensive test quality reviews using TEA's knowledge base of best practices. It validates tests against proven patterns for fixture architecture, network-first safeguards, data factories, determinism, isolation, and flakiness prevention. The review generates actionable feedback with quality scoring.
 
 **Key Capabilities:**
 
@@ -22,8 +18,7 @@ scoring.
 - **Multi-Scope**: Review single file, directory, or entire test suite
 - **Pattern Detection**: Identifies flaky patterns, hard waits, race conditions
 - **Best Practice Validation**: BDD format, test IDs, priorities, assertions
-- **Actionable Feedback**: Critical issues (must fix) vs recommendations (should
-  fix)
+- **Actionable Feedback**: Critical issues (must fix) vs recommendations (should fix)
 - **Integration**: Works with story files, test-design, acceptance criteria
 
 ---
@@ -43,8 +38,7 @@ scoring.
 
 **Halt Conditions:**
 
-- If test file path is invalid or file doesn't exist, halt and request
-  correction
+- If test file path is invalid or file doesn't exist, halt and request correction
 - If test_dir is empty (no tests found), halt and notify user
 
 ---
@@ -58,25 +52,16 @@ scoring.
 1. Check playwright-utils flag:
    - Read `{config_source}` and check `config.tea_use_playwright_utils`
 
-2. Load relevant knowledge fragments from
-   `{project-root}/_bmad/bmm/testarch/tea-index.csv`:
+2. Load relevant knowledge fragments from `{project-root}/_bmad/bmm/testarch/tea-index.csv`:
 
    **Core Patterns (Always load):**
-   - `test-quality.md` - Definition of Done (deterministic tests, isolated with
-     cleanup, explicit assertions, <300 lines, <1.5 min, 658 lines, 5 examples)
-   - `data-factories.md` - Factory functions with faker: overrides, nested
-     factories, API-first setup (498 lines, 5 examples)
-   - `test-levels-framework.md` - E2E vs API vs Component vs Unit
-     appropriateness with decision matrix (467 lines, 4 examples)
-   - `selective-testing.md` - Duplicate coverage detection with tag-based, spec
-     filter, diff-based selection (727 lines, 4 examples)
-   - `test-healing-patterns.md` - Common failure patterns: stale selectors, race
-     conditions, dynamic data, network errors, hard waits (648 lines, 5
-     examples)
-   - `selector-resilience.md` - Selector best practices (data-testid > ARIA >
-     text > CSS hierarchy, anti-patterns, 541 lines, 4 examples)
-   - `timing-debugging.md` - Race condition prevention and async debugging
-     techniques (370 lines, 3 examples)
+   - `test-quality.md` - Definition of Done (deterministic tests, isolated with cleanup, explicit assertions, <300 lines, <1.5 min, 658 lines, 5 examples)
+   - `data-factories.md` - Factory functions with faker: overrides, nested factories, API-first setup (498 lines, 5 examples)
+   - `test-levels-framework.md` - E2E vs API vs Component vs Unit appropriateness with decision matrix (467 lines, 4 examples)
+   - `selective-testing.md` - Duplicate coverage detection with tag-based, spec filter, diff-based selection (727 lines, 4 examples)
+   - `test-healing-patterns.md` - Common failure patterns: stale selectors, race conditions, dynamic data, network errors, hard waits (648 lines, 5 examples)
+   - `selector-resilience.md` - Selector best practices (data-testid > ARIA > text > CSS hierarchy, anti-patterns, 541 lines, 4 examples)
+   - `timing-debugging.md` - Race condition prevention and async debugging techniques (370 lines, 3 examples)
 
    **If `config.tea_use_playwright_utils: true` (All Utilities):**
    - `overview.md` - Playwright utils best practices
@@ -92,16 +77,11 @@ scoring.
    - `fixtures-composition.md` - Validate mergeTests usage
 
    **If `config.tea_use_playwright_utils: false`:**
-   - `fixture-architecture.md` - Pure function → Fixture → mergeTests
-     composition with auto-cleanup (406 lines, 5 examples)
-   - `network-first.md` - Route intercept before navigate to prevent race
-     conditions (489 lines, 5 examples)
-   - `playwright-config.md` - Environment-based configuration with fail-fast
-     validation (722 lines, 5 examples)
-   - `component-tdd.md` - Red-Green-Refactor patterns with provider isolation
-     (480 lines, 4 examples)
-   - `ci-burn-in.md` - Flaky test detection with 10-iteration burn-in loop (678
-     lines, 4 examples)
+   - `fixture-architecture.md` - Pure function → Fixture → mergeTests composition with auto-cleanup (406 lines, 5 examples)
+   - `network-first.md` - Route intercept before navigate to prevent race conditions (489 lines, 5 examples)
+   - `playwright-config.md` - Environment-based configuration with fail-fast validation (722 lines, 5 examples)
+   - `component-tdd.md` - Red-Green-Refactor patterns with provider isolation (480 lines, 4 examples)
+   - `ci-burn-in.md` - Flaky test detection with 10-iteration burn-in loop (678 lines, 4 examples)
 
 3. Determine review scope:
    - **single**: Review one test file (`test_file_path` provided)
@@ -111,16 +91,14 @@ scoring.
 4. Auto-discover related artifacts (if `auto_discover_story: true`):
    - Extract test ID from filename (e.g., `1.3-E2E-001.spec.ts` → story 1.3)
    - Search for story file (`story-1.3.md`)
-   - Search for test design (`test-design-story-1.3.md` or
-     `test-design-epic-1.md`)
+   - Search for test design (`test-design-story-1.3.md` or `test-design-epic-1.md`)
 
 5. Read story file for context (if available):
    - Extract acceptance criteria
    - Extract priority classification
    - Extract expected test IDs
 
-**Output:** Complete knowledge base loaded, review scope determined, context
-gathered
+**Output:** Complete knowledge base loaded, review scope determined, context gathered
 
 ---
 
@@ -130,8 +108,7 @@ gathered
 
 1. **Discover test files** based on scope:
    - **single**: Use `test_file_path` variable
-   - **directory**: Use `glob` to find all test files in `test_dir` (e.g.,
-     `*.spec.ts`, `*.test.js`)
+   - **directory**: Use `glob` to find all test files in `test_dir` (e.g., `*.spec.ts`, `*.test.js`)
    - **suite**: Use `glob` to find all test files recursively from project root
 
 2. **Parse test file metadata**:
@@ -166,13 +143,11 @@ gathered
 
 **Actions:**
 
-For each test file, validate against quality criteria (configurable via workflow
-variables):
+For each test file, validate against quality criteria (configurable via workflow variables):
 
 #### 1. BDD Format Validation (if `check_given_when_then: true`)
 
-- ✅ **PASS**: Tests use Given-When-Then structure (comments or step
-  organization)
+- ✅ **PASS**: Tests use Given-When-Then structure (comments or step organization)
 - ⚠️ **WARN**: Tests have some structure but not explicit GWT
 - ❌ **FAIL**: Tests lack clear structure, hard to understand intent
 
@@ -182,8 +157,7 @@ variables):
 
 #### 2. Test ID Conventions (if `check_test_ids: true`)
 
-- ✅ **PASS**: Test IDs present and follow convention (e.g., `1.3-E2E-001`,
-  `2.1-API-005`)
+- ✅ **PASS**: Test IDs present and follow convention (e.g., `1.3-E2E-001`, `2.1-API-005`)
 - ⚠️ **WARN**: Some test IDs missing or inconsistent
 - ❌ **FAIL**: No test IDs, can't trace tests to requirements
 
@@ -193,8 +167,7 @@ variables):
 
 #### 3. Priority Markers (if `check_priority_markers: true`)
 
-- ✅ **PASS**: Tests classified as P0/P1/P2/P3 (via markers or test-design
-  reference)
+- ✅ **PASS**: Tests classified as P0/P1/P2/P3 (via markers or test-design reference)
 - ⚠️ **WARN**: Some priority classifications missing
 - ❌ **FAIL**: No priority classification, can't determine criticality
 
@@ -204,8 +177,7 @@ variables):
 
 #### 4. Hard Waits Detection (if `check_hard_waits: true`)
 
-- ✅ **PASS**: No hard waits detected (no `sleep()`, `wait(5000)`, hardcoded
-  delays)
+- ✅ **PASS**: No hard waits detected (no `sleep()`, `wait(5000)`, hardcoded delays)
 - ⚠️ **WARN**: Some hard waits used but with justification comments
 - ❌ **FAIL**: Hard waits detected without justification (flakiness risk)
 
@@ -221,11 +193,9 @@ variables):
 
 #### 5. Determinism Check (if `check_determinism: true`)
 
-- ✅ **PASS**: Tests are deterministic (no conditionals, no try/catch abuse, no
-  random values)
+- ✅ **PASS**: Tests are deterministic (no conditionals, no try/catch abuse, no random values)
 - ⚠️ **WARN**: Some conditionals but with clear justification
-- ❌ **FAIL**: Tests use if/else, switch, or try/catch to control flow
-  (flakiness risk)
+- ❌ **FAIL**: Tests use if/else, switch, or try/catch to control flow (flakiness risk)
 
 **Patterns to detect:**
 
@@ -262,8 +232,7 @@ variables):
 
 **Patterns to check:**
 
-- Fixtures defined (e.g.,
-  `test.extend({ customFixture: async ({}, use) => { ... }})`)
+- Fixtures defined (e.g., `test.extend({ customFixture: async ({}, use) => { ... }})`)
 - Pure functions used for fixture logic
 - mergeTests used to combine fixtures
 - No beforeEach with complex setup (should be in fixtures)
@@ -282,8 +251,7 @@ variables):
 
 - Factory functions defined (e.g., `createUser()`, `generateInvoice()`)
 - Factories use faker.js or similar for realistic data
-- Factories accept overrides (e.g.,
-  `createUser({ email: 'custom@example.com' })`)
+- Factories accept overrides (e.g., `createUser({ email: 'custom@example.com' })`)
 - API-first setup (create via API, test via UI)
 
 **Knowledge Fragment**: data-factories.md
@@ -292,8 +260,7 @@ variables):
 
 #### 9. Network-First Pattern (if `check_network_first: true`)
 
-- ✅ **PASS**: Route interception set up BEFORE navigation (race condition
-  prevention)
+- ✅ **PASS**: Route interception set up BEFORE navigation (race condition prevention)
 - ⚠️ **WARN**: Some routes intercepted correctly, others after navigation
 - ❌ **FAIL**: Route interception after navigation (race condition risk)
 
@@ -339,8 +306,7 @@ variables):
 - ⚠️ **WARN**: Some tests 1.5-3 minutes (consider optimization)
 - ❌ **FAIL**: Tests >3 minutes (too slow, impacts CI/CD)
 
-**Note:** Duration estimation based on complexity analysis if execution data
-unavailable
+**Note:** Duration estimation based on complexity analysis if execution data unavailable
 
 **Knowledge Fragment**: test-quality.md, selective-testing.md
 
@@ -349,8 +315,7 @@ unavailable
 #### 13. Flakiness Patterns (if `check_flakiness_patterns: true`)
 
 - ✅ **PASS**: No known flaky patterns detected
-- ⚠️ **WARN**: Some potential flaky patterns (e.g., tight timeouts, race
-  conditions)
+- ⚠️ **WARN**: Some potential flaky patterns (e.g., tight timeouts, race conditions)
 - ❌ **FAIL**: Multiple flaky patterns detected (high flakiness risk)
 
 **Patterns to detect:**
@@ -370,12 +335,9 @@ unavailable
 **Actions:**
 
 1. **Count violations** by severity:
-   - **Critical (P0)**: Hard waits without justification, no assertions, race
-     conditions, shared state
-   - **High (P1)**: Missing test IDs, no BDD structure, hardcoded data, missing
-     fixtures
-   - **Medium (P2)**: Long test files (>300 lines), missing priorities, some
-     conditionals
+   - **Critical (P0)**: Hard waits without justification, no assertions, race conditions, shared state
+   - **High (P1)**: Missing test IDs, no BDD structure, hardcoded data, missing fixtures
+   - **Medium (P2)**: Long test files (>300 lines), missing priorities, some conditionals
    - **Low (P3)**: Minor style issues, incomplete cleanup, verbose tests
 
 2. **Calculate quality score** (if `quality_score_enabled: true`):
@@ -458,8 +420,7 @@ Quality Score: max(0, min(100, Starting Score - Violations + Bonus))
 
 2. **Generate inline comments** (if `generate_inline_comments: true`):
    - Add TODO comments in test files at violation locations
-   - Format:
-     `// TODO (TEA Review): [Issue description] - See test-review-{filename}.md`
+   - Format: `// TODO (TEA Review): [Issue description] - See test-review-{filename}.md`
    - Never modify test logic, only add comments
 
 3. **Generate quality badge** (if `generate_quality_badge: true`):
@@ -517,14 +478,13 @@ Quality Score: max(0, min(100, Starting Score - Violations + Bonus))
 ````markdown
 # Test Quality Review: auth-login.spec.ts
 
-**Quality Score**: 78/100 (B - Acceptable) **Review Date**: 2025-10-14
+**Quality Score**: 78/100 (B - Acceptable)
+**Review Date**: 2025-10-14
 **Recommendation**: Approve with Comments
 
 ## Executive Summary
 
-Overall, the test demonstrates good structure and coverage of the login flow.
-However, there are several areas for improvement to enhance maintainability and
-prevent flakiness.
+Overall, the test demonstrates good structure and coverage of the login flow. However, there are several areas for improvement to enhance maintainability and prevent flakiness.
 
 **Strengths:**
 
@@ -538,16 +498,16 @@ prevent flakiness.
 - Hardcoded test data (email: 'test@example.com') - use factories instead
 - Missing fixture for common login setup - DRY violation
 
-**Recommendation**: Address critical issue (hard wait) before merging. Other
-improvements can be addressed in follow-up PR.
+**Recommendation**: Address critical issue (hard wait) before merging. Other improvements can be addressed in follow-up PR.
 
 ## Critical Issues (Must Fix)
 
 ### 1. Hard Wait Detected (Line 45)
 
-**Severity**: P0 (Critical) **Issue**: `await page.waitForTimeout(2000)`
-introduces flakiness **Fix**: Use explicit wait for element or network request
-instead **Knowledge**: See test-quality.md, network-first.md
+**Severity**: P0 (Critical)
+**Issue**: `await page.waitForTimeout(2000)` introduces flakiness
+**Fix**: Use explicit wait for element or network request instead
+**Knowledge**: See test-quality.md, network-first.md
 
 ```typescript
 // ❌ Bad (current)
@@ -555,9 +515,7 @@ await page.waitForTimeout(2000);
 await expect(page.locator('[data-testid="user-menu"]')).toBeVisible();
 
 // ✅ Good (recommended)
-await expect(page.locator('[data-testid="user-menu"]')).toBeVisible({
-  timeout: 10000,
-});
+await expect(page.locator('[data-testid="user-menu"]')).toBeVisible({ timeout: 10000 });
 ```
 ````
 
@@ -565,23 +523,25 @@ await expect(page.locator('[data-testid="user-menu"]')).toBeVisible({
 
 ### 1. Use Data Factory for Test User (Lines 23, 32, 41)
 
-**Severity**: P1 (High) **Issue**: Hardcoded email `test@example.com` -
-maintainability risk **Fix**: Create factory function for test users
+**Severity**: P1 (High)
+**Issue**: Hardcoded email `test@example.com` - maintainability risk
+**Fix**: Create factory function for test users
 **Knowledge**: See data-factories.md
 
 ```typescript
 // ✅ Good (recommended)
-import { createTestUser } from "./factories/user-factory";
+import { createTestUser } from './factories/user-factory';
 
-const testUser = createTestUser({ role: "admin" });
+const testUser = createTestUser({ role: 'admin' });
 await loginPage.login(testUser.email, testUser.password);
 ```
 
 ### 2. Extract Login Setup to Fixture (Lines 18-28)
 
-**Severity**: P1 (High) **Issue**: Login setup repeated across tests - DRY
-violation **Fix**: Create fixture for authenticated state **Knowledge**: See
-fixture-architecture.md
+**Severity**: P1 (High)
+**Issue**: Login setup repeated across tests - DRY violation
+**Fix**: Create fixture for authenticated state
+**Knowledge**: See fixture-architecture.md
 
 ```typescript
 // ✅ Good (recommended)
@@ -593,7 +553,7 @@ const test = base.extend({
   },
 });
 
-test("user can access dashboard", async ({ authenticatedPage }) => {
+test('user can access dashboard', async ({ authenticatedPage }) => {
   // Test starts already logged in
 });
 ```

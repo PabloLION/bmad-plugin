@@ -1,7 +1,8 @@
 # {{project_name}} - Project Overview
 
-**Date:** {{date}} **Type:** {{project_type}} **Architecture:**
-{{architecture_type}}
+**Date:** {{date}}
+**Type:** {{project_type}}
+**Architecture:** {{architecture_type}}
 
 ## Executive Summary
 
@@ -27,19 +28,26 @@ This project consists of {{parts_count}} distinct parts:
 - **Type:** {{project_type}}
 - **Location:** `{{root_path}}`
 - **Purpose:** {{purpose}}
-- **Tech Stack:** {{tech_stack}} {{/each}}
+- **Tech Stack:** {{tech_stack}}
+  {{/each}}
 
 ### How Parts Integrate
 
-{{integration_description}} {{/if}}
+{{integration_description}}
+{{/if}}
 
 ## Technology Stack Summary
 
-{{#if is_single_part}} {{technology_table}} {{else}} {{#each project_parts}}
+{{#if is_single_part}}
+{{technology_table}}
+{{else}}
+{{#each project_parts}}
 
 ### {{part_name}} Stack
 
-{{technology_table}} {{/each}} {{/if}}
+{{technology_table}}
+{{/each}}
+{{/if}}
 
 ## Key Features
 
@@ -66,12 +74,16 @@ This project consists of {{parts_count}} distinct parts:
 - **Install:** `{{install_command}}`
 - **Dev:** `{{dev_command}}`
 - **Build:** `{{build_command}}`
-- **Test:** `{{test_command}}` {{else}} {{#each project_parts}}
+- **Test:** `{{test_command}}`
+  {{else}}
+  {{#each project_parts}}
 
 #### {{part_name}}
 
 - **Install:** `{{install_command}}`
-- **Dev:** `{{dev_command}}` {{/each}} {{/if}}
+- **Dev:** `{{dev_command}}`
+  {{/each}}
+  {{/if}}
 
 ## Repository Structure
 
@@ -82,11 +94,9 @@ This project consists of {{parts_count}} distinct parts:
 For detailed information, see:
 
 - [index.md](./index.md) - Master documentation index
-- [architecture.md](./architecture{{#if is_multi_part}}-{part_id}{{/if}}.md) -
-  Detailed architecture
+- [architecture.md](./architecture{{#if is_multi_part}}-{part_id}{{/if}}.md) - Detailed architecture
 - [source-tree-analysis.md](./source-tree-analysis.md) - Directory structure
-- [development-guide.md](./development-guide{{#if is_multi_part}}-{part_id}{{/if}}.md) -
-  Development workflow
+- [development-guide.md](./development-guide{{#if is_multi_part}}-{part_id}{{/if}}.md) - Development workflow
 
 ---
 

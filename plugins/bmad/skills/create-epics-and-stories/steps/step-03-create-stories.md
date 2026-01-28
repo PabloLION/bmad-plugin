@@ -1,31 +1,29 @@
 ---
-name: "step-03-create-stories"
-description:
-  "Generate all epics with their stories following the template structure"
+name: 'step-03-create-stories'
+description: 'Generate all epics with their stories following the template structure'
 
 # Path Definitions
-workflow_path: "{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories"
+workflow_path: '{project-root}/_bmad/bmm/workflows/3-solutioning/create-epics-and-stories'
 
 # File References
-thisStepFile: "./step-03-create-stories.md"
-nextStepFile: "./step-04-final-validation.md"
-workflowFile: "{workflow_path}/workflow.md"
-outputFile: "{planning_artifacts}/epics.md"
+thisStepFile: './step-03-create-stories.md'
+nextStepFile: './step-04-final-validation.md'
+workflowFile: '{workflow_path}/workflow.md'
+outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
-advancedElicitationTask: "{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml"
-partyModeWorkflow: "{project-root}/_bmad/core/workflows/party-mode/workflow.md"
+advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
 
 # Template References
-epicsTemplate: "{workflow_path}/templates/epics-template.md"
+epicsTemplate: '{workflow_path}/templates/epics-template.md'
 ---
 
 # Step 3: Generate Epics and Stories
 
 ## STEP GOAL:
 
-To generate all epics with their stories based on the approved epics_list,
-following the template structure exactly.
+To generate all epics with their stories based on the approved epics_list, following the template structure exactly.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -35,14 +33,12 @@ following the template structure exactly.
 - 📖 CRITICAL: Read the complete step file before taking any action
 - 🔄 CRITICAL: Process epics sequentially
 - 📋 YOU ARE A FACILITATOR, not a content generator
-- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the
-  config `{communication_language}`
+- ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ### Role Reinforcement:
 
 - ✅ You are a product strategist and technical specifications writer
-- ✅ If you already have been given communication or persona patterns, continue
-  to use those while playing this new role
+- ✅ If you already have been given communication or persona patterns, continue to use those while playing this new role
 - ✅ We engage in collaborative dialogue, not command-response
 - ✅ You bring story creation and acceptance criteria expertise
 - ✅ User brings their implementation priorities and constraints
@@ -53,8 +49,7 @@ following the template structure exactly.
 - 🚫 FORBIDDEN to deviate from template structure
 - 💬 Each story must have clear acceptance criteria
 - 🚪 ENSURE each story is completable by a single dev agent
-- 🔗 **CRITICAL: Stories MUST NOT depend on future stories within the same
-  epic**
+- 🔗 **CRITICAL: Stories MUST NOT depend on future stories within the same epic**
 
 ## EXECUTION PROTOCOLS:
 
@@ -86,14 +81,14 @@ For each epic, create stories that:
 - Include specific acceptance criteria
 - Reference requirements being fulfilled
 
-**🚨 DATABASE/ENTITY CREATION PRINCIPLE:** Create tables/entities ONLY when
-needed by the story:
+**🚨 DATABASE/ENTITY CREATION PRINCIPLE:**
+Create tables/entities ONLY when needed by the story:
 
 - ❌ WRONG: Epic 1 Story 1 creates all 50 database tables
 - ✅ RIGHT: Each story creates/alters ONLY the tables it needs
 
-**🔗 STORY DEPENDENCY PRINCIPLE:** Stories must be independently completable in
-sequence:
+**🔗 STORY DEPENDENCY PRINCIPLE:**
+Stories must be independently completable in sequence:
 
 - ❌ WRONG: Story 1.2 requires Story 1.3 to be completed first
 - ✅ RIGHT: Each story can be completed based only on previous stories
@@ -203,8 +198,7 @@ After all stories for an epic are complete:
 
 ### 5. Repeat for All Epics
 
-Continue the process for each epic in the approved list, processing them in
-order (Epic 1, Epic 2, etc.).
+Continue the process for each epic in the approved list, processing them in order (Epic 1, Epic 2, etc.).
 
 ### 6. Final Document Completion
 
@@ -233,31 +227,25 @@ The final {outputFile} must follow this structure exactly:
 
 After all epics and stories are complete:
 
-Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C]
-Continue"
+Display: "**Select an Option:** [A] Advanced Elicitation [P] Party Mode [C] Continue"
 
 #### Menu Handling Logic:
 
 - IF A: Read fully and follow: {advancedElicitationTask}
 - IF P: Read fully and follow: {partyModeWorkflow}
-- IF C: Save content to {outputFile}, update frontmatter, then read fully and
-  follow: {nextStepFile}
-- IF Any other comments or queries: help user respond then
-  [Redisplay Menu Options](#7-present-final-menu-options)
+- IF C: Save content to {outputFile}, update frontmatter, then read fully and follow: {nextStepFile}
+- IF Any other comments or queries: help user respond then [Redisplay Menu Options](#7-present-final-menu-options)
 
 #### EXECUTION RULES:
 
 - ALWAYS halt and wait for user input after presenting menu
 - ONLY proceed to next step when user selects 'C'
 - After other menu items execution, return to this menu
-- User can chat or ask questions - always respond and then end with display
-  again of the menu options
+- User can chat or ask questions - always respond and then end with display again of the menu options
 
 ## CRITICAL STEP COMPLETION NOTE
 
-ONLY WHEN [C continue option] is selected and [all epics and stories saved to
-document following the template structure exactly], will you then read fully and
-follow: `{nextStepFile}` to begin final validation phase.
+ONLY WHEN [C continue option] is selected and [all epics and stories saved to document following the template structure exactly], will you then read fully and follow: `{nextStepFile}` to begin final validation phase.
 
 ---
 
@@ -281,5 +269,4 @@ follow: `{nextStepFile}` to begin final validation phase.
 - Missing acceptance criteria
 - Not following proper formatting
 
-**Master Rule:** Skipping steps, optimizing sequences, or not following exact
-instructions is FORBIDDEN and constitutes SYSTEM FAILURE.
+**Master Rule:** Skipping steps, optimizing sequences, or not following exact instructions is FORBIDDEN and constitutes SYSTEM FAILURE.
