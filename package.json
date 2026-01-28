@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "validate": "bun scripts/validate-upstream-coverage.ts"
+    "validate": "bun scripts/validate-upstream-coverage.ts",
+    "update-readme": "bun scripts/update-readme-version.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
