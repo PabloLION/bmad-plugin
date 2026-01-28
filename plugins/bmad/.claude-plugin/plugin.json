@@ -39,6 +39,7 @@
     "./skills/test-trace/",
     "./skills/nfr-assess/",
     "./skills/continuous-integration/",
-    "./skills/test-review/"
+    "./skills/test-review/",
+    "./skills/testarch-knowledge/"
   ]
 }
