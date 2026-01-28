@@ -2,9 +2,10 @@
  * Three-way validation: upstream BMAD-METHOD ↔ plugin files ↔ plugin.json.
  *
  * Checks:
- * 1. Upstream sync — pull latest upstream before validating
- * 2. Agent coverage — upstream agents ↔ plugin agent .md files
- * 3. Workflow/skill coverage — upstream workflows ↔ plugin skill directories
+ * 0. Upstream sync — pull latest upstream before validating
+ * 1. Agent coverage — upstream agents ↔ plugin agent .md files
+ * 2. Workflow/skill coverage — upstream workflows ↔ plugin skill directories
+ * 3. Content consistency — shared files between upstream and plugin match
  * 4. Manifest consistency — plugin.json commands ↔ actual skill directories
  * 5. Version consistency — .upstream-version ↔ upstream package.json
  *
@@ -219,7 +220,142 @@ async function checkWorkflows(): Promise<void> {
   }
 }
 
-// -- 3. Manifest consistency -------------------------------------------------
+// -- 3. Content consistency --------------------------------------------------
+
+/** Files that are structurally different between upstream and plugin */
+const SKIP_CONTENT_FILES = new Set(["workflow.md", "workflow.yaml", "SKILL.md"]);
+
+/** Normalize whitespace for content comparison: collapse runs of whitespace */
+function normalize(text: string): string {
+  return text.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Recursively list all files under a directory, returning paths relative to it.
+ */
+async function listFilesRecursive(dir: string): Promise<string[]> {
+  const results: string[] = [];
+  const entries = await readdir(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const rel = entry.name;
+    if (entry.isDirectory()) {
+      const subFiles = await listFilesRecursive(join(dir, rel));
+      results.push(...subFiles.map((f) => `${rel}/${f}`));
+    } else {
+      results.push(rel);
+    }
+  }
+  return results;
+}
+
+/**
+ * Build a map of upstream workflow dir → plugin skill dir for all matched pairs.
+ * Reuses the same logic as checkWorkflows but returns the path pairs.
+ */
+async function getWorkflowSkillPairs(): Promise<
+  Array<{ upstreamDir: string; pluginDir: string; label: string }>
+> {
+  const pairs: Array<{
+    upstreamDir: string;
+    pluginDir: string;
+    label: string;
+  }> = [];
+  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+  const categories = await readdir(workflowsRoot, { withFileTypes: true });
+
+  for (const cat of categories) {
+    if (!cat.isDirectory()) continue;
+
+    if (cat.name === "document-project") {
+      const skillPath = join(PLUGIN, "skills", "document-project");
+      if (await exists(skillPath)) {
+        pairs.push({
+          upstreamDir: join(workflowsRoot, cat.name),
+          pluginDir: skillPath,
+          label: "document-project",
+        });
+      }
+      continue;
+    }
+
+    const subs = await readdir(join(workflowsRoot, cat.name), {
+      withFileTypes: true,
+    });
+
+    for (const sub of subs) {
+      if (!sub.isDirectory()) continue;
+      if (SKIP_DIRS.has(sub.name)) continue;
+
+      const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
+      const skillPath = join(PLUGIN, "skills", skillName);
+      if (await exists(skillPath)) {
+        pairs.push({
+          upstreamDir: join(workflowsRoot, cat.name, sub.name),
+          pluginDir: skillPath,
+          label: `${cat.name}/${sub.name}`,
+        });
+      }
+    }
+  }
+  return pairs;
+}
+
+async function checkContent(): Promise<void> {
+  console.log("\n== Content Consistency (upstream ↔ plugin files) ==");
+  const pairs = await getWorkflowSkillPairs();
+  let checkedCount = 0;
+  let driftCount = 0;
+
+  for (const { upstreamDir, pluginDir, label } of pairs) {
+    const upstreamFiles = await listFilesRecursive(upstreamDir);
+    const pluginFiles = await listFilesRecursive(pluginDir);
+    const pluginFileSet = new Set(pluginFiles);
+
+    // Only compare files that exist in upstream and are not structurally different
+    for (const relPath of upstreamFiles) {
+      const fileName = relPath.split("/").pop()!;
+      if (SKIP_CONTENT_FILES.has(fileName)) continue;
+
+      if (!pluginFileSet.has(relPath)) {
+        fail(`Content: ${label}/${relPath} — file missing in plugin`);
+        driftCount++;
+        continue;
+      }
+
+      const upstreamContent = await Bun.file(
+        join(upstreamDir, relPath),
+      ).text();
+      const pluginContent = await Bun.file(join(pluginDir, relPath)).text();
+
+      if (normalize(upstreamContent) === normalize(pluginContent)) {
+        checkedCount++;
+      } else {
+        fail(`Content drift: ${label}/${relPath}`);
+        driftCount++;
+      }
+    }
+
+    // Check for extra files in plugin that don't exist upstream
+    // (SKILL.md is expected extra)
+    for (const relPath of pluginFiles) {
+      const fileName = relPath.split("/").pop()!;
+      if (SKIP_CONTENT_FILES.has(fileName)) continue;
+      if (!upstreamFiles.includes(relPath)) {
+        warn(`Content: ${label}/${relPath} — extra file in plugin (not in upstream)`);
+      }
+    }
+  }
+
+  if (driftCount === 0) {
+    pass(`Content: ${checkedCount} files checked, all match`);
+  } else {
+    console.log(
+      `${RED}  ${driftCount} file(s) drifted out of ${checkedCount + driftCount} checked${RESET}`,
+    );
+  }
+}
+
+// -- 4. Manifest consistency -------------------------------------------------
 
 async function checkManifest(): Promise<void> {
   console.log("\n== Manifest Consistency (plugin.json ↔ skill directories) ==");
@@ -280,6 +416,7 @@ console.log("Validating upstream coverage...");
 await syncUpstream();
 await checkAgents();
 await checkWorkflows();
+await checkContent();
 await checkManifest();
 await checkVersion();
 
