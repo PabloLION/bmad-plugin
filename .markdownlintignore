@@ -8,7 +8,11 @@ plugins/bmad/skills/*/data/*.md
 plugins/bmad/skills/*-steps/*.md
 plugins/bmad/skills/*/instructions.md
 plugins/bmad/skills/*/template.md
+plugins/bmad/skills/*/*-template.md
 plugins/bmad/skills/*/*.template.md
+plugins/bmad/skills/*/templates/*.md
+plugins/bmad/skills/testarch-knowledge/*.md
+plugins/bmad/templates/*.md
 
 # Ignore reference repos
 .upstream/
