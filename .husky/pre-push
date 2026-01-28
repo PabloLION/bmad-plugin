@@ -1,0 +1,1 @@
+bun scripts/validate-upstream-coverage.ts

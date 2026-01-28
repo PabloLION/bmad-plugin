@@ -1,0 +1,16 @@
+{
+  "name": "bmad-plugin",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "validate": "bun scripts/validate-upstream-coverage.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "husky": "^9"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

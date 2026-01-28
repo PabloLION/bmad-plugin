@@ -93,6 +93,17 @@ This plugin implements the **BMAD Method** created by **BMad Code, LLC**.
 - [YouTube](https://www.youtube.com/@BMadCode)
 - [Discord](https://discord.gg/gk8jAdXWmj)
 
+## Development
+
+This repository includes verification tooling (in `scripts/` and `package.json`) that validates the plugin implementation fully covers the upstream BMAD-METHOD content. The tooling is not part of the plugin itself.
+
+```sh
+bun install          # install dependencies (Husky hooks set up automatically)
+bun run validate     # run upstream coverage validation
+```
+
+The validation script checks three-way consistency: upstream BMAD-METHOD repo, plugin files, and `plugin.json` manifest. It runs automatically as a pre-push git hook via Husky.
+
 ## License
 
 MIT License - See [LICENSE](LICENSE) for details.
