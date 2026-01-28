@@ -225,4 +225,59 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 
 ---
 
-Last updated: 2026-01-25
+## 12. Progress Tracker
+
+### Completed
+
+- [x] Initial plugin POC with core skills and agents
+- [x] Flatten skills directory structure
+- [x] Convert commands to skills, simplify plugin.json
+- [x] Workaround isHidden bug (anthropics/claude-code#17271) — skills listed in `commands` array with `bmad-` prefix
+- [x] Reorganize into `plugins/bmad/` structure
+- [x] Add all 10 agents (analyst, architect, dev, pm, sm, ux-designer, tea, tech-writer, barry, bmad-master)
+- [x] Add all 33 workflow skills from upstream
+- [x] Add templates, config, and TEA knowledge base from upstream
+- [x] CI: upstream BMAD version sync workflow (`.github/workflows/sync-upstream.yml`)
+- [x] CI: workaround monitoring workflow (`.github/workflows/check-workarounds.yml`)
+- [x] Rewrite all 33 SKILL.md descriptions to concise action-oriented format
+- [x] Upstream coverage validation script (`scripts/validate-upstream-coverage.ts`) — Bun + Husky pre-push hook
+- [x] Fix missing `testarch-knowledge` in plugin.json commands (found by validation script)
+
+### Pending
+
+#### Name alignment (workarounds in validation script)
+
+The validation script accepts these mismatches via workaround maps but prints ⚠ warnings. Each should be resolved by renaming the plugin file/directory to match upstream exactly, then removing the workaround entry.
+
+Agent rename:
+
+- [ ] Rename `barry.md` → `quick-flow-solo-dev.md` (upstream: `quick-flow-solo-dev.agent.yaml`)
+
+Workflow/skill renames (7 total):
+
+- [ ] Rename skill `epic-retrospective` → `retrospective` (upstream: `4-implementation/retrospective`)
+- [ ] Rename skill `implementation-readiness` → `check-implementation-readiness` (upstream: `3-solutioning/check-implementation-readiness`)
+- [ ] Rename skill `product-brief` → `create-product-brief` (upstream: `1-analysis/create-product-brief`)
+- [ ] Rename skill `test-automate` → `automate` (upstream: `testarch/automate`)
+- [ ] Rename skill `continuous-integration` → `ci` (upstream: `testarch/ci`)
+- [ ] Rename skill `test-framework` → `framework` (upstream: `testarch/framework`)
+- [ ] Rename skill `test-trace` → `trace` (upstream: `testarch/trace`)
+
+#### Gaps found by validation script
+
+- [ ] Upstream renamed `prd` → `create-prd` — plugin skill `prd` is now orphaned, needs rename
+- [ ] Update `.upstream-version` to match upstream `v6.0.0-Beta.2` (was `v6.0.0-alpha.23`)
+- [ ] Investigate `bmad-master` agent — no upstream counterpart, determine if plugin-only or missing from upstream
+
+#### Other
+
+- [ ] Verify upstream BMAD version sync CI catches new releases
+- [ ] Verify isHidden workaround CI detects when anthropics/claude-code#17271 is fixed
+- [ ] Remove isHidden workaround when anthropics/claude-code#17271 is fixed
+- [ ] Submit to official Anthropic plugin registry
+- [ ] Decide marketplace name
+- [ ] Resolve open questions (section 9)
+
+---
+
+Last updated: 2026-01-28
