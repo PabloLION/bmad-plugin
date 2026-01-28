@@ -1,0 +1,68 @@
+name: Check BMAD Upstream
+
+on:
+  schedule:
+    - cron: "0 0 * * 1" # Weekly Monday midnight UTC
+  workflow_dispatch:
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get upstream latest release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(gh api repos/bmadcode/BMAD-METHOD/releases/latest --jq '.tag_name')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Latest upstream version: $VERSION"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT=$(cat .upstream-version)
+          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          echo "Current: $CURRENT"
+          echo "Upstream: $UPSTREAM"
+          if [ "$UPSTREAM" != "$CURRENT" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date."
+          fi
+
+      - name: Create issue if update needed
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          CURRENT=$(cat .upstream-version)
+
+          # Check if notification already exists
+          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMAD update: $UPSTREAM" --state open --json number -q '.[0].number')
+
+          if [ -z "$EXISTING" ]; then
+            gh issue create \
+              --repo ${{ github.repository }} \
+              --title "Upstream BMAD update: $UPSTREAM" \
+              --body "A new version of [bmadcode/BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) is available.
+
+          ## Versions
+
+          - **Current:** $CURRENT
+          - **Upstream:** $UPSTREAM
+
+          ## Action Required
+
+          1. Update \`.upstream/BMAD-METHOD\` to the new version
+          2. Diff changes against current plugin content
+          3. Apply relevant updates to \`plugins/bmad/\`
+          4. Update \`.upstream-version\` to \`$UPSTREAM\`
+
+          See [upstream releases](https://github.com/bmadcode/BMAD-METHOD/releases) for changelog." \
+              --label "upstream-sync"
+          fi
