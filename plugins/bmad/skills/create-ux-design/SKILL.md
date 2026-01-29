@@ -1,5 +1,5 @@
 ---
-name: bmad-ux-design
+name: bmad-create-ux-design
 description:
   Plan UX design to inform architecture and implementation. Phase 2 Planning
 user-invocable: true
