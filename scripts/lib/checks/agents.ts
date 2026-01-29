@@ -11,7 +11,7 @@ import {
   PLUGIN_ONLY_AGENTS,
   UPSTREAM,
 } from '../config.ts';
-import { fail, pass, warn } from '../output.ts';
+import { fail, pass, section, warn } from '../output.ts';
 
 /** Collect upstream agent names from directory entries. */
 function collectUpstreamNames(entries: Dirent[]): string[] {
@@ -30,7 +30,7 @@ function collectUpstreamNames(entries: Dirent[]): string[] {
 async function checkPluginOnlyAgents(
   coveredNames: Set<string>,
 ): Promise<void> {
-  console.log('\n== Plugin-Only Agents ==');
+  section('Plugin-Only Agents');
   const pluginAgents = await readdir(join(PLUGIN, 'agents'));
 
   for (const file of pluginAgents) {
@@ -53,7 +53,7 @@ async function checkPluginOnlyAgents(
 }
 
 export async function checkAgents(): Promise<void> {
-  console.log('\n== Agent Coverage (upstream → plugin) ==');
+  section('Agent Coverage (upstream → plugin)');
 
   const upstreamDir = join(UPSTREAM, 'src/bmm/agents');
   const entries = await readdir(upstreamDir, { withFileTypes: true });

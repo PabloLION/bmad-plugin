@@ -24,7 +24,16 @@ import {
   checkWorkflows,
 } from './lib/checks/index.ts';
 import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from './lib/config.ts';
-import { GREEN, hasFailed, RED, RESET, YELLOW } from './lib/output.ts';
+import {
+  GREEN,
+  hasFailed,
+  RED,
+  RESET,
+  setVerbose,
+  YELLOW,
+} from './lib/output.ts';
+
+setVerbose(process.argv.includes('--verbose'));
 
 console.log('Validating upstream coverage...');
 

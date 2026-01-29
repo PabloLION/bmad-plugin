@@ -15,7 +15,7 @@ import {
   UPSTREAM,
   WORKFLOW_WORKAROUNDS,
 } from '../config.ts';
-import { fail, pass, warn } from '../output.ts';
+import { fail, pass, section, warn } from '../output.ts';
 
 export interface SkillSets {
   upstream: Set<string>;
@@ -95,7 +95,7 @@ function checkUpstreamToDirs(
   upstream: Set<string>,
   directories: Set<string>,
 ): void {
-  console.log('\n== Skills: Upstream → Plugin Directories ==');
+  section('Skills: Upstream → Plugin Directories');
   for (const name of sorted(upstream)) {
     const pluginName = applyWorkaround(name);
     if (pluginName === name && directories.has(pluginName)) {
@@ -113,7 +113,7 @@ function checkUpstreamToManifest(
   upstream: Set<string>,
   manifest: Set<string>,
 ): void {
-  console.log('\n== Skills: Upstream → Manifest ==');
+  section('Skills: Upstream → Manifest');
   for (const name of sorted(upstream)) {
     const pluginName = applyWorkaround(name);
     if (manifest.has(pluginName)) {
@@ -129,7 +129,7 @@ function checkDirsManifestAlignment(
   directories: Set<string>,
   manifest: Set<string>,
 ): void {
-  console.log('\n== Skills: Directories ↔ Manifest ==');
+  section('Skills: Directories ↔ Manifest');
   for (const dir of sorted(directories)) {
     if (!manifest.has(dir)) {
       fail(`Directory "${dir}" not in plugin.json commands`);
@@ -148,7 +148,7 @@ function checkPluginOnlySkills(
   upstream: Set<string>,
   directories: Set<string>,
 ): void {
-  console.log('\n== Plugin-Only Skills ==');
+  section('Plugin-Only Skills');
   const upstreamMapped = new Set([...upstream].map((n) => applyWorkaround(n)));
   for (const dir of sorted(directories)) {
     if (upstreamMapped.has(dir)) {

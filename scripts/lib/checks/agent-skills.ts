@@ -6,7 +6,7 @@
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from '../config.ts';
-import { fail, pass, warn } from '../output.ts';
+import { fail, pass, section, warn } from '../output.ts';
 
 const AGENT_YAML_EXT = '.agent.yaml';
 
@@ -74,7 +74,7 @@ function checkAgentWorkflows(
 }
 
 export async function checkAgentSkills(): Promise<void> {
-  console.log('\n== Agent → Skill Cross-Reference ==');
+  section('Agent → Skill Cross-Reference');
 
   const agentsDir = join(UPSTREAM, 'src/bmm/agents');
   const entries = await readdir(agentsDir, { withFileTypes: true });

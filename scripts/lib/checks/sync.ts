@@ -6,10 +6,10 @@ import { exists } from 'node:fs/promises';
 import { join } from 'node:path';
 import { $ } from 'bun';
 import { UPSTREAM } from '../config.ts';
-import { fail, pass, warn } from '../output.ts';
+import { fail, pass, section, warn } from '../output.ts';
 
 export async function checkSync(): Promise<void> {
-  console.log('\n== Sync Upstream ==');
+  section('Sync Upstream');
 
   const upstreamExists = await exists(join(UPSTREAM, '.git'));
   if (!upstreamExists) {

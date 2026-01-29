@@ -17,7 +17,7 @@
 import { exists, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PLUGIN } from '../config.ts';
-import { fail, pass } from '../output.ts';
+import { fail, pass, section } from '../output.ts';
 
 /** Extract `name:` value from YAML frontmatter. */
 function extractFrontmatterName(content: string): string | null {
@@ -32,7 +32,7 @@ function extractFrontmatterName(content: string): string | null {
 }
 
 export async function checkNaming(): Promise<void> {
-  console.log('\n== SKILL.md Name ↔ Directory Consistency ==');
+  section('SKILL.md Name ↔ Directory Consistency');
 
   const skillsDir = join(PLUGIN, 'skills');
   const entries = await readdir(skillsDir, { withFileTypes: true });

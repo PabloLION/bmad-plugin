@@ -14,7 +14,7 @@ import {
   WORKFLOW_WORKAROUNDS,
 } from '../config.ts';
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
-import { fail, pass, RED, RESET, warn } from '../output.ts';
+import { fail, pass, RED, RESET, section, warn } from '../output.ts';
 
 const DOCUMENT_PROJECT = 'document-project';
 
@@ -171,7 +171,7 @@ async function checkFileCopy(
 
 /** Validate shared files: _shared/ source → skill data/ copies. */
 async function validateSharedFiles(): Promise<void> {
-  console.log('\n== Shared File Consistency (_shared/ → skill copies) ==');
+  section('Shared File Consistency (_shared/ → skill copies)');
   const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
   const pluginShared = join(PLUGIN, 'skills/_shared');
 
@@ -212,7 +212,7 @@ async function validateSharedFiles(): Promise<void> {
 }
 
 export async function checkContent(): Promise<void> {
-  console.log('\n== Content Consistency (upstream ↔ plugin files) ==');
+  section('Content Consistency (upstream ↔ plugin files)');
 
   const pairs = await getWorkflowSkillPairs();
   let checkedCount = 0;
