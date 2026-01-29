@@ -17,19 +17,25 @@ context management.
 
 ## Installation
 
+Plugin management is done **inside a Claude Code session** using slash commands.
+There is no CLI command for installing plugins outside a session.
+
 ### From Self-Hosted Marketplace
 
-```bash
+```sh
 # Add marketplace
 /plugin marketplace add PabloLION/bmad-plugin
 
 # Install plugin
 /plugin install bmad@bmad-method
+
+# Pin to a specific version
+/plugin marketplace add PabloLION/bmad-plugin#v6.0.0-Beta.4.2
 ```
 
 ### From Official Registry
 
-Coming soon - pending submission to the official Anthropic plugin registry.
+Coming soon — pending submission to the official Anthropic plugin registry.
 
 ## Features
 
