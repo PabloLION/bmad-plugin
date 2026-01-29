@@ -73,8 +73,8 @@ AJ modeled **roles as skills**. This is architecturally incorrect.
 
 ### Marketplace Name
 
-- TBD (cannot use reserved names like `claude-plugins-official`, `anthropic-*`,
-  etc.)
+- **`bmad-method`** (matches upstream project name)
+- Cannot use reserved names like `claude-plugins-official`, `anthropic-*`, etc.
 
 ---
 
@@ -176,11 +176,11 @@ bmad-plugin/
 
 ## 9. Open Questions
 
-- [ ] What is the exact structure of official BMAD v6? (need to explore repo)
+- [x] What is the exact structure of official BMAD v6? — explored and mapped
 - [ ] Which workflows are required vs optional?
 - [ ] What license should we use? (need to check BMAD's license)
-- [ ] Plugin name: `bmad` or `bmad-method`?
-- [ ] How to handle BMAD templates? Copy or reference?
+- [x] Plugin name: **`bmad`** (shorter for daily use: `bmad:init` vs `bmad-method:init`)
+- [x] How to handle BMAD templates? — copied from upstream via sync script
 
 ---
 
@@ -255,6 +255,12 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 - [x] Document upstream sync design (`docs/upstream-sync-design.md`)
 - [x] Add SKILL.md name ↔ directory consistency check (naming validation)
 - [x] Fix `create-ux-design` SKILL.md name mismatch (found by naming check)
+- [x] Move `testarch-knowledge/` from `skills/` to plugin root (not a skill)
+- [x] Move `_shared/` from `skills/` to plugin root (not a skill)
+- [x] Update script path references for moved directories
+- [x] Add plugin README (`plugins/bmad/README.md`)
+- [x] Rename marketplace to `bmad-method` in `marketplace.json`
+- [x] Record marketplace submission details (`.dev/marketplace-submission.md`)
 
 ### Pending
 
@@ -262,9 +268,9 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 - [ ] Verify upstream BMAD version sync CI catches new releases
 - [ ] Verify isHidden workaround CI detects when anthropics/claude-code#17271 is fixed
 - [ ] Remove isHidden workaround when anthropics/claude-code#17271 is fixed
-- [ ] Submit to official Anthropic plugin registry
-- [ ] Decide marketplace name
-- [ ] Resolve open questions (section 9)
+- [x] Submit to official Anthropic plugin registry (form submitted 2026-01-29)
+- [x] Decide marketplace name — `bmad-method`
+- [ ] Resolve remaining open questions (section 9)
 
 ---
 

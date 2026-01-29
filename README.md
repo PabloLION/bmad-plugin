@@ -3,7 +3,7 @@
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.2.0 | **Upstream version:** v6.0.0-Beta.2 | **Last synced:** 2026-01-28
+**Plugin version:** v6.0.0-Beta.2.1 | **Upstream version:** v6.0.0-Beta.2 | **Last synced:** 2026-01-28
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
