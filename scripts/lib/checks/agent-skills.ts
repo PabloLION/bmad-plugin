@@ -20,7 +20,7 @@ function extractWorkflowNames(yaml: string): string[] {
   const pattern = /(?:exec|workflow):\s*"[^"]*\/([^/]+)\/workflow\.(?:md|yaml)"/g;
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(yaml)) !== null) {
-    names.push(match[1]);
+    names.push(match[1]!);
   }
   // Deduplicate (e.g. PM has 3 menu items pointing to create-prd)
   return [...new Set(names)];

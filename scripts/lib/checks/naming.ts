@@ -24,8 +24,8 @@ function extractFrontmatterName(content: string): string | null {
   const match = content.match(/^---\s*\n([\s\S]*?)\n---/);
   if (!match) return null;
 
-  const nameMatch = match[1].match(/^name:\s*(.+)$/m);
-  return nameMatch ? nameMatch[1].trim() : null;
+  const nameMatch = match[1]!.match(/^name:\s*(.+)$/m);
+  return nameMatch ? nameMatch[1]!.trim() : null;
 }
 
 export async function checkNaming(): Promise<void> {
