@@ -35,7 +35,7 @@ import {
 
 setVerbose(process.argv.includes('--verbose'));
 
-console.log('Validating upstream coverage...');
+console.log('Validating BMAD-METHOD coverage...');
 
 await checkSync();
 await checkAgents();
