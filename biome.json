@@ -1,5 +1,10 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
   "formatter": {
     "indentStyle": "space",
     "indentWidth": 2
