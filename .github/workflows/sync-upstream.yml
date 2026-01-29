@@ -26,8 +26,8 @@ jobs:
       - name: Compare versions
         id: compare
         run: |
-          CURRENT=$(cat .upstream-version)
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          CURRENT=$(cat .upstream-version | sed 's/^v//')
+          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
           echo "Current: $CURRENT"
           echo "Upstream: $UPSTREAM"
           if [ "$UPSTREAM" != "$CURRENT" ]; then
