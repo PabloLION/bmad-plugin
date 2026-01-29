@@ -22,7 +22,7 @@ export const AGENT_WORKAROUNDS: Record<string, string> = {};
 export const WORKFLOW_WORKAROUNDS: Record<string, string> = {};
 
 /** Plugin-only agents with no upstream counterpart */
-export const PLUGIN_ONLY_AGENTS = new Set(['bmad-master']);
+export const PLUGIN_ONLY_AGENTS = new Set(['bmad-master', 'tech-writer']);
 
 /** Plugin-only skills with no upstream counterpart */
 export const PLUGIN_ONLY_SKILLS = new Set([
