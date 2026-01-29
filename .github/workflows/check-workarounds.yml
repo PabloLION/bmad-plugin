@@ -1,4 +1,4 @@
-name: Check Workaround Issues
+name: Skills Workaround Status
 
 on:
   schedule:
