@@ -27,6 +27,9 @@ jobs:
           EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Workaround can be removed: isHidden bug" --state open --json number -q '.[0].number')
 
           if [ -z "$EXISTING" ]; then
+            # Ensure label exists
+            gh label create tech-debt --repo ${{ github.repository }} --description "Technical debt and workaround removal" --color "D93F0B" 2>/dev/null || true
+
             gh issue create \
               --repo ${{ github.repository }} \
               --title "Workaround can be removed: isHidden bug fixed" \

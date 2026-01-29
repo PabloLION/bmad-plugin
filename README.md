@@ -2,6 +2,10 @@
 
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
+[![Check BMAD Upstream](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-upstream.yml)
+[![Check Workarounds](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 <!-- upstream-version-start -->
 **Plugin version:** v6.0.0-Beta.2.1 | **Upstream version:** v6.0.0-Beta.2 | **Last synced:** 2026-01-28
 <!-- upstream-version-end -->
@@ -19,7 +23,7 @@ context management.
 /plugin marketplace add PabloLION/bmad-plugin
 
 # Install plugin
-/plugin install bmad@bmad-marketplace
+/plugin install bmad@bmad-method
 ```
 
 ### From Official Registry
@@ -107,6 +111,36 @@ bun run validate     # run upstream coverage validation
 ```
 
 The validation script checks three-way consistency: upstream BMAD-METHOD repo, plugin files, and `plugin.json` manifest. It runs automatically as a pre-push git hook via Husky.
+
+## Why This Plugin
+
+There is an existing community implementation
+([aj-geddes/claude-code-bmad-skills](https://github.com/aj-geddes/claude-code-bmad-skills))
+with 221 stars. Here is how this plugin differs:
+
+| | **bmad-plugin** (this repo) | aj-geddes/claude-code-bmad-skills |
+|---|---|---|
+| Upstream version tracked | v6.0.0-Beta.2 (explicit) | v6 (approximate) |
+| Skills | 33 | 4 |
+| Agents | 10 | 12 |
+| Automated upstream sync | Yes (GitHub Actions) | No |
+| Version tracking | Explicit with `.upstream-version` | None |
+| CI & validation | Biome, markdownlint, Husky, upstream coverage checks | None |
+| Plugin marketplace | Yes (`marketplace.json`) | No (Smithery only) |
+| Architecture | Roles → agents, workflows → skills (correct mapping) | Roles → skills (incorrect mapping) |
+| Last updated | Active | 2026-01-01 |
+
+**Key advantages:**
+
+- **8x more skills** (33 vs 4) — every upstream workflow is covered
+- **Correct architecture** — BMAD roles map to agents (isolated personas), not
+  skills. Skills are for workflows. The alternative conflates the two
+- **Automated upstream tracking** — GitHub Actions weekly check with automatic
+  issue creation when BMAD-METHOD releases a new version
+- **Validation tooling** — three-way consistency check (upstream ↔ plugin files
+  ↔ manifest) runs on every push
+- **Explicit versioning** — plugin version tracks upstream version with a patch
+  suffix for plugin-only changes
 
 ## License
 

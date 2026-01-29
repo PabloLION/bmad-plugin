@@ -46,6 +46,9 @@ jobs:
           EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMAD update: $UPSTREAM" --state open --json number -q '.[0].number')
 
           if [ -z "$EXISTING" ]; then
+            # Ensure label exists
+            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream BMAD-METHOD version update" --color "0E8A16" 2>/dev/null || true
+
             gh issue create \
               --repo ${{ github.repository }} \
               --title "Upstream BMAD update: $UPSTREAM" \
