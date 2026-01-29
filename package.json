@@ -11,6 +11,7 @@
     "test": "bun test"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.13",
     "@types/bun": "latest",
     "husky": "^9"
   },
