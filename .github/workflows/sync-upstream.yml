@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  contents: write
   issues: write
 
 jobs:
@@ -36,6 +37,23 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
             echo "Already up to date."
           fi
+
+      - name: Update badge JSON
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          cat > .github/badges/upstream-version.json <<EOF
+          {
+            "schemaVersion": 1,
+            "label": "BMAD Method",
+            "message": "$UPSTREAM",
+            "color": "blue"
+          }
+          EOF
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/badges/upstream-version.json
+          git diff --cached --quiet || git commit -m "chore: update upstream version badge to $UPSTREAM" && git push
 
       - name: Create issue if update needed
         if: steps.compare.outputs.changed == 'true'

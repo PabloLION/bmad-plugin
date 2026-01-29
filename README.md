@@ -3,6 +3,7 @@
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
+[![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmad-code-org/BMAD-METHOD)
 [![Skills Visibility Fix](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -96,7 +97,7 @@ Coming soon - pending submission to the official Anthropic plugin registry.
 
 This plugin implements the **BMAD Method** created by **BMad Code, LLC**.
 
-- [Original Repository](https://github.com/bmadcode/BMAD-METHOD)
+- [Original Repository](https://github.com/bmad-code-org/BMAD-METHOD)
 - [Website](https://bmadcodes.com/bmad-method/)
 - [YouTube](https://www.youtube.com/@BMadCode)
 - [Discord](https://discord.gg/gk8jAdXWmj)
