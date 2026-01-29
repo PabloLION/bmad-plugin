@@ -251,28 +251,12 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 - [x] Remove stale `create-prd/prd-template.md` (upstream moved to `templates/`)
 - [x] Document `quick-dev/data/project-levels.yaml` as plugin-only data
 - [x] Add `bun run sync` and `bun run validate` scripts to package.json
+- [x] Rename all 8 workarounds to match upstream (1 agent + 7 skills) — full alignment
+- [x] Document upstream sync design (`docs/upstream-sync-design.md`)
+- [x] Add SKILL.md name ↔ directory consistency check (naming validation)
+- [x] Fix `create-ux-design` SKILL.md name mismatch (found by naming check)
 
 ### Pending
-
-#### Name alignment (workarounds in validation script)
-
-The validation script accepts these mismatches via workaround maps but prints ⚠ warnings. Each should be resolved by renaming the plugin file/directory to match upstream exactly, then removing the workaround entry.
-
-Agent rename:
-
-- [ ] Rename `barry.md` → `quick-flow-solo-dev.md` (upstream: `quick-flow-solo-dev.agent.yaml`)
-
-Workflow/skill renames (7 total):
-
-- [ ] Rename skill `epic-retrospective` → `retrospective` (upstream: `4-implementation/retrospective`)
-- [ ] Rename skill `implementation-readiness` → `check-implementation-readiness` (upstream: `3-solutioning/check-implementation-readiness`)
-- [ ] Rename skill `product-brief` → `create-product-brief` (upstream: `1-analysis/create-product-brief`)
-- [ ] Rename skill `test-automate` → `automate` (upstream: `testarch/automate`)
-- [ ] Rename skill `continuous-integration` → `ci` (upstream: `testarch/ci`)
-- [ ] Rename skill `test-framework` → `framework` (upstream: `testarch/framework`)
-- [ ] Rename skill `test-trace` → `trace` (upstream: `testarch/trace`)
-
-#### Other
 
 - [ ] Investigate `bmad-master` agent — no upstream counterpart, determine if plugin-only or missing from upstream
 - [ ] Verify upstream BMAD version sync CI catches new releases
