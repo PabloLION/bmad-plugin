@@ -1,5 +1,5 @@
 ---
-name: bmad-test-automate
+name: bmad-automate
 description: Comprehensive test automation setup. Test Architecture
 user-invocable: true
 disable-model-invocation: true

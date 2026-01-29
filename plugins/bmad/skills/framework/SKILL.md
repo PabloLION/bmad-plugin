@@ -1,13 +1,14 @@
 ---
-name: bmad-test-trace
-description: Map requirements to tests for traceability. Test Architecture
+name: bmad-framework
+description:
+  Initialize production-ready test framework architecture. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Test Traceability Workflow
+# Test Framework Workflow
 
-**Goal:** Map requirements to tests and make quality gate decisions.
+**Goal:** Initialize production-ready test framework architecture.
 
 **Agent:** TEA (Murat) **Phase:** Test Architecture
 
