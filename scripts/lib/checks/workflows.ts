@@ -55,7 +55,11 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
 /** Collect plugin skill directory names. */
 async function getPluginDirectories(): Promise<Set<string>> {
   const entries = await readdir(join(PLUGIN, "skills"), { withFileTypes: true });
-  return new Set(entries.filter((e) => e.isDirectory()).map((e) => e.name));
+  return new Set(
+    entries
+      .filter((e) => e.isDirectory() && !e.name.startsWith("_"))
+      .map((e) => e.name),
+  );
 }
 
 /** Collect plugin.json manifest command names. */

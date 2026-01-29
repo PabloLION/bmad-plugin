@@ -16,6 +16,7 @@ import {
   WORKFLOW_WORKAROUNDS,
   SKIP_DIRS,
   SKIP_CONTENT_FILES,
+  SHARED_FILE_TARGETS,
 } from "./lib/config.ts";
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -128,6 +129,52 @@ for (const pair of pairs) {
 }
 
 console.log(`\nTotal: ${totalFiles} files ${DRY_RUN ? "would be" : ""} synced.`);
+
+// Sync _shared/ directories and distribute to target skills
+const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+let sharedCount = 0;
+
+for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
+  const sharedDir = join(workflowsRoot, category, "_shared");
+  if (!(await exists(sharedDir))) continue;
+
+  const sharedFiles = await listFilesRecursive(sharedDir);
+  const pluginSharedDir = join(PLUGIN, "skills/_shared");
+
+  for (const relPath of sharedFiles) {
+    const srcPath = join(sharedDir, relPath);
+
+    // Copy to plugin _shared/ (source of truth)
+    const sharedDest = join(pluginSharedDir, relPath);
+    if (DRY_RUN) {
+      console.log(`  [dry-run] _shared/${relPath}`);
+    } else {
+      await Bun.$`mkdir -p ${dirname(sharedDest)}`.quiet();
+      await cp(srcPath, sharedDest, { force: true });
+    }
+    sharedCount++;
+
+    // Distribute to each target skill's data/
+    for (const skill of targetSkills) {
+      const skillDest = join(PLUGIN, "skills", skill, "data", relPath);
+      if (DRY_RUN) {
+        console.log(`  [dry-run] ${skill}/data/${relPath}`);
+      } else {
+        await Bun.$`mkdir -p ${dirname(skillDest)}`.quiet();
+        await cp(srcPath, skillDest, { force: true });
+      }
+      sharedCount++;
+    }
+  }
+
+  console.log(
+    `Shared: ${category}/_shared/ → _shared/ + ${targetSkills.length} skills`,
+  );
+}
+
+if (sharedCount > 0) {
+  console.log(`Shared files: ${sharedCount} copies synced.`);
+}
 
 // Update version file
 if (!DRY_RUN) {

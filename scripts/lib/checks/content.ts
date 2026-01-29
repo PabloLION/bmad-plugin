@@ -10,6 +10,8 @@ import {
   WORKFLOW_WORKAROUNDS,
   SKIP_DIRS,
   SKIP_CONTENT_FILES,
+  SHARED_FILE_TARGETS,
+  PLUGIN_ONLY_DATA,
 } from "../config.ts";
 import { pass, fail, warn, RED, RESET } from "../output.ts";
 import { normalize, listFilesRecursive } from "../fs-utils.ts";
@@ -102,14 +104,29 @@ export async function checkContent(): Promise<void> {
     }
 
     // Check for extra files in plugin that don't exist upstream
+    const skillName = pluginDir.split("/").pop()!;
     for (const relPath of pluginFiles) {
       const fileName = relPath.split("/").pop()!;
       if (SKIP_CONTENT_FILES.has(fileName)) continue;
-      if (!upstreamFiles.includes(relPath)) {
-        warn(
-          `Content: ${label}/${relPath} — extra file in plugin (not in upstream)`,
-        );
+      if (upstreamFiles.includes(relPath)) continue;
+
+      // Check if this is a known plugin-only data file
+      const qualifiedPath = `${skillName}/${relPath}`;
+      if (PLUGIN_ONLY_DATA.has(qualifiedPath)) {
+        pass(`${qualifiedPath} (plugin-only data, expected)`);
+        continue;
       }
+
+      // Check if this is a shared-distributed file (copied from _shared/)
+      const isSharedCopy = Object.values(SHARED_FILE_TARGETS).some(
+        (targets) =>
+          targets.includes(skillName) && relPath.startsWith("data/"),
+      );
+      if (isSharedCopy) continue; // validated separately in shared check
+
+      warn(
+        `Content: ${label}/${relPath} — extra file in plugin (not in upstream)`,
+      );
     }
   }
 
@@ -118,6 +135,56 @@ export async function checkContent(): Promise<void> {
   } else {
     console.log(
       `${RED}  ${driftCount} file(s) drifted out of ${checkedCount + driftCount} checked${RESET}`,
+    );
+  }
+
+  // Validate shared files: _shared/ source → skill data/ copies
+  console.log("\n== Shared File Consistency (_shared/ → skill copies) ==");
+  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+
+  for (const [category, targets] of Object.entries(SHARED_FILE_TARGETS)) {
+    const upstreamShared = join(workflowsRoot, category, "_shared");
+    const pluginShared = join(PLUGIN, "skills/_shared");
+
+    if (!(await exists(upstreamShared))) {
+      fail(`Upstream _shared/ missing: ${category}/_shared/`);
+      continue;
+    }
+
+    const sharedFiles = await listFilesRecursive(upstreamShared);
+
+    for (const relPath of sharedFiles) {
+      const upstreamContent = await Bun.file(
+        join(upstreamShared, relPath),
+      ).text();
+
+      // Check plugin _shared/ copy
+      const sharedPath = join(pluginShared, relPath);
+      if (!(await exists(sharedPath))) {
+        fail(`Missing: _shared/${relPath}`);
+      } else {
+        const sharedContent = await Bun.file(sharedPath).text();
+        if (normalize(upstreamContent) !== normalize(sharedContent)) {
+          fail(`Drift: _shared/${relPath} vs upstream`);
+        }
+      }
+
+      // Check each skill's data/ copy
+      for (const skill of targets) {
+        const skillCopy = join(PLUGIN, "skills", skill, "data", relPath);
+        if (!(await exists(skillCopy))) {
+          fail(`Missing: ${skill}/data/${relPath}`);
+        } else {
+          const copyContent = await Bun.file(skillCopy).text();
+          if (normalize(upstreamContent) !== normalize(copyContent)) {
+            fail(`Drift: ${skill}/data/${relPath} vs upstream`);
+          }
+        }
+      }
+    }
+
+    pass(
+      `_shared/${category}: upstream ↔ _shared/ ↔ ${targets.length} skill copies`,
     );
   }
 }
