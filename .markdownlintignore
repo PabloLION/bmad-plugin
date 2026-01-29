@@ -11,7 +11,7 @@ plugins/bmad/skills/*/template.md
 plugins/bmad/skills/*/*-template.md
 plugins/bmad/skills/*/*.template.md
 plugins/bmad/skills/*/templates/*.md
-plugins/bmad/skills/testarch-knowledge/*.md
+plugins/bmad/testarch-knowledge/*.md
 plugins/bmad/templates/*.md
 
 # Ignore reference repos
