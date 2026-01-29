@@ -9,9 +9,8 @@ import { fail, pass } from '../output.ts';
 export async function checkVersion(): Promise<void> {
   console.log('\n== Version Consistency ==');
 
-  const versionFile = (
-    await Bun.file(join(ROOT, '.upstream-version')).text()
-  ).trim();
+  const versionRaw = await Bun.file(join(ROOT, '.upstream-version')).text();
+  const versionFile = versionRaw.trim();
 
   const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
   const upstreamVersion = `v${pkgJson.version}`;

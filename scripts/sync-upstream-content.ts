@@ -43,6 +43,34 @@ interface WorkflowSkillPair {
   label: string;
 }
 
+/** Process a single category's sub-workflows into pairs. */
+async function processCategorySubWorkflows(
+  workflowsRoot: string,
+  catName: string,
+  pairs: WorkflowSkillPair[],
+): Promise<void> {
+  const subs = await readdir(join(workflowsRoot, catName), {
+    withFileTypes: true,
+  });
+
+  for (const sub of subs) {
+    if (!sub.isDirectory() || SKIP_DIRS.has(sub.name)) {
+      continue;
+    }
+
+    const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
+    const skillPath = join(PLUGIN, 'skills', skillName);
+
+    if (await exists(skillPath)) {
+      pairs.push({
+        upstreamDir: join(workflowsRoot, catName, sub.name),
+        pluginDir: skillPath,
+        label: skillName,
+      });
+    }
+  }
+}
+
 async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
   const pairs: WorkflowSkillPair[] = [];
   const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
@@ -65,29 +93,7 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
       continue;
     }
 
-    const subs = await readdir(join(workflowsRoot, cat.name), {
-      withFileTypes: true,
-    });
-
-    for (const sub of subs) {
-      if (!sub.isDirectory()) {
-        continue;
-      }
-      if (SKIP_DIRS.has(sub.name)) {
-        continue;
-      }
-
-      const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: join(workflowsRoot, cat.name, sub.name),
-          pluginDir: skillPath,
-          label: skillName,
-        });
-      }
-    }
+    await processCategorySubWorkflows(workflowsRoot, cat.name, pairs);
   }
 
   return pairs;
@@ -98,7 +104,7 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
   let count = 0;
 
   for (const relPath of upstreamFiles) {
-    const fileName = relPath.split('/').pop()!;
+    const fileName = relPath.split('/').at(-1) ?? relPath;
 
     // Skip workflow definition files (plugin uses SKILL.md instead)
     if (SKIP_CONTENT_FILES.has(fileName)) {
@@ -124,12 +130,44 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
   return count;
 }
 
+/** Copy a single shared file to _shared/ and distribute to target skills. */
+async function syncSharedFile(
+  srcPath: string,
+  relPath: string,
+  pluginSharedDir: string,
+  targetSkills: string[],
+): Promise<number> {
+  let count = 0;
+
+  const sharedDest = join(pluginSharedDir, relPath);
+  if (DRY_RUN) {
+    console.log(`  [dry-run] _shared/${relPath}`);
+  } else {
+    await Bun.$`mkdir -p ${dirname(sharedDest)}`.quiet();
+    await cp(srcPath, sharedDest, { force: true });
+  }
+  count++;
+
+  for (const skill of targetSkills) {
+    const skillDest = join(PLUGIN, 'skills', skill, 'data', relPath);
+    if (DRY_RUN) {
+      console.log(`  [dry-run] ${skill}/data/${relPath}`);
+    } else {
+      await Bun.$`mkdir -p ${dirname(skillDest)}`.quiet();
+      await cp(srcPath, skillDest, { force: true });
+    }
+    count++;
+  }
+
+  return count;
+}
+
 console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
-const pairs = await getWorkflowSkillPairs();
+const allPairs = await getWorkflowSkillPairs();
 let totalFiles = 0;
 
-for (const pair of pairs) {
+for (const pair of allPairs) {
   console.log(`Syncing: ${pair.label}`);
   const count = await syncPair(pair);
   totalFiles += count;
@@ -143,11 +181,11 @@ console.log(
 );
 
 // Sync _shared/ directories and distribute to target skills
-const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
+const sharedWorkflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
 let sharedCount = 0;
 
 for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
-  const sharedDir = join(workflowsRoot, category, '_shared');
+  const sharedDir = join(sharedWorkflowsRoot, category, '_shared');
   if (!(await exists(sharedDir))) {
     continue;
   }
@@ -157,28 +195,12 @@ for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
 
   for (const relPath of sharedFiles) {
     const srcPath = join(sharedDir, relPath);
-
-    // Copy to plugin _shared/ (source of truth)
-    const sharedDest = join(pluginSharedDir, relPath);
-    if (DRY_RUN) {
-      console.log(`  [dry-run] _shared/${relPath}`);
-    } else {
-      await Bun.$`mkdir -p ${dirname(sharedDest)}`.quiet();
-      await cp(srcPath, sharedDest, { force: true });
-    }
-    sharedCount++;
-
-    // Distribute to each target skill's data/
-    for (const skill of targetSkills) {
-      const skillDest = join(PLUGIN, 'skills', skill, 'data', relPath);
-      if (DRY_RUN) {
-        console.log(`  [dry-run] ${skill}/data/${relPath}`);
-      } else {
-        await Bun.$`mkdir -p ${dirname(skillDest)}`.quiet();
-        await cp(srcPath, skillDest, { force: true });
-      }
-      sharedCount++;
-    }
+    sharedCount += await syncSharedFile(
+      srcPath,
+      relPath,
+      pluginSharedDir,
+      targetSkills,
+    );
   }
 
   console.log(

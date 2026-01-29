@@ -3,6 +3,7 @@
  */
 
 import { exists, readdir } from 'node:fs/promises';
+import type { Dirent } from 'node:fs';
 import { join } from 'node:path';
 import {
   AGENT_WORKAROUNDS,
@@ -12,20 +13,51 @@ import {
 } from '../config.ts';
 import { fail, pass, warn } from '../output.ts';
 
+/** Collect upstream agent names from directory entries. */
+function collectUpstreamNames(entries: Dirent[]): string[] {
+  const names: string[] = [];
+  for (const entry of entries) {
+    if (entry.isDirectory()) {
+      names.push(entry.name);
+    } else if (entry.name.endsWith('.agent.yaml')) {
+      names.push(entry.name.replace('.agent.yaml', ''));
+    }
+  }
+  return names;
+}
+
+/** Check for plugin agents with no upstream counterpart. */
+async function checkPluginOnlyAgents(
+  coveredNames: Set<string>,
+): Promise<void> {
+  console.log('\n== Plugin-Only Agents ==');
+  const pluginAgents = await readdir(join(PLUGIN, 'agents'));
+
+  for (const file of pluginAgents) {
+    if (!file.endsWith('.md')) {
+      continue;
+    }
+    const name = file.replace('.md', '');
+    if (coveredNames.has(name)) {
+      continue;
+    }
+
+    if (PLUGIN_ONLY_AGENTS.has(name)) {
+      pass(`Plugin-only agent: ${name} (no upstream counterpart — expected)`);
+    } else {
+      warn(
+        `Plugin-only agent: ${name} (no upstream counterpart — investigate)`,
+      );
+    }
+  }
+}
+
 export async function checkAgents(): Promise<void> {
   console.log('\n== Agent Coverage (upstream → plugin) ==');
 
   const upstreamDir = join(UPSTREAM, 'src/bmm/agents');
   const entries = await readdir(upstreamDir, { withFileTypes: true });
-
-  const upstreamNames: string[] = [];
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      upstreamNames.push(entry.name);
-    } else if (entry.name.endsWith('.agent.yaml')) {
-      upstreamNames.push(entry.name.replace('.agent.yaml', ''));
-    }
-  }
+  const upstreamNames = collectUpstreamNames(entries);
 
   for (const upstream of upstreamNames) {
     const workaround = AGENT_WORKAROUNDS[upstream];
@@ -45,28 +77,8 @@ export async function checkAgents(): Promise<void> {
     }
   }
 
-  // Check for plugin agents with no upstream counterpart
-  console.log('\n== Plugin-Only Agents ==');
-  const pluginAgents = await readdir(join(PLUGIN, 'agents'));
   const coveredNames = new Set(
     upstreamNames.map((n) => AGENT_WORKAROUNDS[n] ?? n),
   );
-
-  for (const file of pluginAgents) {
-    if (!file.endsWith('.md')) {
-      continue;
-    }
-    const name = file.replace('.md', '');
-    if (coveredNames.has(name)) {
-      continue;
-    }
-
-    if (PLUGIN_ONLY_AGENTS.has(name)) {
-      pass(`Plugin-only agent: ${name} (no upstream counterpart — expected)`);
-    } else {
-      warn(
-        `Plugin-only agent: ${name} (no upstream counterpart — investigate)`,
-      );
-    }
-  }
+  await checkPluginOnlyAgents(coveredNames);
 }

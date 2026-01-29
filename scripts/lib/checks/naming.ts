@@ -26,8 +26,9 @@ function extractFrontmatterName(content: string): string | null {
     return null;
   }
 
-  const nameMatch = /^name:\s*(.+)$/m.exec(match[1]!);
-  return nameMatch ? nameMatch[1]!.trim() : null;
+  const frontmatter = match[1] ?? '';
+  const nameMatch = /^name:\s*(.+)$/m.exec(frontmatter);
+  return nameMatch?.[1]?.trim() ?? null;
 }
 
 export async function checkNaming(): Promise<void> {
@@ -54,14 +55,14 @@ export async function checkNaming(): Promise<void> {
     const frontmatterName = extractFrontmatterName(content);
     const expectedName = `bmad-${entry.name}`;
 
-    if (!frontmatterName) {
-      fail(`${entry.name}/SKILL.md — missing name in frontmatter`);
-    } else if (frontmatterName !== expectedName) {
+    if (frontmatterName === expectedName) {
+      checked++;
+    } else if (frontmatterName) {
       fail(
         `${entry.name}/SKILL.md — name "${frontmatterName}" should be "${expectedName}"`,
       );
     } else {
-      checked++;
+      fail(`${entry.name}/SKILL.md — missing name in frontmatter`);
     }
   }
 

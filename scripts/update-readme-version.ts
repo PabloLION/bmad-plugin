@@ -11,7 +11,8 @@ const ROOT = join(import.meta.dir, '..');
 const readmePath = join(ROOT, 'README.md');
 const versionPath = join(ROOT, '.upstream-version');
 
-const version = (await Bun.file(versionPath).text()).trim();
+const versionRaw = await Bun.file(versionPath).text();
+const version = versionRaw.trim();
 const today = new Date().toISOString().slice(0, 10);
 
 const readme = await Bun.file(readmePath).text();
