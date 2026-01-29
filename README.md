@@ -8,7 +8,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.4.0 | **Upstream version:** v6.0.0-Beta.4 | **Last synced:** 2026-01-29
+**Plugin version:** v6.0.0-Beta.4.1 | **Upstream version:** v6.0.0-Beta.4 | **Last synced:** 2026-01-29
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
@@ -143,7 +143,7 @@ with 221 stars. Here is how this plugin differs:
 - **Catches drift** — a pre-push hook validates that every agent, skill, and
   file in this plugin matches the official BMAD-METHOD repo. If something is
   missing or out of date, the push is blocked
-- **Tracks versions** — the plugin version (`6.0.0-Beta.4.0`) includes the
+- **Tracks versions** — the plugin version (`6.0.0-Beta.4.1`) includes the
   upstream version so you always know which BMAD-METHOD release you're running
 
 ## License
