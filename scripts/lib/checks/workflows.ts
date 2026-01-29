@@ -8,14 +8,14 @@
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import {
-  UPSTREAM,
   PLUGIN,
   PLUGIN_JSON_PATH,
-  WORKFLOW_WORKAROUNDS,
   PLUGIN_ONLY_SKILLS,
   SKIP_DIRS,
+  UPSTREAM,
+  WORKFLOW_WORKAROUNDS,
 } from "../config.ts";
-import { pass, fail, warn } from "../output.ts";
+import { fail, pass, warn } from "../output.ts";
 
 export interface SkillSets {
   upstream: Set<string>;
@@ -54,7 +54,9 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
 
 /** Collect plugin skill directory names. */
 async function getPluginDirectories(): Promise<Set<string>> {
-  const entries = await readdir(join(PLUGIN, "skills"), { withFileTypes: true });
+  const entries = await readdir(join(PLUGIN, "skills"), {
+    withFileTypes: true,
+  });
   return new Set(
     entries
       .filter((e) => e.isDirectory() && !e.name.startsWith("_"))

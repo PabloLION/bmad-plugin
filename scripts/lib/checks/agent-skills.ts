@@ -5,19 +5,15 @@
 
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
-import {
-  UPSTREAM,
-  PLUGIN,
-  WORKFLOW_WORKAROUNDS,
-  PLUGIN_ONLY_AGENTS,
-} from "../config.ts";
-import { pass, fail, warn } from "../output.ts";
+import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from "../config.ts";
+import { fail, pass, warn } from "../output.ts";
 
 /** Extract workflow leaf names from an agent YAML's menu entries. */
 function extractWorkflowNames(yaml: string): string[] {
   const names: string[] = [];
   // Match exec: or workflow: lines containing a workflow path
-  const pattern = /(?:exec|workflow):\s*"[^"]*\/([^/]+)\/workflow\.(?:md|yaml)"/g;
+  const pattern =
+    /(?:exec|workflow):\s*"[^"]*\/([^/]+)\/workflow\.(?:md|yaml)"/g;
   let match: RegExpExecArray | null;
   while ((match = pattern.exec(yaml)) !== null) {
     names.push(match[1]!);

@@ -14,17 +14,17 @@
  * Exit 0 = pass, Exit 1 = gaps found.
  */
 
-import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from "./lib/config.ts";
-import { hasFailed, GREEN, RED, YELLOW, RESET } from "./lib/output.ts";
 import {
-  checkSync,
-  checkAgents,
-  checkWorkflows,
-  checkContent,
-  checkVersion,
-  checkNaming,
   checkAgentSkills,
+  checkAgents,
+  checkContent,
+  checkNaming,
+  checkSync,
+  checkVersion,
+  checkWorkflows,
 } from "./lib/checks/index.ts";
+import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from "./lib/config.ts";
+import { GREEN, hasFailed, RED, RESET, YELLOW } from "./lib/output.ts";
 
 console.log("Validating upstream coverage...");
 

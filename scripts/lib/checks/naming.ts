@@ -14,10 +14,10 @@
  * should be updated to expect `name: <dir-name>` without prefix.
  */
 
-import { readdir, exists } from "node:fs/promises";
+import { exists, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { PLUGIN } from "../config.ts";
-import { pass, fail } from "../output.ts";
+import { fail, pass } from "../output.ts";
 
 /** Extract `name:` value from YAML frontmatter. */
 function extractFrontmatterName(content: string): string | null {

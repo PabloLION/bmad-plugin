@@ -50,9 +50,7 @@ export const SHARED_FILE_TARGETS: Record<string, string[]> = {
 };
 
 /** Plugin-only data files with no upstream counterpart */
-export const PLUGIN_ONLY_DATA = new Set([
-  "quick-dev/data/project-levels.yaml",
-]);
+export const PLUGIN_ONLY_DATA = new Set(["quick-dev/data/project-levels.yaml"]);
 
 /** Files that are structurally different between upstream and plugin */
 export const SKIP_CONTENT_FILES = new Set([

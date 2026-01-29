@@ -2,19 +2,19 @@
  * Content consistency check: compare shared files between upstream and plugin.
  */
 
-import { readdir, exists } from "node:fs/promises";
+import { exists, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import {
-  UPSTREAM,
   PLUGIN,
-  WORKFLOW_WORKAROUNDS,
-  SKIP_DIRS,
-  SKIP_CONTENT_FILES,
-  SHARED_FILE_TARGETS,
   PLUGIN_ONLY_DATA,
+  SHARED_FILE_TARGETS,
+  SKIP_CONTENT_FILES,
+  SKIP_DIRS,
+  UPSTREAM,
+  WORKFLOW_WORKAROUNDS,
 } from "../config.ts";
-import { pass, fail, warn, RED, RESET } from "../output.ts";
-import { normalize, listFilesRecursive } from "../fs-utils.ts";
+import { listFilesRecursive, normalize } from "../fs-utils.ts";
+import { fail, pass, RED, RESET, warn } from "../output.ts";
 
 interface WorkflowSkillPair {
   upstreamDir: string;
@@ -90,9 +90,7 @@ export async function checkContent(): Promise<void> {
         continue;
       }
 
-      const upstreamContent = await Bun.file(
-        join(upstreamDir, relPath),
-      ).text();
+      const upstreamContent = await Bun.file(join(upstreamDir, relPath)).text();
       const pluginContent = await Bun.file(join(pluginDir, relPath)).text();
 
       if (normalize(upstreamContent) === normalize(pluginContent)) {
@@ -119,8 +117,7 @@ export async function checkContent(): Promise<void> {
 
       // Check if this is a shared-distributed file (copied from _shared/)
       const isSharedCopy = Object.values(SHARED_FILE_TARGETS).some(
-        (targets) =>
-          targets.includes(skillName) && relPath.startsWith("data/"),
+        (targets) => targets.includes(skillName) && relPath.startsWith("data/"),
       );
       if (isSharedCopy) continue; // validated separately in shared check
 

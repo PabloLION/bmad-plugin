@@ -4,7 +4,7 @@
 
 import { join } from "node:path";
 import { ROOT, UPSTREAM } from "../config.ts";
-import { pass, fail } from "../output.ts";
+import { fail, pass } from "../output.ts";
 
 export async function checkVersion(): Promise<void> {
   console.log("\n== Version Consistency ==");

@@ -2,15 +2,15 @@
  * Agent coverage check: upstream agents ↔ plugin agent .md files.
  */
 
-import { readdir, exists } from "node:fs/promises";
+import { exists, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import {
-  UPSTREAM,
-  PLUGIN,
   AGENT_WORKAROUNDS,
+  PLUGIN,
   PLUGIN_ONLY_AGENTS,
+  UPSTREAM,
 } from "../config.ts";
-import { pass, fail, warn } from "../output.ts";
+import { fail, pass, warn } from "../output.ts";
 
 export async function checkAgents(): Promise<void> {
   console.log("\n== Agent Coverage (upstream → plugin) ==");

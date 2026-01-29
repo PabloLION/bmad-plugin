@@ -7,16 +7,16 @@
  * Run: bun scripts/sync-upstream-content.ts
  */
 
-import { readdir, exists, cp, rm } from "node:fs/promises";
-import { join, dirname } from "node:path";
+import { cp, exists, readdir } from "node:fs/promises";
+import { dirname, join } from "node:path";
 import {
-  ROOT,
-  UPSTREAM,
   PLUGIN,
-  WORKFLOW_WORKAROUNDS,
-  SKIP_DIRS,
-  SKIP_CONTENT_FILES,
+  ROOT,
   SHARED_FILE_TARGETS,
+  SKIP_CONTENT_FILES,
+  SKIP_DIRS,
+  UPSTREAM,
+  WORKFLOW_WORKAROUNDS,
 } from "./lib/config.ts";
 
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -128,7 +128,9 @@ for (const pair of pairs) {
   }
 }
 
-console.log(`\nTotal: ${totalFiles} files ${DRY_RUN ? "would be" : ""} synced.`);
+console.log(
+  `\nTotal: ${totalFiles} files ${DRY_RUN ? "would be" : ""} synced.`,
+);
 
 // Sync _shared/ directories and distribute to target skills
 const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
@@ -180,7 +182,7 @@ if (sharedCount > 0) {
 if (!DRY_RUN) {
   const pkgJson = await Bun.file(join(UPSTREAM, "package.json")).json();
   const newVersion = `v${pkgJson.version}`;
-  await Bun.write(join(ROOT, ".upstream-version"), newVersion + "\n");
+  await Bun.write(join(ROOT, ".upstream-version"), `${newVersion}\n`);
   console.log(`\nUpdated .upstream-version to ${newVersion}`);
 
   // Update README badge
