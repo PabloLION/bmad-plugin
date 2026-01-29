@@ -7,7 +7,8 @@
     "validate": "bun scripts/validate-upstream-coverage.ts",
     "sync": "bun scripts/sync-upstream-content.ts",
     "sync:dry": "bun scripts/sync-upstream-content.ts --dry-run",
-    "update-readme": "bun scripts/update-readme-version.ts"
+    "update-readme": "bun scripts/update-readme-version.ts",
+    "test": "bun test"
   },
   "devDependencies": {
     "@types/bun": "latest",
