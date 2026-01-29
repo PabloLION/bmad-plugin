@@ -265,12 +265,15 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 ### Pending
 
 - [ ] Investigate `bmad-master` agent — no upstream counterpart, determine if plugin-only or missing from upstream
-- [ ] Verify upstream BMAD version sync CI catches new releases
+- [x] Verify upstream BMAD version sync CI catches new releases (verified 2026-01-29, both workflows pass)
 - [ ] Verify isHidden workaround CI detects when anthropics/claude-code#17271 is fixed
 - [ ] Remove isHidden workaround when anthropics/claude-code#17271 is fixed
 - [x] Submit to official Anthropic plugin registry (form submitted 2026-01-29)
 - [x] Decide marketplace name — `bmad-method`
 - [ ] Resolve remaining open questions (section 9)
+- [ ] Add dynamic version badge showing tracked BMAD-METHOD version
+- [ ] Publish to Smithery
+- [ ] Sync to next upstream release (unreleased commits include: tea→sdet rename, quinn agent, `.agent.md` extensions)
 
 ---
 

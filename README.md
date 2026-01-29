@@ -132,15 +132,18 @@ with 221 stars. Here is how this plugin differs:
 
 **Key advantages:**
 
-- **8x more skills** (33 vs 4) — every upstream workflow is covered
-- **Correct architecture** — BMAD roles map to agents (isolated personas), not
-  skills. Skills are for workflows. The alternative conflates the two
-- **Automated upstream tracking** — GitHub Actions weekly check with automatic
-  issue creation when BMAD-METHOD releases a new version
-- **Validation tooling** — three-way consistency check (upstream ↔ plugin files
-  ↔ manifest) runs on every push
-- **Explicit versioning** — plugin version tracks upstream version with a patch
-  suffix for plugin-only changes
+- **Full coverage** — all 33 BMAD-METHOD workflows are available as skills,
+  not just 4. Every workflow from the official repo has a matching skill
+- **Correct role mapping** — BMAD roles (PM, Architect, etc.) are modeled as
+  agents with isolated context, not lumped into skills. The alternative treats
+  roles and workflows the same way, which breaks Claude Code's agent model
+- **Stays up to date** — a GitHub Actions workflow checks BMAD-METHOD weekly
+  for new releases and creates an issue when one is found. No manual checking
+- **Catches drift** — a pre-push hook validates that every agent, skill, and
+  file in this plugin matches the official BMAD-METHOD repo. If something is
+  missing or out of date, the push is blocked
+- **Tracks versions** — the plugin version (`6.0.0-Beta.2.2`) includes the
+  upstream version so you always know which BMAD-METHOD release you're running
 
 ## License
 
