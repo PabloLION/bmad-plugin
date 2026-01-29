@@ -1,7 +1,7 @@
 {
   "name": "bmad-plugin",
+  "version": "6.0.0-Beta.2.0",
   "type": "module",
-  "private": true,
   "scripts": {
     "prepare": "husky",
     "validate": "bun scripts/validate-upstream-coverage.ts",

@@ -11,6 +11,7 @@ import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import {
   PLUGIN,
+  PLUGIN_JSON_PATH,
   ROOT,
   SHARED_FILE_TARGETS,
   SKIP_CONTENT_FILES,
@@ -212,12 +213,36 @@ if (sharedCount > 0) {
   console.log(`Shared files: ${sharedCount} copies synced.`);
 }
 
-// Update version file
+// Update version files
 if (!DRY_RUN) {
   const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
-  const newVersion = `v${pkgJson.version}`;
-  await Bun.write(join(ROOT, '.upstream-version'), `${newVersion}\n`);
-  console.log(`\nUpdated .upstream-version to ${newVersion}`);
+  const newUpstream = `v${pkgJson.version}`;
+  await Bun.write(join(ROOT, '.upstream-version'), `${newUpstream}\n`);
+  console.log(`\nUpdated .upstream-version to ${newUpstream}`);
+
+  // Bump plugin version: <upstream>.0 (reset patch on upstream change)
+  const newPlugin = `${newUpstream}.0`;
+  await Bun.write(join(ROOT, '.plugin-version'), `${newPlugin}\n`);
+  console.log(`Updated .plugin-version to ${newPlugin}`);
+
+  // Update package.json version (strip leading v)
+  const pluginVersionNov = newPlugin.slice(1);
+  const localPkg = await Bun.file(join(ROOT, 'package.json')).json();
+  localPkg.version = pluginVersionNov;
+  await Bun.write(
+    join(ROOT, 'package.json'),
+    `${JSON.stringify(localPkg, null, 2)}\n`,
+  );
+  console.log(`Updated package.json version to ${pluginVersionNov}`);
+
+  // Update plugin manifest version
+  const manifestJson = await Bun.file(PLUGIN_JSON_PATH).json();
+  manifestJson.version = pluginVersionNov;
+  await Bun.write(
+    PLUGIN_JSON_PATH,
+    `${JSON.stringify(manifestJson, null, 2)}\n`,
+  );
+  console.log(`Updated plugin.json version to ${pluginVersionNov}`);
 
   // Update README badge
   await Bun.$`bun scripts/update-readme-version.ts`.quiet();
