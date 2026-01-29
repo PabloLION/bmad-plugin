@@ -1,4 +1,4 @@
-name: Check BMAD Upstream
+name: BMAD Upstream Sync
 
 on:
   schedule:

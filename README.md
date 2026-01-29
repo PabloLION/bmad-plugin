@@ -2,9 +2,10 @@
 
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
-[![Check BMAD Upstream](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-upstream.yml)
+[![BMAD Upstream Sync](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
 [![Skills Workaround Status](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Upstream](https://img.shields.io/badge/upstream-BMAD--METHOD%20v6.0.0--Beta.2-blue)](https://github.com/bmadcode/BMAD-METHOD/releases/tag/6.0.0-Beta.2)
 
 <!-- upstream-version-start -->
 **Plugin version:** v6.0.0-Beta.2.2 | **Upstream version:** v6.0.0-Beta.2 | **Last synced:** 2026-01-29

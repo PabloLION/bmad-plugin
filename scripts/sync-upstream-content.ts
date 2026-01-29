@@ -163,6 +163,14 @@ async function syncSharedFile(
   return count;
 }
 
+// Checkout the tracked release tag before syncing
+const versionFile = join(ROOT, '.upstream-version');
+const trackedVersion = (await Bun.file(versionFile).text()).trim();
+const tag = trackedVersion.replace(/^v/, '');
+await Bun.$`git -C ${UPSTREAM} fetch --tags`.quiet();
+await Bun.$`git -C ${UPSTREAM} checkout ${tag}`.quiet();
+console.log(`Upstream pinned to release tag: ${tag}`);
+
 console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
 const allPairs = await getWorkflowSkillPairs();
