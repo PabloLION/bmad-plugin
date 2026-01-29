@@ -19,10 +19,7 @@ export const AGENT_WORKAROUNDS: Record<string, string> = {};
  * Workflow name workarounds: upstream name → plugin skill name.
  * Each should be eliminated by renaming plugin directories to match upstream.
  */
-export const WORKFLOW_WORKAROUNDS: Record<string, string> = {
-  // Upstream core/workflows/brainstorming → plugin skill brainstorm
-  brainstorming: "brainstorm",
-};
+export const WORKFLOW_WORKAROUNDS: Record<string, string> = {};
 
 /** Plugin-only agents with no upstream counterpart */
 export const PLUGIN_ONLY_AGENTS = new Set(["bmad-master"]);
@@ -32,7 +29,7 @@ export const PLUGIN_ONLY_SKILLS = new Set([
   "help",
   "init",
   "status",
-  "brainstorm",
+  "brainstorming",
   "testarch-knowledge",
 ]);
 
