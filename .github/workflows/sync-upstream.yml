@@ -1,4 +1,4 @@
-name: BMAD Upstream Sync
+name: Synced with BMAD-METHOD
 
 on:
   schedule:
