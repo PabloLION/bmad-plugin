@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.2.2 | **Upstream version:** v6.0.0-Beta.2 | **Last synced:** 2026-01-29
+**Plugin version:** v6.0.0-Beta.4.0 | **Upstream version:** v6.0.0-Beta.4 | **Last synced:** 2026-01-29
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
@@ -33,9 +33,9 @@ Coming soon - pending submission to the official Anthropic plugin registry.
 ## Features
 
 - **9 Specialized Agents**: Business Analyst, Product Manager, UX Designer,
-  System Architect, Scrum Master, Developer, Test Architect, Tech Writer, and
+  System Architect, Scrum Master, Developer, QA Engineer, Tech Writer, and
   Solo Dev
-- **27+ Guided Workflows**: From brainstorming to implementation
+- **26 Guided Workflows**: From brainstorming to implementation
 - **4 Development Phases**: Analysis, Planning, Solutioning, Implementation
 - **Progressive Disclosure**: Step-by-step workflow execution
 - **State Tracking**: Resume workflows across sessions
@@ -63,7 +63,7 @@ Coming soon - pending submission to the official Anthropic plugin registry.
 | **Architect** (Winston) | System design               | create-architecture                 |
 | **SM** (Bob)            | Sprint management           | sprint-planning, create-story       |
 | **DEV** (Amelia)        | Implementation              | dev-story, code-review              |
-| **TEA** (Murat)         | Test architecture           | test-framework, atdd                |
+| **Quinn**               | QA engineer                 | automate                            |
 | **Tech Writer** (Paige) | Documentation               | document-project                    |
 | **Barry**               | Solo dev quick flow         | quick-spec, quick-dev               |
 
@@ -120,8 +120,8 @@ with 221 stars. Here is how this plugin differs:
 
 | | **bmad-plugin** (this repo) | aj-geddes/claude-code-bmad-skills |
 |---|---|---|
-| Upstream version tracked | v6.0.0-Beta.2 (explicit) | v6 (approximate) |
-| Skills | 33 | 4 |
+| Upstream version tracked | v6.0.0-Beta.4 (explicit) | v6 (approximate) |
+| Skills | 26 | 4 |
 | Agents | 10 | 12 |
 | Automated upstream sync | Yes (GitHub Actions) | No |
 | Version tracking | Explicit with `.upstream-version` | None |
@@ -132,7 +132,7 @@ with 221 stars. Here is how this plugin differs:
 
 **Key advantages:**
 
-- **Full coverage** — all 33 BMAD-METHOD workflows are available as skills,
+- **Full coverage** — all 26 BMAD-METHOD workflows are available as skills,
   not just 4. Every workflow from the official repo has a matching skill
 - **Correct role mapping** — BMAD roles (PM, Architect, etc.) are modeled as
   agents with isolated context, not lumped into skills. The alternative treats
@@ -142,7 +142,7 @@ with 221 stars. Here is how this plugin differs:
 - **Catches drift** — a pre-push hook validates that every agent, skill, and
   file in this plugin matches the official BMAD-METHOD repo. If something is
   missing or out of date, the push is blocked
-- **Tracks versions** — the plugin version (`6.0.0-Beta.2.2`) includes the
+- **Tracks versions** — the plugin version (`6.0.0-Beta.4.0`) includes the
   upstream version so you always know which BMAD-METHOD release you're running
 
 ## License
