@@ -30,7 +30,6 @@ export const PLUGIN_ONLY_SKILLS = new Set([
   'init',
   'status',
   'brainstorming',
-  'testarch-knowledge',
 ]);
 
 /** Upstream subdirectories that are not workflow leaves */

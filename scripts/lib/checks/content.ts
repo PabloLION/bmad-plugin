@@ -173,7 +173,7 @@ async function checkFileCopy(
 async function validateSharedFiles(): Promise<void> {
   section('Shared File Consistency (_shared/ → skill copies)');
   const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
-  const pluginShared = join(PLUGIN, 'skills/_shared');
+  const pluginShared = join(PLUGIN, '_shared');
 
   for (const [category, targets] of Object.entries(SHARED_FILE_TARGETS)) {
     const upstreamShared = join(workflowsRoot, category, '_shared');

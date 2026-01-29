@@ -192,7 +192,7 @@ for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
   }
 
   const sharedFiles = await listFilesRecursive(sharedDir);
-  const pluginSharedDir = join(PLUGIN, 'skills/_shared');
+  const pluginSharedDir = join(PLUGIN, '_shared');
 
   for (const relPath of sharedFiles) {
     const srcPath = join(sharedDir, relPath);
