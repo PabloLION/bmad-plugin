@@ -2,8 +2,8 @@
  * File system utilities for validation.
  */
 
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 
 /**
  * Normalize text for content comparison:
@@ -11,7 +11,7 @@ import { join } from "node:path";
  * - Normalize quotes (Prettier converts 'single' to "double" in YAML)
  */
 export function normalize(text: string): string {
-  return text.replace(/\s+/g, " ").replace(/'/g, '"').trim();
+  return text.replace(/\s+/g, ' ').replace(/'/g, '"').trim();
 }
 
 /**

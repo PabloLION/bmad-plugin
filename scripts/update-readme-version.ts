@@ -5,11 +5,11 @@
  * Run: bun scripts/update-readme-version.ts
  */
 
-import { join } from "node:path";
+import { join } from 'node:path';
 
-const ROOT = join(import.meta.dir, "..");
-const readmePath = join(ROOT, "README.md");
-const versionPath = join(ROOT, ".upstream-version");
+const ROOT = join(import.meta.dir, '..');
+const readmePath = join(ROOT, 'README.md');
+const versionPath = join(ROOT, '.upstream-version');
 
 const version = (await Bun.file(versionPath).text()).trim();
 const today = new Date().toISOString().slice(0, 10);
@@ -21,7 +21,7 @@ const updated = readme.replace(
 );
 
 if (updated === readme) {
-  console.log("README.md already up to date or markers not found.");
+  console.log('README.md already up to date or markers not found.');
 } else {
   await Bun.write(readmePath, updated);
   console.log(`README.md updated: ${version}, synced ${today}`);

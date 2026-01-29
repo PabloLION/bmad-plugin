@@ -22,11 +22,11 @@ import {
   checkSync,
   checkVersion,
   checkWorkflows,
-} from "./lib/checks/index.ts";
-import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from "./lib/config.ts";
-import { GREEN, hasFailed, RED, RESET, YELLOW } from "./lib/output.ts";
+} from './lib/checks/index.ts';
+import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from './lib/config.ts';
+import { GREEN, hasFailed, RED, RESET, YELLOW } from './lib/output.ts';
 
-console.log("Validating upstream coverage...");
+console.log('Validating upstream coverage...');
 
 await checkSync();
 await checkAgents();
@@ -40,7 +40,7 @@ const workaroundCount =
   Object.keys(AGENT_WORKAROUNDS).length +
   Object.keys(WORKFLOW_WORKAROUNDS).length;
 
-console.log("");
+console.log('');
 
 if (hasFailed()) {
   console.log(`${RED}✗ Validation failed — gaps found above.${RESET}`);

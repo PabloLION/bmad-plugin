@@ -7,8 +7,8 @@
  * Run: bun scripts/sync-upstream-content.ts
  */
 
-import { cp, exists, readdir } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { cp, exists, readdir } from 'node:fs/promises';
+import { dirname, join } from 'node:path';
 import {
   PLUGIN,
   ROOT,
@@ -17,9 +17,9 @@ import {
   SKIP_DIRS,
   UPSTREAM,
   WORKFLOW_WORKAROUNDS,
-} from "./lib/config.ts";
+} from './lib/config.ts';
 
-const DRY_RUN = process.argv.includes("--dry-run");
+const DRY_RUN = process.argv.includes('--dry-run');
 
 async function listFilesRecursive(dir: string): Promise<string[]> {
   const results: string[] = [];
@@ -43,19 +43,19 @@ interface WorkflowSkillPair {
 
 async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
   const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+  const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
-    if (cat.name === "document-project") {
-      const skillPath = join(PLUGIN, "skills", "document-project");
+    if (cat.name === 'document-project') {
+      const skillPath = join(PLUGIN, 'skills', 'document-project');
       if (await exists(skillPath)) {
         pairs.push({
           upstreamDir: join(workflowsRoot, cat.name),
           pluginDir: skillPath,
-          label: "document-project",
+          label: 'document-project',
         });
       }
       continue;
@@ -70,7 +70,7 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
       if (SKIP_DIRS.has(sub.name)) continue;
 
       const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, "skills", skillName);
+      const skillPath = join(PLUGIN, 'skills', skillName);
 
       if (await exists(skillPath)) {
         pairs.push({
@@ -90,7 +90,7 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
   let count = 0;
 
   for (const relPath of upstreamFiles) {
-    const fileName = relPath.split("/").pop()!;
+    const fileName = relPath.split('/').pop()!;
 
     // Skip workflow definition files (plugin uses SKILL.md instead)
     if (SKIP_CONTENT_FILES.has(fileName)) continue;
@@ -114,7 +114,7 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
   return count;
 }
 
-console.log(DRY_RUN ? "Dry run — no files will be copied\n" : "Syncing...\n");
+console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
 const pairs = await getWorkflowSkillPairs();
 let totalFiles = 0;
@@ -129,19 +129,19 @@ for (const pair of pairs) {
 }
 
 console.log(
-  `\nTotal: ${totalFiles} files ${DRY_RUN ? "would be" : ""} synced.`,
+  `\nTotal: ${totalFiles} files ${DRY_RUN ? 'would be' : ''} synced.`,
 );
 
 // Sync _shared/ directories and distribute to target skills
-const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
 let sharedCount = 0;
 
 for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
-  const sharedDir = join(workflowsRoot, category, "_shared");
+  const sharedDir = join(workflowsRoot, category, '_shared');
   if (!(await exists(sharedDir))) continue;
 
   const sharedFiles = await listFilesRecursive(sharedDir);
-  const pluginSharedDir = join(PLUGIN, "skills/_shared");
+  const pluginSharedDir = join(PLUGIN, 'skills/_shared');
 
   for (const relPath of sharedFiles) {
     const srcPath = join(sharedDir, relPath);
@@ -158,7 +158,7 @@ for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
 
     // Distribute to each target skill's data/
     for (const skill of targetSkills) {
-      const skillDest = join(PLUGIN, "skills", skill, "data", relPath);
+      const skillDest = join(PLUGIN, 'skills', skill, 'data', relPath);
       if (DRY_RUN) {
         console.log(`  [dry-run] ${skill}/data/${relPath}`);
       } else {
@@ -180,12 +180,12 @@ if (sharedCount > 0) {
 
 // Update version file
 if (!DRY_RUN) {
-  const pkgJson = await Bun.file(join(UPSTREAM, "package.json")).json();
+  const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
   const newVersion = `v${pkgJson.version}`;
-  await Bun.write(join(ROOT, ".upstream-version"), `${newVersion}\n`);
+  await Bun.write(join(ROOT, '.upstream-version'), `${newVersion}\n`);
   console.log(`\nUpdated .upstream-version to ${newVersion}`);
 
   // Update README badge
   await Bun.$`bun scripts/update-readme-version.ts`.quiet();
-  console.log("Updated README version badge");
+  console.log('Updated README version badge');
 }

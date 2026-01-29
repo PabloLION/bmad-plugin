@@ -14,10 +14,10 @@
  * should be updated to expect `name: <dir-name>` without prefix.
  */
 
-import { exists, readdir } from "node:fs/promises";
-import { join } from "node:path";
-import { PLUGIN } from "../config.ts";
-import { fail, pass } from "../output.ts";
+import { exists, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { PLUGIN } from '../config.ts';
+import { fail, pass } from '../output.ts';
 
 /** Extract `name:` value from YAML frontmatter. */
 function extractFrontmatterName(content: string): string | null {
@@ -29,17 +29,17 @@ function extractFrontmatterName(content: string): string | null {
 }
 
 export async function checkNaming(): Promise<void> {
-  console.log("\n== SKILL.md Name ↔ Directory Consistency ==");
+  console.log('\n== SKILL.md Name ↔ Directory Consistency ==');
 
-  const skillsDir = join(PLUGIN, "skills");
+  const skillsDir = join(PLUGIN, 'skills');
   const entries = await readdir(skillsDir, { withFileTypes: true });
   let checked = 0;
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith("_")) continue;
+    if (entry.name.startsWith('_')) continue;
 
-    const skillMd = join(skillsDir, entry.name, "SKILL.md");
+    const skillMd = join(skillsDir, entry.name, 'SKILL.md');
     if (!(await exists(skillMd))) continue;
 
     const content = await Bun.file(skillMd).text();

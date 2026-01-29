@@ -5,8 +5,8 @@
  * - Plugin.json manifest commands
  */
 
-import { readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import {
   PLUGIN,
   PLUGIN_JSON_PATH,
@@ -14,8 +14,8 @@ import {
   SKIP_DIRS,
   UPSTREAM,
   WORKFLOW_WORKAROUNDS,
-} from "../config.ts";
-import { fail, pass, warn } from "../output.ts";
+} from '../config.ts';
+import { fail, pass, warn } from '../output.ts';
 
 export interface SkillSets {
   upstream: Set<string>;
@@ -26,15 +26,15 @@ export interface SkillSets {
 /** Collect upstream workflow names (leaf directories). */
 async function getUpstreamWorkflows(): Promise<Set<string>> {
   const names = new Set<string>();
-  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+  const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
     // document-project is a leaf workflow itself
-    if (cat.name === "document-project") {
-      names.add("document-project");
+    if (cat.name === 'document-project') {
+      names.add('document-project');
       continue;
     }
 
@@ -54,12 +54,12 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
 
 /** Collect plugin skill directory names. */
 async function getPluginDirectories(): Promise<Set<string>> {
-  const entries = await readdir(join(PLUGIN, "skills"), {
+  const entries = await readdir(join(PLUGIN, 'skills'), {
     withFileTypes: true,
   });
   return new Set(
     entries
-      .filter((e) => e.isDirectory() && !e.name.startsWith("_"))
+      .filter((e) => e.isDirectory() && !e.name.startsWith('_'))
       .map((e) => e.name),
   );
 }
@@ -69,7 +69,7 @@ async function getManifestCommands(): Promise<Set<string>> {
   const pluginJson = await Bun.file(PLUGIN_JSON_PATH).json();
   return new Set(
     (pluginJson.commands as string[]).map((c: string) =>
-      c.replace("./skills/", "").replace(/\/$/, ""),
+      c.replace('./skills/', '').replace(/\/$/, ''),
     ),
   );
 }
@@ -85,7 +85,7 @@ export async function checkWorkflows(): Promise<SkillSets> {
   const manifest = await getManifestCommands();
 
   // --- Upstream → Directories ---
-  console.log("\n== Skills: Upstream → Plugin Directories ==");
+  console.log('\n== Skills: Upstream → Plugin Directories ==');
   for (const name of [...upstream].sort()) {
     const pluginName = applyWorkaround(name);
     const isWorkaround = pluginName !== name;
@@ -102,7 +102,7 @@ export async function checkWorkflows(): Promise<SkillSets> {
   }
 
   // --- Upstream → Manifest ---
-  console.log("\n== Skills: Upstream → Manifest ==");
+  console.log('\n== Skills: Upstream → Manifest ==');
   for (const name of [...upstream].sort()) {
     const pluginName = applyWorkaround(name);
 
@@ -114,7 +114,7 @@ export async function checkWorkflows(): Promise<SkillSets> {
   }
 
   // --- Directories → Manifest (bidirectional) ---
-  console.log("\n== Skills: Directories ↔ Manifest ==");
+  console.log('\n== Skills: Directories ↔ Manifest ==');
   for (const dir of [...directories].sort()) {
     if (!manifest.has(dir)) {
       fail(`Directory "${dir}" not in plugin.json commands`);
@@ -125,10 +125,10 @@ export async function checkWorkflows(): Promise<SkillSets> {
       fail(`plugin.json command "${cmd}" has no directory`);
     }
   }
-  pass("Directories ↔ Manifest aligned");
+  pass('Directories ↔ Manifest aligned');
 
   // --- Plugin-only skills (in directories but not upstream) ---
-  console.log("\n== Plugin-Only Skills ==");
+  console.log('\n== Plugin-Only Skills ==');
   const upstreamMapped = new Set([...upstream].map(applyWorkaround));
   for (const dir of [...directories].sort()) {
     if (upstreamMapped.has(dir)) continue;

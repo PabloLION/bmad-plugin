@@ -3,10 +3,10 @@
  * agent's menu must have a corresponding plugin skill directory.
  */
 
-import { readdir, readFile } from "node:fs/promises";
-import { join } from "node:path";
-import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from "../config.ts";
-import { fail, pass, warn } from "../output.ts";
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
+import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from '../config.ts';
+import { fail, pass, warn } from '../output.ts';
 
 /** Extract workflow leaf names from an agent YAML's menu entries. */
 function extractWorkflowNames(yaml: string): string[] {
@@ -23,14 +23,14 @@ function extractWorkflowNames(yaml: string): string[] {
 }
 
 export async function checkAgentSkills(): Promise<void> {
-  console.log("\n== Agent → Skill Cross-Reference ==");
+  console.log('\n== Agent → Skill Cross-Reference ==');
 
-  const agentsDir = join(UPSTREAM, "src/bmm/agents");
+  const agentsDir = join(UPSTREAM, 'src/bmm/agents');
   const entries = await readdir(agentsDir, { withFileTypes: true });
 
   // Collect skill directories that exist in plugin
   const skillDirs = new Set(
-    (await readdir(join(PLUGIN, "skills"), { withFileTypes: true }))
+    (await readdir(join(PLUGIN, 'skills'), { withFileTypes: true }))
       .filter((e) => e.isDirectory())
       .map((e) => e.name),
   );
@@ -43,17 +43,17 @@ export async function checkAgentSkills(): Promise<void> {
       agentName = entry.name;
       // tech-writer directory — look for agent YAML inside
       const inner = await readdir(join(agentsDir, entry.name));
-      const yamlFile = inner.find((f) => f.endsWith(".agent.yaml"));
+      const yamlFile = inner.find((f) => f.endsWith('.agent.yaml'));
       if (!yamlFile) continue;
       yamlPath = join(agentsDir, entry.name, yamlFile);
-    } else if (entry.name.endsWith(".agent.yaml")) {
-      agentName = entry.name.replace(".agent.yaml", "");
+    } else if (entry.name.endsWith('.agent.yaml')) {
+      agentName = entry.name.replace('.agent.yaml', '');
       yamlPath = join(agentsDir, entry.name);
     } else {
       continue;
     }
 
-    const yaml = await readFile(yamlPath, "utf-8");
+    const yaml = await readFile(yamlPath, 'utf-8');
     const workflows = extractWorkflowNames(yaml);
 
     if (workflows.length === 0) {

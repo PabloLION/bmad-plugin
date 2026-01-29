@@ -2,18 +2,18 @@
  * Version consistency check: .upstream-version ↔ upstream package.json.
  */
 
-import { join } from "node:path";
-import { ROOT, UPSTREAM } from "../config.ts";
-import { fail, pass } from "../output.ts";
+import { join } from 'node:path';
+import { ROOT, UPSTREAM } from '../config.ts';
+import { fail, pass } from '../output.ts';
 
 export async function checkVersion(): Promise<void> {
-  console.log("\n== Version Consistency ==");
+  console.log('\n== Version Consistency ==');
 
   const versionFile = (
-    await Bun.file(join(ROOT, ".upstream-version")).text()
+    await Bun.file(join(ROOT, '.upstream-version')).text()
   ).trim();
 
-  const pkgJson = await Bun.file(join(UPSTREAM, "package.json")).json();
+  const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
   const upstreamVersion = `v${pkgJson.version}`;
 
   if (versionFile === upstreamVersion) {

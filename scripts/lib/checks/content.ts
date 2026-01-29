@@ -2,8 +2,8 @@
  * Content consistency check: compare shared files between upstream and plugin.
  */
 
-import { exists, readdir } from "node:fs/promises";
-import { join } from "node:path";
+import { exists, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
 import {
   PLUGIN,
   PLUGIN_ONLY_DATA,
@@ -12,9 +12,9 @@ import {
   SKIP_DIRS,
   UPSTREAM,
   WORKFLOW_WORKAROUNDS,
-} from "../config.ts";
-import { listFilesRecursive, normalize } from "../fs-utils.ts";
-import { fail, pass, RED, RESET, warn } from "../output.ts";
+} from '../config.ts';
+import { listFilesRecursive, normalize } from '../fs-utils.ts';
+import { fail, pass, RED, RESET, warn } from '../output.ts';
 
 interface WorkflowSkillPair {
   upstreamDir: string;
@@ -25,19 +25,19 @@ interface WorkflowSkillPair {
 /** Build map of upstream workflow dir → plugin skill dir for matched pairs. */
 async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
   const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+  const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
-    if (cat.name === "document-project") {
-      const skillPath = join(PLUGIN, "skills", "document-project");
+    if (cat.name === 'document-project') {
+      const skillPath = join(PLUGIN, 'skills', 'document-project');
       if (await exists(skillPath)) {
         pairs.push({
           upstreamDir: join(workflowsRoot, cat.name),
           pluginDir: skillPath,
-          label: "document-project",
+          label: 'document-project',
         });
       }
       continue;
@@ -52,7 +52,7 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
       if (SKIP_DIRS.has(sub.name)) continue;
 
       const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, "skills", skillName);
+      const skillPath = join(PLUGIN, 'skills', skillName);
 
       if (await exists(skillPath)) {
         pairs.push({
@@ -68,7 +68,7 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
 }
 
 export async function checkContent(): Promise<void> {
-  console.log("\n== Content Consistency (upstream ↔ plugin files) ==");
+  console.log('\n== Content Consistency (upstream ↔ plugin files) ==');
 
   const pairs = await getWorkflowSkillPairs();
   let checkedCount = 0;
@@ -81,7 +81,7 @@ export async function checkContent(): Promise<void> {
 
     // Compare files that exist in upstream (skip structurally different ones)
     for (const relPath of upstreamFiles) {
-      const fileName = relPath.split("/").pop()!;
+      const fileName = relPath.split('/').pop()!;
       if (SKIP_CONTENT_FILES.has(fileName)) continue;
 
       if (!pluginFileSet.has(relPath)) {
@@ -102,9 +102,9 @@ export async function checkContent(): Promise<void> {
     }
 
     // Check for extra files in plugin that don't exist upstream
-    const skillName = pluginDir.split("/").pop()!;
+    const skillName = pluginDir.split('/').pop()!;
     for (const relPath of pluginFiles) {
-      const fileName = relPath.split("/").pop()!;
+      const fileName = relPath.split('/').pop()!;
       if (SKIP_CONTENT_FILES.has(fileName)) continue;
       if (upstreamFiles.includes(relPath)) continue;
 
@@ -117,7 +117,7 @@ export async function checkContent(): Promise<void> {
 
       // Check if this is a shared-distributed file (copied from _shared/)
       const isSharedCopy = Object.values(SHARED_FILE_TARGETS).some(
-        (targets) => targets.includes(skillName) && relPath.startsWith("data/"),
+        (targets) => targets.includes(skillName) && relPath.startsWith('data/'),
       );
       if (isSharedCopy) continue; // validated separately in shared check
 
@@ -136,12 +136,12 @@ export async function checkContent(): Promise<void> {
   }
 
   // Validate shared files: _shared/ source → skill data/ copies
-  console.log("\n== Shared File Consistency (_shared/ → skill copies) ==");
-  const workflowsRoot = join(UPSTREAM, "src/bmm/workflows");
+  console.log('\n== Shared File Consistency (_shared/ → skill copies) ==');
+  const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
 
   for (const [category, targets] of Object.entries(SHARED_FILE_TARGETS)) {
-    const upstreamShared = join(workflowsRoot, category, "_shared");
-    const pluginShared = join(PLUGIN, "skills/_shared");
+    const upstreamShared = join(workflowsRoot, category, '_shared');
+    const pluginShared = join(PLUGIN, 'skills/_shared');
 
     if (!(await exists(upstreamShared))) {
       fail(`Upstream _shared/ missing: ${category}/_shared/`);
@@ -168,7 +168,7 @@ export async function checkContent(): Promise<void> {
 
       // Check each skill's data/ copy
       for (const skill of targets) {
-        const skillCopy = join(PLUGIN, "skills", skill, "data", relPath);
+        const skillCopy = join(PLUGIN, 'skills', skill, 'data', relPath);
         if (!(await exists(skillCopy))) {
           fail(`Missing: ${skill}/data/${relPath}`);
         } else {
