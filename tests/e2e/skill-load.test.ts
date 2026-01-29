@@ -6,6 +6,9 @@ import { join, resolve } from 'node:path';
 const PLUGIN_DIR = resolve(import.meta.dir, '../../plugins/bmad');
 const TIMEOUT = 60_000;
 
+// Each test runs claude in a fresh temp dir to avoid modifying the real
+// working directory (e.g. skills like init create files and configs).
+// mkdtempSync adds a unique suffix so parallel tests don't collide.
 const tempDirs: string[] = [];
 
 function makeTempDir(): string {
