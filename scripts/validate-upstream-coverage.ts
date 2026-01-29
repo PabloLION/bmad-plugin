@@ -8,6 +8,7 @@
  * 3. Content consistency — supporting files match (not SKILL.md vs workflow.md)
  * 4. Version consistency — .upstream-version ↔ upstream package.json
  * 5. Naming consistency — SKILL.md frontmatter name ↔ directory name
+ * 6. Agent–skill cross-reference — agent menu workflows ↔ plugin skill dirs
  *
  * Known workarounds are documented in config.ts and printed with ⚠ markers.
  * Exit 0 = pass, Exit 1 = gaps found.
@@ -22,6 +23,7 @@ import {
   checkContent,
   checkVersion,
   checkNaming,
+  checkAgentSkills,
 } from "./lib/checks/index.ts";
 
 console.log("Validating upstream coverage...");
@@ -32,6 +34,7 @@ await checkWorkflows();
 await checkContent();
 await checkVersion();
 await checkNaming();
+await checkAgentSkills();
 
 const workaroundCount =
   Object.keys(AGENT_WORKAROUNDS).length +
