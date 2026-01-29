@@ -56,8 +56,10 @@ if (hasFailed()) {
   process.exit(1);
 } else if (workaroundCount > 0) {
   console.log(
-    `${GREEN}✓ All checks passed.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}`,
+    `${GREEN}✓ All checks passed.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}\n  (sync, agents, workflows, content, version, naming, agent-skills)`,
   );
 } else {
-  console.log(`${GREEN}✓ All checks passed — full alignment.${RESET}`);
+  console.log(
+    `${GREEN}✓ All checks passed — full alignment.${RESET}\n  (sync, agents, workflows, content, version, naming, agent-skills)`,
+  );
 }
