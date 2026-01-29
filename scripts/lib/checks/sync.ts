@@ -27,6 +27,8 @@ export async function checkSync(): Promise<void> {
     await $`git -C ${UPSTREAM} checkout ${tag}`.quiet();
     pass(`Checked out upstream tag ${tag}`);
   } catch {
-    warn(`Could not checkout upstream tag ${tag} (fetch failed or tag missing)`);
+    warn(
+      `Could not checkout upstream tag ${tag} (fetch failed or tag missing)`,
+    );
   }
 }
