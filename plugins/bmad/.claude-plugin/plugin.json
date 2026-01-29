@@ -33,13 +33,6 @@
     "./skills/create-diagram/",
     "./skills/create-flowchart/",
     "./skills/create-wireframe/",
-    "./skills/framework/",
-    "./skills/atdd/",
-    "./skills/automate/",
-    "./skills/test-design/",
-    "./skills/trace/",
-    "./skills/nfr-assess/",
-    "./skills/ci/",
-    "./skills/test-review/"
+    "./skills/automate/"
   ]
 }
