@@ -242,6 +242,15 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 - [x] Rewrite all 33 SKILL.md descriptions to concise action-oriented format
 - [x] Upstream coverage validation script (`scripts/validate-upstream-coverage.ts`) — Bun + Husky pre-push hook
 - [x] Fix missing `testarch-knowledge` in plugin.json commands (found by validation script)
+- [x] Rename skill `prd` → `create-prd` to match upstream rename
+- [x] Sync plugin supporting files to upstream Beta.2 (175 files)
+- [x] Update `.upstream-version` to `v6.0.0-Beta.2`
+- [x] Add `_shared/` directory for shared upstream files (excalidraw templates)
+- [x] Sync script (`scripts/sync-upstream-content.ts`) with shared file distribution
+- [x] Content validation: three-way check (upstream ↔ `_shared/` ↔ skill copies)
+- [x] Remove stale `create-prd/prd-template.md` (upstream moved to `templates/`)
+- [x] Document `quick-dev/data/project-levels.yaml` as plugin-only data
+- [x] Add `bun run sync` and `bun run validate` scripts to package.json
 
 ### Pending
 
@@ -263,14 +272,9 @@ Workflow/skill renames (7 total):
 - [ ] Rename skill `test-framework` → `framework` (upstream: `testarch/framework`)
 - [ ] Rename skill `test-trace` → `trace` (upstream: `testarch/trace`)
 
-#### Gaps found by validation script
-
-- [ ] Upstream renamed `prd` → `create-prd` — plugin skill `prd` is now orphaned, needs rename
-- [ ] Update `.upstream-version` to match upstream `v6.0.0-Beta.2` (was `v6.0.0-alpha.23`)
-- [ ] Investigate `bmad-master` agent — no upstream counterpart, determine if plugin-only or missing from upstream
-
 #### Other
 
+- [ ] Investigate `bmad-master` agent — no upstream counterpart, determine if plugin-only or missing from upstream
 - [ ] Verify upstream BMAD version sync CI catches new releases
 - [ ] Verify isHidden workaround CI detects when anthropics/claude-code#17271 is fixed
 - [ ] Remove isHidden workaround when anthropics/claude-code#17271 is fixed
@@ -280,4 +284,4 @@ Workflow/skill renames (7 total):
 
 ---
 
-Last updated: 2026-01-28
+Last updated: 2026-01-29
