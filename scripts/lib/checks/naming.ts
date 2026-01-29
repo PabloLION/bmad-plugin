@@ -21,10 +21,12 @@ import { fail, pass } from '../output.ts';
 
 /** Extract `name:` value from YAML frontmatter. */
 function extractFrontmatterName(content: string): string | null {
-  const match = content.match(/^---\s*\n([\s\S]*?)\n---/);
-  if (!match) return null;
+  const match = /^---\s*\n([\s\S]*?)\n---/.exec(content);
+  if (!match) {
+    return null;
+  }
 
-  const nameMatch = match[1]!.match(/^name:\s*(.+)$/m);
+  const nameMatch = /^name:\s*(.+)$/m.exec(match[1]!);
   return nameMatch ? nameMatch[1]!.trim() : null;
 }
 
@@ -36,11 +38,17 @@ export async function checkNaming(): Promise<void> {
   let checked = 0;
 
   for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    if (entry.name.startsWith('_')) continue;
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    if (entry.name.startsWith('_')) {
+      continue;
+    }
 
     const skillMd = join(skillsDir, entry.name, 'SKILL.md');
-    if (!(await exists(skillMd))) continue;
+    if (!(await exists(skillMd))) {
+      continue;
+    }
 
     const content = await Bun.file(skillMd).text();
     const frontmatterName = extractFrontmatterName(content);

@@ -16,6 +16,8 @@ import {
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
 import { fail, pass, RED, RESET, warn } from '../output.ts';
 
+const DOCUMENT_PROJECT = 'document-project';
+
 interface WorkflowSkillPair {
   upstreamDir: string;
   pluginDir: string;
@@ -29,15 +31,17 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
+    if (!cat.isDirectory()) {
+      continue;
+    }
 
-    if (cat.name === 'document-project') {
-      const skillPath = join(PLUGIN, 'skills', 'document-project');
+    if (cat.name === DOCUMENT_PROJECT) {
+      const skillPath = join(PLUGIN, 'skills', DOCUMENT_PROJECT);
       if (await exists(skillPath)) {
         pairs.push({
           upstreamDir: join(workflowsRoot, cat.name),
           pluginDir: skillPath,
-          label: 'document-project',
+          label: DOCUMENT_PROJECT,
         });
       }
       continue;
@@ -48,8 +52,12 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
     });
 
     for (const sub of subs) {
-      if (!sub.isDirectory()) continue;
-      if (SKIP_DIRS.has(sub.name)) continue;
+      if (!sub.isDirectory()) {
+        continue;
+      }
+      if (SKIP_DIRS.has(sub.name)) {
+        continue;
+      }
 
       const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
       const skillPath = join(PLUGIN, 'skills', skillName);
@@ -82,7 +90,9 @@ export async function checkContent(): Promise<void> {
     // Compare files that exist in upstream (skip structurally different ones)
     for (const relPath of upstreamFiles) {
       const fileName = relPath.split('/').pop()!;
-      if (SKIP_CONTENT_FILES.has(fileName)) continue;
+      if (SKIP_CONTENT_FILES.has(fileName)) {
+        continue;
+      }
 
       if (!pluginFileSet.has(relPath)) {
         fail(`Content: ${label}/${relPath} — file missing in plugin`);
@@ -105,8 +115,12 @@ export async function checkContent(): Promise<void> {
     const skillName = pluginDir.split('/').pop()!;
     for (const relPath of pluginFiles) {
       const fileName = relPath.split('/').pop()!;
-      if (SKIP_CONTENT_FILES.has(fileName)) continue;
-      if (upstreamFiles.includes(relPath)) continue;
+      if (SKIP_CONTENT_FILES.has(fileName)) {
+        continue;
+      }
+      if (upstreamFiles.includes(relPath)) {
+        continue;
+      }
 
       // Check if this is a known plugin-only data file
       const qualifiedPath = `${skillName}/${relPath}`;
@@ -119,7 +133,9 @@ export async function checkContent(): Promise<void> {
       const isSharedCopy = Object.values(SHARED_FILE_TARGETS).some(
         (targets) => targets.includes(skillName) && relPath.startsWith('data/'),
       );
-      if (isSharedCopy) continue; // validated separately in shared check
+      if (isSharedCopy) {
+        continue; // validated separately in shared check
+      }
 
       warn(
         `Content: ${label}/${relPath} — extra file in plugin (not in upstream)`,
@@ -157,25 +173,25 @@ export async function checkContent(): Promise<void> {
 
       // Check plugin _shared/ copy
       const sharedPath = join(pluginShared, relPath);
-      if (!(await exists(sharedPath))) {
-        fail(`Missing: _shared/${relPath}`);
-      } else {
+      if (await exists(sharedPath)) {
         const sharedContent = await Bun.file(sharedPath).text();
         if (normalize(upstreamContent) !== normalize(sharedContent)) {
           fail(`Drift: _shared/${relPath} vs upstream`);
         }
+      } else {
+        fail(`Missing: _shared/${relPath}`);
       }
 
       // Check each skill's data/ copy
       for (const skill of targets) {
         const skillCopy = join(PLUGIN, 'skills', skill, 'data', relPath);
-        if (!(await exists(skillCopy))) {
-          fail(`Missing: ${skill}/data/${relPath}`);
-        } else {
+        if (await exists(skillCopy)) {
           const copyContent = await Bun.file(skillCopy).text();
           if (normalize(upstreamContent) !== normalize(copyContent)) {
             fail(`Drift: ${skill}/data/${relPath} vs upstream`);
           }
+        } else {
+          fail(`Missing: ${skill}/data/${relPath}`);
         }
       }
     }

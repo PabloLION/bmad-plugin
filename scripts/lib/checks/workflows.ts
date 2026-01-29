@@ -30,7 +30,9 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
+    if (!cat.isDirectory()) {
+      continue;
+    }
 
     // document-project is a leaf workflow itself
     if (cat.name === 'document-project') {
@@ -43,8 +45,12 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
     });
 
     for (const sub of subs) {
-      if (!sub.isDirectory()) continue;
-      if (SKIP_DIRS.has(sub.name)) continue;
+      if (!sub.isDirectory()) {
+        continue;
+      }
+      if (SKIP_DIRS.has(sub.name)) {
+        continue;
+      }
       names.add(sub.name);
     }
   }
@@ -86,7 +92,7 @@ export async function checkWorkflows(): Promise<SkillSets> {
 
   // --- Upstream → Directories ---
   console.log('\n== Skills: Upstream → Plugin Directories ==');
-  for (const name of [...upstream].sort()) {
+  for (const name of [...upstream].sort((a, b) => a.localeCompare(b))) {
     const pluginName = applyWorkaround(name);
     const isWorkaround = pluginName !== name;
 
@@ -103,7 +109,7 @@ export async function checkWorkflows(): Promise<SkillSets> {
 
   // --- Upstream → Manifest ---
   console.log('\n== Skills: Upstream → Manifest ==');
-  for (const name of [...upstream].sort()) {
+  for (const name of [...upstream].sort((a, b) => a.localeCompare(b))) {
     const pluginName = applyWorkaround(name);
 
     if (manifest.has(pluginName)) {
@@ -115,12 +121,12 @@ export async function checkWorkflows(): Promise<SkillSets> {
 
   // --- Directories → Manifest (bidirectional) ---
   console.log('\n== Skills: Directories ↔ Manifest ==');
-  for (const dir of [...directories].sort()) {
+  for (const dir of [...directories].sort((a, b) => a.localeCompare(b))) {
     if (!manifest.has(dir)) {
       fail(`Directory "${dir}" not in plugin.json commands`);
     }
   }
-  for (const cmd of [...manifest].sort()) {
+  for (const cmd of [...manifest].sort((a, b) => a.localeCompare(b))) {
     if (!directories.has(cmd)) {
       fail(`plugin.json command "${cmd}" has no directory`);
     }
@@ -129,9 +135,11 @@ export async function checkWorkflows(): Promise<SkillSets> {
 
   // --- Plugin-only skills (in directories but not upstream) ---
   console.log('\n== Plugin-Only Skills ==');
-  const upstreamMapped = new Set([...upstream].map(applyWorkaround));
-  for (const dir of [...directories].sort()) {
-    if (upstreamMapped.has(dir)) continue;
+  const upstreamMapped = new Set([...upstream].map((n) => applyWorkaround(n)));
+  for (const dir of [...directories].sort((a, b) => a.localeCompare(b))) {
+    if (upstreamMapped.has(dir)) {
+      continue;
+    }
 
     if (PLUGIN_ONLY_SKILLS.has(dir)) {
       pass(`${dir} (plugin-only, expected)`);

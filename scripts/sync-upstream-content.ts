@@ -19,6 +19,8 @@ import {
   WORKFLOW_WORKAROUNDS,
 } from './lib/config.ts';
 
+const DOCUMENT_PROJECT = 'document-project';
+
 const DRY_RUN = process.argv.includes('--dry-run');
 
 async function listFilesRecursive(dir: string): Promise<string[]> {
@@ -47,15 +49,17 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
 
   for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
+    if (!cat.isDirectory()) {
+      continue;
+    }
 
-    if (cat.name === 'document-project') {
-      const skillPath = join(PLUGIN, 'skills', 'document-project');
+    if (cat.name === DOCUMENT_PROJECT) {
+      const skillPath = join(PLUGIN, 'skills', DOCUMENT_PROJECT);
       if (await exists(skillPath)) {
         pairs.push({
           upstreamDir: join(workflowsRoot, cat.name),
           pluginDir: skillPath,
-          label: 'document-project',
+          label: DOCUMENT_PROJECT,
         });
       }
       continue;
@@ -66,8 +70,12 @@ async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
     });
 
     for (const sub of subs) {
-      if (!sub.isDirectory()) continue;
-      if (SKIP_DIRS.has(sub.name)) continue;
+      if (!sub.isDirectory()) {
+        continue;
+      }
+      if (SKIP_DIRS.has(sub.name)) {
+        continue;
+      }
 
       const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
       const skillPath = join(PLUGIN, 'skills', skillName);
@@ -93,7 +101,9 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
     const fileName = relPath.split('/').pop()!;
 
     // Skip workflow definition files (plugin uses SKILL.md instead)
-    if (SKIP_CONTENT_FILES.has(fileName)) continue;
+    if (SKIP_CONTENT_FILES.has(fileName)) {
+      continue;
+    }
 
     const srcPath = join(pair.upstreamDir, relPath);
     const destPath = join(pair.pluginDir, relPath);
@@ -138,7 +148,9 @@ let sharedCount = 0;
 
 for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
   const sharedDir = join(workflowsRoot, category, '_shared');
-  if (!(await exists(sharedDir))) continue;
+  if (!(await exists(sharedDir))) {
+    continue;
+  }
 
   const sharedFiles = await listFilesRecursive(sharedDir);
   const pluginSharedDir = join(PLUGIN, 'skills/_shared');

@@ -8,6 +8,8 @@ import { join } from 'node:path';
 import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from '../config.ts';
 import { fail, pass, warn } from '../output.ts';
 
+const AGENT_YAML_EXT = '.agent.yaml';
+
 /** Extract workflow leaf names from an agent YAML's menu entries. */
 function extractWorkflowNames(yaml: string): string[] {
   const names: string[] = [];
@@ -43,11 +45,13 @@ export async function checkAgentSkills(): Promise<void> {
       agentName = entry.name;
       // tech-writer directory — look for agent YAML inside
       const inner = await readdir(join(agentsDir, entry.name));
-      const yamlFile = inner.find((f) => f.endsWith('.agent.yaml'));
-      if (!yamlFile) continue;
+      const yamlFile = inner.find((f) => f.endsWith(AGENT_YAML_EXT));
+      if (!yamlFile) {
+        continue;
+      }
       yamlPath = join(agentsDir, entry.name, yamlFile);
-    } else if (entry.name.endsWith('.agent.yaml')) {
-      agentName = entry.name.replace('.agent.yaml', '');
+    } else if (entry.name.endsWith(AGENT_YAML_EXT)) {
+      agentName = entry.name.replace(AGENT_YAML_EXT, '');
       yamlPath = join(agentsDir, entry.name);
     } else {
       continue;

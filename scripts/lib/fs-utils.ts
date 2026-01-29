@@ -11,7 +11,7 @@ import { join } from 'node:path';
  * - Normalize quotes (Prettier converts 'single' to "double" in YAML)
  */
 export function normalize(text: string): string {
-  return text.replace(/\s+/g, ' ').replace(/'/g, '"').trim();
+  return text.replaceAll(/\s+/g, ' ').replaceAll("'", '"').trim();
 }
 
 /**

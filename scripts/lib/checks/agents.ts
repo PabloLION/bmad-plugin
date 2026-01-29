@@ -53,9 +53,13 @@ export async function checkAgents(): Promise<void> {
   );
 
   for (const file of pluginAgents) {
-    if (!file.endsWith('.md')) continue;
+    if (!file.endsWith('.md')) {
+      continue;
+    }
     const name = file.replace('.md', '');
-    if (coveredNames.has(name)) continue;
+    if (coveredNames.has(name)) {
+      continue;
+    }
 
     if (PLUGIN_ONLY_AGENTS.has(name)) {
       pass(`Plugin-only agent: ${name} (no upstream counterpart — expected)`);
