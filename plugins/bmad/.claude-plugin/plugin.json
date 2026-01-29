@@ -40,7 +40,6 @@
     "./skills/trace/",
     "./skills/nfr-assess/",
     "./skills/ci/",
-    "./skills/test-review/",
-    "./skills/testarch-knowledge/"
+    "./skills/test-review/"
   ]
 }
