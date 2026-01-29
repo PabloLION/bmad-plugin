@@ -38,9 +38,7 @@ export async function checkVersion(): Promise<void> {
 
   const patch = pluginVersion.slice(upstreamFile.length + 1);
   if (!/^\d+$/.test(patch)) {
-    fail(
-      `Plugin version patch "${patch}" must be a non-negative integer`,
-    );
+    fail(`Plugin version patch "${patch}" must be a non-negative integer`);
     return;
   }
 

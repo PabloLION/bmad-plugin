@@ -29,5 +29,7 @@ if (updated === readme) {
   console.log('README.md already up to date or markers not found.');
 } else {
   await Bun.write(readmePath, updated);
-  console.log(`README.md updated: plugin=${pluginVersion}, upstream=${upstreamVersion}, synced ${today}`);
+  console.log(
+    `README.md updated: plugin=${pluginVersion}, upstream=${upstreamVersion}, synced ${today}`,
+  );
 }

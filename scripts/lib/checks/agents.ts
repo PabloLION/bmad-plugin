@@ -2,8 +2,8 @@
  * Agent coverage check: upstream agents ↔ plugin agent .md files.
  */
 
-import { exists, readdir } from 'node:fs/promises';
 import type { Dirent } from 'node:fs';
+import { exists, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
   AGENT_WORKAROUNDS,
@@ -27,9 +27,7 @@ function collectUpstreamNames(entries: Dirent[]): string[] {
 }
 
 /** Check for plugin agents with no upstream counterpart. */
-async function checkPluginOnlyAgents(
-  coveredNames: Set<string>,
-): Promise<void> {
+async function checkPluginOnlyAgents(coveredNames: Set<string>): Promise<void> {
   section('Plugin-Only Agents');
   const pluginAgents = await readdir(join(PLUGIN, 'agents'));
 
