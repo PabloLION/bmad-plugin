@@ -7,3 +7,4 @@ export { checkAgents } from "./agents.ts";
 export { checkWorkflows } from "./workflows.ts";
 export { checkContent } from "./content.ts";
 export { checkVersion } from "./version.ts";
+export { checkNaming } from "./naming.ts";
