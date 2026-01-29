@@ -1,0 +1,60 @@
+name: Submit upstream dependency
+
+on:
+  push:
+    branches: [main]
+    paths: [.upstream-version]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  submit-dependency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Submit BMAD-METHOD dependency
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(cat .upstream-version | tr -d 'v \n')
+          SHA=$(git rev-parse HEAD)
+          SCANNED=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          gh api -X POST /repos/${{ github.repository }}/dependency-graph/snapshots \
+            --input - <<EOF
+          {
+            "version": 0,
+            "sha": "$SHA",
+            "ref": "refs/heads/main",
+            "job": {
+              "id": "upstream-dependency",
+              "correlator": "dependency-submission_upstream"
+            },
+            "detector": {
+              "name": "bmad-upstream-tracker",
+              "version": "1.0.0",
+              "url": "https://github.com/${{ github.repository }}"
+            },
+            "scanned": "$SCANNED",
+            "manifests": {
+              ".upstream-version": {
+                "name": ".upstream-version",
+                "file": {
+                  "source_location": ".upstream-version"
+                },
+                "resolved": {
+                  "BMAD-METHOD": {
+                    "package_url": "pkg:github/bmad-code-org/BMAD-METHOD@$VERSION",
+                    "relationship": "direct",
+                    "scope": "runtime"
+                  }
+                }
+              }
+            }
+          }
+          EOF
+
+          echo "Submitted BMAD-METHOD $VERSION as dependency"
