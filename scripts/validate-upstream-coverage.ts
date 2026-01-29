@@ -56,10 +56,10 @@ if (hasFailed()) {
   process.exit(1);
 } else if (workaroundCount > 0) {
   console.log(
-    `${GREEN}✓ Upstream coverage validated.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}`,
+    `${GREEN}✓ All BMAD-METHOD content covered.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}`,
   );
 } else {
   console.log(
-    `${GREEN}✓ Upstream coverage validated — plugin matches BMAD-METHOD.${RESET}`,
+    `${GREEN}✓ All BMAD-METHOD content covered — agents, skills, and files in sync.${RESET}`,
   );
 }
