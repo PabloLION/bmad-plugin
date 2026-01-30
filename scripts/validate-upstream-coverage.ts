@@ -23,7 +23,6 @@ import {
   checkVersion,
   checkWorkflows,
 } from './lib/checks/index.ts';
-import { AGENT_WORKAROUNDS, WORKFLOW_WORKAROUNDS } from './lib/config.ts';
 import {
   GREEN,
   hasFailed,
@@ -32,10 +31,12 @@ import {
   setVerbose,
   YELLOW,
 } from './lib/output.ts';
+import { getEnabledSources } from './lib/upstream-sources.ts';
 
 setVerbose(process.argv.includes('--verbose'));
 
-console.log('Validating BMAD-METHOD coverage...');
+const sourceCount = getEnabledSources().length;
+console.log(`Validating upstream coverage (${sourceCount} sources)...`);
 
 await checkSync();
 await checkAgents();
@@ -45,9 +46,10 @@ await checkVersion();
 await checkNaming();
 await checkAgentSkills();
 
-const workaroundCount =
-  Object.keys(AGENT_WORKAROUNDS).length +
-  Object.keys(WORKFLOW_WORKAROUNDS).length;
+const workaroundCount = getEnabledSources().reduce(
+  (sum, s) => sum + Object.keys(s.workflowWorkarounds ?? {}).length,
+  0,
+);
 
 console.log('');
 
@@ -56,10 +58,10 @@ if (hasFailed()) {
   process.exit(1);
 } else if (workaroundCount > 0) {
   console.log(
-    `${GREEN}✓ All BMAD-METHOD content covered.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}`,
+    `${GREEN}✓ All upstream content covered.${RESET} ${YELLOW}(${workaroundCount} workarounds — see ⚠ above)${RESET}`,
   );
 } else {
   console.log(
-    `${GREEN}✓ All BMAD-METHOD content covered — agents, skills, and files in sync.${RESET}`,
+    `${GREEN}✓ All upstream content covered — agents, skills, and files in sync.${RESET}`,
   );
 }

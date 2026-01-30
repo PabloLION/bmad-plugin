@@ -1,24 +1,18 @@
 /**
- * Syncs supporting files from upstream BMAD-METHOD to plugin skills.
+ * Syncs supporting files from upstream sources to plugin skills.
  *
- * Copies: step files, instructions, templates, checklists
- * Skips: workflow.md, workflow.yaml (plugin uses SKILL.md instead)
+ * Iterates all enabled upstream sources (core, tea, etc.) and copies
+ * step files, instructions, templates, checklists into plugin skill dirs.
+ * Skips workflow.md, workflow.yaml (plugin uses SKILL.md instead).
  *
  * Run: bun scripts/sync-upstream-content.ts
  */
 
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import {
-  PLUGIN,
-  PLUGIN_JSON_PATH,
-  ROOT,
-  SHARED_FILE_TARGETS,
-  SKIP_CONTENT_FILES,
-  SKIP_DIRS,
-  UPSTREAM,
-  WORKFLOW_WORKAROUNDS,
-} from './lib/config.ts';
+import { PLUGIN, PLUGIN_JSON_PATH, ROOT, UPSTREAM } from './lib/config.ts';
+import type { UpstreamSource } from './lib/upstream-sources.ts';
+import { getEnabledSources } from './lib/upstream-sources.ts';
 
 const DOCUMENT_PROJECT = 'document-project';
 
@@ -44,73 +38,106 @@ interface WorkflowSkillPair {
   label: string;
 }
 
-/** Process a single category's sub-workflows into pairs. */
-async function processCategorySubWorkflows(
-  workflowsRoot: string,
-  catName: string,
-  pairs: WorkflowSkillPair[],
-): Promise<void> {
-  const subs = await readdir(join(workflowsRoot, catName), {
-    withFileTypes: true,
-  });
+/** Get workflow→skill pairs for a flat source (workflow dirs directly under contentRoot). */
+async function getFlatWorkflowPairs(
+  source: UpstreamSource,
+  upstreamRoot: string,
+): Promise<WorkflowSkillPair[]> {
+  const pairs: WorkflowSkillPair[] = [];
+  const workflowsRoot = join(upstreamRoot, source.contentRoot);
+  const entries = await readdir(workflowsRoot, { withFileTypes: true });
+  const skipDirs = source.skipDirs ?? new Set();
+  const skipWorkflows = source.skipWorkflows ?? new Set();
+  const workarounds = source.workflowWorkarounds ?? {};
 
-  for (const sub of subs) {
-    if (!sub.isDirectory() || SKIP_DIRS.has(sub.name)) {
-      continue;
-    }
+  for (const entry of entries) {
+    if (!entry.isDirectory() || skipDirs.has(entry.name)) continue;
+    if (skipWorkflows.has(entry.name)) continue;
 
-    const skillName = WORKFLOW_WORKAROUNDS[sub.name] ?? sub.name;
+    const skillName = workarounds[entry.name] ?? entry.name;
     const skillPath = join(PLUGIN, 'skills', skillName);
-
     if (await exists(skillPath)) {
       pairs.push({
-        upstreamDir: join(workflowsRoot, catName, sub.name),
+        upstreamDir: join(workflowsRoot, entry.name),
         pluginDir: skillPath,
-        label: skillName,
+        label: `[${source.id}] ${skillName}`,
       });
     }
   }
+  return pairs;
 }
 
-async function getWorkflowSkillPairs(): Promise<WorkflowSkillPair[]> {
+/** Get workflow→skill pairs for a categorized source (core pattern). */
+async function getCategorizedWorkflowPairs(
+  source: UpstreamSource,
+  upstreamRoot: string,
+): Promise<WorkflowSkillPair[]> {
   const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
+  const workflowsRoot = join(upstreamRoot, source.contentRoot);
   const categories = await readdir(workflowsRoot, { withFileTypes: true });
+  const skipDirs = source.skipDirs ?? new Set();
+  const skipWorkflows = source.skipWorkflows ?? new Set();
+  const workarounds = source.workflowWorkarounds ?? {};
 
   for (const cat of categories) {
-    if (!cat.isDirectory()) {
-      continue;
-    }
+    if (!cat.isDirectory()) continue;
 
-    if (cat.name === DOCUMENT_PROJECT) {
+    // document-project is a leaf workflow itself (no sub-dirs)
+    if (cat.name === DOCUMENT_PROJECT && !skipWorkflows.has(DOCUMENT_PROJECT)) {
       const skillPath = join(PLUGIN, 'skills', DOCUMENT_PROJECT);
       if (await exists(skillPath)) {
         pairs.push({
           upstreamDir: join(workflowsRoot, cat.name),
           pluginDir: skillPath,
-          label: DOCUMENT_PROJECT,
+          label: `[${source.id}] ${DOCUMENT_PROJECT}`,
         });
       }
       continue;
     }
 
-    await processCategorySubWorkflows(workflowsRoot, cat.name, pairs);
-  }
+    const subs = await readdir(join(workflowsRoot, cat.name), {
+      withFileTypes: true,
+    });
+    for (const sub of subs) {
+      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
+      if (skipWorkflows.has(sub.name)) continue;
 
+      const skillName = workarounds[sub.name] ?? sub.name;
+      const skillPath = join(PLUGIN, 'skills', skillName);
+      if (await exists(skillPath)) {
+        pairs.push({
+          upstreamDir: join(workflowsRoot, cat.name, sub.name),
+          pluginDir: skillPath,
+          label: `[${source.id}] ${skillName}`,
+        });
+      }
+    }
+  }
   return pairs;
 }
 
-async function syncPair(pair: WorkflowSkillPair): Promise<number> {
+/** Get all workflow→skill pairs for a source. */
+async function getWorkflowSkillPairs(
+  source: UpstreamSource,
+  upstreamRoot: string,
+): Promise<WorkflowSkillPair[]> {
+  if (source.flatWorkflows) {
+    return getFlatWorkflowPairs(source, upstreamRoot);
+  }
+  return getCategorizedWorkflowPairs(source, upstreamRoot);
+}
+
+async function syncPair(
+  pair: WorkflowSkillPair,
+  skipFiles: Set<string>,
+): Promise<number> {
   const upstreamFiles = await listFilesRecursive(pair.upstreamDir);
   let count = 0;
 
   for (const relPath of upstreamFiles) {
     const fileName = relPath.split('/').at(-1) ?? relPath;
 
-    // Skip workflow definition files (plugin uses SKILL.md instead)
-    if (SKIP_CONTENT_FILES.has(fileName)) {
-      continue;
-    }
+    if (skipFiles.has(fileName)) continue;
 
     const srcPath = join(pair.upstreamDir, relPath);
     const destPath = join(pair.pluginDir, relPath);
@@ -118,11 +145,8 @@ async function syncPair(pair: WorkflowSkillPair): Promise<number> {
     if (DRY_RUN) {
       console.log(`  [dry-run] ${relPath}`);
     } else {
-      // Ensure parent directory exists
       const destDir = dirname(destPath);
       await Bun.$`mkdir -p ${destDir}`.quiet();
-
-      // Copy file
       await cp(srcPath, destPath, { force: true });
     }
     count++;
@@ -163,65 +187,102 @@ async function syncSharedFile(
   return count;
 }
 
-// Checkout the tracked release tag before syncing
-const versionFile = join(ROOT, '.upstream-version');
-const trackedVersion = (await Bun.file(versionFile).text()).trim();
-const tag = trackedVersion.replace(/^v/, '');
-await Bun.$`git -C ${UPSTREAM} fetch --tags`.quiet();
-await Bun.$`git -C ${UPSTREAM} checkout ${tag}`.quiet();
-console.log(`Upstream pinned to release tag: ${tag}`);
+/** Checkout a source to its tracked version tag. */
+async function checkoutSource(
+  source: UpstreamSource,
+  upstreamRoot: string,
+): Promise<string> {
+  const versionFile = join(ROOT, source.versionFile);
+  const trackedVersion = (await Bun.file(versionFile).text()).trim();
+  const candidates = [trackedVersion, trackedVersion.replace(/^v/, '')];
+  await Bun.$`git -C ${upstreamRoot} fetch --tags`.quiet();
+  for (const tag of candidates) {
+    try {
+      await Bun.$`git -C ${upstreamRoot} checkout ${tag}`.quiet();
+      return tag;
+    } catch {
+      // try next candidate
+    }
+  }
+  throw new Error(`Could not checkout ${trackedVersion} for ${source.id}`);
+}
+
+/** Sync a single upstream source. */
+async function syncSource(source: UpstreamSource): Promise<number> {
+  const upstreamRoot = join(ROOT, '.upstream', source.localPath);
+  if (!(await exists(join(upstreamRoot, '.git')))) {
+    console.log(`⚠ Skipping ${source.id}: repo not cloned at ${upstreamRoot}`);
+    return 0;
+  }
+
+  const tag = await checkoutSource(source, upstreamRoot);
+  console.log(`[${source.id}] Pinned to tag: ${tag}`);
+
+  const skipFiles = source.skipContentFiles ?? new Set();
+  const pairs = await getWorkflowSkillPairs(source, upstreamRoot);
+  let totalFiles = 0;
+
+  for (const pair of pairs) {
+    console.log(`Syncing: ${pair.label}`);
+    const count = await syncPair(pair, skipFiles);
+    totalFiles += count;
+    if (!DRY_RUN) {
+      console.log(`  ✓ ${count} files copied`);
+    }
+  }
+
+  // Sync shared files (only if source defines shared targets)
+  const sharedTargets = source.sharedFileTargets ?? {};
+  if (Object.keys(sharedTargets).length > 0) {
+    const workflowsRoot = join(upstreamRoot, source.contentRoot);
+    let sharedCount = 0;
+
+    for (const [category, targetSkills] of Object.entries(sharedTargets)) {
+      const sharedDir = join(workflowsRoot, category, '_shared');
+      if (!(await exists(sharedDir))) continue;
+
+      const sharedFiles = await listFilesRecursive(sharedDir);
+      const pluginSharedDir = join(PLUGIN, '_shared');
+
+      for (const relPath of sharedFiles) {
+        const srcPath = join(sharedDir, relPath);
+        sharedCount += await syncSharedFile(
+          srcPath,
+          relPath,
+          pluginSharedDir,
+          targetSkills,
+        );
+      }
+
+      console.log(
+        `Shared: ${category}/_shared/ → _shared/ + ${targetSkills.length} skills`,
+      );
+    }
+
+    if (sharedCount > 0) {
+      console.log(`Shared files: ${sharedCount} copies synced.`);
+    }
+  }
+
+  return totalFiles;
+}
+
+// === Main ===
 
 console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
-const allPairs = await getWorkflowSkillPairs();
-let totalFiles = 0;
-
-for (const pair of allPairs) {
-  console.log(`Syncing: ${pair.label}`);
-  const count = await syncPair(pair);
-  totalFiles += count;
-  if (!DRY_RUN) {
-    console.log(`  ✓ ${count} files copied`);
-  }
+let grandTotal = 0;
+for (const source of getEnabledSources()) {
+  const count = await syncSource(source);
+  grandTotal += count;
+  console.log('');
 }
 
 console.log(
-  `\nTotal: ${totalFiles} files ${DRY_RUN ? 'would be' : ''} synced.`,
+  `Total: ${grandTotal} files ${DRY_RUN ? 'would be' : ''} synced across ${getEnabledSources().length} sources.`,
 );
 
-// Sync _shared/ directories and distribute to target skills
-const sharedWorkflowsRoot = join(UPSTREAM, 'src/bmm/workflows');
-let sharedCount = 0;
-
-for (const [category, targetSkills] of Object.entries(SHARED_FILE_TARGETS)) {
-  const sharedDir = join(sharedWorkflowsRoot, category, '_shared');
-  if (!(await exists(sharedDir))) {
-    continue;
-  }
-
-  const sharedFiles = await listFilesRecursive(sharedDir);
-  const pluginSharedDir = join(PLUGIN, '_shared');
-
-  for (const relPath of sharedFiles) {
-    const srcPath = join(sharedDir, relPath);
-    sharedCount += await syncSharedFile(
-      srcPath,
-      relPath,
-      pluginSharedDir,
-      targetSkills,
-    );
-  }
-
-  console.log(
-    `Shared: ${category}/_shared/ → _shared/ + ${targetSkills.length} skills`,
-  );
-}
-
-if (sharedCount > 0) {
-  console.log(`Shared files: ${sharedCount} copies synced.`);
-}
-
-// Update version files
+// Update version files (core-anchored strategy)
 if (!DRY_RUN) {
   const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
   const newUpstream = `v${pkgJson.version}`;
@@ -255,4 +316,18 @@ if (!DRY_RUN) {
   // Update README badge
   await Bun.$`bun scripts/update-readme-version.ts`.quiet();
   console.log('Updated README version badge');
+
+  // Update external module version files
+  for (const source of getEnabledSources()) {
+    if (source.id === 'core') continue;
+    const upstreamRoot = join(ROOT, '.upstream', source.localPath);
+    if (!(await exists(join(upstreamRoot, '.git')))) continue;
+
+    // Read the latest tag from the checked-out repo
+    const latestTag = (
+      await Bun.$`git -C ${upstreamRoot} describe --tags --abbrev=0`.text()
+    ).trim();
+    await Bun.write(join(ROOT, source.versionFile), `${latestTag}\n`);
+    console.log(`Updated ${source.versionFile} to ${latestTag}`);
+  }
 }

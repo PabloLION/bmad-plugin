@@ -64,6 +64,7 @@ Delegate to the appropriate specialist agent based on the task:
 | sm (Bob)            | Sprint planning, stories, retrospectives      |
 | dev (Alex)          | Implementation, dev stories                   |
 | ux-designer (Sally) | UX design, user research                      |
-| tea (Murat)         | Testing, quality, CI/CD                       |
-| tech-writer (Paige) | Documentation, diagrams                       |
-| barry               | Quick flow, rapid development                 |
+| tea (Murat)                | Testing, quality, CI/CD, test architecture    |
+| tech-writer (Paige)        | Documentation, diagrams                       |
+| quick-flow-solo-dev (Barry)| Quick flow, rapid development                 |
+| quinn                      | Quick start, project initialization            |

@@ -1,12 +1,14 @@
 /**
  * Agent–skill cross-reference check: every workflow referenced in an upstream
  * agent's menu must have a corresponding plugin skill directory.
+ * Checks across all enabled upstream sources.
  */
 
-import { readdir, readFile } from 'node:fs/promises';
+import { exists, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { PLUGIN, UPSTREAM, WORKFLOW_WORKAROUNDS } from '../config.ts';
+import { PLUGIN, ROOT } from '../config.ts';
 import { fail, pass, section, warn } from '../output.ts';
+import { getEnabledSources } from '../upstream-sources.ts';
 
 const AGENT_YAML_EXT = '.agent.yaml';
 
@@ -20,7 +22,6 @@ function extractWorkflowNames(yaml: string): string[] {
   while ((match = pattern.exec(yaml)) !== null) {
     names.push(match[1] as string);
   }
-  // Deduplicate (e.g. PM has 3 menu items pointing to create-prd)
   return [...new Set(names)];
 }
 
@@ -32,9 +33,7 @@ async function resolveAgentEntry(
   if (entry.isDirectory()) {
     const inner = await readdir(join(agentsDir, entry.name));
     const yamlFile = inner.find((f) => f.endsWith(AGENT_YAML_EXT));
-    if (!yamlFile) {
-      return null;
-    }
+    if (!yamlFile) return null;
     return {
       agentName: entry.name,
       yamlPath: join(agentsDir, entry.name, yamlFile),
@@ -51,23 +50,25 @@ async function resolveAgentEntry(
 
 /** Check workflow references for a single agent against plugin skill dirs. */
 function checkAgentWorkflows(
+  sourceId: string,
   agentName: string,
   workflows: string[],
   skillDirs: Set<string>,
+  workarounds: Record<string, string>,
 ): void {
   for (const wf of workflows) {
-    const skillName = WORKFLOW_WORKAROUNDS[wf] ?? wf;
+    const skillName = workarounds[wf] ?? wf;
     if (skillDirs.has(skillName)) {
-      if (WORKFLOW_WORKAROUNDS[wf]) {
+      if (workarounds[wf]) {
         warn(
-          `${agentName} → ${skillName} (workaround — upstream "${wf}" ≠ plugin "${skillName}")`,
+          `[${sourceId}] ${agentName} → ${skillName} (workaround — upstream "${wf}" ≠ plugin "${skillName}")`,
         );
       } else {
-        pass(`${agentName} → ${skillName}`);
+        pass(`[${sourceId}] ${agentName} → ${skillName}`);
       }
     } else {
       fail(
-        `${agentName} references workflow "${wf}" but no skill directory "${skillName}" exists`,
+        `[${sourceId}] ${agentName} references workflow "${wf}" but no skill directory "${skillName}" exists`,
       );
     }
   }
@@ -76,9 +77,6 @@ function checkAgentWorkflows(
 export async function checkAgentSkills(): Promise<void> {
   section('Agent → Skill Cross-Reference');
 
-  const agentsDir = join(UPSTREAM, 'src/bmm/agents');
-  const entries = await readdir(agentsDir, { withFileTypes: true });
-
   const skillEntries = await readdir(join(PLUGIN, 'skills'), {
     withFileTypes: true,
   });
@@ -86,20 +84,35 @@ export async function checkAgentSkills(): Promise<void> {
     skillEntries.filter((e) => e.isDirectory()).map((e) => e.name),
   );
 
-  for (const entry of entries) {
-    const resolved = await resolveAgentEntry(agentsDir, entry);
-    if (!resolved) {
-      continue;
+  for (const source of getEnabledSources()) {
+    const upstreamRoot = join(ROOT, '.upstream', source.localPath);
+    const agentsDir = join(upstreamRoot, source.agentsRoot);
+    if (!(await exists(agentsDir))) continue;
+
+    const entries = await readdir(agentsDir, { withFileTypes: true });
+    const workarounds = source.workflowWorkarounds ?? {};
+
+    for (const entry of entries) {
+      const resolved = await resolveAgentEntry(agentsDir, entry);
+      if (!resolved) continue;
+
+      const yaml = await readFile(resolved.yamlPath, 'utf-8');
+      const workflows = extractWorkflowNames(yaml);
+
+      if (workflows.length === 0) {
+        pass(
+          `[${source.id}] ${resolved.agentName}: no workflow references (OK)`,
+        );
+        continue;
+      }
+
+      checkAgentWorkflows(
+        source.id,
+        resolved.agentName,
+        workflows,
+        skillDirs,
+        workarounds,
+      );
     }
-
-    const yaml = await readFile(resolved.yamlPath, 'utf-8');
-    const workflows = extractWorkflowNames(yaml);
-
-    if (workflows.length === 0) {
-      pass(`${resolved.agentName}: no workflow references (OK)`);
-      continue;
-    }
-
-    checkAgentWorkflows(resolved.agentName, workflows, skillDirs);
   }
 }
