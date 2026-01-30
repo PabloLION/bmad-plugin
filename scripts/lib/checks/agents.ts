@@ -1,17 +1,14 @@
 /**
- * Agent coverage check: upstream agents ↔ plugin agent .md files.
+ * Agent coverage check: upstream agents ↔ plugin agent .md files,
+ * across all enabled upstream sources.
  */
 
 import type { Dirent } from 'node:fs';
 import { exists, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import {
-  AGENT_WORKAROUNDS,
-  PLUGIN,
-  PLUGIN_ONLY_AGENTS,
-  UPSTREAM,
-} from '../config.ts';
+import { PLUGIN, ROOT } from '../config.ts';
 import { fail, pass, section, warn } from '../output.ts';
+import { getEnabledSources } from '../upstream-sources.ts';
 
 /** Collect upstream agent names from directory entries. */
 function collectUpstreamNames(entries: Dirent[]): string[] {
@@ -27,20 +24,19 @@ function collectUpstreamNames(entries: Dirent[]): string[] {
 }
 
 /** Check for plugin agents with no upstream counterpart. */
-async function checkPluginOnlyAgents(coveredNames: Set<string>): Promise<void> {
+async function checkPluginOnlyAgents(
+  coveredNames: Set<string>,
+  allPluginOnly: Set<string>,
+): Promise<void> {
   section('Plugin-Only Agents');
   const pluginAgents = await readdir(join(PLUGIN, 'agents'));
 
   for (const file of pluginAgents) {
-    if (!file.endsWith('.md')) {
-      continue;
-    }
+    if (!file.endsWith('.md')) continue;
     const name = file.replace('.md', '');
-    if (coveredNames.has(name)) {
-      continue;
-    }
+    if (coveredNames.has(name)) continue;
 
-    if (PLUGIN_ONLY_AGENTS.has(name)) {
+    if (allPluginOnly.has(name)) {
       pass(`Plugin-only agent: ${name} (no upstream counterpart — expected)`);
     } else {
       warn(
@@ -53,30 +49,35 @@ async function checkPluginOnlyAgents(coveredNames: Set<string>): Promise<void> {
 export async function checkAgents(): Promise<void> {
   section('Agent Coverage (upstream → plugin)');
 
-  const upstreamDir = join(UPSTREAM, 'src/bmm/agents');
-  const entries = await readdir(upstreamDir, { withFileTypes: true });
-  const upstreamNames = collectUpstreamNames(entries);
+  const coveredNames = new Set<string>();
+  const allPluginOnly = new Set<string>();
 
-  for (const upstream of upstreamNames) {
-    const workaround = AGENT_WORKAROUNDS[upstream];
-    const pluginName = workaround ?? upstream;
-    const pluginPath = join(PLUGIN, 'agents', `${pluginName}.md`);
+  for (const source of getEnabledSources()) {
+    const upstreamRoot = join(ROOT, '.upstream', source.localPath);
+    const agentsDir = join(upstreamRoot, source.agentsRoot);
 
-    if (await exists(pluginPath)) {
-      if (workaround) {
-        warn(
-          `Agent: ${upstream} → ${workaround} (workaround — should rename to ${upstream}.md)`,
-        );
+    if (!(await exists(agentsDir))) continue;
+
+    const entries = await readdir(agentsDir, { withFileTypes: true });
+    const upstreamNames = collectUpstreamNames(entries);
+
+    for (const upstream of upstreamNames) {
+      const pluginPath = join(PLUGIN, 'agents', `${upstream}.md`);
+
+      if (await exists(pluginPath)) {
+        pass(`[${source.id}] Agent: ${upstream}`);
       } else {
-        pass(`Agent: ${upstream}`);
+        fail(
+          `[${source.id}] Agent missing: expected ${upstream}.md for upstream ${upstream}`,
+        );
       }
-    } else {
-      fail(`Agent missing: expected ${pluginName}.md for upstream ${upstream}`);
+      coveredNames.add(upstream);
+    }
+
+    for (const name of source.pluginOnlyAgents ?? []) {
+      allPluginOnly.add(name);
     }
   }
 
-  const coveredNames = new Set(
-    upstreamNames.map((n) => AGENT_WORKAROUNDS[n] ?? n),
-  );
-  await checkPluginOnlyAgents(coveredNames);
+  await checkPluginOnlyAgents(coveredNames, allPluginOnly);
 }

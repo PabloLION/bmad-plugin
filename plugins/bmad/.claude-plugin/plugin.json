@@ -1,6 +1,6 @@
 {
   "name": "bmad",
-  "version": "6.0.0-Beta.4.2",
+  "version": "6.0.0-Beta.4.3",
   "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
   "author": {
     "name": "PabloLION",
@@ -33,6 +33,14 @@
     "./skills/create-diagram/",
     "./skills/create-flowchart/",
     "./skills/create-wireframe/",
-    "./skills/automate/"
+    "./skills/automate/",
+    "./skills/atdd/",
+    "./skills/ci/",
+    "./skills/framework/",
+    "./skills/nfr-assess/",
+    "./skills/teach-me-testing/",
+    "./skills/test-design/",
+    "./skills/test-review/",
+    "./skills/trace/"
   ]
 }
