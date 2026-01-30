@@ -54,6 +54,19 @@ name: bmad-prd
 
 **Date Applied:** 2026-01-26
 
+### Tested Alternative: Remove `name` Field (does NOT work)
+
+**Date Tested:** 2026-01-30
+
+A simpler workaround was
+[suggested](https://github.com/anthropics/claude-code/issues/17271#issuecomment-3823235496)
+upstream: remove the `name` field from SKILL.md frontmatter entirely instead of
+using the `commands` array.
+
+**Result:** Does not work on macOS CLI with `--plugin-dir`. Skills load and can
+be invoked directly, but do **not** appear in `/` autocomplete. The `commands`
+array + `name` prefix approach remains the only working workaround.
+
 ---
 
 ## Monitoring
