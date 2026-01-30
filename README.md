@@ -17,25 +17,61 @@ context management.
 
 ## Installation
 
-Plugin management is done **inside a Claude Code session** using slash commands.
-There is no CLI command for installing plugins outside a session.
+### Step 1: Add Marketplace
 
-### From Self-Hosted Marketplace
+> Skip this step once the plugin is listed on the official Claude Code registry.
+
+In-session (inside Claude Code):
 
 ```sh
-# Add marketplace
+# Non-interactive
 /plugin marketplace add PabloLION/bmad-plugin
 
-# Install plugin
-/plugin install bmad@bmad-method
+# Interactive — use the /plugin UI → Marketplace tab
+/plugin
 
 # Pin to a specific version
 /plugin marketplace add PabloLION/bmad-plugin#v6.0.0-Beta.4.2
 ```
 
-### From Official Registry
+External CLI (outside Claude Code):
 
-Coming soon — pending submission to the official Anthropic plugin registry.
+```sh
+claude plugin marketplace add PabloLION/bmad-plugin
+```
+
+### Step 2: Install Plugin
+
+In-session (inside Claude Code):
+
+```sh
+# Non-interactive — installs at default (user) scope
+/plugin install bmad@bmad-method
+
+# Interactive — use the /plugin UI → Discover tab → choose scope
+/plugin
+```
+
+External CLI (outside Claude Code):
+
+```sh
+# User scope (default — you, all projects)
+claude plugin install bmad@bmad-method
+
+# Project scope (shared with team, committed to repo)
+claude plugin install bmad@bmad-method --scope project
+
+# Local scope (you only, this repo only)
+claude plugin install bmad@bmad-method --scope local
+```
+
+### Installation Scopes
+
+| Scope | Who sees it | Stored in |
+|---|---|---|
+| **User** (default) | You, all projects | `~/.claude/settings.json` |
+| **Project** | All collaborators | `.claude/settings.json` (in repo) |
+| **Local** | You, this repo only | `.claude/settings.local.json` |
 
 ## Features
 
@@ -107,6 +143,12 @@ This plugin implements the **BMAD Method** created by **BMad Code, LLC**.
 - [Website](https://bmadcodes.com/bmad-method/)
 - [YouTube](https://www.youtube.com/@BMadCode)
 - [Discord](https://discord.gg/gk8jAdXWmj)
+
+## Releases
+
+Plugin updates are published **every Wednesday** when upstream changes are detected.
+No release is made if nothing changed. See [docs/versioning.md](docs/versioning.md)
+for the full versioning strategy.
 
 ## Development
 
