@@ -1,13 +1,14 @@
 ---
 name: bmad-test-review
-description: Quality check against written tests using knowledge base and best practices. TEA Module
+description: Quality checks against written tests. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Test Review Workflow
 
-**Goal:** Perform quality check against written tests using comprehensive knowledge base and best practices.
+**Goal:** Quality check against written tests using comprehensive knowledge
+base.
 
 **Agent:** TEA (Murat) **Phase:** Test Architecture
 

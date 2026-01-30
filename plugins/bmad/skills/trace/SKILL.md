@@ -1,13 +1,13 @@
 ---
 name: bmad-trace
-description: Map requirements to tests and make quality gate decisions. TEA Module
+description: Map requirements to tests for traceability. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Trace Requirements Workflow
+# Test Traceability Workflow
 
-**Goal:** Map requirements to tests and make quality gate decision.
+**Goal:** Map requirements to tests and make quality gate decisions.
 
 **Agent:** TEA (Murat) **Phase:** Test Architecture
 

@@ -1,13 +1,14 @@
 ---
 name: bmad-test-design
-description: Risk assessment plus coverage strategy for system or epic scope. TEA Module
+description:
+  Design comprehensive test scenarios ahead of development. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Test Design Workflow
 
-**Goal:** Risk assessment plus coverage strategy for system or epic scope.
+**Goal:** Create comprehensive test scenarios ahead of development.
 
 **Agent:** TEA (Murat) **Phase:** Test Architecture
 

@@ -1,6 +1,7 @@
 ---
 name: bmad-framework
-description: Initialize production-ready test framework architecture. TEA Module
+description:
+  Initialize production-ready test framework architecture. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

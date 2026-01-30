@@ -1,6 +1,6 @@
 ---
 name: bmad-ci
-description: Recommend and scaffold CI/CD quality pipeline. TEA Module
+description: CI/CD quality pipeline recommendations. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---

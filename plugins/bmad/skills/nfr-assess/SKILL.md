@@ -1,13 +1,14 @@
 ---
 name: bmad-nfr-assess
-description: Assess non-functional requirements and recommend actions. TEA Module
+description:
+  Validate non-functional requirements against implementation. Test Architecture
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # NFR Assessment Workflow
 
-**Goal:** Assess non-functional requirements and recommend actions.
+**Goal:** Validate non-functional requirements against implementation.
 
 **Agent:** TEA (Murat) **Phase:** Test Architecture
 
