@@ -1,5 +1,4 @@
 ---
-name: bmad-create-story
 description:
   Prepare a story with full context for implementation. Phase 4 Implementation
 user-invocable: true

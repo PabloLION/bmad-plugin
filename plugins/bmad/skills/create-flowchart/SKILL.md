@@ -1,5 +1,4 @@
 ---
-name: bmad-create-flowchart
 description: Create an Excalidraw flowchart
 user-invocable: true
 disable-model-invocation: true

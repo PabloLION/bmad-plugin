@@ -1,46 +1,10 @@
 {
   "name": "bmad",
-  "version": "6.0.0-Beta.4.3",
+  "version": "6.0.0-Beta.4.4",
   "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
   "author": {
     "name": "PabloLION",
     "email": "36828324+PabloLION@users.noreply.github.com"
   },
-  "skills": "./skills/",
-  "commands": [
-    "./skills/help/",
-    "./skills/init/",
-    "./skills/status/",
-    "./skills/create-product-brief/",
-    "./skills/create-prd/",
-    "./skills/dev-story/",
-    "./skills/research/",
-    "./skills/brainstorming/",
-    "./skills/document-project/",
-    "./skills/create-ux-design/",
-    "./skills/create-architecture/",
-    "./skills/create-epics-and-stories/",
-    "./skills/check-implementation-readiness/",
-    "./skills/sprint-planning/",
-    "./skills/create-story/",
-    "./skills/code-review/",
-    "./skills/correct-course/",
-    "./skills/retrospective/",
-    "./skills/sprint-status/",
-    "./skills/quick-spec/",
-    "./skills/quick-dev/",
-    "./skills/create-dataflow/",
-    "./skills/create-diagram/",
-    "./skills/create-flowchart/",
-    "./skills/create-wireframe/",
-    "./skills/automate/",
-    "./skills/atdd/",
-    "./skills/ci/",
-    "./skills/framework/",
-    "./skills/nfr-assess/",
-    "./skills/teach-me-testing/",
-    "./skills/test-design/",
-    "./skills/test-review/",
-    "./skills/trace/"
-  ]
+  "skills": "./skills/"
 }

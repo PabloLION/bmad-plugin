@@ -1,5 +1,4 @@
 ---
-name: bmad-code-review
 description: Adversarial senior developer code review. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true

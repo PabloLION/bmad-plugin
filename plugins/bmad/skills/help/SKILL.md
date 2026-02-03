@@ -1,5 +1,4 @@
 ---
-name: bmad-help
 description: Show available BMAD commands, agents, and workflows
 user-invocable: true
 ---

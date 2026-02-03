@@ -1,5 +1,4 @@
 ---
-name: bmad-init
 description: Initialize BMAD config and directory structure for a project
 user-invocable: true
 ---

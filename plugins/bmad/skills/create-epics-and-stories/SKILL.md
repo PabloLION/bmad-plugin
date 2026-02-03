@@ -1,5 +1,4 @@
 ---
-name: bmad-create-epics-and-stories
 description:
   Break down architecture into implementable epics and stories. Phase 3
   Solutioning

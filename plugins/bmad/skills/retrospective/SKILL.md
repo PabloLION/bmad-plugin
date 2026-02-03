@@ -1,5 +1,4 @@
 ---
-name: bmad-retrospective
 description: Review all work completed across an epic. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true

@@ -1,5 +1,4 @@
 ---
-name: bmad-test-design
 description:
   Design comprehensive test scenarios ahead of development. Test Architecture
 user-invocable: true

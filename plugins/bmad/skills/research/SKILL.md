@@ -1,5 +1,4 @@
 ---
-name: bmad-research
 description:
   Conduct market, domain, or technical research with verified sources. Phase 1
   Analysis

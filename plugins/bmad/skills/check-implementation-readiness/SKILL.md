@@ -1,5 +1,4 @@
 ---
-name: bmad-check-implementation-readiness
 description:
   Validate PRD, UX, Architecture, and Epics alignment before implementation.
   Phase 3 Solutioning

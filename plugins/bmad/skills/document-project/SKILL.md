@@ -1,5 +1,4 @@
 ---
-name: bmad-document-project
 description: Generate comprehensive documentation for an existing project
 user-invocable: true
 disable-model-invocation: true
