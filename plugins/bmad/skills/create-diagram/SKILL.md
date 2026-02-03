@@ -1,5 +1,4 @@
 ---
-name: bmad-create-diagram
 description: Create a general Excalidraw diagram
 user-invocable: true
 disable-model-invocation: true

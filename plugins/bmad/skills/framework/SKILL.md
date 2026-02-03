@@ -1,5 +1,4 @@
 ---
-name: bmad-framework
 description:
   Initialize production-ready test framework architecture. Test Architecture
 user-invocable: true

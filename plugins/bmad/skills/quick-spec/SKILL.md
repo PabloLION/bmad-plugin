@@ -1,5 +1,4 @@
 ---
-name: bmad-quick-spec
 description: Create a quick but complete technical specification. Quick Flow
 user-invocable: true
 disable-model-invocation: true

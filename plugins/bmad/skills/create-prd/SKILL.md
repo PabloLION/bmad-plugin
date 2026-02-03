@@ -1,5 +1,4 @@
 ---
-name: bmad-create-prd
 description:
   Create, validate, or edit product requirements documents. Tri-modal. Phase 2
   Planning

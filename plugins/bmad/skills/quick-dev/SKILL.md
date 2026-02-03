@@ -1,5 +1,4 @@
 ---
-name: bmad-quick-dev
 description: Implement a story tech spec end-to-end. Quick Flow
 user-invocable: true
 disable-model-invocation: true

@@ -1,5 +1,4 @@
 ---
-name: bmad-status
 description: Check BMAD project progress and get next-step recommendations
 user-invocable: true
 ---

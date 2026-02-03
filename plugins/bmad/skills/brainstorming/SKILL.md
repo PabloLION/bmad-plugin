@@ -1,5 +1,4 @@
 ---
-name: bmad-brainstorming
 description: Expert-guided brainstorming and ideation session. Phase 1 Analysis
 user-invocable: true
 disable-model-invocation: true

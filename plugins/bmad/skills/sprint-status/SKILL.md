@@ -1,5 +1,4 @@
 ---
-name: bmad-sprint-status
 description: View and update sprint status tracking. Phase 4 Implementation
 user-invocable: true
 disable-model-invocation: true

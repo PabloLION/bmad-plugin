@@ -1,5 +1,4 @@
 ---
-name: bmad-correct-course
 description:
   Determine how to proceed when major change discovered mid-implementation.
   Phase 4 Implementation

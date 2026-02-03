@@ -1,5 +1,4 @@
 ---
-name: bmad-sprint-planning
 description:
   Generate or update sprint planning and status tracking. Phase 4 Implementation
 user-invocable: true

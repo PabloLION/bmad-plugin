@@ -1,5 +1,4 @@
 ---
-name: bmad-nfr-assess
 description:
   Validate non-functional requirements against implementation. Test Architecture
 user-invocable: true

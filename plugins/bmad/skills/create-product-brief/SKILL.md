@@ -1,5 +1,4 @@
 ---
-name: bmad-create-product-brief
 description:
   Create executive product brief through collaborative discovery. Phase 1
   Analysis

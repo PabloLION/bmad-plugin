@@ -1,5 +1,4 @@
 ---
-name: bmad-atdd
 description:
   Generate acceptance tests (API/E2E) before implementation. Test Architecture
 user-invocable: true

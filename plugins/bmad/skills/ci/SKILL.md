@@ -1,5 +1,4 @@
 ---
-name: bmad-ci
 description: CI/CD quality pipeline recommendations. Test Architecture
 user-invocable: true
 disable-model-invocation: true

@@ -1,5 +1,4 @@
 ---
-name: bmad-create-architecture
 description:
   Document system architecture and technical decisions. Phase 3 Solutioning
 user-invocable: true

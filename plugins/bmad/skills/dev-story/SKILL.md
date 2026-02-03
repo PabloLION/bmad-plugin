@@ -1,5 +1,4 @@
 ---
-name: bmad-dev-story
 description:
   Implement a story with test-driven development. Phase 4 Implementation
 user-invocable: true
