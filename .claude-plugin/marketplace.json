@@ -3,7 +3,7 @@
   "description": "BMAD Method plugins for Claude Code - agile AI-driven development",
   "owner": {
     "name": "PabloLION",
-    "email": "pablolion@example.com",
+    "email": "36828324+PabloLION@users.noreply.github.com",
     "url": "https://github.com/PabloLION"
   },
   "plugins": [
@@ -11,7 +11,7 @@
       "name": "bmad",
       "source": "./plugins/bmad",
       "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
-      "version": "6.0.0-Beta.2.2"
+      "version": "6.0.0-Beta.4.4"
     }
   ]
 }
