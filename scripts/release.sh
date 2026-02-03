@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Bump plugin version, commit, tag, and create a GitHub release.
-# Usage: ./scripts/bump-version.sh <new-version>
-# Example: ./scripts/bump-version.sh 6.0.0-Beta.4.1
+# Usage: ./scripts/release.sh <new-version>
+# Example: ./scripts/release.sh 6.0.0-Beta.4.5
 
 set -euo pipefail
 
@@ -26,17 +26,20 @@ echo "Bumping $OLD_VERSION → $NEW_VERSION"
 echo "v${NEW_VERSION}" > "$ROOT/.plugin-version"
 sed -i '' "s/\"version\": \"$OLD_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$ROOT/package.json"
 sed -i '' "s/\"version\": \"$OLD_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$ROOT/plugins/bmad/.claude-plugin/plugin.json"
-sed -i '' "s/$OLD_VERSION/$NEW_VERSION/g" "$ROOT/README.md"
+sed -i '' "s/\"version\": \"$OLD_VERSION\"/\"version\": \"$NEW_VERSION\"/" "$ROOT/.claude-plugin/marketplace.json"
+
+# 2. Update README version line with date
+bun run update-readme
 
 echo "Updated files:"
 git diff --name-only
 
-# 2. Commit and tag
-git add .plugin-version package.json plugins/bmad/.claude-plugin/plugin.json README.md
+# 3. Commit and tag
+git add .plugin-version package.json plugins/bmad/.claude-plugin/plugin.json .claude-plugin/marketplace.json README.md
 git commit -m "chore: bump version to $NEW_VERSION"
 git tag "$TAG"
 
-# 3. Push and create GitHub release
+# 4. Push and create GitHub release
 git push && git push origin "$TAG"
 gh release create "$TAG" --title "$TAG" --generate-notes
 
