@@ -1,5 +1,11 @@
 # BMAD Plugin Project Conventions
 
+## Git Workflow
+
+- **main** branch is for releases only — do not commit directly to main
+- All work must go through feature branches and PRs
+- Use `dev` branch for integration if needed
+
 ## BMAD Agent Naming
 
 Two distinct names for each agent:
