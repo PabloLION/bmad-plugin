@@ -4,7 +4,7 @@
 
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
 [![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmad-code-org/BMAD-METHOD)
-[![Skills Visibility Fix](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/check-workarounds.yml)
+[![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/BMAD-TEA)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
@@ -98,17 +98,18 @@ claude plugin install bmad@bmad-method --scope local
 
 ## Agents
 
-| Agent                   | Role                        | Key Workflows                       |
-| ----------------------- | --------------------------- | ----------------------------------- |
-| **Analyst** (Mary)      | Business analysis, research | product-brief, research, brainstorm |
-| **PM** (John)           | Product requirements        | create-prd, validate-prd, epics     |
-| **UX Designer** (Sally) | User experience             | create-ux-design                    |
-| **Architect** (Winston) | System design               | create-architecture                 |
-| **SM** (Bob)            | Sprint management           | sprint-planning, create-story       |
-| **DEV** (Amelia)        | Implementation              | dev-story, code-review              |
-| **Quinn**               | QA engineer                 | automate                            |
-| **Tech Writer** (Paige) | Documentation               | document-project                    |
-| **Barry**               | Solo dev quick flow         | quick-spec, quick-dev               |
+| Agent                  | Name    | Role                       | Key Workflows                    |
+| ---------------------- | ------- | -------------------------- | -------------------------------- |
+| analyst                | Mary    | Business analysis          | product-brief, research, brainstorm |
+| pm                     | John    | Product requirements       | create-prd, create-epics-and-stories |
+| ux-designer            | Sally   | User experience            | create-ux-design                 |
+| architect              | Winston | System design              | create-architecture              |
+| sm                     | Bob     | Sprint management          | sprint-planning, create-story    |
+| dev                    | Amelia  | Implementation             | dev-story, code-review           |
+| tea                    | Murat   | Test architecture          | atdd, ci, test-design, framework |
+| quinn                  | Quinn   | QA automation              | automate, test-review            |
+| tech-writer            | Paige   | Documentation              | document-project                 |
+| quick-flow-solo-dev    | Barry   | Solo dev quick flow        | quick-spec, quick-dev            |
 
 ## Workflow Phases
 

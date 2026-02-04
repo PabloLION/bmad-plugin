@@ -56,15 +56,15 @@ immediate command response capability.
 
 Delegate to the appropriate specialist agent based on the task:
 
-| Agent               | Domain                                        |
-| ------------------- | --------------------------------------------- |
-| analyst (Mary)      | Market research, requirements, product briefs |
-| pm (James)          | PRDs, planning, validation                    |
-| architect (Winston) | System design, technical decisions            |
-| sm (Bob)            | Sprint planning, stories, retrospectives      |
-| dev (Alex)          | Implementation, dev stories                   |
-| ux-designer (Sally) | UX design, user research                      |
-| tea (Murat)                | Testing, quality, CI/CD, test architecture    |
-| tech-writer (Paige)        | Documentation, diagrams                       |
-| quick-flow-solo-dev (Barry)| Quick flow, rapid development                 |
-| quinn                      | Quick start, project initialization            |
+| Agent               | Name    | Domain                                     |
+| ------------------- | ------- | ------------------------------------------ |
+| analyst             | Mary    | Market research, requirements, briefs      |
+| pm                  | John    | PRDs, planning, validation                 |
+| ux-designer         | Sally   | UX design, user research                   |
+| architect           | Winston | System design, technical decisions         |
+| sm                  | Bob     | Sprint planning, stories, retrospectives   |
+| dev                 | Amelia  | Implementation, dev stories                |
+| tea                 | Murat   | Test architecture, CI/CD, quality strategy |
+| quinn               | Quinn   | QA automation, API and E2E tests           |
+| tech-writer         | Paige   | Documentation, diagrams                    |
+| quick-flow-solo-dev | Barry   | Quick flow, rapid solo development         |

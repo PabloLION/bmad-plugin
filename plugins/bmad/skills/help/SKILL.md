@@ -17,17 +17,18 @@ user-invocable: true
 
 BMAD provides specialized agents for each phase of development:
 
-| Agent          | Name    | Role                                        |
-| -------------- | ------- | ------------------------------------------- |
-| 📊 Analyst     | Mary    | Business analysis, research, product briefs |
-| 📋 PM          | John    | Product requirements, epics, stories        |
-| 🎨 UX Designer | Sally   | User experience design                      |
-| 🏗️ Architect   | Winston | System architecture                         |
-| 🏃 SM          | Bob     | Sprint planning, story preparation          |
-| 💻 DEV         | Amelia  | Story implementation                        |
-| 🧪 TEA         | Murat   | Test architecture                           |
-| 📚 Tech Writer | Paige   | Documentation                               |
-| 🚀 Barry       | Barry   | Solo dev quick flow                         |
+| Agent                | Name    | Role                                        |
+| -------------------- | ------- | ------------------------------------------- |
+| 📊 analyst           | Mary    | Business analysis, research, product briefs |
+| 📋 pm                | John    | Product requirements, epics, stories        |
+| 🎨 ux-designer       | Sally   | User experience design                      |
+| 🏗️ architect         | Winston | System architecture                         |
+| 🏃 sm                | Bob     | Sprint planning, story preparation          |
+| 💻 dev               | Amelia  | Story implementation                        |
+| 🧪 tea               | Murat   | Test architecture, quality strategy         |
+| 🔧 quinn             | Quinn   | QA automation, API and E2E tests            |
+| 📚 tech-writer       | Paige   | Documentation                               |
+| 🚀 quick-flow-solo-dev | Barry | Solo dev quick flow                         |
 
 ## Workflows by Phase
 

@@ -1,5 +1,5 @@
 ---
-name: barry
+name: quick-flow-solo-dev
 description:
   Quick Flow Solo Dev for rapid tech spec creation and end-to-end story
   implementation. Minimum ceremony, lean artifacts, ruthless efficiency. Also
