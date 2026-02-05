@@ -13,7 +13,7 @@ export interface UpstreamSource {
   repo: string;
   /** Path relative to .upstream/ */
   localPath: string;
-  /** Version tracking file at repo root (e.g. ".upstream-version") */
+  /** Version tracking file at repo root (e.g. ".upstream-version-core") */
   versionFile: string;
   /** Whether this source is active */
   enabled: boolean;
