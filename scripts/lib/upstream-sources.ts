@@ -34,6 +34,8 @@ export interface UpstreamSource {
   skipWorkflows?: Set<string>;
   skipDirs?: Set<string>;
   skipContentFiles?: Set<string>;
+  /** Patterns for content files to skip (e.g. timestamped validation reports) */
+  skipContentPatterns?: RegExp[];
   workflowWorkarounds?: Record<string, string>;
   pluginOnlySkills?: Set<string>;
   pluginOnlyAgents?: Set<string>;
@@ -46,7 +48,7 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     id: 'core',
     repo: 'bmadcode/BMAD-METHOD',
     localPath: 'BMAD-METHOD',
-    versionFile: '.upstream-version',
+    versionFile: '.upstream-version-core',
     enabled: true,
     contentRoot: 'src/bmm/workflows',
     agentsRoot: 'src/bmm/agents',
@@ -78,16 +80,11 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     agentsRoot: 'src/agents',
     flatWorkflows: true,
     skipDirs: new Set(['_shared', 'templates']),
-    skipContentFiles: new Set([
-      'workflow.md',
-      'workflow.yaml',
-      'SKILL.md',
-      // TEA validation reports are generated artifacts, not synced content
-      'validation-report-20260127-095021.md',
-      'validation-report-20260127-102401.md',
-      'workflow-plan.md',
-      'workflow-plan-teach-me-testing.md',
-    ]),
+    skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
+    skipContentPatterns: [
+      /^validation-report-.*\.md$/,
+      /^workflow-plan.*\.md$/,
+    ],
     workflowWorkarounds: {},
     pluginOnlySkills: new Set(),
     pluginOnlyAgents: new Set(),
@@ -95,6 +92,16 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     pluginOnlyData: new Set(),
   },
 ];
+
+/** Check if a filename should be skipped for a given source. */
+export function shouldSkipContentFile(
+  source: UpstreamSource,
+  fileName: string,
+): boolean {
+  if (source.skipContentFiles?.has(fileName)) return true;
+  if (source.skipContentPatterns?.some((p) => p.test(fileName))) return true;
+  return false;
+}
 
 /** Get all enabled upstream sources */
 export function getEnabledSources(): UpstreamSource[] {

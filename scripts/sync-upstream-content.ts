@@ -10,9 +10,13 @@
 
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { PLUGIN, PLUGIN_JSON_PATH, ROOT, UPSTREAM } from './lib/config.ts';
+import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
 import type { UpstreamSource } from './lib/upstream-sources.ts';
-import { getEnabledSources } from './lib/upstream-sources.ts';
+import {
+  getCoreSource,
+  getEnabledSources,
+  shouldSkipContentFile,
+} from './lib/upstream-sources.ts';
 
 const DOCUMENT_PROJECT = 'document-project';
 
@@ -129,7 +133,7 @@ async function getWorkflowSkillPairs(
 
 async function syncPair(
   pair: WorkflowSkillPair,
-  skipFiles: Set<string>,
+  source: UpstreamSource,
 ): Promise<number> {
   const upstreamFiles = await listFilesRecursive(pair.upstreamDir);
   let count = 0;
@@ -137,7 +141,7 @@ async function syncPair(
   for (const relPath of upstreamFiles) {
     const fileName = relPath.split('/').at(-1) ?? relPath;
 
-    if (skipFiles.has(fileName)) continue;
+    if (shouldSkipContentFile(source, fileName)) continue;
 
     const srcPath = join(pair.upstreamDir, relPath);
     const destPath = join(pair.pluginDir, relPath);
@@ -218,13 +222,12 @@ async function syncSource(source: UpstreamSource): Promise<number> {
   const tag = await checkoutSource(source, upstreamRoot);
   console.log(`[${source.id}] Pinned to tag: ${tag}`);
 
-  const skipFiles = source.skipContentFiles ?? new Set();
   const pairs = await getWorkflowSkillPairs(source, upstreamRoot);
   let totalFiles = 0;
 
   for (const pair of pairs) {
     console.log(`Syncing: ${pair.label}`);
-    const count = await syncPair(pair, skipFiles);
+    const count = await syncPair(pair, source);
     totalFiles += count;
     if (!DRY_RUN) {
       console.log(`  ✓ ${count} files copied`);
@@ -284,10 +287,12 @@ console.log(
 
 // Update version files (core-anchored strategy)
 if (!DRY_RUN) {
-  const pkgJson = await Bun.file(join(UPSTREAM, 'package.json')).json();
+  const core = getCoreSource();
+  const coreRoot = join(ROOT, '.upstream', core.localPath);
+  const pkgJson = await Bun.file(join(coreRoot, 'package.json')).json();
   const newUpstream = `v${pkgJson.version}`;
-  await Bun.write(join(ROOT, '.upstream-version'), `${newUpstream}\n`);
-  console.log(`\nUpdated .upstream-version to ${newUpstream}`);
+  await Bun.write(join(ROOT, core.versionFile), `${newUpstream}\n`);
+  console.log(`\nUpdated ${core.versionFile} to ${newUpstream}`);
 
   // Bump plugin version: <upstream>.0 (reset patch on upstream change)
   const newPlugin = `${newUpstream}.0`;

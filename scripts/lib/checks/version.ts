@@ -1,7 +1,7 @@
 /**
  * Version consistency check for all upstream sources.
  *
- * Core: .upstream-version ↔ upstream package.json, plugin version anchored
+ * Core: .upstream-version-core ↔ upstream package.json, plugin version anchored
  * External modules: .upstream-version-<id> tracks module version independently
  */
 

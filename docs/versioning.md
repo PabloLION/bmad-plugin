@@ -18,7 +18,7 @@ Each upstream module's version is tracked in a separate file at the repo root:
 
 | File | Module | Repo |
 |---|---|---|
-| `.upstream-version` | BMAD-METHOD (core) | `BMAD-METHOD` |
+| `.upstream-version-core` | BMAD-METHOD (core) | `BMAD-METHOD` |
 | `.upstream-version-tea` | TEA (Test Architect Enterprise) | `bmad-method-test-architecture-enterprise` |
 
 Planned (pending bmp-h6k):

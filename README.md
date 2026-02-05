@@ -174,7 +174,7 @@ with 221 stars. Here is how this plugin differs:
 | Skills | 26 | 4 |
 | Agents | 10 | 12 |
 | Automated upstream sync | Yes (GitHub Actions) | No |
-| Version tracking | Explicit with `.upstream-version` | None |
+| Version tracking | Explicit with `.upstream-version-<id>` files | None |
 | CI & validation | Biome, markdownlint, Husky, upstream coverage checks | None |
 | Plugin marketplace | Yes (`marketplace.json`) | No (Smithery only) |
 | Architecture | Roles → agents, workflows → skills (correct mapping) | Roles → skills (incorrect mapping) |
