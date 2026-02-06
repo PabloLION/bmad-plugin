@@ -4,6 +4,9 @@
   "type": "module",
   "scripts": {
     "prepare": "husky",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --no-errors-on-unmatched .",
+    "lint:staged": "biome check --write --staged --no-errors-on-unmatched",
     "validate": "bun scripts/validate-upstream-coverage.ts",
     "sync": "bun scripts/sync-upstream-content.ts",
     "sync:dry": "bun scripts/sync-upstream-content.ts --dry-run",

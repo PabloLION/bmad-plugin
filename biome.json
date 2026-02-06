@@ -1,5 +1,18 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.13/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": [
+      "**",
+      "!.beads",
+      "!plugins/bmad/skills/**/templates",
+      "!plugins/bmad/skills/**/data"
+    ]
+  },
   "javascript": {
     "formatter": {
       "quoteStyle": "single"
