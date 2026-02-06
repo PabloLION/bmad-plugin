@@ -142,11 +142,73 @@ jobs:
 
           ## Action Required
 
-          1. Update \`.upstream/bmad-tea\` to the new version
+          1. Update \`.upstream/bmad-method-test-architecture-enterprise\` to the new version
           2. Run \`bun run sync\` to update plugin content
           3. Run \`bun run validate\` to verify coverage
           4. Version file \`.upstream-version-tea\` is updated automatically by sync
 
           See [upstream releases](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise/releases) for changelog." \
+              --label "upstream-sync"
+          fi
+
+  check-bmb:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get BMB latest release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(gh api repos/bmad-code-org/bmad-builder/releases/latest --jq '.tag_name')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Latest BMB version: $VERSION"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT=$(cat .upstream-version-bmb | sed 's/^v//')
+          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
+          echo "Current: $CURRENT"
+          echo "Upstream: $UPSTREAM"
+          if [ "$UPSTREAM" != "$CURRENT" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date."
+          fi
+
+      - name: Create issue if update needed
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          CURRENT=$(cat .upstream-version-bmb)
+
+          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMB update: $UPSTREAM" --state open --json number -q '.[0].number')
+
+          if [ -z "$EXISTING" ]; then
+            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
+
+            gh issue create \
+              --repo ${{ github.repository }} \
+              --title "Upstream BMB update: $UPSTREAM" \
+              --body "A new version of [bmad-code-org/bmad-builder](https://github.com/bmad-code-org/bmad-builder) is available.
+
+          ## Versions
+
+          - **Current:** $CURRENT
+          - **Upstream:** $UPSTREAM
+
+          ## Action Required
+
+          1. Update \`.upstream/bmad-builder\` to the new version
+          2. Run \`bun run sync\` to update plugin content
+          3. Run \`bun run validate\` to verify coverage
+          4. Version file \`.upstream-version-bmb\` is updated automatically by sync
+
+          See [upstream releases](https://github.com/bmad-code-org/bmad-builder/releases) for changelog." \
               --label "upstream-sync"
           fi
