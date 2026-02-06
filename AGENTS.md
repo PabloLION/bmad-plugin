@@ -10,6 +10,9 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 
 | Script | Command | Description |
 | --- | --- | --- |
+| typecheck | `bun run typecheck` | Type-check all TypeScript (no emit) |
+| lint | `bun run lint` | Biome lint + format check |
+| lint:staged | `bun run lint:staged` | Biome lint + auto-fix staged files |
 | validate | `bun run validate` | Upstream coverage validation (agents, skills, content, naming) |
 | sync | `bun run sync` | Sync upstream content to plugin |
 | sync:dry | `bun run sync:dry` | Dry-run sync (preview changes) |
