@@ -6,7 +6,7 @@
  * 1. Agent coverage — upstream agents ↔ plugin agent .md files
  * 2. Skill coverage — three-set: upstream workflows ↔ plugin directories ↔ manifest
  * 3. Content consistency — supporting files match (not SKILL.md vs workflow.md)
- * 4. Version consistency — .upstream-version ↔ upstream package.json
+ * 4. Version consistency — .upstream-version-<id> ↔ upstream package.json
  * 5. Naming consistency — SKILL.md frontmatter name ↔ directory name
  * 6. Agent–skill cross-reference — agent menu workflows ↔ plugin skill dirs
  *

@@ -9,7 +9,10 @@ import { PLUGIN, ROOT } from '../config.ts';
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
 import { fail, pass, RED, RESET, section, warn } from '../output.ts';
 import type { UpstreamSource } from '../upstream-sources.ts';
-import { getEnabledSources } from '../upstream-sources.ts';
+import {
+  getEnabledSources,
+  shouldSkipContentFile,
+} from '../upstream-sources.ts';
 
 const DOCUMENT_PROJECT = 'document-project';
 
@@ -123,14 +126,14 @@ async function compareUpstreamFiles(
   label: string,
   upstreamFiles: string[],
   pluginFileSet: Set<string>,
-  skipContentFiles: Set<string>,
+  source: UpstreamSource,
 ): Promise<{ checked: number; drifted: number }> {
   let checked = 0;
   let drifted = 0;
 
   for (const relPath of upstreamFiles) {
     const fileName = relPath.split('/').at(-1) ?? relPath;
-    if (skipContentFiles.has(fileName)) continue;
+    if (shouldSkipContentFile(source, fileName)) continue;
 
     if (!pluginFileSet.has(relPath)) {
       fail(`Content: ${label}/${relPath} — file missing in plugin`);
@@ -160,13 +163,12 @@ function checkExtraPluginFiles(
   upstreamFiles: string[],
   source: UpstreamSource,
 ): void {
-  const skipContentFiles = source.skipContentFiles ?? new Set();
   const pluginOnlyData = source.pluginOnlyData ?? new Set();
   const sharedTargets = source.sharedFileTargets ?? {};
 
   for (const relPath of pluginFiles) {
     const fileName = relPath.split('/').at(-1) ?? relPath;
-    if (skipContentFiles.has(fileName)) continue;
+    if (shouldSkipContentFile(source, fileName)) continue;
     if (upstreamFiles.includes(relPath)) continue;
 
     const qualifiedPath = `${skillName}/${relPath}`;
@@ -259,7 +261,6 @@ export async function checkContent(): Promise<void> {
   let driftCount = 0;
 
   for (const { upstreamDir, pluginDir, label, source } of pairs) {
-    const skipContentFiles = source.skipContentFiles ?? new Set();
     const upstreamFiles = await listFilesRecursive(upstreamDir);
     const pluginFiles = await listFilesRecursive(pluginDir);
     const pluginFileSet = new Set(pluginFiles);
@@ -270,7 +271,7 @@ export async function checkContent(): Promise<void> {
       label,
       upstreamFiles,
       pluginFileSet,
-      skipContentFiles,
+      source,
     );
     checkedCount += checked;
     driftCount += drifted;

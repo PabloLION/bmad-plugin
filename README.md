@@ -5,6 +5,7 @@
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
 [![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmad-code-org/BMAD-METHOD)
 [![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/BMAD-TEA)
+[![BMB Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-bmb.json)](https://github.com/bmad-code-org/bmad-builder)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
@@ -174,7 +175,7 @@ with 221 stars. Here is how this plugin differs:
 | Skills | 26 | 4 |
 | Agents | 10 | 12 |
 | Automated upstream sync | Yes (GitHub Actions) | No |
-| Version tracking | Explicit with `.upstream-version` | None |
+| Version tracking | Explicit with `.upstream-version-<id>` files | None |
 | CI & validation | Biome, markdownlint, Husky, upstream coverage checks | None |
 | Plugin marketplace | Yes (`marketplace.json`) | No (Smithery only) |
 | Architecture | Roles → agents, workflows → skills (correct mapping) | Roles → skills (incorrect mapping) |

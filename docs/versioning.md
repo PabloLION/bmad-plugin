@@ -18,8 +18,9 @@ Each upstream module's version is tracked in a separate file at the repo root:
 
 | File | Module | Repo |
 |---|---|---|
-| `.upstream-version` | BMAD-METHOD (core) | `BMAD-METHOD` |
+| `.upstream-version-core` | BMAD-METHOD (core) | `BMAD-METHOD` |
 | `.upstream-version-tea` | TEA (Test Architect Enterprise) | `bmad-method-test-architecture-enterprise` |
+| `.upstream-version-bmb` | BMB (BMad Builder) | `bmad-builder` |
 
 Planned (pending bmp-h6k):
 
@@ -27,7 +28,6 @@ Planned (pending bmp-h6k):
 |---|---|---|
 | `.upstream-version-cis` | CIS (Creative Intelligence Suite) | `bmad-module-creative-intelligence-suite` |
 | `.upstream-version-gds` | GDS (Game Dev Studio) | `bmad-module-game-dev-studio` |
-| `.upstream-version-bmb` | BMB (BMad Builder) | `bmad-builder` |
 
 All version files follow the pattern `.upstream-version-<module-id>`.
 See `docs/bmad-ecosystem.md` for the full module inventory.

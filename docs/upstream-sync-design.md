@@ -76,7 +76,7 @@ bun run sync:dry        # Preview without copying
    skill directory, creating parent directories as needed
 5. **Shared files**: Copy `_shared/` files to `skills/_shared/` and distribute
    copies to each target skill's `data/` directory
-6. **Version update**: Write upstream version to `.upstream-version` and update
+6. **Version update**: Write upstream version to `.upstream-version-core` and update
    the README badge
 
 ### Directory mapping
@@ -164,7 +164,7 @@ bun run validate        # Full validation (also runs as pre-push hook)
 | Skills (three-set) | Upstream names ↔ plugin directories ↔ plugin.json manifest |
 | Content | Supporting files match between upstream and plugin |
 | Shared files | `_shared/` ↔ skill `data/` copies are consistent |
-| Version | `.upstream-version` matches upstream `package.json` |
+| Version | `.upstream-version-core` matches upstream `package.json` |
 
 ### Content comparison
 
