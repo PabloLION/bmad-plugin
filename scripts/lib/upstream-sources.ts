@@ -91,6 +91,23 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     sharedFileTargets: {},
     pluginOnlyData: new Set(),
   },
+  {
+    id: 'bmb',
+    repo: 'bmad-code-org/bmad-builder',
+    localPath: 'bmad-builder',
+    versionFile: '.upstream-version-bmb',
+    enabled: true,
+    contentRoot: 'src/workflows',
+    agentsRoot: 'src/agents',
+    flatWorkflows: true,
+    skipDirs: new Set(['_shared', 'templates']),
+    skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
+    workflowWorkarounds: {},
+    pluginOnlySkills: new Set(),
+    pluginOnlyAgents: new Set(),
+    sharedFileTargets: {},
+    pluginOnlyData: new Set(),
+  },
 ];
 
 /** Check if a filename should be skipped for a given source. */
