@@ -244,7 +244,7 @@ approach. The clean workaround was then reapplied on top of `91ee90f`.
 - [x] Fix missing `testarch-knowledge` in plugin.json commands (found by validation script)
 - [x] Rename skill `prd` → `create-prd` to match upstream rename
 - [x] Sync plugin supporting files to upstream Beta.2 (175 files)
-- [x] Update `.upstream-version` to `v6.0.0-Beta.2`
+- [x] Update `.upstream-version-core` to `v6.0.0-Beta.2`
 - [x] Add `_shared/` directory for shared upstream files (excalidraw templates)
 - [x] Sync script (`scripts/sync-upstream-content.ts`) with shared file distribution
 - [x] Content validation: three-way check (upstream ↔ `_shared/` ↔ skill copies)

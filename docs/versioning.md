@@ -16,13 +16,21 @@ The plugin version lives in `plugins/bmad/.claude-plugin/plugin.json`.
 
 Each upstream module's version is tracked in a separate file at the repo root:
 
-| File | Module |
-|---|---|
-| `.upstream-version` | BMAD-METHOD (core) |
-| `.upstream-version-tea` | TEA (Test Architect Enterprise) |
+| File | Module | Repo |
+|---|---|---|
+| `.upstream-version-core` | BMAD-METHOD (core) | `BMAD-METHOD` |
+| `.upstream-version-tea` | TEA (Test Architect Enterprise) | `bmad-method-test-architecture-enterprise` |
 
-Future modules (CIS, GDS, BMB) follow the same pattern:
-`.upstream-version-<module-id>`.
+Planned (pending bmp-h6k):
+
+| File | Module | Repo |
+|---|---|---|
+| `.upstream-version-cis` | CIS (Creative Intelligence Suite) | `bmad-module-creative-intelligence-suite` |
+| `.upstream-version-gds` | GDS (Game Dev Studio) | `bmad-module-game-dev-studio` |
+| `.upstream-version-bmb` | BMB (BMad Builder) | `bmad-builder` |
+
+All version files follow the pattern `.upstream-version-<module-id>`.
+See `docs/bmad-ecosystem.md` for the full module inventory.
 
 These files are updated by `bun run sync` and checked by `bun run validate`.
 

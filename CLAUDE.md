@@ -1,5 +1,11 @@
 # BMAD Plugin Project Conventions
 
+## Runtime
+
+This project uses **Bun** as its JavaScript runtime and package manager.
+All scripts use `bun run <script>`. For local tooling (biome, tsc), use
+`./node_modules/.bin/<tool>` — never npx or bunx.
+
 ## Git Workflow
 
 - **main** branch is for releases only — do not commit directly to main

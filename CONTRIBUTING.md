@@ -80,7 +80,7 @@ bun test
 ## Upstream Sync
 
 This plugin tracks [bmad-code-org/BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD)
-as its upstream. The version is recorded in `.upstream-version`. A GitHub Action
+as its upstream. The version is recorded in `.upstream-version-core`. A GitHub Action
 checks weekly for new upstream releases and opens an issue when one is found.
 
 ## Releasing

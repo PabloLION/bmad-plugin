@@ -27,7 +27,7 @@ jobs:
       - name: Compare versions
         id: compare
         run: |
-          CURRENT=$(cat .upstream-version | sed 's/^v//')
+          CURRENT=$(cat .upstream-version-core | sed 's/^v//')
           UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
           echo "Current: $CURRENT"
           echo "Upstream: $UPSTREAM"
@@ -61,7 +61,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(cat .upstream-version)
+          CURRENT=$(cat .upstream-version-core)
 
           EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMAD update: $UPSTREAM" --state open --json number -q '.[0].number')
 
@@ -83,7 +83,7 @@ jobs:
           1. Update \`.upstream/BMAD-METHOD\` to the new version
           2. Diff changes against current plugin content
           3. Apply relevant updates to \`plugins/bmad/\`
-          4. Update \`.upstream-version\` to \`$UPSTREAM\`
+          4. Update \`.upstream-version-core\` to \`$UPSTREAM\`
 
           See [upstream releases](https://github.com/bmadcode/BMAD-METHOD/releases) for changelog." \
               --label "upstream-sync"
