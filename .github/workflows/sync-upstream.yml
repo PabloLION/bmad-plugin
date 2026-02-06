@@ -142,7 +142,7 @@ jobs:
 
           ## Action Required
 
-          1. Update \`.upstream/bmad-tea\` to the new version
+          1. Update \`.upstream/bmad-method-test-architecture-enterprise\` to the new version
           2. Run \`bun run sync\` to update plugin content
           3. Run \`bun run validate\` to verify coverage
           4. Version file \`.upstream-version-tea\` is updated automatically by sync

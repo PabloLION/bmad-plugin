@@ -73,7 +73,7 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
   {
     id: 'tea',
     repo: 'bmad-code-org/bmad-method-test-architecture-enterprise',
-    localPath: 'bmad-tea',
+    localPath: 'bmad-method-test-architecture-enterprise',
     versionFile: '.upstream-version-tea',
     enabled: true,
     contentRoot: 'src/workflows/testarch',

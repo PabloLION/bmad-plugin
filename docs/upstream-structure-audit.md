@@ -89,7 +89,7 @@ sources.
 ```text
 .upstream/
   BMAD-METHOD/              ← active (core)
-  bmad-tea/                 ← active (TEA)
+  bmad-method-test-architecture-enterprise/  ← active (TEA)
   claude-code-bmad-skills/  ← unused
   claude-plugins-official/  ← unused
 ```
