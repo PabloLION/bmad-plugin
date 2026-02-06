@@ -38,3 +38,6 @@ The agent name (filename) is the canonical identifier. Personnel names add perso
 | tech-writer           | Paige     | Technical Writer        |
 | quick-flow-solo-dev   | Barry     | Quick Flow Solo Dev     |
 | bmad-master           | —         | Orchestrator            |
+| agent-builder         | Bond      | Agent Building Expert   |
+| module-builder        | Morgan    | Module Creation Master  |
+| workflow-builder      | Wendy     | Workflow Building Master |
