@@ -1,10 +1,12 @@
-# Agent Instructions
+# BMAD Plugin Project Conventions
 
-Project-specific instructions for AI agents working in this repo.
+## Runtime
+
+This project uses **Bun** as its JavaScript runtime and package manager.
+All scripts use `bun run <script>`. For local tooling (biome, tsc), use
+`./node_modules/.bin/<tool>` — never npx or bunx.
 
 ## Available Scripts
-
-Run project scripts via `bun run <name>`, not by invoking files directly.
 
 | Script | Command | Description |
 | --- | --- | --- |
@@ -13,28 +15,58 @@ Run project scripts via `bun run <name>`, not by invoking files directly.
 | sync:dry | `bun run sync:dry` | Dry-run sync (preview changes) |
 | update-readme | `bun run update-readme` | Update README version badge |
 
-## Landing the Plane (Session Completion)
+## Git Workflow
 
-**When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
+- **main** is for releases only — never commit directly to main
+- **dev** branch accepts PRs from feature branches
+- PRs target **dev**, not main
+- When merging PRs to dev: **do not squash** — preserve individual commits
+- Releases: merge dev → main (unidirectional)
+- One branch per module/story
 
-**MANDATORY WORKFLOW:**
+## BMAD Agent Naming
 
-1. **File issues for remaining work** - Create issues for anything that needs follow-up
-2. **Run quality gates** (if code changed) - Tests, linters, builds
-3. **Update issue status** - Close finished work, update in-progress items
-4. **PUSH TO REMOTE** - This is MANDATORY:
-   ```bash
+Two distinct names for each agent:
+
+| Term | Source | Example | Used for |
+|------|--------|---------|----------|
+| **Agent name** | Filename (without `.md`) | `quick-flow-solo-dev` | Invocation, delegation, code references |
+| **Personnel name** | `name` field in frontmatter or heading | Barry | Documentation, user-facing display |
+
+The agent name (filename) is the canonical identifier. Personnel names add personality but are optional in tables.
+
+### Current Agents
+
+| Agent (filename)      | Personnel | Role                    |
+| --------------------- | --------- | ----------------------- |
+| analyst               | Mary      | Business Analyst        |
+| pm                    | John      | Product Manager         |
+| ux-designer           | Sally     | UX Designer             |
+| architect             | Winston   | System Architect        |
+| sm                    | Bob       | Scrum Master            |
+| dev                   | Amelia    | Developer               |
+| tea                   | Murat     | Test Architect          |
+| quinn                 | Quinn     | QA Engineer             |
+| tech-writer           | Paige     | Technical Writer        |
+| quick-flow-solo-dev   | Barry     | Quick Flow Solo Dev     |
+| bmad-master           | —         | Orchestrator            |
+| agent-builder         | Bond      | Agent Building Expert   |
+| module-builder        | Morgan    | Module Creation Master  |
+| workflow-builder      | Wendy     | Workflow Building Master |
+
+## Session Completion
+
+When ending a work session, complete ALL steps below. Work is NOT complete until
+`git push` succeeds.
+
+1. File issues for remaining work
+2. Run quality gates (if code changed)
+3. Update issue status — close finished work
+4. Push to remote:
+   ```sh
    git pull --rebase
    bd sync
    git push
-   git status  # MUST show "up to date with origin"
+   git status  # must show "up to date with origin"
    ```
-5. **Clean up** - Clear stashes, prune remote branches
-6. **Verify** - All changes committed AND pushed
-7. **Hand off** - Provide context for next session
-
-**CRITICAL RULES:**
-- Work is NOT complete until `git push` succeeds
-- NEVER stop before pushing - that leaves work stranded locally
-- NEVER say "ready to push when you are" - YOU must push
-- If push fails, resolve and retry until it succeeds
+5. Verify all changes committed AND pushed
