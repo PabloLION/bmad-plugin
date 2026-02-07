@@ -212,3 +212,65 @@ jobs:
           See [upstream releases](https://github.com/bmad-code-org/bmad-builder/releases) for changelog." \
               --label "upstream-sync"
           fi
+
+  check-cis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get CIS latest release
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(gh api repos/bmad-code-org/bmad-module-creative-intelligence-suite/releases/latest --jq '.tag_name')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Latest CIS version: $VERSION"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          CURRENT=$(cat .upstream-version-cis | sed 's/^v//')
+          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
+          echo "Current: $CURRENT"
+          echo "Upstream: $UPSTREAM"
+          if [ "$UPSTREAM" != "$CURRENT" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "Already up to date."
+          fi
+
+      - name: Create issue if update needed
+        if: steps.compare.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          UPSTREAM="${{ steps.upstream.outputs.version }}"
+          CURRENT=$(cat .upstream-version-cis)
+
+          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream CIS update: $UPSTREAM" --state open --json number -q '.[0].number')
+
+          if [ -z "$EXISTING" ]; then
+            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
+
+            gh issue create \
+              --repo ${{ github.repository }} \
+              --title "Upstream CIS update: $UPSTREAM" \
+              --body "A new version of [bmad-code-org/bmad-module-creative-intelligence-suite](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) is available.
+
+          ## Versions
+
+          - **Current:** $CURRENT
+          - **Upstream:** $UPSTREAM
+
+          ## Action Required
+
+          1. Update \`.upstream/bmad-module-creative-intelligence-suite\` to the new version
+          2. Run \`bun run sync\` to update plugin content
+          3. Run \`bun run validate\` to verify coverage
+          4. Version file \`.upstream-version-cis\` is updated automatically by sync
+
+          See [upstream releases](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite/releases) for changelog." \
+              --label "upstream-sync"
+          fi
