@@ -36,6 +36,8 @@ export interface UpstreamSource {
   skipContentFiles?: Set<string>;
   /** Patterns for content files to skip (e.g. timestamped validation reports) */
   skipContentPatterns?: RegExp[];
+  /** Workflows referenced by agents but not yet implemented upstream (warn, not fail) */
+  plannedWorkflows?: Set<string>;
   workflowWorkarounds?: Record<string, string>;
   pluginOnlySkills?: Set<string>;
   pluginOnlyAgents?: Set<string>;
@@ -153,6 +155,7 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
       'test-design': 'gds-test-design',
       'test-review': 'gds-test-review',
     },
+    plannedWorkflows: new Set(['quick-prototype']),
     pluginOnlySkills: new Set(),
     pluginOnlyAgents: new Set(['tech-writer']),
     sharedFileTargets: {},

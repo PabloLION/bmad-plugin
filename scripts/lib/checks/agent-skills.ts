@@ -55,6 +55,7 @@ function checkAgentWorkflows(
   workflows: string[],
   skillDirs: Set<string>,
   workarounds: Record<string, string>,
+  planned: Set<string>,
 ): void {
   for (const wf of workflows) {
     const skillName = workarounds[wf] ?? wf;
@@ -66,6 +67,10 @@ function checkAgentWorkflows(
       } else {
         pass(`[${sourceId}] ${agentName} → ${skillName}`);
       }
+    } else if (planned.has(wf)) {
+      warn(
+        `[${sourceId}] ${agentName} references planned workflow "${wf}" (not yet implemented upstream)`,
+      );
     } else {
       fail(
         `[${sourceId}] ${agentName} references workflow "${wf}" but no skill directory "${skillName}" exists`,
@@ -91,6 +96,7 @@ export async function checkAgentSkills(): Promise<void> {
 
     const entries = await readdir(agentsDir, { withFileTypes: true });
     const workarounds = source.workflowWorkarounds ?? {};
+    const planned = source.plannedWorkflows ?? new Set<string>();
 
     for (const entry of entries) {
       const resolved = await resolveAgentEntry(agentsDir, entry);
@@ -112,6 +118,7 @@ export async function checkAgentSkills(): Promise<void> {
         workflows,
         skillDirs,
         workarounds,
+        planned,
       );
     }
   }
