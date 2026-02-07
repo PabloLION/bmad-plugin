@@ -18,8 +18,6 @@ import {
   shouldSkipContentFile,
 } from './lib/upstream-sources.ts';
 
-const DOCUMENT_PROJECT = 'document-project';
-
 const DRY_RUN = process.argv.includes('--dry-run');
 const SOURCE_FILTER = (() => {
   const idx = process.argv.indexOf('--source');
@@ -75,7 +73,14 @@ async function getFlatWorkflowPairs(
   return pairs;
 }
 
-/** Get workflow→skill pairs for a categorized source (core pattern). */
+/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
+async function isLeafWorkflow(dir: string): Promise<boolean> {
+  if (await exists(join(dir, 'workflow.yaml'))) return true;
+  if (await exists(join(dir, 'workflow.md'))) return true;
+  return false;
+}
+
+/** Get workflow→skill pairs for a categorized source (category → workflow structure). */
 async function getCategorizedWorkflowPairs(
   source: UpstreamSource,
   upstreamRoot: string,
@@ -90,22 +95,25 @@ async function getCategorizedWorkflowPairs(
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
-    // document-project is a leaf workflow itself (no sub-dirs)
-    if (cat.name === DOCUMENT_PROJECT && !skipWorkflows.has(DOCUMENT_PROJECT)) {
-      const skillPath = join(PLUGIN, 'skills', DOCUMENT_PROJECT);
+    const catDir = join(workflowsRoot, cat.name);
+
+    // Leaf workflow at top level (has workflow.yaml or workflow.md)
+    if (await isLeafWorkflow(catDir)) {
+      if (skipWorkflows.has(cat.name)) continue;
+      const skillName = workarounds[cat.name] ?? cat.name;
+      const skillPath = join(PLUGIN, 'skills', skillName);
       if (await exists(skillPath)) {
         pairs.push({
-          upstreamDir: join(workflowsRoot, cat.name),
+          upstreamDir: catDir,
           pluginDir: skillPath,
-          label: `[${source.id}] ${DOCUMENT_PROJECT}`,
+          label: `[${source.id}] ${skillName}`,
         });
       }
       continue;
     }
 
-    const subs = await readdir(join(workflowsRoot, cat.name), {
-      withFileTypes: true,
-    });
+    // Category directory — iterate sub-workflows
+    const subs = await readdir(catDir, { withFileTypes: true });
     for (const sub of subs) {
       if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
       if (skipWorkflows.has(sub.name)) continue;
@@ -114,7 +122,7 @@ async function getCategorizedWorkflowPairs(
       const skillPath = join(PLUGIN, 'skills', skillName);
       if (await exists(skillPath)) {
         pairs.push({
-          upstreamDir: join(workflowsRoot, cat.name, sub.name),
+          upstreamDir: join(catDir, sub.name),
           pluginDir: skillPath,
           label: `[${source.id}] ${skillName}`,
         });

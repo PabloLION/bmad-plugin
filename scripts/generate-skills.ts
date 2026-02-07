@@ -85,6 +85,44 @@ async function findAgentForWorkflow(
   return undefined;
 }
 
+/** Normalize parsed YAML to extract top-level name/description regardless of nesting. */
+function normalizeWorkflowYaml(parsed: Record<string, unknown>): WorkflowYaml {
+  // Some upstream workflow.yaml files nest metadata under a "workflow:" key
+  const source =
+    typeof parsed.workflow === 'object' && parsed.workflow !== null
+      ? (parsed.workflow as Record<string, unknown>)
+      : parsed;
+  return {
+    name: String(source.name ?? ''),
+    description: String(source.description ?? ''),
+    author: source.author ? String(source.author) : undefined,
+  };
+}
+
+/** Parse workflow metadata from workflow.yaml or workflow.md frontmatter. */
+async function parseWorkflowMeta(
+  workflowDir: string,
+): Promise<WorkflowYaml | undefined> {
+  const yamlPath = join(workflowDir, 'workflow.yaml');
+  if (await exists(yamlPath)) {
+    const content = await Bun.file(yamlPath).text();
+    return normalizeWorkflowYaml(parseYaml(content) as Record<string, unknown>);
+  }
+
+  const mdPath = join(workflowDir, 'workflow.md');
+  if (await exists(mdPath)) {
+    const content = await Bun.file(mdPath).text();
+    const match = content.match(/^---\n([\s\S]*?)\n---/);
+    if (match?.[1]) {
+      return normalizeWorkflowYaml(
+        parseYaml(match[1]) as Record<string, unknown>,
+      );
+    }
+  }
+
+  return undefined;
+}
+
 /** Detect if a workflow directory has sub-workflow files (workflow-*.md). */
 async function detectSubWorkflows(
   workflowDir: string,
@@ -179,8 +217,33 @@ function generateSkillMd(
   return `${lines.join('\n')}\n`;
 }
 
+/** Collect workflow info from a single directory entry. Returns undefined if no metadata found. */
+async function collectWorkflowInfo(
+  workflowDir: string,
+  dirName: string,
+  skillName: string,
+  label: string,
+): Promise<WorkflowInfo | undefined> {
+  const yaml = await parseWorkflowMeta(workflowDir);
+  if (!yaml) {
+    console.log(
+      `  ⚠ skip: ${label} (no workflow.yaml or workflow.md frontmatter)`,
+    );
+    return undefined;
+  }
+
+  const subWorkflows = await detectSubWorkflows(workflowDir);
+  return {
+    dirName,
+    skillName,
+    yaml,
+    hasSubWorkflows: subWorkflows.length > 0,
+    subWorkflows,
+  };
+}
+
 /** Get workflow directories for a flat source. */
-async function getWorkflowDirs(
+async function getFlatWorkflowDirs(
   source: UpstreamSource,
   upstreamRoot: string,
 ): Promise<WorkflowInfo[]> {
@@ -201,25 +264,73 @@ async function getWorkflowDirs(
     const skillName = workarounds[entry.name] ?? entry.name;
     if (pluginOnlySkills.has(skillName)) continue;
 
-    const workflowDir = join(workflowsRoot, entry.name);
-    const yamlPath = join(workflowDir, 'workflow.yaml');
+    const info = await collectWorkflowInfo(
+      join(workflowsRoot, entry.name),
+      entry.name,
+      skillName,
+      entry.name,
+    );
+    if (info) results.push(info);
+  }
 
-    if (!(await exists(yamlPath))) {
-      console.log(`  ⚠ skip: ${entry.name} (no workflow.yaml)`);
+  return results;
+}
+
+/** Get workflow directories for a categorized source (category → workflow structure). */
+async function getCategorizedWorkflowDirs(
+  source: UpstreamSource,
+  upstreamRoot: string,
+): Promise<WorkflowInfo[]> {
+  const workflowsRoot = join(upstreamRoot, source.contentRoot);
+  if (!(await exists(workflowsRoot))) return [];
+
+  const categories = await readdir(workflowsRoot, { withFileTypes: true });
+  const skipDirs = source.skipDirs ?? new Set();
+  const skipWorkflows = source.skipWorkflows ?? new Set();
+  const pluginOnlySkills = source.pluginOnlySkills ?? new Set();
+  const workarounds = source.workflowWorkarounds ?? {};
+  const results: WorkflowInfo[] = [];
+
+  for (const cat of categories) {
+    if (!cat.isDirectory()) continue;
+
+    const catDir = join(workflowsRoot, cat.name);
+
+    // Check if this is a leaf workflow (has workflow.yaml or workflow.md)
+    const leafMeta = await parseWorkflowMeta(catDir);
+    if (leafMeta) {
+      if (skipWorkflows.has(cat.name)) continue;
+      const skillName = workarounds[cat.name] ?? cat.name;
+      if (pluginOnlySkills.has(skillName)) continue;
+
+      const subWorkflows = await detectSubWorkflows(catDir);
+      results.push({
+        dirName: cat.name,
+        skillName,
+        yaml: leafMeta,
+        hasSubWorkflows: subWorkflows.length > 0,
+        subWorkflows,
+      });
       continue;
     }
 
-    const content = await Bun.file(yamlPath).text();
-    const yaml = parseYaml(content) as WorkflowYaml;
-    const subWorkflows = await detectSubWorkflows(workflowDir);
+    // Category directory — iterate sub-workflows
+    const subs = await readdir(catDir, { withFileTypes: true });
+    for (const sub of subs) {
+      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
+      if (skipWorkflows.has(sub.name)) continue;
 
-    results.push({
-      dirName: entry.name,
-      skillName,
-      yaml,
-      hasSubWorkflows: subWorkflows.length > 0,
-      subWorkflows,
-    });
+      const skillName = workarounds[sub.name] ?? sub.name;
+      if (pluginOnlySkills.has(skillName)) continue;
+
+      const info = await collectWorkflowInfo(
+        join(catDir, sub.name),
+        sub.name,
+        skillName,
+        `${cat.name}/${sub.name}`,
+      );
+      if (info) results.push(info);
+    }
   }
 
   return results;
@@ -234,7 +345,9 @@ async function processSource(source: UpstreamSource): Promise<number> {
     return 0;
   }
 
-  const workflows = await getWorkflowDirs(source, upstreamRoot);
+  const workflows = source.flatWorkflows
+    ? await getFlatWorkflowDirs(source, upstreamRoot)
+    : await getCategorizedWorkflowDirs(source, upstreamRoot);
   let count = 0;
 
   for (const info of workflows) {

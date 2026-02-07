@@ -125,6 +125,39 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     sharedFileTargets: {},
     pluginOnlyData: new Set(),
   },
+  {
+    id: 'gds',
+    repo: 'bmad-code-org/bmad-module-game-dev-studio',
+    localPath: 'bmad-module-game-dev-studio',
+    versionFile: '.upstream-version-gds',
+    enabled: true,
+    contentRoot: 'src/workflows',
+    agentsRoot: 'src/agents',
+    flatWorkflows: false,
+    skipDirs: new Set(['_shared', 'templates']),
+    skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
+    workflowWorkarounds: {
+      'document-project': 'gds-document-project',
+      // Collisions with core (4-implementation + bmad-quick-flow)
+      'code-review': 'gds-code-review',
+      'correct-course': 'gds-correct-course',
+      'create-story': 'gds-create-story',
+      'dev-story': 'gds-dev-story',
+      'quick-dev': 'gds-quick-dev',
+      'quick-spec': 'gds-quick-spec',
+      retrospective: 'gds-retrospective',
+      'sprint-planning': 'gds-sprint-planning',
+      'sprint-status': 'gds-sprint-status',
+      // Collisions with TEA (gametest workflows)
+      automate: 'gds-automate',
+      'test-design': 'gds-test-design',
+      'test-review': 'gds-test-review',
+    },
+    pluginOnlySkills: new Set(),
+    pluginOnlyAgents: new Set(['tech-writer']),
+    sharedFileTargets: {},
+    pluginOnlyData: new Set(),
+  },
 ];
 
 /** Check if a filename should be skipped for a given source. */

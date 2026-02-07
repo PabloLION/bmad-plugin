@@ -10,6 +10,7 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 
 | Script | Command | Description |
 | --- | --- | --- |
+| prepare | `bun run prepare` | Install husky git hooks |
 | typecheck | `bun run typecheck` | Type-check all TypeScript (no emit) |
 | lint | `bun run lint` | Biome lint + format check |
 | lint:staged | `bun run lint:staged` | Biome lint + auto-fix staged files |
@@ -20,6 +21,7 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
 | generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
 | update-readme | `bun run update-readme` | Update README version badge |
+| test | `bun run test` | Run tests |
 
 ## Git Workflow
 
@@ -65,6 +67,12 @@ The agent name (filename) is the canonical identifier. Personnel names add perso
 | innovation-strategist   | Victor     | CIS    | Innovation Strategist        |
 | presentation-master     | Caravaggio | CIS    | Presentation Expert          |
 | storyteller             | Sophia     | CIS    | Master Storyteller           |
+| game-architect          | Cloud Dragonborn | GDS | Principal Game Systems Architect |
+| game-designer           | Samus Shepard | GDS | Lead Game Designer           |
+| game-dev                | Link Freeman | GDS   | Senior Game Developer        |
+| game-qa                 | GLaDOS     | GDS    | Game QA Architect            |
+| game-scrum-master       | Max        | GDS    | Game Dev Scrum Master        |
+| game-solo-dev           | Indie      | GDS    | Elite Indie Game Developer   |
 
 ## Automation First
 
