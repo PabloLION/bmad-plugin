@@ -66,6 +66,16 @@ The agent name (filename) is the canonical identifier. Personnel names add perso
 | presentation-master     | Caravaggio | CIS    | Presentation Expert          |
 | storyteller             | Sophia     | CIS    | Master Storyteller           |
 
+## Automation First
+
+Script everything repeatable — never do manually what a script can do.
+
+- Agent files → `bun run generate:agents --source <id>`
+- Skill files → `bun run generate:skills --source <id>`
+- Sync content → `bun run sync --source <id>`
+- All scripts support `--source <id>` and `--dry-run` flags
+- When something breaks, **fix the script** — don't work around it manually
+
 ## Session Completion
 
 When ending a work session, complete ALL steps below. Work is NOT complete until

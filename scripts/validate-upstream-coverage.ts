@@ -18,7 +18,6 @@ import {
   checkAgentSkills,
   checkAgents,
   checkContent,
-  checkNaming,
   checkSync,
   checkVersion,
   checkWorkflows,
@@ -43,7 +42,8 @@ await checkAgents();
 await checkWorkflows();
 await checkContent();
 await checkVersion();
-await checkNaming();
+// checkNaming() disabled — requires bmad- prefix workaround (claude-code#17271)
+// which is inactive while using auto-discovery plugin.json format
 await checkAgentSkills();
 
 const workaroundCount = getEnabledSources().reduce(
