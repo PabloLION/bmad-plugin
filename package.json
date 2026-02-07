@@ -1,19 +1,26 @@
 {
   "name": "bmad-plugin",
-  "version": "6.0.0-Beta.4.3",
+  "version": "6.0.0-Beta.4.6",
   "type": "module",
   "scripts": {
     "prepare": "husky",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check --no-errors-on-unmatched .",
+    "lint:staged": "biome check --write --staged --no-errors-on-unmatched",
     "validate": "bun scripts/validate-upstream-coverage.ts",
     "sync": "bun scripts/sync-upstream-content.ts",
     "sync:dry": "bun scripts/sync-upstream-content.ts --dry-run",
+    "sync:source": "bun scripts/sync-upstream-content.ts --source",
+    "generate:agents": "bun scripts/generate-agents.ts",
+    "generate:skills": "bun scripts/generate-skills.ts",
     "update-readme": "bun scripts/update-readme-version.ts",
     "test": "bun test"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13",
     "@types/bun": "latest",
-    "husky": "^9"
+    "husky": "^9",
+    "yaml": "^2.8.2"
   },
   "peerDependencies": {
     "typescript": "^5"

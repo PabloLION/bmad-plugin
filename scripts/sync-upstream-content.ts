@@ -18,9 +18,11 @@ import {
   shouldSkipContentFile,
 } from './lib/upstream-sources.ts';
 
-const DOCUMENT_PROJECT = 'document-project';
-
 const DRY_RUN = process.argv.includes('--dry-run');
+const SOURCE_FILTER = (() => {
+  const idx = process.argv.indexOf('--source');
+  return idx >= 0 ? process.argv[idx + 1] : undefined;
+})();
 
 async function listFilesRecursive(dir: string): Promise<string[]> {
   const results: string[] = [];
@@ -71,7 +73,14 @@ async function getFlatWorkflowPairs(
   return pairs;
 }
 
-/** Get workflow→skill pairs for a categorized source (core pattern). */
+/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
+async function isLeafWorkflow(dir: string): Promise<boolean> {
+  if (await exists(join(dir, 'workflow.yaml'))) return true;
+  if (await exists(join(dir, 'workflow.md'))) return true;
+  return false;
+}
+
+/** Get workflow→skill pairs for a categorized source (category → workflow structure). */
 async function getCategorizedWorkflowPairs(
   source: UpstreamSource,
   upstreamRoot: string,
@@ -86,22 +95,25 @@ async function getCategorizedWorkflowPairs(
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
-    // document-project is a leaf workflow itself (no sub-dirs)
-    if (cat.name === DOCUMENT_PROJECT && !skipWorkflows.has(DOCUMENT_PROJECT)) {
-      const skillPath = join(PLUGIN, 'skills', DOCUMENT_PROJECT);
+    const catDir = join(workflowsRoot, cat.name);
+
+    // Leaf workflow at top level (has workflow.yaml or workflow.md)
+    if (await isLeafWorkflow(catDir)) {
+      if (skipWorkflows.has(cat.name)) continue;
+      const skillName = workarounds[cat.name] ?? cat.name;
+      const skillPath = join(PLUGIN, 'skills', skillName);
       if (await exists(skillPath)) {
         pairs.push({
-          upstreamDir: join(workflowsRoot, cat.name),
+          upstreamDir: catDir,
           pluginDir: skillPath,
-          label: `[${source.id}] ${DOCUMENT_PROJECT}`,
+          label: `[${source.id}] ${skillName}`,
         });
       }
       continue;
     }
 
-    const subs = await readdir(join(workflowsRoot, cat.name), {
-      withFileTypes: true,
-    });
+    // Category directory — iterate sub-workflows
+    const subs = await readdir(catDir, { withFileTypes: true });
     for (const sub of subs) {
       if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
       if (skipWorkflows.has(sub.name)) continue;
@@ -110,7 +122,7 @@ async function getCategorizedWorkflowPairs(
       const skillPath = join(PLUGIN, 'skills', skillName);
       if (await exists(skillPath)) {
         pairs.push({
-          upstreamDir: join(workflowsRoot, cat.name, sub.name),
+          upstreamDir: join(catDir, sub.name),
           pluginDir: skillPath,
           label: `[${source.id}] ${skillName}`,
         });
@@ -191,6 +203,15 @@ async function syncSharedFile(
   return count;
 }
 
+/** Run git in an upstream repo, with BEADS_DIR set to avoid hook interference. */
+function gitInUpstream(
+  upstreamRoot: string,
+  ...args: string[]
+): ReturnType<typeof Bun.$> {
+  const beadsDir = join(ROOT, '.beads');
+  return Bun.$`BEADS_DIR=${beadsDir} git -C ${upstreamRoot} ${args}`.quiet();
+}
+
 /** Checkout a source to its tracked version tag. */
 async function checkoutSource(
   source: UpstreamSource,
@@ -199,10 +220,14 @@ async function checkoutSource(
   const versionFile = join(ROOT, source.versionFile);
   const trackedVersion = (await Bun.file(versionFile).text()).trim();
   const candidates = [trackedVersion, trackedVersion.replace(/^v/, '')];
-  await Bun.$`git -C ${upstreamRoot} fetch --tags`.quiet();
+  try {
+    await gitInUpstream(upstreamRoot, 'fetch', '--tags');
+  } catch {
+    // Fetch may fail (offline, auth, private repo) — continue with local tags
+  }
   for (const tag of candidates) {
     try {
-      await Bun.$`git -C ${upstreamRoot} checkout ${tag}`.quiet();
+      await gitInUpstream(upstreamRoot, 'checkout', tag);
       return tag;
     } catch {
       // try next candidate
@@ -272,21 +297,30 @@ async function syncSource(source: UpstreamSource): Promise<number> {
 
 // === Main ===
 
+const sources = SOURCE_FILTER
+  ? getEnabledSources().filter((s) => s.id === SOURCE_FILTER)
+  : getEnabledSources();
+
+if (sources.length === 0) {
+  console.error(`No matching source found for "${SOURCE_FILTER}"`);
+  process.exit(1);
+}
+
 console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
 let grandTotal = 0;
-for (const source of getEnabledSources()) {
+for (const source of sources) {
   const count = await syncSource(source);
   grandTotal += count;
   console.log('');
 }
 
 console.log(
-  `Total: ${grandTotal} files ${DRY_RUN ? 'would be' : ''} synced across ${getEnabledSources().length} sources.`,
+  `Total: ${grandTotal} files ${DRY_RUN ? 'would be' : ''} synced across ${sources.length} sources.`,
 );
 
-// Update version files (core-anchored strategy)
-if (!DRY_RUN) {
+// Update version files (core-anchored strategy) — skip when filtering to a single source
+if (!DRY_RUN && !SOURCE_FILTER) {
   const core = getCoreSource();
   const coreRoot = join(ROOT, '.upstream', core.localPath);
   const pkgJson = await Bun.file(join(coreRoot, 'package.json')).json();
@@ -329,9 +363,13 @@ if (!DRY_RUN) {
     if (!(await exists(join(upstreamRoot, '.git')))) continue;
 
     // Read the latest tag from the checked-out repo
-    const latestTag = (
-      await Bun.$`git -C ${upstreamRoot} describe --tags --abbrev=0`.text()
-    ).trim();
+    const result = await gitInUpstream(
+      upstreamRoot,
+      'describe',
+      '--tags',
+      '--abbrev=0',
+    );
+    const latestTag = result.text().trim();
     await Bun.write(join(ROOT, source.versionFile), `${latestTag}\n`);
     console.log(`Updated ${source.versionFile} to ${latestTag}`);
   }

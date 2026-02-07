@@ -36,6 +36,8 @@ export interface UpstreamSource {
   skipContentFiles?: Set<string>;
   /** Patterns for content files to skip (e.g. timestamped validation reports) */
   skipContentPatterns?: RegExp[];
+  /** Workflows referenced by agents but not yet implemented upstream (warn, not fail) */
+  plannedWorkflows?: Set<string>;
   workflowWorkarounds?: Record<string, string>;
   pluginOnlySkills?: Set<string>;
   pluginOnlyAgents?: Set<string>;
@@ -105,6 +107,57 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     workflowWorkarounds: {},
     pluginOnlySkills: new Set(),
     pluginOnlyAgents: new Set(),
+    sharedFileTargets: {},
+    pluginOnlyData: new Set(),
+  },
+  {
+    id: 'cis',
+    repo: 'bmad-code-org/bmad-module-creative-intelligence-suite',
+    localPath: 'bmad-module-creative-intelligence-suite',
+    versionFile: '.upstream-version-cis',
+    enabled: true,
+    contentRoot: 'src/workflows',
+    agentsRoot: 'src/agents',
+    flatWorkflows: true,
+    skipDirs: new Set(['_shared', 'templates']),
+    skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
+    workflowWorkarounds: {},
+    pluginOnlySkills: new Set(),
+    pluginOnlyAgents: new Set(),
+    sharedFileTargets: {},
+    pluginOnlyData: new Set(),
+  },
+  {
+    id: 'gds',
+    repo: 'bmad-code-org/bmad-module-game-dev-studio',
+    localPath: 'bmad-module-game-dev-studio',
+    versionFile: '.upstream-version-gds',
+    enabled: true,
+    contentRoot: 'src/workflows',
+    agentsRoot: 'src/agents',
+    flatWorkflows: false,
+    skipDirs: new Set(['_shared', 'templates']),
+    skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
+    workflowWorkarounds: {
+      'document-project': 'gds-document-project',
+      // Collisions with core (4-implementation + bmad-quick-flow)
+      'code-review': 'gds-code-review',
+      'correct-course': 'gds-correct-course',
+      'create-story': 'gds-create-story',
+      'dev-story': 'gds-dev-story',
+      'quick-dev': 'gds-quick-dev',
+      'quick-spec': 'gds-quick-spec',
+      retrospective: 'gds-retrospective',
+      'sprint-planning': 'gds-sprint-planning',
+      'sprint-status': 'gds-sprint-status',
+      // Collisions with TEA (gametest workflows)
+      automate: 'gds-automate',
+      'test-design': 'gds-test-design',
+      'test-review': 'gds-test-review',
+    },
+    plannedWorkflows: new Set(['quick-prototype']),
+    pluginOnlySkills: new Set(),
+    pluginOnlyAgents: new Set(['tech-writer']),
     sharedFileTargets: {},
     pluginOnlyData: new Set(),
   },

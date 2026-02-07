@@ -18,7 +18,12 @@ export interface SkillSets {
   manifest: Set<string>;
 }
 
-const DOCUMENT_PROJECT = 'document-project';
+/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
+async function isLeafWorkflow(dir: string): Promise<boolean> {
+  if (await exists(join(dir, 'workflow.yaml'))) return true;
+  if (await exists(join(dir, 'workflow.md'))) return true;
+  return false;
+}
 
 /** Collect workflow names from a flat source. */
 async function getFlatWorkflowNames(
@@ -41,7 +46,7 @@ async function getFlatWorkflowNames(
     .map((e) => workarounds[e.name] ?? e.name);
 }
 
-/** Collect workflow names from a categorized source (core pattern). */
+/** Collect workflow names from a categorized source (category → workflow structure). */
 async function getCategorizedWorkflowNames(
   source: UpstreamSource,
   upstreamRoot: string,
@@ -58,11 +63,15 @@ async function getCategorizedWorkflowNames(
   for (const cat of categories) {
     if (!cat.isDirectory()) continue;
 
-    if (cat.name === DOCUMENT_PROJECT) {
-      if (!skipWorkflows.has(DOCUMENT_PROJECT)) names.push(DOCUMENT_PROJECT);
+    // Leaf workflow at top level (has workflow.yaml or workflow.md)
+    if (await isLeafWorkflow(join(workflowsRoot, cat.name))) {
+      if (!skipWorkflows.has(cat.name)) {
+        names.push(workarounds[cat.name] ?? cat.name);
+      }
       continue;
     }
 
+    // Category directory — iterate sub-workflows
     const subs = await readdir(join(workflowsRoot, cat.name), {
       withFileTypes: true,
     });
@@ -105,13 +114,17 @@ function getAllPluginOnlySkills(): Set<string> {
   return all;
 }
 
-/** Collect all workflow workarounds across all sources. */
-function getAllWorkarounds(): Record<string, string> {
-  const all: Record<string, string> = {};
+/** Build inverse workaround map: mapped name → original name (for display only). */
+function getInverseWorkarounds(): Record<string, string> {
+  const inverse: Record<string, string> = {};
   for (const source of getEnabledSources()) {
-    Object.assign(all, source.workflowWorkarounds ?? {});
+    for (const [original, mapped] of Object.entries(
+      source.workflowWorkarounds ?? {},
+    )) {
+      inverse[mapped] = original;
+    }
   }
-  return all;
+  return inverse;
 }
 
 /** Collect plugin skill directory names. */
@@ -126,14 +139,26 @@ async function getPluginDirectories(): Promise<Set<string>> {
   );
 }
 
-/** Collect plugin.json manifest command names. */
+/** Collect plugin.json manifest command names.
+ * Supports both explicit "commands" array and "skills" auto-discovery. */
 async function getManifestCommands(): Promise<Set<string>> {
   const pluginJson = await Bun.file(PLUGIN_JSON_PATH).json();
-  return new Set(
-    (pluginJson.commands as string[]).map((c: string) =>
-      c.replace('./skills/', '').replace(/\/$/, ''),
-    ),
-  );
+
+  // Explicit commands array (legacy format)
+  if (Array.isArray(pluginJson.commands)) {
+    return new Set(
+      (pluginJson.commands as string[]).map((c: string) =>
+        c.replace('./skills/', '').replace(/\/$/, ''),
+      ),
+    );
+  }
+
+  // Auto-discovery via "skills" path — all skill dirs are commands
+  if (pluginJson.skills) {
+    return getPluginDirectories();
+  }
+
+  return new Set<string>();
 }
 
 /** Sort a set's values alphabetically. */
@@ -141,38 +166,40 @@ function sorted(set: Set<string>): string[] {
   return [...set].sort((a, b) => a.localeCompare(b));
 }
 
-/** Check upstream workflows have corresponding plugin directories. */
+/** Check upstream workflows have corresponding plugin directories.
+ * Names in `upstream` are already mapped via per-source workarounds.
+ * Use inverse map for display only. */
 function checkUpstreamToDirs(
   upstream: Set<string>,
   directories: Set<string>,
-  workarounds: Record<string, string>,
+  inverse: Record<string, string>,
 ): void {
   section('Skills: Upstream → Plugin Directories');
   for (const name of sorted(upstream)) {
-    const pluginName = workarounds[name] ?? name;
-    if (pluginName === name && directories.has(pluginName)) {
-      pass(name);
-    } else if (directories.has(pluginName)) {
-      warn(`${name} → ${pluginName} (workaround — rename dir to ${name})`);
+    if (directories.has(name)) {
+      if (inverse[name]) {
+        warn(`${inverse[name]} → ${name} (workaround)`);
+      } else {
+        pass(name);
+      }
     } else {
-      fail(`Missing directory: skills/${pluginName} (upstream: ${name})`);
+      fail(`Missing directory: skills/${name}`);
     }
   }
 }
 
-/** Check upstream workflows are listed in plugin.json manifest. */
+/** Check upstream workflows are listed in plugin.json manifest.
+ * Names in `upstream` are already mapped. */
 function checkUpstreamToManifest(
   upstream: Set<string>,
   manifest: Set<string>,
-  workarounds: Record<string, string>,
 ): void {
   section('Skills: Upstream → Manifest');
   for (const name of sorted(upstream)) {
-    const pluginName = workarounds[name] ?? name;
-    if (manifest.has(pluginName)) {
-      pass(`${pluginName} in plugin.json`);
+    if (manifest.has(name)) {
+      pass(`${name} in plugin.json`);
     } else {
-      fail(`Missing in plugin.json: ${pluginName} (upstream: ${name})`);
+      fail(`Missing in plugin.json: ${name}`);
     }
   }
 }
@@ -196,17 +223,16 @@ function checkDirsManifestAlignment(
   pass('Directories ↔ Manifest aligned');
 }
 
-/** Check for plugin-only skills not present upstream. */
+/** Check for plugin-only skills not present upstream.
+ * Names in `upstream` are already mapped — direct comparison. */
 function checkPluginOnlySkills(
   upstream: Set<string>,
   directories: Set<string>,
-  workarounds: Record<string, string>,
   pluginOnly: Set<string>,
 ): void {
   section('Plugin-Only Skills');
-  const upstreamMapped = new Set([...upstream].map((n) => workarounds[n] ?? n));
   for (const dir of sorted(directories)) {
-    if (upstreamMapped.has(dir)) continue;
+    if (upstream.has(dir)) continue;
 
     if (pluginOnly.has(dir)) {
       pass(`${dir} (plugin-only, expected)`);
@@ -220,13 +246,13 @@ export async function checkWorkflows(): Promise<SkillSets> {
   const upstream = await getUpstreamWorkflows();
   const directories = await getPluginDirectories();
   const manifest = await getManifestCommands();
-  const workarounds = getAllWorkarounds();
+  const inverse = getInverseWorkarounds();
   const pluginOnly = getAllPluginOnlySkills();
 
-  checkUpstreamToDirs(upstream, directories, workarounds);
-  checkUpstreamToManifest(upstream, manifest, workarounds);
+  checkUpstreamToDirs(upstream, directories, inverse);
+  checkUpstreamToManifest(upstream, manifest);
   checkDirsManifestAlignment(directories, manifest);
-  checkPluginOnlySkills(upstream, directories, workarounds, pluginOnly);
+  checkPluginOnlySkills(upstream, directories, pluginOnly);
 
   return { upstream, directories, manifest };
 }
