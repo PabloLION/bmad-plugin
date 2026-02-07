@@ -126,14 +126,26 @@ async function getPluginDirectories(): Promise<Set<string>> {
   );
 }
 
-/** Collect plugin.json manifest command names. */
+/** Collect plugin.json manifest command names.
+ * Supports both explicit "commands" array and "skills" auto-discovery. */
 async function getManifestCommands(): Promise<Set<string>> {
   const pluginJson = await Bun.file(PLUGIN_JSON_PATH).json();
-  return new Set(
-    (pluginJson.commands as string[]).map((c: string) =>
-      c.replace('./skills/', '').replace(/\/$/, ''),
-    ),
-  );
+
+  // Explicit commands array (legacy format)
+  if (Array.isArray(pluginJson.commands)) {
+    return new Set(
+      (pluginJson.commands as string[]).map((c: string) =>
+        c.replace('./skills/', '').replace(/\/$/, ''),
+      ),
+    );
+  }
+
+  // Auto-discovery via "skills" path — all skill dirs are commands
+  if (pluginJson.skills) {
+    return getPluginDirectories();
+  }
+
+  return new Set<string>();
 }
 
 /** Sort a set's values alphabetically. */
