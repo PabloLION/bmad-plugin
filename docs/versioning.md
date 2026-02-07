@@ -22,11 +22,6 @@ Each upstream module's version is tracked in a separate file at the repo root:
 | `.upstream-version-tea` | TEA (Test Architect Enterprise) | `bmad-method-test-architecture-enterprise` |
 | `.upstream-version-bmb` | BMB (BMad Builder) | `bmad-builder` |
 | `.upstream-version-cis` | CIS (Creative Intelligence Suite) | `bmad-module-creative-intelligence-suite` |
-
-Planned:
-
-| File | Module | Repo |
-|---|---|---|
 | `.upstream-version-gds` | GDS (Game Dev Studio) | `bmad-module-game-dev-studio` |
 
 All version files follow the pattern `.upstream-version-<module-id>`.
