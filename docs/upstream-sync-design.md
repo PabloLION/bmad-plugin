@@ -208,17 +208,9 @@ listed in `PLUGIN_ONLY_DATA` and validation treats them as expected.
 
 ## Configuration Reference
 
-All sync/validation configuration lives in `scripts/lib/config.ts`:
-
-| Constant | Purpose |
-|---|---|
-| `SKIP_CONTENT_FILES` | Files never synced (`workflow.md`, `workflow.yaml`, `SKILL.md`) |
-| `SKIP_DIRS` | Upstream dirs that aren't workflow leaves (`_shared`, `templates`, `workflows`) |
-| `SHARED_FILE_TARGETS` | Upstream `_shared/` → plugin skills distribution map |
-| `PLUGIN_ONLY_SKILLS` | Skills with no upstream counterpart |
-| `PLUGIN_ONLY_DATA` | Data files with no upstream counterpart |
-| `WORKFLOW_WORKAROUNDS` | Name mismatch map (should be empty when aligned) |
-| `AGENT_WORKAROUNDS` | Agent name mismatch map (should be empty when aligned) |
+All per-source sync/validation configuration lives in `scripts/lib/upstream-sources.ts`
+as `UpstreamSource` entries. See `docs/module-integration.md` for the full field
+reference.
 
 ## Typical Workflow
 
@@ -230,17 +222,20 @@ All sync/validation configuration lives in `scripts/lib/config.ts`:
 4. Review any new warnings (extra files, missing files)
 5. Commit the sync
 
+### When adding a new upstream module
+
+See `docs/module-integration.md` for the full procedure, including generation
+scripts, edge cases, and configuration reference.
+
 ### When adding a new upstream workflow as a skill
 
 1. Create `plugins/bmad/skills/<name>/SKILL.md` with plugin frontmatter
-2. Add `"./skills/<name>/"` to `plugin.json` commands array
-3. `bun run sync` — copies supporting files from upstream
-4. `bun run validate` — confirms alignment
+2. `bun run sync` — copies supporting files from upstream
+3. `bun run validate` — confirms alignment
 
 ### When upstream renames a workflow
 
 1. `git mv plugins/bmad/skills/<old-name> plugins/bmad/skills/<new-name>`
-2. Update `plugin.json` commands array
-3. Update `SKILL.md` name field
-4. `bun run sync` — copies files to new location
-5. `bun run validate` — confirms alignment
+2. Update `SKILL.md` name field
+3. `bun run sync` — copies files to new location
+4. `bun run validate` — confirms alignment
