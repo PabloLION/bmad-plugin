@@ -16,6 +16,9 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | validate | `bun run validate` | Upstream coverage validation (agents, skills, content, naming) |
 | sync | `bun run sync` | Sync upstream content to plugin |
 | sync:dry | `bun run sync:dry` | Dry-run sync (preview changes) |
+| sync:source | `bun run sync:source <id>` | Sync a single upstream source |
+| generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
+| generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
 | update-readme | `bun run update-readme` | Update README version badge |
 
 ## Git Workflow
@@ -40,22 +43,38 @@ The agent name (filename) is the canonical identifier. Personnel names add perso
 
 ### Current Agents
 
-| Agent (filename)      | Personnel | Role                    |
-| --------------------- | --------- | ----------------------- |
-| analyst               | Mary      | Business Analyst        |
-| pm                    | John      | Product Manager         |
-| ux-designer           | Sally     | UX Designer             |
-| architect             | Winston   | System Architect        |
-| sm                    | Bob       | Scrum Master            |
-| dev                   | Amelia    | Developer               |
-| tea                   | Murat     | Test Architect          |
-| quinn                 | Quinn     | QA Engineer             |
-| tech-writer           | Paige     | Technical Writer        |
-| quick-flow-solo-dev   | Barry     | Quick Flow Solo Dev     |
-| bmad-master           | —         | Orchestrator            |
-| agent-builder         | Bond      | Agent Building Expert   |
-| module-builder        | Morgan    | Module Creation Master  |
-| workflow-builder      | Wendy     | Workflow Building Master |
+| Agent (filename)        | Personnel  | Module | Role                         |
+| ----------------------- | ---------- | ------ | ---------------------------- |
+| analyst                 | Mary       | Core   | Business Analyst             |
+| pm                      | John       | Core   | Product Manager              |
+| ux-designer             | Sally      | Core   | UX Designer                  |
+| architect               | Winston    | Core   | System Architect             |
+| sm                      | Bob        | Core   | Scrum Master                 |
+| dev                     | Amelia     | Core   | Developer                    |
+| tea                     | Murat      | TEA    | Test Architect               |
+| quinn                   | Quinn      | Core   | QA Engineer                  |
+| tech-writer             | Paige      | Core   | Technical Writer             |
+| quick-flow-solo-dev     | Barry      | Core   | Quick Flow Solo Dev          |
+| bmad-master             | —          | Core   | Orchestrator                 |
+| agent-builder           | Bond       | BMB    | Agent Building Expert        |
+| module-builder          | Morgan     | BMB    | Module Creation Master       |
+| workflow-builder        | Wendy      | BMB    | Workflow Building Master     |
+| brainstorming-coach     | Carson     | CIS    | Brainstorming Facilitator    |
+| creative-problem-solver | Dr. Quinn  | CIS    | Problem-Solving Expert       |
+| design-thinking-coach   | Maya       | CIS    | Design Thinking Coach        |
+| innovation-strategist   | Victor     | CIS    | Innovation Strategist        |
+| presentation-master     | Caravaggio | CIS    | Presentation Expert          |
+| storyteller             | Sophia     | CIS    | Master Storyteller           |
+
+## Automation First
+
+Script everything repeatable — never do manually what a script can do.
+
+- Agent files → `bun run generate:agents --source <id>`
+- Skill files → `bun run generate:skills --source <id>`
+- Sync content → `bun run sync --source <id>`
+- All scripts support `--source <id>` and `--dry-run` flags
+- When something breaks, **fix the script** — don't work around it manually
 
 ## Session Completion
 
