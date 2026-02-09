@@ -11,7 +11,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.4.6 | **Upstream version:** v6.0.0-Beta.4 | **Last synced:** 2026-02-07
+**Plugin version:** v6.0.0-Beta.7.0 | **Upstream version:** v6.0.0-Beta.7 | **Last synced:** 2026-02-08
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
