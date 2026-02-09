@@ -1,7 +1,6 @@
 ---
 description: Quality checks against written tests. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Test Review Workflow

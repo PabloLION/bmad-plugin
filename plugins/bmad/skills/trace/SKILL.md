@@ -1,7 +1,6 @@
 ---
 description: Map requirements to tests for traceability. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Test Traceability Workflow

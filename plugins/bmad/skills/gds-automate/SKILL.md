@@ -3,7 +3,6 @@ description:
   Generate automated game tests for Unity, Unreal, or Godot based on test desi
   gn scenarios
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Automate Workflow

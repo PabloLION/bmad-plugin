@@ -5,7 +5,6 @@ description:
   e solution generation, evaluation, and implementation planning using proven 
   frameworks.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Problem Solving Workflow

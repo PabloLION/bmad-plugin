@@ -3,7 +3,6 @@ description:
   Summarize sprint-status.yaml for game project, surface risks, and route to t
   he right implementation workflow.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Sprint Status Workflow

@@ -3,15 +3,23 @@
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
-[![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmad-code-org/BMAD-METHOD)
-[![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/BMAD-TEA)
+[![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmadcode/BMAD-METHOD)
+[![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise)
 [![BMB Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-bmb.json)](https://github.com/bmad-code-org/bmad-builder)
 [![CIS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-cis.json)](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite)
 [![GDS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-gds.json)](https://github.com/bmad-code-org/bmad-module-game-dev-studio)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.4.6 | **Upstream version:** v6.0.0-Beta.4 | **Last synced:** 2026-02-07
+**Plugin version:** v6.0.0-Beta.7.0
+
+| Module | Repo | Version | Last Synced |
+|---|---|---|---|
+| Core | bmadcode/BMAD-METHOD | v6.0.0-Beta.7 | 2026-02-09 |
+| TEA | bmad-code-org/bmad-method-test-architecture-enterprise | v0.1.1-beta.3 | 2026-02-09 |
+| BMB | bmad-code-org/bmad-builder | v0.1.5 | 2026-02-09 |
+| CIS | bmad-code-org/bmad-module-creative-intelligence-suite | v0.1.4 | 2026-02-09 |
+| GDS | bmad-code-org/bmad-module-game-dev-studio | v0.1.5 | 2026-02-09 |
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
@@ -99,6 +107,13 @@ claude plugin install bmad@bmad-method --scope local
 /bmad:product-brief
 ```
 
+## Learn BMAD Method
+
+New to BMAD? See the [official documentation](http://docs.bmad-method.org) for
+methodology overview, workflow explanations, and best practices. The
+[Getting Started Tutorial](http://docs.bmad-method.org/tutorials/getting-started/)
+walks through a complete project from scratch.
+
 ## Agents
 
 | Agent                  | Name    | Role                       | Key Workflows                    |
@@ -143,7 +158,7 @@ claude plugin install bmad@bmad-method --scope local
 
 This plugin implements the **BMAD Method** created by **BMad Code, LLC**.
 
-- [Original Repository](https://github.com/bmad-code-org/BMAD-METHOD)
+- [Original Repository](https://github.com/bmadcode/BMAD-METHOD)
 - [Website](https://bmadcodes.com/bmad-method/)
 - [YouTube](https://www.youtube.com/@BMadCode)
 - [Discord](https://discord.gg/gk8jAdXWmj)

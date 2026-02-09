@@ -1,7 +1,6 @@
 ---
 description: Create an Excalidraw data flow diagram
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Dataflow Diagram

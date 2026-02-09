@@ -1,7 +1,6 @@
 ---
 description: Comprehensive test automation setup. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Test Automation Workflow

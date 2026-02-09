@@ -1,20 +1,23 @@
 ---
-description: Adversarial senior developer code review. Phase 4 Implementation
+description:
+  Perform an ADVERSARIAL Senior Developer code review that finds 3-10 specific
+   problems in every story. Challenges everything: code quality, test coverage
+  , architecture compliance, security, performance. NEVER accepts `looks good`
+   - must find minimum issues and can auto-fix with user approval.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Code Review Workflow
 
-**Goal:** Perform adversarial senior developer code review.
+**Goal:** Perform an ADVERSARIAL Senior Developer code review that finds 3-10 specific problems in every story.
 
-**Agent:** Barry (Quick Flow Solo Dev) **Phase:** 4 - Implementation
+**Agent:** Quick Flow Solo Dev (Barry) **Module:** CORE
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.xml`
+Read and follow: `./instructions.md`
 
 ## Validation
 

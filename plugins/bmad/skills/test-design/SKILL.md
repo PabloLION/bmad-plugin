@@ -2,7 +2,6 @@
 description:
   Design comprehensive test scenarios ahead of development. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Test Design Workflow

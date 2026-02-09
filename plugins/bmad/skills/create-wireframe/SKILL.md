@@ -1,7 +1,6 @@
 ---
 description: Create an Excalidraw wireframe
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Wireframe

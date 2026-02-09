@@ -1,7 +1,6 @@
 ---
 description: Interactive testing learning companion with 7 progressive sessions. TEA Module
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Teach Me Testing Workflow

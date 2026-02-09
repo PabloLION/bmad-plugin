@@ -3,7 +3,6 @@ description:
   Create structured playtesting sessions for gameplay validation and user feed
   back
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Playtest Plan Workflow

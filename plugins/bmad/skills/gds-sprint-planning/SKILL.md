@@ -4,7 +4,6 @@ description:
   on, extracting all epics and stories from epic files and tracking their stat
   us through the development lifecycle
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Sprint Planning Workflow

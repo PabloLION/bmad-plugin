@@ -2,7 +2,6 @@
 description:
   Validate non-functional requirements against implementation. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # NFR Assessment Workflow

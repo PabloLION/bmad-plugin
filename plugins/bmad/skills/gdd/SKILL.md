@@ -4,7 +4,6 @@ description:
   types to full AAA games. Generates comprehensive GDD with game mechanics, sy
   stems, progression, and implementation guidance.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gdd Workflow

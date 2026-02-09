@@ -4,7 +4,6 @@ description:
   ative documentation including story structure, character arcs, world-buildin
   g, dialogue systems, and production planning.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Narrative Workflow

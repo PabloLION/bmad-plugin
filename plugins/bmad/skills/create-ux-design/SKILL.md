@@ -1,27 +1,22 @@
 ---
 description:
-  Plan UX design to inform architecture and implementation. Phase 2 Planning
+  Work with a peer UX Design expert to plan your applications UX patterns, loo
+  k and feel.
 user-invocable: true
-disable-model-invocation: true
 ---
 
-# UX Design Workflow
+# Create Ux Design Workflow
 
-**Goal:** Guidance through realizing the plan for UX to inform architecture and
-implementation.
+**Goal:** Work with a peer UX Design expert to plan your applications UX patterns, look and feel.
 
-**Agent:** UX Designer (Sally) **Phase:** 2 - Planning
+**Agent:** UX Designer (Sally) **Module:** CORE
 
 ---
-
-## Workflow Architecture
-
-Step-file architecture with 14 steps from discovery through completion.
-
-## Initialization
-
-Check for project config at `bmad/config.yaml`. Requires PRD as input.
 
 ## Execution
 
-Read and execute: `./steps/step-01-init.md`
+Read and follow: `./instructions.md`
+
+## Validation
+
+After completion, verify against: `./checklist.md`

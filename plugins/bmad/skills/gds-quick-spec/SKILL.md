@@ -3,7 +3,6 @@ description:
   Conversational spec engineering - ask questions, investigate code, produce i
   mplementation-ready tech-spec.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Quick Spec Workflow
