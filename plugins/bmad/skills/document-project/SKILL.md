@@ -4,7 +4,6 @@ description:
   e, and patterns to create comprehensive reference documentation for AI-assis
   ted development
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Document Project Workflow

@@ -3,7 +3,6 @@ description:
   Flexible development - execute tech-specs OR direct instructions with option
   al planning.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Quick Dev Workflow

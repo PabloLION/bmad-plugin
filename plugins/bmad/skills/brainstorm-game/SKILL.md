@@ -3,7 +3,6 @@ description:
   Facilitate game brainstorming sessions with game-specific context, guidance,
    and game design techniques.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Brainstorm Game Workflow

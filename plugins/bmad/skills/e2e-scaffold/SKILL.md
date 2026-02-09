@@ -4,7 +4,6 @@ description:
   Creates test fixtures, scenario builders, input simulators, and async
   assertion utilities tailored to the project's architecture.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # E2E Test Infrastructure Scaffold Workflow

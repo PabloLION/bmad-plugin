@@ -5,7 +5,6 @@ description:
    business model innovation to uncover sustainable competitive advantages and
    breakthrough opportunities.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Innovation Strategy Workflow

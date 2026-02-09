@@ -4,7 +4,6 @@ description:
   hat AI agents must follow when implementing code. Optimized for LLM context 
   efficiency.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Generate Project Context Workflow

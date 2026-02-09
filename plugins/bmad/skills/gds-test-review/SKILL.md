@@ -2,7 +2,6 @@
 description:
   Review test quality, coverage, and identify gaps in game testing
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Test Review Workflow

@@ -3,7 +3,6 @@ description:
   Design performance testing strategy for frame rate, memory, and loading time
   s
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Performance Workflow

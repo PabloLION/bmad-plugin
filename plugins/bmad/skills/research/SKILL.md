@@ -3,7 +3,6 @@ description:
   Conduct market, domain, or technical research with verified sources. Phase 1
   Analysis
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Research Workflow

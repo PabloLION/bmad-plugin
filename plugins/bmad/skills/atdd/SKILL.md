@@ -2,7 +2,6 @@
 description:
   Generate acceptance tests (API/E2E) before implementation. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # ATDD Workflow

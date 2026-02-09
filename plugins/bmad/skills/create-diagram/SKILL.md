@@ -1,7 +1,6 @@
 ---
 description: Create a general Excalidraw diagram
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Diagram

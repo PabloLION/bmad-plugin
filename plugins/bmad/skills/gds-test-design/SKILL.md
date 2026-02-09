@@ -3,7 +3,6 @@ description:
   Create comprehensive game test scenarios covering gameplay, progression, and
    quality requirements
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Test Design Workflow

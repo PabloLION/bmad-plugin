@@ -7,7 +7,6 @@ description:
   le technical and design context. Creates detailed, actionable stories with c
   omplete acceptance criteria for development teams.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Epics And Stories Workflow

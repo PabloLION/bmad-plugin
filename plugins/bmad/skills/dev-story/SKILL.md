@@ -3,7 +3,6 @@ description:
   Execute a story by implementing tasks/subtasks, writing tests, validating, a
   nd updating the story file per acceptance criteria
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Dev Story Workflow

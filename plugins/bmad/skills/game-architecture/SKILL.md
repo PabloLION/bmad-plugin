@@ -5,7 +5,6 @@ description:
    document covering engine, systems, networking, and technical design optimiz
   ed for game development.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Game Architecture Workflow

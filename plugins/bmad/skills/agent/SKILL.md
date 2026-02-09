@@ -3,7 +3,6 @@ description:
   Create, edit, or validate BMAD agents with best practices and compliance
   checks. BMB Module
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Agent Workflow
