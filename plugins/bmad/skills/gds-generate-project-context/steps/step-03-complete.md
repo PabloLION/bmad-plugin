@@ -2,20 +2,20 @@
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
-- 🛑 NEVER generate content without user input
-- ✅ ALWAYS treat this as collaborative completion between technical peers
-- 📋 YOU ARE A FACILITATOR, not a content generator
-- 💬 FOCUS on finalizing a lean, LLM-optimized project context
-- 🎯 ENSURE all critical rules are captured and actionable
-- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
+- NEVER generate content without user input
+- ALWAYS treat this as collaborative completion between technical peers
+- YOU ARE A FACILITATOR, not a content generator
+- FOCUS on finalizing a lean, LLM-optimized project context
+- ENSURE all critical rules are captured and actionable
+- ABSOLUTELY NO TIME ESTIMATES
 - ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
-- 🎯 Show your analysis before taking any action
-- 📝 Review and optimize content for LLM context efficiency
-- 📖 Update frontmatter with completion status
-- 🚫 NO MORE STEPS - this is the final step
+- Show your analysis before taking any action
+- Review and optimize content for LLM context efficiency
+- Update frontmatter with completion status
+- NO MORE STEPS - this is the final step
 
 ## CONTEXT BOUNDARIES:
 
@@ -73,7 +73,7 @@ Ensure the final structure follows this optimized format:
 ```markdown
 # Project Context for AI Agents
 
-_This file contains critical rules and patterns that AI agents must follow when implementing code in this project. Focus on unobvious details that agents might otherwise miss._
+_This file contains critical rules and patterns that AI agents must follow when implementing game code in this project. Focus on unobvious details that agents might otherwise miss._
 
 ---
 
@@ -83,29 +83,29 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 ## Critical Implementation Rules
 
-### Language-Specific Rules
+### Engine-Specific Rules
 
-{{specific_language_rules}}
+{{engine_rules}}
 
-### Framework-Specific Rules
+### Performance Rules
 
-{{framework_patterns}}
+{{performance_requirements}}
+
+### Code Organization Rules
+
+{{organization_patterns}}
 
 ### Testing Rules
 
 {{testing_requirements}}
 
-### Code Quality & Style Rules
+### Platform & Build Rules
 
-{{style_and_quality_patterns}}
-
-### Development Workflow Rules
-
-{{workflow_patterns}}
+{{platform_requirements}}
 
 ### Critical Don't-Miss Rules
 
-{{anti_patterns_and_edge_cases}}
+{{anti_patterns_and_gotchas}}
 
 ---
 
@@ -113,7 +113,7 @@ _This file contains critical rules and patterns that AI agents must follow when 
 
 **For AI Agents:**
 
-- Read this file before implementing any code
+- Read this file before implementing any game code
 - Follow ALL rules exactly as documented
 - When in doubt, prefer the more restrictive option
 - Update this file if new patterns emerge
@@ -146,9 +146,9 @@ Ready for AI agent integration."
 
 - {{rule_count}} critical implementation rules
 - Technology stack with exact versions
-- Framework-specific patterns and conventions
-- Testing and quality guidelines
-- Workflow and anti-pattern rules
+- Engine-specific patterns and conventions
+- Performance and optimization guidelines
+- Testing and platform requirements
 
 **Key benefits:**
 
@@ -163,17 +163,17 @@ Ready for AI agent integration."
 - Review periodically for optimization"
 
 **Beginner Mode:**
-"Excellent! Your project context guide is ready! 🎉
+"Excellent! Your project context guide is ready!
 
 **What this does:**
-Think of this as a 'rules of the road' guide for AI agents working on your project. It ensures they all follow the same patterns and avoid common mistakes.
+Think of this as a 'rules of the road' guide for AI agents working on your game. It ensures they all follow the same patterns and avoid common mistakes.
 
 **What's included:**
 
-- Exact technology versions to use
+- Exact engine and technology versions to use
 - Critical coding rules they might miss
-- Testing and quality standards
-- Workflow patterns to follow
+- Performance and optimization standards
+- Testing and platform requirements
 
 **How AI agents use it:**
 They read this file before writing any code, ensuring everything they create follows your project's standards perfectly.
@@ -192,7 +192,7 @@ project_name: '{{project_name}}'
 user_name: '{{user_name}}'
 date: '{{date}}'
 sections_completed:
-  ['technology_stack', 'language_rules', 'framework_rules', 'testing_rules', 'quality_rules', 'workflow_rules', 'anti_patterns']
+  ['technology_stack', 'engine_rules', 'performance_rules', 'organization_rules', 'testing_rules', 'platform_rules', 'anti_patterns']
 status: 'complete'
 rule_count: { { total_rules } }
 optimized_for_llm: true
@@ -207,72 +207,74 @@ Append the usage guidelines from step 3 to complete the document.
 Final checks before completion:
 
 **Content Validation:**
-✅ All critical technology versions documented
-✅ Language-specific rules are specific and actionable
-✅ Framework rules cover project conventions
-✅ Testing rules ensure consistency
-✅ Code quality rules maintain standards
-✅ Workflow rules prevent conflicts
-✅ Anti-pattern rules prevent common mistakes
+
+- All critical technology versions documented
+- Engine-specific rules are specific and actionable
+- Performance rules capture project requirements
+- Code organization rules maintain standards
+- Testing rules ensure consistency
+- Platform rules prevent cross-platform issues
+- Anti-pattern rules prevent common mistakes
 
 **Format Validation:**
-✅ Content is lean and optimized for LLMs
-✅ Structure is logical and scannable
-✅ No redundant or obvious information
-✅ Consistent formatting throughout
+
+- Content is lean and optimized for LLMs
+- Structure is logical and scannable
+- No redundant or obvious information
+- Consistent formatting throughout
 
 ### 7. Completion Message
 
 Present final completion to user:
 
-"✅ **Project Context Generation Complete!**
+"**Project Context Generation Complete!**
 
 Your optimized project context file is ready at:
 `{output_folder}/project-context.md`
 
-**📊 Context Summary:**
+**Context Summary:**
 
 - {{rule_count}} critical rules for AI agents
 - {{section_count}} comprehensive sections
 - Optimized for LLM context efficiency
 - Ready for immediate agent integration
 
-**🎯 Key Benefits:**
+**Key Benefits:**
 
 - Consistent implementation across all AI agents
 - Reduced common mistakes and edge cases
 - Clear guidance for project-specific patterns
 - Minimal LLM context usage
 
-**📋 Next Steps:**
+**Next Steps:**
 
 1. AI agents will automatically read this file when implementing
 2. Update this file when your technology stack or patterns evolve
 3. Review quarterly to optimize and remove outdated rules
 
-Your project context will help ensure high-quality, consistent implementation across all development work. Great work capturing your project's critical implementation requirements!"
+Your project context will help ensure high-quality, consistent game implementation across all development work. Great work capturing your project's critical implementation requirements!"
 
 ## SUCCESS METRICS:
 
-✅ Complete project context file with all critical rules
-✅ Content optimized for LLM context efficiency
-✅ All technology versions and patterns documented
-✅ File structure is logical and scannable
-✅ Usage guidelines included for agents and humans
-✅ Frontmatter properly updated with completion status
-✅ User provided with clear next steps and benefits
+- Complete project context file with all critical rules
+- Content optimized for LLM context efficiency
+- All technology versions and patterns documented
+- File structure is logical and scannable
+- Usage guidelines included for agents and humans
+- Frontmatter properly updated with completion status
+- User provided with clear next steps and benefits
 
 ## FAILURE MODES:
 
-❌ Final content is too verbose for LLM consumption
-❌ Missing critical implementation rules or patterns
-❌ Not optimizing content for agent readability
-❌ Not providing clear usage guidelines
-❌ Frontmatter not properly updated
-❌ Not validating file completion before ending
+- Final content is too verbose for LLM consumption
+- Missing critical implementation rules or patterns
+- Not optimizing content for agent readability
+- Not providing clear usage guidelines
+- Frontmatter not properly updated
+- Not validating file completion before ending
 
 ## WORKFLOW COMPLETE:
 
-This is the final step of the Generate Project Context workflow. The user now has a comprehensive, optimized project context file that will ensure consistent, high-quality implementation across all AI agents working on the project.
+This is the final step of the Generate Project Context workflow. The user now has a comprehensive, optimized project context file that will ensure consistent, high-quality game implementation across all AI agents working on the project.
 
-The project context file serves as the critical "rules of the road" that agents need to implement code consistently with the project's standards and patterns.
+The project context file serves as the critical "rules of the road" that agents need to implement game code consistently with the project's standards and patterns.

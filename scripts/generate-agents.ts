@@ -36,7 +36,7 @@ interface AgentYaml {
       role: string;
       identity: string;
       communication_style: string;
-      principles: string;
+      principles: string[];
     };
     critical_actions?: string[];
     menu?: Array<{
@@ -103,19 +103,9 @@ function buildWorkflowTable(
   ].join('\n');
 }
 
-/** Format principles as a list or paragraph. */
-function formatPrinciples(principles: string): string {
-  // If it starts with "- ", it's already a list (from YAML block scalar)
-  if (principles.startsWith('- ')) {
-    return principles;
-  }
-  // Split on periods for multi-sentence principles
-  const sentences = principles
-    .split(/\.\s+/)
-    .map((s) => s.replace(/\.$/, '').trim())
-    .filter(Boolean);
-  if (sentences.length <= 1) return `- ${principles}`;
-  return sentences.map((s) => `- ${s}`).join('\n');
+/** Format principles array as a markdown list. */
+function formatPrinciples(principles: string[]): string {
+  return principles.map((p) => `- ${p}`).join('\n');
 }
 
 /** Generate the agent .md content. */

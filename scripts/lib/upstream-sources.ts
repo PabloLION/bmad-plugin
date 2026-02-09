@@ -62,14 +62,7 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     workflowWorkarounds: {},
     pluginOnlySkills: new Set(['help', 'init', 'status', 'brainstorming']),
     pluginOnlyAgents: new Set(['bmad-master', 'tech-writer']),
-    sharedFileTargets: {
-      'excalidraw-diagrams': [
-        'create-dataflow',
-        'create-diagram',
-        'create-flowchart',
-        'create-wireframe',
-      ],
-    },
+    sharedFileTargets: {},
     pluginOnlyData: new Set(['quick-dev/data/project-levels.yaml']),
   },
   {
@@ -140,6 +133,7 @@ export const UPSTREAM_SOURCES: UpstreamSource[] = [
     skipContentFiles: new Set(['workflow.md', 'workflow.yaml', 'SKILL.md']),
     workflowWorkarounds: {
       'document-project': 'gds-document-project',
+      'generate-project-context': 'gds-generate-project-context',
       // Collisions with core (4-implementation + bmad-quick-flow)
       'code-review': 'gds-code-review',
       'correct-course': 'gds-correct-course',

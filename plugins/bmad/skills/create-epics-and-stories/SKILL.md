@@ -1,28 +1,27 @@
 ---
 description:
-  Break down architecture into implementable epics and stories. Phase 3
-  Solutioning
+  Transform PRD requirements and Architecture decisions into comprehensive sto
+  ries organized by user value. This workflow requires completed PRD + Archite
+  cture documents (UX recommended if UI exists) and breaks down requirements i
+  nto implementation-ready epics and user stories that incorporate all availab
+  le technical and design context. Creates detailed, actionable stories with c
+  omplete acceptance criteria for development teams.
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Create Epics and Stories Workflow
+# Create Epics And Stories Workflow
 
-**Goal:** Break down architecture into implementable epics with user stories.
+**Goal:** Transform PRD requirements and Architecture decisions into comprehensive stories organized by user value.
 
-**Agent:** Architect (Winston) **Phase:** 3 - Solutioning
+**Agent:** Product Manager (John) **Module:** CORE
 
 ---
 
-## Workflow Architecture
-
-Step-file architecture with 4 steps.
-
-## Initialization
-
-Check for project config at `bmad/config.yaml`. Requires PRD, architecture
-document, and optionally UX design.
-
 ## Execution
 
-Read and execute: `./steps/step-01-validate-prerequisites.md`
+Read and follow: `./instructions.md`
+
+## Validation
+
+After completion, verify against: `./checklist.md`

@@ -1,17 +1,23 @@
 ---
-description: Review all work completed across an epic. Phase 4 Implementation
+description:
+  Run after epic completion to review overall success, extract lessons learned
+  , and explore if new information emerged that might impact the next epic
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Epic Retrospective Workflow
+# Retrospective Workflow
 
-**Goal:** Party mode review of all work completed across an epic.
+**Goal:** Run after epic completion to review overall success, extract lessons learned, and explore if new information emerged that might impact the next epic.
 
-**Agent:** Scrum Master (Bob) **Phase:** 4 - Implementation
+**Agent:** Scrum Master (Bob) **Module:** CORE
 
 ---
 
 ## Execution
 
 Read and follow: `./instructions.md`
+
+## Validation
+
+After completion, verify against: `./checklist.md`

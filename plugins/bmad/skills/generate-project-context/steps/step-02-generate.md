@@ -2,22 +2,22 @@
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
-- NEVER generate content without user input
-- ALWAYS treat this as collaborative discovery between technical peers
-- YOU ARE A FACILITATOR, not a content generator
-- FOCUS on unobvious rules that AI agents need to be reminded of
-- KEEP CONTENT LEAN - optimize for LLM context efficiency
-- ABSOLUTELY NO TIME ESTIMATES
+- 🛑 NEVER generate content without user input
+- ✅ ALWAYS treat this as collaborative discovery between technical peers
+- 📋 YOU ARE A FACILITATOR, not a content generator
+- 💬 FOCUS on unobvious rules that AI agents need to be reminded of
+- 🎯 KEEP CONTENT LEAN - optimize for LLM context efficiency
+- ⚠️ ABSOLUTELY NO TIME ESTIMATES - AI development speed has fundamentally changed
 - ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`
 
 ## EXECUTION PROTOCOLS:
 
-- Show your analysis before taking any action
-- Focus on specific, actionable rules rather than general advice
-- Present A/P/C menu after each major rule category
-- ONLY save when user chooses C (Continue)
-- Update frontmatter with completed sections
-- FORBIDDEN to load next step until all sections are complete
+- 🎯 Show your analysis before taking any action
+- 📝 Focus on specific, actionable rules rather than general advice
+- ⚠️ Present A/P/C menu after each major rule category
+- 💾 ONLY save when user chooses C (Continue)
+- 📖 Update frontmatter with completed sections
+- 🚫 FORBIDDEN to load next step until all sections are complete
 
 ## COLLABORATION MENUS (A/P/C):
 
@@ -37,13 +37,13 @@ This step will generate content and present choices for each rule category:
 ## CONTEXT BOUNDARIES:
 
 - Discovery results from step-1 are available
-- Game engine and existing patterns are identified
+- Technology stack and existing patterns are identified
 - Focus on rules that prevent implementation mistakes
 - Prioritize unobvious details that AI agents might miss
 
 ## YOUR TASK:
 
-Collaboratively generate specific, critical rules that AI agents must follow when implementing game code in this project.
+Collaboratively generate specific, critical rules that AI agents must follow when implementing code in this project.
 
 ## CONTEXT GENERATION SEQUENCE:
 
@@ -55,7 +55,7 @@ Document the exact technology stack from discovery:
 Based on user skill level, present findings:
 
 **Expert Mode:**
-"Technology stack from your architecture and project files:
+"Technology stack from your architecture and package files:
 {{exact_technologies_with_versions}}
 
 Any critical version constraints I should document for agents?"
@@ -63,8 +63,8 @@ Any critical version constraints I should document for agents?"
 **Intermediate Mode:**
 "I found your technology stack:
 
-**Game Engine:**
-{{engine_with_version}}
+**Core Technologies:**
+{{main_technologies_with_versions}}
 
 **Key Dependencies:**
 {{important_dependencies_with_versions}}
@@ -74,137 +74,60 @@ Are there any version constraints or compatibility notes agents should know abou
 **Beginner Mode:**
 "Here are the technologies you're using:
 
-**Game Engine:**
-{{friendly_description_of_engine}}
+**Main Technologies:**
+{{friendly_description_of_tech_stack}}
 
 **Important Notes:**
 {{key_things_agents_need_to_know_about_versions}}
 
 Should I document any special version rules or compatibility requirements?"
 
-### 2. Engine-Specific Rules
+### 2. Language-Specific Rules
 
-Focus on unobvious engine patterns agents might miss:
+Focus on unobvious language patterns agents might miss:
 
-**Unity Rules (if applicable):**
-"Based on your Unity project, I notice some specific patterns:
+**TypeScript/JavaScript Rules:**
+"Based on your codebase, I notice some specific patterns:
 
-**Lifecycle Rules:**
-{{unity_lifecycle_patterns}}
+**Configuration Requirements:**
+{{typescript_config_rules}}
 
-**Serialization Rules:**
-{{serialization_requirements}}
+**Import/Export Patterns:**
+{{import_export_conventions}}
 
-**Assembly Definitions:**
-{{assembly_definition_rules}}
+**Error Handling Patterns:**
+{{error_handling_requirements}}
 
-**Coroutine/Async Patterns:**
-{{async_patterns}}
+Are these patterns correct? Any other language-specific rules agents should follow?"
 
-Are these patterns correct? Any other Unity-specific rules agents should follow?"
+**Python/Ruby/Other Language Rules:**
+Adapt to the actual language in use with similar focused questions.
 
-**Unreal Rules (if applicable):**
-"Based on your Unreal project, I notice some specific patterns:
+### 3. Framework-Specific Rules
 
-**UPROPERTY/UFUNCTION Rules:**
-{{macro_usage_patterns}}
+Document framework-specific patterns:
 
-**Blueprint Integration:**
-{{blueprint_rules}}
+**React Rules (if applicable):**
+"For React development, I see these patterns:
 
-**Garbage Collection:**
-{{gc_patterns}}
+**Hooks Usage:**
+{{hooks_usage_patterns}}
 
-**Tick Patterns:**
-{{tick_optimization_rules}}
+**Component Structure:**
+{{component_organization_rules}}
 
-Are these patterns correct? Any other Unreal-specific rules agents should follow?"
+**State Management:**
+{{state_management_patterns}}
 
-**Godot Rules (if applicable):**
-"Based on your Godot project, I notice some specific patterns:
+**Performance Rules:**
+{{performance_optimization_requirements}}
 
-**Node Lifecycle:**
-{{node_lifecycle_patterns}}
+Should I add any other React-specific rules?"
 
-**Signal Usage:**
-{{signal_conventions}}
+**Other Framework Rules:**
+Adapt for Vue, Angular, Next.js, Express, etc.
 
-**Scene Instancing:**
-{{scene_patterns}}
-
-**Autoload Patterns:**
-{{autoload_rules}}
-
-Are these patterns correct? Any other Godot-specific rules agents should follow?"
-
-### 3. Performance Rules
-
-Document performance-critical patterns:
-
-**Frame Budget Rules:**
-"Your game has these performance requirements:
-
-**Target Frame Rate:**
-{{target_fps}}
-
-**Frame Budget:**
-{{milliseconds_per_frame}}
-
-**Critical Systems:**
-{{systems_that_must_meet_budget}}
-
-**Hot Path Rules:**
-{{hot_path_patterns}}
-
-Any other performance rules agents must follow?"
-
-**Memory Management:**
-"Memory patterns for your project:
-
-**Allocation Rules:**
-{{allocation_patterns}}
-
-**Pooling Requirements:**
-{{object_pooling_rules}}
-
-**Asset Loading:**
-{{asset_loading_patterns}}
-
-Are there memory constraints agents should know about?"
-
-### 4. Code Organization Rules
-
-Document project structure and organization:
-
-**Folder Structure:**
-"Your project organization:
-
-**Script Organization:**
-{{script_folder_structure}}
-
-**Asset Organization:**
-{{asset_folder_patterns}}
-
-**Scene/Level Organization:**
-{{scene_organization}}
-
-Any organization rules agents must follow?"
-
-**Naming Conventions:**
-"Your naming patterns:
-
-**Script/Class Names:**
-{{class_naming_patterns}}
-
-**Asset Names:**
-{{asset_naming_patterns}}
-
-**Variable/Method Names:**
-{{variable_naming_patterns}}
-
-Any other naming rules?"
-
-### 5. Testing Rules
+### 4. Testing Rules
 
 Focus on testing patterns that ensure consistency:
 
@@ -214,37 +137,58 @@ Focus on testing patterns that ensure consistency:
 **Test Organization:**
 {{test_file_organization}}
 
-**Test Categories:**
-{{unit_vs_integration_boundaries}}
+**Mock Usage:**
+{{mock_patterns_and_conventions}}
 
-**Mocking Patterns:**
-{{mock_usage_conventions}}
+**Test Coverage Requirements:**
+{{coverage_expectations}}
 
-**Play Mode Testing:**
-{{play_mode_test_patterns}}
+**Integration vs Unit Test Rules:**
+{{test_boundary_patterns}}
 
 Are there testing rules agents should always follow?"
 
-### 6. Platform & Build Rules
+### 5. Code Quality & Style Rules
 
-Document platform-specific requirements:
+Document critical style and quality rules:
 
-**Target Platforms:**
-"Your platform configuration:
+**Linting/Formatting:**
+"Your code style configuration requires:
 
-**Primary Platform:**
-{{primary_platform}}
+**ESLint/Prettier Rules:**
+{{specific_linting_rules}}
 
-**Platform-Specific Code:**
-{{platform_conditional_patterns}}
+**Code Organization:**
+{{file_and_folder_structure_rules}}
 
-**Build Configurations:**
-{{build_config_rules}}
+**Naming Conventions:**
+{{naming_patterns_agents_must_follow}}
 
-**Input Handling:**
-{{input_abstraction_patterns}}
+**Documentation Requirements:**
+{{comment_and_documentation_patterns}}
 
-Any platform rules agents must know?"
+Any additional code quality rules?"
+
+### 6. Development Workflow Rules
+
+Document workflow patterns that affect implementation:
+
+**Git/Repository Rules:**
+"Your project uses these patterns:
+
+**Branch Naming:**
+{{branch_naming_conventions}}
+
+**Commit Message Format:**
+{{commit_message_patterns}}
+
+**PR Requirements:**
+{{pull_request_checklist}}
+
+**Deployment Patterns:**
+{{deployment_considerations}}
+
+Should I document any other workflow rules?"
 
 ### 7. Critical Don't-Miss Rules
 
@@ -258,10 +202,10 @@ Identify rules that prevent common mistakes:
 **Edge Cases:**
 {{specific_edge_cases_agents_should_handle}}
 
-**Common Gotchas:**
-{{engine_specific_gotchas}}
+**Security Rules:**
+{{security_considerations_agents_must_follow}}
 
-**Performance Traps:**
+**Performance Gotchas:**
 {{performance_patterns_to_avoid}}
 
 Are there other 'gotchas' agents should know about?"
@@ -279,29 +223,29 @@ For each category, prepare lean content for the project context file:
 
 ## Critical Implementation Rules
 
-### Engine-Specific Rules
+### Language-Specific Rules
 
-{{bullet_points_of_engine_rules}}
+{{bullet_points_of_critical_language_rules}}
 
-### Performance Rules
+### Framework-Specific Rules
 
-{{bullet_points_of_performance_requirements}}
-
-### Code Organization Rules
-
-{{bullet_points_of_organization_patterns}}
+{{bullet_points_of_framework_patterns}}
 
 ### Testing Rules
 
 {{bullet_points_of_testing_requirements}}
 
-### Platform & Build Rules
+### Code Quality & Style Rules
 
-{{bullet_points_of_platform_requirements}}
+{{bullet_points_of_style_and_quality_rules}}
+
+### Development Workflow Rules
+
+{{bullet_points_of_workflow_patterns}}
 
 ### Critical Don't-Miss Rules
 
-{{bullet_points_of_anti_patterns_and_gotchas}}
+{{bullet_points_of_anti_patterns_and_edge_cases}}
 ```
 
 ### 9. Present Content and Menu
@@ -349,23 +293,23 @@ When user selects 'C' for a category, append the content directly to `{output_fo
 
 ## SUCCESS METRICS:
 
-- All critical technology versions accurately documented
-- Engine-specific rules cover unobvious patterns
-- Performance rules capture project-specific requirements
-- Code organization rules maintain project standards
-- Testing rules ensure consistent test quality
-- Platform rules prevent cross-platform issues
-- Content is lean and optimized for LLM context
-- A/P/C menu presented and handled correctly for each category
+✅ All critical technology versions accurately documented
+✅ Language-specific rules cover unobvious patterns
+✅ Framework rules capture project-specific conventions
+✅ Testing rules ensure consistent test quality
+✅ Code quality rules maintain project standards
+✅ Workflow rules prevent implementation conflicts
+✅ Content is lean and optimized for LLM context
+✅ A/P/C menu presented and handled correctly for each category
 
 ## FAILURE MODES:
 
-- Including obvious rules that agents already know
-- Making content too verbose for LLM context efficiency
-- Missing critical anti-patterns or edge cases
-- Not getting user validation for each rule category
-- Not documenting exact versions and configurations
-- Not presenting A/P/C menu after content generation
+❌ Including obvious rules that agents already know
+❌ Making content too verbose for LLM context efficiency
+❌ Missing critical anti-patterns or edge cases
+❌ Not getting user validation for each rule category
+❌ Not documenting exact versions and configurations
+❌ Not presenting A/P/C menu after content generation
 
 ## NEXT STEP:
 
