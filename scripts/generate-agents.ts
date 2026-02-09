@@ -36,7 +36,7 @@ interface AgentYaml {
       role: string;
       identity: string;
       communication_style: string;
-      principles: string[];
+      principles: string[] | string;
     };
     critical_actions?: string[];
     menu?: Array<{
@@ -103,10 +103,28 @@ function buildWorkflowTable(
   ].join('\n');
 }
 
-/** Format principles array as a markdown list. */
-function formatPrinciples(principles: string[]): string {
-  return principles.map((p) => `- ${p}`).join('\n');
+/** Format principles as a markdown list. Handles both array and multiline
+ * string formats (upstream uses both until PR #1593 normalizes them). */
+function formatPrinciples(principles: string[] | string): string {
+  if (Array.isArray(principles)) {
+    return principles.map((p) => `- ${p}`).join('\n');
+  }
+  // Multiline YAML string — already has "- " prefixed lines
+  return principles.trim();
 }
+
+/** Activation section injected into every agent. Instructs agent to read
+ * project settings from .claude/bmad.local.md at activation time. */
+const ACTIVATION_SECTION = `## Activation
+
+Before responding, read project settings from \`.claude/bmad.local.md\` (YAML frontmatter).
+If the file is missing, use defaults: user_name="User", English, output to \`_bmad-output/\`.
+
+Use settings throughout this session:
+- Address user by \`user_name\`, communicate in \`communication_language\`
+- Write documents in \`document_output_language\`
+- Save planning artifacts to \`planning_artifacts\`, implementation artifacts to \`implementation_artifacts\`
+- Save long-term knowledge to \`project_knowledge\``;
 
 /** Generate the agent .md content. */
 function generateAgentMd(
@@ -140,6 +158,8 @@ function generateAgentMd(
     `# ${metadata.title} - ${metadata.name} (${slug})`,
     '',
     `**Icon:** ${metadata.icon} **Module:** ${moduleUpper}`,
+    '',
+    ACTIVATION_SECTION,
     '',
     '## Role',
     '',
