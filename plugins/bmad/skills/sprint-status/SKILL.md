@@ -1,17 +1,21 @@
 ---
-description: View and update sprint status tracking. Phase 4 Implementation
+description:
+  Summarize sprint-status.yaml, surface risks, and route to the right implemen
+  tation workflow.
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Sprint Status Workflow
 
-**Goal:** View and update sprint status tracking.
-
-**Agent:** Scrum Master (Bob) **Phase:** 4 - Implementation
+**Goal:** Summarize sprint-status.
 
 ---
 
 ## Execution
 
 Read and follow: `./instructions.md`
+
+## Validation
+
+After completion, verify against: `./checklist.md`

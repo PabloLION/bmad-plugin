@@ -1,15 +1,17 @@
 ---
-description: Generate comprehensive documentation for an existing project
+description:
+  Analyzes and documents brownfield projects by scanning codebase, architectur
+  e, and patterns to create comprehensive reference documentation for AI-assis
+  ted development
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Document Project Workflow
 
-**Goal:** Generate comprehensive project documentation through brownfield
-analysis.
+**Goal:** Analyzes and documents brownfield projects by scanning codebase, architecture, and patterns to create comprehensive reference documentation for AI-assisted development.
 
-**Agent:** Tech Writer (Paige) **Phase:** Documentation
+**Agent:** Technical Writer (Paige) **Module:** CORE
 
 ---
 

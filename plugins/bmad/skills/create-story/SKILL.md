@@ -1,21 +1,22 @@
 ---
 description:
-  Prepare a story with full context for implementation. Phase 4 Implementation
+  Create the next user story from epics+stories with enhanced context analysis
+   and direct ready-for-dev marking
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Create Story Workflow
 
-**Goal:** Prepare a story with all required context for implementation.
+**Goal:** Create the next user story from epics+stories with enhanced context analysis and direct ready-for-dev marking.
 
-**Agent:** Scrum Master (Bob) **Phase:** 4 - Implementation
+**Agent:** Scrum Master (Bob) **Module:** CORE
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.xml`
+Read and follow: `./instructions.md`
 
 ## Validation
 

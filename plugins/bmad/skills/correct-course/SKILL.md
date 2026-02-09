@@ -1,17 +1,16 @@
 ---
 description:
-  Determine how to proceed when major change discovered mid-implementation.
-  Phase 4 Implementation
+  Navigate significant changes during sprint execution by analyzing impact, pr
+  oposing solutions, and routing for implementation
 user-invocable: true
 disable-model-invocation: true
 ---
 
 # Correct Course Workflow
 
-**Goal:** Determine how to proceed when major change is discovered
-mid-implementation.
+**Goal:** Navigate significant changes during sprint execution by analyzing impact, proposing solutions, and routing for implementation.
 
-**Agent:** Scrum Master (Bob) **Phase:** 4 - Implementation
+**Agent:** Scrum Master (Bob) **Module:** CORE
 
 ---
 

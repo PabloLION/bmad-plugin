@@ -1,32 +1,25 @@
 ---
 description:
-  Document system architecture and technical decisions. Phase 3 Solutioning
+  Collaborative architectural decision facilitation for AI-agent consistency. 
+  Replaces template-driven architecture with intelligent, adaptive conversatio
+  n that produces a decision-focused architecture document optimized for preve
+  nting agent conflicts.
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Architecture Workflow
+# Create Architecture Workflow
 
-**Goal:** Create comprehensive architecture decisions through collaborative
-step-by-step discovery.
+**Goal:** Collaborative architectural decision facilitation for AI-agent consistency.
 
-**Agent:** Architect (Winston) **Phase:** 3 - Solutioning
+**Agent:** Architect (Winston) **Module:** CORE
 
 ---
 
-## Workflow Architecture
-
-Step-file architecture with data files for decision support.
-
-## Initialization
-
-Check for project config at `bmad/config.yaml`. Requires PRD as input.
-
-## Supporting Data
-
-- `./data/domain-complexity.csv`
-- `./data/project-types.csv`
-
 ## Execution
 
-Read and execute: `./steps/step-01-init.md`
+Read and follow: `./instructions.md`
+
+## Validation
+
+After completion, verify against: `./checklist.md`
