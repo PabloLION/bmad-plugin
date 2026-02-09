@@ -3,7 +3,6 @@ description:
   Initialize game test framework architecture for Unity, Unreal Engine, or God
   ot projects
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Gametest Framework Workflow

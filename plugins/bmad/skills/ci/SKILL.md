@@ -1,7 +1,6 @@
 ---
 description: CI/CD quality pipeline recommendations. Test Architecture
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Continuous Integration Workflow

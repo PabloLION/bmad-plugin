@@ -3,7 +3,6 @@ description:
   Create, validate, or edit product requirements documents. Tri-modal. Phase 2
   Planning
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # PRD Workflow (Tri-Modal)

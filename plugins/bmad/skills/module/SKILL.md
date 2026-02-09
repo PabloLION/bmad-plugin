@@ -2,7 +2,6 @@
 description:
   Create, edit, or validate BMAD modules with full lifecycle support. BMB Module
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Module Workflow

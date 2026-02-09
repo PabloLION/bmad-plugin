@@ -5,7 +5,6 @@ description:
   appropriate story frameworks to create emotionally resonant and engaging sto
   ries for any purpose.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Storytelling Workflow

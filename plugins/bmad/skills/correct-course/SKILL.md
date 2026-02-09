@@ -3,7 +3,6 @@ description:
   Navigate significant changes during sprint execution by analyzing impact, pr
   oposing solutions, and routing for implementation
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Correct Course Workflow

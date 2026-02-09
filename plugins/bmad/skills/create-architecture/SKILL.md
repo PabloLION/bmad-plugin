@@ -5,7 +5,6 @@ description:
   n that produces a decision-focused architecture document optimized for preve
   nting agent conflicts.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Architecture Workflow

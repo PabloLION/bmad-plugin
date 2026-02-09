@@ -4,7 +4,6 @@ description:
   ories for completeness and alignment before implementation. Uses adversarial
    review approach to find gaps and issues.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Check Implementation Readiness Workflow

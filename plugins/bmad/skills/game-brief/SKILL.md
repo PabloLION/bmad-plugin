@@ -4,7 +4,6 @@ description:
   their game vision with multiple input sources and conversational collaborati
   on
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Game Brief Workflow

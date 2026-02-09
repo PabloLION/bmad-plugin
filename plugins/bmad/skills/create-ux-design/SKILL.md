@@ -3,7 +3,6 @@ description:
   Work with a peer UX Design expert to plan your applications UX patterns, loo
   k and feel.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Create Ux Design Workflow

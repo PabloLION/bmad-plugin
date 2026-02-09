@@ -6,7 +6,6 @@ description:
    - must find minimum issues and can auto-fix with user approval. Game-specif
   ic focus on 60fps, feel, and platform considerations.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Code Review Workflow

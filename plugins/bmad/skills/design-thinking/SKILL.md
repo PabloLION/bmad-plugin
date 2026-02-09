@@ -4,7 +4,6 @@ description:
   is workflow walks through the design thinking phases - Empathize, Define, Id
   eate, Prototype, and Test - to create solutions deeply rooted in user needs.
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Design Thinking Workflow

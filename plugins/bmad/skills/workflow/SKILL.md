@@ -3,7 +3,6 @@ description:
   Create, edit, validate, or rework BMAD workflows with best practices. BMB
   Module
 user-invocable: true
-disable-model-invocation: true
 ---
 
 # Workflow Workflow

@@ -1,28 +1,61 @@
 /**
- * Updates the upstream and plugin versions plus sync date in README.md.
- * Reads from .upstream-version-core and .plugin-version, writes between marker
- * comments.
+ * Updates the plugin version and multi-upstream dependency table in README.md.
+ * Reads from all .upstream-version-* files and .plugin-version, writes between
+ * marker comments.
  *
  * Run: bun scripts/update-readme-version.ts
  */
 
 import { join } from 'node:path';
+import { ROOT } from './lib/config.ts';
+import { getEnabledSources } from './lib/upstream-sources.ts';
 
-const ROOT = join(import.meta.dir, '..');
+/** Display labels for upstream source IDs */
+const SOURCE_LABELS: Record<string, string> = {
+  core: 'Core',
+  tea: 'TEA',
+  bmb: 'BMB',
+  cis: 'CIS',
+  gds: 'GDS',
+};
+
 const readmePath = join(ROOT, 'README.md');
 
-const upstreamRaw = await Bun.file(join(ROOT, '.upstream-version-core')).text();
-const upstreamVersion = upstreamRaw.trim();
-
-const pluginRaw = await Bun.file(join(ROOT, '.plugin-version')).text();
-const pluginVersion = pluginRaw.trim();
+const pluginVersion = (
+  await Bun.file(join(ROOT, '.plugin-version')).text()
+).trim();
 
 const today = new Date().toISOString().slice(0, 10);
+
+const sources = getEnabledSources();
+const rows: string[] = [];
+
+for (const source of sources) {
+  const version = (
+    await Bun.file(join(ROOT, source.versionFile)).text()
+  ).trim();
+  const label = SOURCE_LABELS[source.id] ?? source.id.toUpperCase();
+  rows.push(`| ${label} | ${source.repo} | ${version} | ${today} |`);
+}
+
+const table = [
+  '| Module | Repo | Version | Last Synced |',
+  '|---|---|---|---|',
+  ...rows,
+].join('\n');
+
+const replacement = [
+  '<!-- upstream-version-start -->',
+  `**Plugin version:** ${pluginVersion}`,
+  '',
+  table,
+  '<!-- upstream-version-end -->',
+].join('\n');
 
 const readme = await Bun.file(readmePath).text();
 const updated = readme.replace(
   /<!-- upstream-version-start -->[\s\S]*?<!-- upstream-version-end -->/,
-  `<!-- upstream-version-start -->\n**Plugin version:** ${pluginVersion} | **Upstream version:** ${upstreamVersion} | **Last synced:** ${today}\n<!-- upstream-version-end -->`,
+  replacement,
 );
 
 if (updated === readme) {
@@ -30,6 +63,6 @@ if (updated === readme) {
 } else {
   await Bun.write(readmePath, updated);
   console.log(
-    `README.md updated: plugin=${pluginVersion}, upstream=${upstreamVersion}, synced ${today}`,
+    `README.md updated: plugin=${pluginVersion}, ${sources.length} upstream sources`,
   );
 }

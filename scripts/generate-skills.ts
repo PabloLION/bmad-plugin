@@ -164,7 +164,6 @@ function generateSkillMd(
       .match(/.{1,76}/g)!
       .map((line, i) => (i === 0 ? `  ${line}` : `  ${line}`)),
     'user-invocable: true',
-    'disable-model-invocation: true',
     '---',
     '',
     `# ${info.yaml.name
