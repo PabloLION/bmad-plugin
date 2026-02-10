@@ -22,6 +22,20 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
 | update-readme | `bun run update-readme` | Update README version badge |
 | test | `bun run test` | Run tests |
+| release | `./scripts/release.sh [version]` | Full release workflow (see Release below) |
+
+## Release
+
+Run from **dev** branch with clean working tree:
+
+```sh
+./scripts/release.sh           # release current version
+./scripts/release.sh 6.0.0-Beta.8.0  # bump + release
+```
+
+The script handles: beads sync → release branch → PR to main → wait for CI →
+merge → tag → GitHub release → return to dev. If version argument is provided,
+it bumps all 4 version files on dev first.
 
 ## Git Workflow
 
