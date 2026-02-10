@@ -11,15 +11,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.7.0
+**Plugin version:** v6.0.0-Beta.8.0
 
 | Module | Repo | Version | Last Synced |
 |---|---|---|---|
-| Core | bmadcode/BMAD-METHOD | v6.0.0-Beta.7 | 2026-02-09 |
-| TEA | bmad-code-org/bmad-method-test-architecture-enterprise | v0.1.1-beta.3 | 2026-02-09 |
-| BMB | bmad-code-org/bmad-builder | v0.1.5 | 2026-02-09 |
-| CIS | bmad-code-org/bmad-module-creative-intelligence-suite | v0.1.4 | 2026-02-09 |
-| GDS | bmad-code-org/bmad-module-game-dev-studio | v0.1.5 | 2026-02-09 |
+| Core | bmadcode/BMAD-METHOD | v6.0.0-Beta.8 | 2026-02-10 |
+| TEA | bmad-code-org/bmad-method-test-architecture-enterprise | v0.1.1-beta.3 | 2026-02-10 |
+| BMB | bmad-code-org/bmad-builder | v0.1.5 | 2026-02-10 |
+| CIS | bmad-code-org/bmad-module-creative-intelligence-suite | v0.1.4 | 2026-02-10 |
+| GDS | bmad-code-org/bmad-module-game-dev-studio | v0.1.5 | 2026-02-10 |
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development
