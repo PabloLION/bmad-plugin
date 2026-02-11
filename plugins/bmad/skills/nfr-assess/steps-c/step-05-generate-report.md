@@ -1,7 +1,7 @@
 ---
 name: 'step-05-generate-report'
 description: 'Create NFR report and validation summary'
-outputFile: '{output_folder}/nfr-assessment.md'
+outputFile: '{test_artifacts}/nfr-assessment.md'
 ---
 
 # Step 5: Generate Report & Validate
@@ -48,6 +48,8 @@ Use `nfr-report-template.md` to produce `{outputFile}` containing:
 ## 2. Validation
 
 Validate against `checklist.md` and fix gaps.
+
+- [ ] CLI sessions cleaned up (no orphaned browsers)
 
 ---
 

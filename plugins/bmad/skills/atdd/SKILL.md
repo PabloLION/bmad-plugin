@@ -1,20 +1,27 @@
 ---
 description:
-  Generate acceptance tests (API/E2E) before implementation. Test Architecture
+  Generate failing acceptance tests before implementation using TDD red-green-
+  refactor cycle
 user-invocable: true
 ---
 
-# ATDD Workflow
+# Testarch Atdd Workflow
 
-**Goal:** Generate API and/or E2E tests first, before starting implementation.
+**Goal:** Generate failing acceptance tests before implementation using TDD red-green-refactor cycle.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

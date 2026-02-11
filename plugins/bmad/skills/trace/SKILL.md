@@ -1,19 +1,27 @@
 ---
-description: Map requirements to tests for traceability. Test Architecture
+description:
+  Generate requirements-to-tests traceability matrix, analyze coverage, and ma
+  ke quality gate decision (PASS/CONCERNS/FAIL/WAIVED)
 user-invocable: true
 ---
 
-# Test Traceability Workflow
+# Testarch Trace Workflow
 
-**Goal:** Map requirements to tests and make quality gate decisions.
+**Goal:** Generate requirements-to-tests traceability matrix, analyze coverage, and make quality gate decision (PASS/CONCERNS/FAIL/WAIVED).
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

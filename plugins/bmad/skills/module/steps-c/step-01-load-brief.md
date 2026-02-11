@@ -135,10 +135,10 @@ status: IN_PROGRESS
 
 1. Directory structure (based on module type)
 2. module.yaml with install configuration
-3. _module-installer/ folder (if needed)
-4. Agent placeholder/spec files
-5. Workflow placeholder/spec files
-6. README.md and TODO.md
+3. Agent placeholder/spec files
+4. Workflow placeholder/spec files
+5. README.md and TODO.md
+6. module-help.csv (generated from specs)
 
 "**Ready to start building?**"
 

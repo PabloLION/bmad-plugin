@@ -1,20 +1,27 @@
 ---
-description: Quality checks against written tests. Test Architecture
+description:
+  Review test quality using comprehensive knowledge base and best practices va
+  lidation
 user-invocable: true
 ---
 
-# Test Review Workflow
+# Testarch Test Review Workflow
 
-**Goal:** Quality check against written tests using comprehensive knowledge
-base.
+**Goal:** Review test quality using comprehensive knowledge base and best practices validation.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

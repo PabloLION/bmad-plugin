@@ -1,7 +1,7 @@
 ---
 name: 'step-04-validate-and-summarize'
 description: 'Validate outputs and produce automation summary'
-outputFile: '{output_folder}/automation-summary.md'
+outputFile: '{test_artifacts}/automation-summary.md'
 ---
 
 # Step 4: Validate & Summarize
@@ -43,6 +43,8 @@ Use `checklist.md` to validate:
 - Coverage mapping
 - Test quality and structure
 - Fixtures, factories, helpers
+- [ ] CLI sessions cleaned up (no orphaned browsers)
+- [ ] Temp artifacts stored in `{test_artifacts}/` not random locations
 
 Fix gaps before proceeding.
 
