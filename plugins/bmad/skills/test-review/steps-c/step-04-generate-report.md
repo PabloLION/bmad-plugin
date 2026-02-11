@@ -1,7 +1,7 @@
 ---
 name: 'step-04-generate-report'
 description: 'Create test-review report and validate'
-outputFile: '{output_folder}/test-review.md'
+outputFile: '{test_artifacts}/test-review.md'
 ---
 
 # Step 4: Generate Report & Validate
@@ -48,6 +48,9 @@ Use `test-review-template.md` to produce `{outputFile}` including:
 ## 2. Validation
 
 Validate against `checklist.md` and fix any gaps.
+
+- [ ] CLI sessions cleaned up (no orphaned browsers)
+- [ ] Temp artifacts stored in `{test_artifacts}/` not random locations
 
 ---
 

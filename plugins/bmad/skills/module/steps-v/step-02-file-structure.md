@@ -40,7 +40,6 @@ Check based on target type:
 - [ ] README.md exists
 - [ ] agents/ folder exists (if agents specified)
 - [ ] workflows/ folder exists (if workflows specified)
-- [ ] _module-installer/ folder (if installer specified)
 
 **For Briefs:**
 - [ ] Brief file exists

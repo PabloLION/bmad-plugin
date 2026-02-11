@@ -1,20 +1,28 @@
 ---
 description:
-  Design comprehensive test scenarios ahead of development. Test Architecture
+  Dual-mode workflow: (1) System-level testability review in Solutioning phase
+  , or (2) Epic-level test planning in Implementation phase. Auto-detects mode
+   based on project phase.
 user-invocable: true
 ---
 
-# Test Design Workflow
+# Testarch Test Design Workflow
 
-**Goal:** Create comprehensive test scenarios ahead of development.
+**Goal:** Dual-mode workflow: (1) System-level testability review in Solutioning phase, or (2) Epic-level test planning in Implementation phase.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 
