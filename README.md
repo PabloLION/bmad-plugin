@@ -13,7 +13,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.8.0
+**Plugin version:** v6.0.0-Beta.8.1
 
 | Module | Repo | Version | Released |
 |---|---|---|---|
