@@ -3,3 +3,4 @@
 .git-ignored/
 node_modules/
 .DS_Store
+.release-state

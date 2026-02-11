@@ -29,13 +29,16 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 Run from **dev** branch with clean working tree:
 
 ```sh
-./scripts/release.sh           # release current version
-./scripts/release.sh 6.0.0-Beta.8.0  # bump + release
+./scripts/release.sh                  # release current version (full run)
+./scripts/release.sh 6.0.0-Beta.9.0  # bump version first, then release
+./scripts/release.sh --after-ci       # finish release after CI passes
 ```
 
-The script handles: beads sync → release branch → PR to main → wait for CI →
-merge → tag → GitHub release → return to dev. If version argument is provided,
-it bumps all 4 version files on dev first.
+Two phases: **prepare** (bump → beads sync → release branch → PR → wait for CI)
+and **finish** (merge → tag → GitHub release → return to dev).
+
+If CI is slow to register or fails, the script saves state to `.release-state`
+and exits with instructions. Fix the issue, then `--after-ci` completes Phase 2.
 
 ## Git Workflow
 
