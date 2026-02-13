@@ -117,6 +117,33 @@ four excalidraw diagram workflows reference a single
 In the plugin, each skill must be self-contained — skills can't reference
 sibling directories. So shared files must be copied into each skill.
 
+### Why duplication (not symlinks or shared paths)
+
+Claude Code plugin skills must be self-contained. The plugin manifest forbids
+`../` paths — a skill cannot reference files outside its own directory. This is
+by design: skills are the unit of progressive disclosure, loaded independently
+into context.
+
+The official `claude-plugins-official` repo confirms this: no official plugin
+shares files between skills. When two skills need the same reference material,
+each skill gets its own copy under `references/` (the official convention) or
+`data/` (BMAD's convention).
+
+Alternatives considered:
+
+| Approach | Why rejected |
+|---|---|
+| Symlinks | Not portable across OS/git; Claude Code doesn't resolve them |
+| `../` relative paths | Explicitly forbidden by plugin manifest spec |
+| Shared directory at plugin root | Skills can't reference outside their directory |
+| Single skill aggregating everything | Defeats progressive disclosure; bloats context |
+
+**Decision:** Duplicate shared files into each skill, synchronized by script.
+The sync script is the single source of truth — it copies from upstream
+`_shared/` into each target skill's `data/` directory and validates all copies
+match. No manual copying, no symlinks, just scripted duplication with automated
+consistency checks.
+
 ### The solution
 
 A three-tier approach:
