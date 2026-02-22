@@ -13,11 +13,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.8.1
+**Plugin version:** v6.0.1.0
 
 | Module | Repo | Version | Released |
 |---|---|---|---|
-| Core | [bmadcode/BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) | v6.0.0-Beta.8 | 2026-02-08 |
+| Core | [bmadcode/BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) | v6.0.1 | 2026-02-17 |
 | TEA | [bmad-code-org/bmad-method-test-architecture-enterprise](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise) | v1.0.0 | 2026-02-07 |
 | BMB | [bmad-code-org/bmad-builder](https://github.com/bmad-code-org/bmad-builder) | v0.1.6 | 2026-02-08 |
 | CIS | [bmad-code-org/bmad-module-creative-intelligence-suite](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) | v0.1.6 | 2026-02-08 |
