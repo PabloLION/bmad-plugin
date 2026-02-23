@@ -11,6 +11,7 @@
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
+import { gitInUpstream } from './lib/git-utils.ts';
 import type { UpstreamSource } from './lib/upstream-sources.ts';
 import {
   getCoreSource,
@@ -201,15 +202,6 @@ async function syncSharedFile(
   }
 
   return count;
-}
-
-/** Run git in an upstream repo, with BEADS_DIR set to avoid hook interference. */
-function gitInUpstream(
-  upstreamRoot: string,
-  ...args: string[]
-): ReturnType<typeof Bun.$> {
-  const beadsDir = join(ROOT, '.beads');
-  return Bun.$`BEADS_DIR=${beadsDir} git -C ${upstreamRoot} ${args}`.quiet();
 }
 
 /** Checkout a source to its tracked version tag. */

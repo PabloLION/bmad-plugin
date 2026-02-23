@@ -13,6 +13,8 @@
     "sync:source": "bun scripts/sync-upstream-content.ts --source",
     "generate:agents": "bun scripts/generate-agents.ts",
     "generate:skills": "bun scripts/generate-skills.ts",
+    "bump-core": "bun scripts/bump-core.ts",
+    "bump-module": "bun scripts/bump-module.ts",
     "update-readme": "bun scripts/update-readme-version.ts",
     "test": "bun test"
   },

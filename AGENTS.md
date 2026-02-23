@@ -20,9 +20,36 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | sync:source | `bun run sync:source <id>` | Sync a single upstream source |
 | generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
 | generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
+| bump-core | `bun run bump-core` | Bump plugin version for new core BMAD-METHOD release |
+| bump-module | `bun run bump-module -- --source <id>` | Bump plugin version for new external module release |
 | update-readme | `bun run update-readme` | Update README version badge |
 | test | `bun run test` | Run tests |
 | release | `./scripts/release.sh [version]` | Full release workflow (see Release below) |
+
+## Upstream Sync
+
+When upstream repos release new tags, sync them into the plugin:
+
+```sh
+# Core BMAD-METHOD release
+bun run bump-core                       # fetch latest tag, bump to v<core>.0
+bun run bump-core -- --tag v6.0.2       # pin to specific tag
+bun run bump-core -- --dry-run          # preview only
+# Then: bun run sync && bun run generate:agents && bun run generate:skills
+
+# External module release (tea, bmb, cis, gds)
+bun run bump-module -- --source tea              # fetch latest tag, increment .X
+bun run bump-module -- --source gds --tag v0.1.7 # pin to specific tag
+bun run bump-module -- --source tea --dry-run    # preview only
+# Then: bun run sync -- --source <id> && bun run generate:agents -- --source <id> && bun run generate:skills -- --source <id>
+
+# Verify
+bun run typecheck && bun run lint
+```
+
+Both bump scripts fetch tags, update the upstream version file, update all 4
+plugin version files (.plugin-version, package.json, plugin.json, marketplace.json),
+and update README badges. Core bumps reset .X to 0; module bumps increment .X by 1.
 
 ## Release
 
