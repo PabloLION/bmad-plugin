@@ -8,6 +8,12 @@ import { join } from 'node:path';
 import { PLUGIN, ROOT } from '../config.ts';
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
 import { fail, pass, RED, RESET, section, warn } from '../output.ts';
+import {
+  type WorkflowMap,
+  buildWorkflowMap,
+  isTextFile,
+  rewriteFileContent,
+} from '../path-rewriter.ts';
 import type { UpstreamSource } from '../upstream-sources.ts';
 import {
   getEnabledSources,
@@ -128,6 +134,16 @@ async function getAllPairs(): Promise<WorkflowSkillPair[]> {
   return pairs;
 }
 
+/** Apply path rewrites to upstream content for comparison. */
+function applyRewrites(
+  content: string,
+  filePath: string,
+  map: WorkflowMap,
+): string {
+  if (!isTextFile(filePath)) return content;
+  return rewriteFileContent(content, map).content;
+}
+
 /** Compare upstream files against plugin files for a single pair. */
 async function compareUpstreamFiles(
   upstreamDir: string,
@@ -136,6 +152,7 @@ async function compareUpstreamFiles(
   upstreamFiles: string[],
   pluginFileSet: Set<string>,
   source: UpstreamSource,
+  map: WorkflowMap,
 ): Promise<{ checked: number; drifted: number }> {
   let checked = 0;
   let drifted = 0;
@@ -150,7 +167,8 @@ async function compareUpstreamFiles(
       continue;
     }
 
-    const upstreamContent = await Bun.file(join(upstreamDir, relPath)).text();
+    const upstreamRaw = await Bun.file(join(upstreamDir, relPath)).text();
+    const upstreamContent = applyRewrites(upstreamRaw, relPath, map);
     const pluginContent = await Bun.file(join(pluginDir, relPath)).text();
 
     if (normalize(upstreamContent) === normalize(pluginContent)) {
@@ -197,15 +215,17 @@ function checkExtraPluginFiles(
   }
 }
 
-/** Check a single file copy matches upstream content. */
+/** Check a single file copy matches upstream content (with rewrites applied). */
 async function checkFileCopy(
   path: string,
   upstreamContent: string,
   label: string,
+  map: WorkflowMap,
 ): Promise<void> {
   if (await exists(path)) {
+    const rewritten = applyRewrites(upstreamContent, path, map);
     const content = await Bun.file(path).text();
-    if (normalize(upstreamContent) !== normalize(content)) {
+    if (normalize(rewritten) !== normalize(content)) {
       fail(`Drift: ${label} vs upstream`);
     }
   } else {
@@ -214,7 +234,7 @@ async function checkFileCopy(
 }
 
 /** Validate shared files for all sources that define shared targets. */
-async function validateSharedFiles(): Promise<void> {
+async function validateSharedFiles(map: WorkflowMap): Promise<void> {
   section('Shared File Consistency (_shared/ → skill copies)');
   const pluginShared = join(PLUGIN, '_shared');
 
@@ -244,6 +264,7 @@ async function validateSharedFiles(): Promise<void> {
           join(pluginShared, relPath),
           upstreamContent,
           `_shared/${relPath}`,
+          map,
         );
 
         for (const skill of targets) {
@@ -251,6 +272,7 @@ async function validateSharedFiles(): Promise<void> {
             join(PLUGIN, 'skills', skill, 'data', relPath),
             upstreamContent,
             `${skill}/data/${relPath}`,
+            map,
           );
         }
       }
@@ -265,6 +287,7 @@ async function validateSharedFiles(): Promise<void> {
 export async function checkContent(): Promise<void> {
   section('Content Consistency (upstream ↔ plugin files)');
 
+  const map = await buildWorkflowMap();
   const pairs = await getAllPairs();
   let checkedCount = 0;
   let driftCount = 0;
@@ -281,6 +304,7 @@ export async function checkContent(): Promise<void> {
       upstreamFiles,
       pluginFileSet,
       source,
+      map,
     );
     checkedCount += checked;
     driftCount += drifted;
@@ -297,5 +321,5 @@ export async function checkContent(): Promise<void> {
     );
   }
 
-  await validateSharedFiles();
+  await validateSharedFiles(map);
 }
