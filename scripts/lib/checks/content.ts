@@ -9,10 +9,10 @@ import { PLUGIN, ROOT } from '../config.ts';
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
 import { fail, pass, RED, RESET, section, warn } from '../output.ts';
 import {
-  type WorkflowMap,
   buildWorkflowMap,
   isTextFile,
   rewriteFileContent,
+  type WorkflowMap,
 } from '../path-rewriter.ts';
 import type { UpstreamSource } from '../upstream-sources.ts';
 import {

@@ -13,10 +13,10 @@ import { dirname, join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
 import { gitInUpstream } from './lib/git-utils.ts';
 import {
-  type WorkflowMap,
   buildWorkflowMap,
   isTextFile,
   rewriteFileContent,
+  type WorkflowMap,
 } from './lib/path-rewriter.ts';
 import type { UpstreamSource } from './lib/upstream-sources.ts';
 import {
