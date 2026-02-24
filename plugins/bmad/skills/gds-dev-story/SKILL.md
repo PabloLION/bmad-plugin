@@ -1,13 +1,13 @@
 ---
 description:
-  Execute a story by implementing tasks/subtasks, writing tests, validating, a
-  nd updating the story file per acceptance criteria
+  Story implementation and testing workflow. Use when the user says "lets impl
+  ement story tasks" or "lets write tests for story"
 user-invocable: true
 ---
 
 # Dev Story Workflow
 
-**Goal:** Execute a story by implementing tasks/subtasks, writing tests, validating, and updating the story file per acceptance criteria.
+**Goal:** Story implementation and testing workflow.
 
 **Agent:** Game Developer (Link Freeman) **Module:** GDS
 

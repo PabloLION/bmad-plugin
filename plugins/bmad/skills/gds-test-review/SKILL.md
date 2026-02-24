@@ -1,12 +1,13 @@
 ---
 description:
-  Review test quality, coverage, and identify gaps in game testing
+  Game test coverage reviewer. Use when the user says "lets review game tests"
+   or "I want to evaluate test coverage"
 user-invocable: true
 ---
 
 # Gametest Test Review Workflow
 
-**Goal:** Review test quality, coverage, and identify gaps in game testing.
+**Goal:** Game test coverage reviewer.
 
 **Agent:** Game QA Architect (GLaDOS) **Module:** GDS
 

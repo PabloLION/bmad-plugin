@@ -1,13 +1,13 @@
 ---
 description:
-  Create comprehensive game test scenarios covering gameplay, progression, and
-   quality requirements
+  Game test scenario creator. Use when the user says "lets create game test sc
+  enarios"
 user-invocable: true
 ---
 
 # Gametest Test Design Workflow
 
-**Goal:** Create comprehensive game test scenarios covering gameplay, progression, and quality requirements.
+**Goal:** Game test scenario creator.
 
 **Agent:** Game QA Architect (GLaDOS) **Module:** GDS
 

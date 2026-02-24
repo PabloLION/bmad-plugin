@@ -1,14 +1,13 @@
 ---
 description:
-  Generate and manage the sprint status tracking file for Phase 4 implementati
-  on, extracting all epics and stories from epic files and tracking their stat
-  us through the development lifecycle
+  Sprint status tracking file generator. Use when the user says "I want to gen
+  erate sprint status" or "lets create sprint tracking"
 user-invocable: true
 ---
 
 # Sprint Planning Workflow
 
-**Goal:** Generate and manage the sprint status tracking file for Phase 4 implementation, extracting all epics and stories from epic files and tracking their status through the development lifecycle.
+**Goal:** Sprint status tracking file generator.
 
 **Agent:** Game Dev Scrum Master (Max) **Module:** GDS
 

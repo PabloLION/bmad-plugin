@@ -1,14 +1,13 @@
 ---
 description:
-  Interactive game brief creation workflow that guides users through defining 
-  their game vision with multiple input sources and conversational collaborati
-  on
+  Game vision definition workflow. Use when the user says "lets create a game 
+  brief" or "I want to define my game vision"
 user-invocable: true
 ---
 
 # Game Brief Workflow
 
-**Goal:** Interactive game brief creation workflow that guides users through defining their game vision with multiple input sources and conversational collaboration.
+**Goal:** Game vision definition workflow.
 
 **Agent:** Game Designer (Samus Shepard) **Module:** GDS
 

@@ -1,13 +1,13 @@
 ---
 description:
-  Initialize game test framework architecture for Unity, Unreal Engine, or God
-  ot projects
+  Game test framework initializer. Use when the user says "lets create a test 
+  framework" or "initialize game testing infrastructure"
 user-invocable: true
 ---
 
 # Gametest Framework Workflow
 
-**Goal:** Initialize game test framework architecture for Unity, Unreal Engine, or Godot projects.
+**Goal:** Game test framework initializer.
 
 **Agent:** Game Solo Dev (Indie) **Module:** GDS
 

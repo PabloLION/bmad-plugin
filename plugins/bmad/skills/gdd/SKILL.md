@@ -1,14 +1,13 @@
 ---
 description:
-  Game Design Document workflow for all game project levels - from small proto
-  types to full AAA games. Generates comprehensive GDD with game mechanics, sy
-  stems, progression, and implementation guidance.
+  Comprehensive game design document creator. Use when the user says "lets cre
+  ate a game design document" or "I want to create a comprehensive GDD"
 user-invocable: true
 ---
 
 # Gdd Workflow
 
-**Goal:** Game Design Document workflow for all game project levels - from small prototypes to full AAA games.
+**Goal:** Comprehensive game design document creator.
 
 **Agent:** Game Designer (Samus Shepard) **Module:** GDS
 

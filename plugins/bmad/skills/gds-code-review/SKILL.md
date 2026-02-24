@@ -1,16 +1,13 @@
 ---
 description:
-  Perform an ADVERSARIAL Senior Developer code review that finds 3-10 specific
-   problems in every story. Challenges everything: code quality, test coverage
-  , architecture compliance, security, performance. NEVER accepts `looks good`
-   - must find minimum issues and can auto-fix with user approval. Game-specif
-  ic focus on 60fps, feel, and platform considerations.
+  Adversarial game dev code review. Use when the user says "lets review this c
+  ode for game dev issues"
 user-invocable: true
 ---
 
 # Code Review Workflow
 
-**Goal:** Perform an ADVERSARIAL Senior Developer code review that finds 3-10 specific problems in every story.
+**Goal:** Adversarial game dev code review.
 
 **Agent:** Game Developer (Link Freeman) **Module:** GDS
 

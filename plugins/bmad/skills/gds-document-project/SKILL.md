@@ -1,14 +1,13 @@
 ---
 description:
-  Analyzes and documents brownfield projects by scanning codebase, architectur
-  e, and patterns to create comprehensive reference documentation for AI-assis
-  ted development
+  Brownfield project documentation scanner. Use when the user says "lets creat
+  e project documentation" or "I want to document a brownfield project"
 user-invocable: true
 ---
 
 # Document Project Workflow
 
-**Goal:** Analyzes and documents brownfield projects by scanning codebase, architecture, and patterns to create comprehensive reference documentation for AI-assisted development.
+**Goal:** Brownfield project documentation scanner.
 
 **Agent:** Technical Writer (Paige) **Module:** GDS
 

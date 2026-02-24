@@ -1,13 +1,13 @@
 ---
 description:
-  Facilitate game brainstorming sessions with game-specific context, guidance,
-   and game design techniques.
+  Game concept ideation with guided design techniques. Use when the user says 
+  "lets create game design ideas" or "I want to brainstorm game concepts"
 user-invocable: true
 ---
 
 # Brainstorm Game Workflow
 
-**Goal:** Facilitate game brainstorming sessions with game-specific context, guidance, and game design techniques.
+**Goal:** Game concept ideation with guided design techniques.
 
 **Agent:** Game Designer (Samus Shepard) **Module:** GDS
 

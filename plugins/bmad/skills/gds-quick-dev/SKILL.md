@@ -1,13 +1,14 @@
 ---
 description:
-  Flexible development - execute tech-specs OR direct instructions with option
-  al planning.
+  Flexible development workflow - execute tech-specs OR direct instructions wi
+  th optional planning. Use when the user says "lets implement this feature" o
+  r "execute these development tasks"
 user-invocable: true
 ---
 
 # Quick Dev Workflow
 
-**Goal:** Flexible development - execute tech-specs OR direct instructions with optional planning.
+**Goal:** Flexible development workflow - execute tech-specs OR direct instructions with optional planning.
 
 **Agent:** Game Developer (Link Freeman) **Module:** GDS
 

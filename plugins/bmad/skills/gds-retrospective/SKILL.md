@@ -1,13 +1,13 @@
 ---
 description:
-  Run after epic completion to review overall success, extract lessons learned
-  , and explore if new information emerged that might impact the next epic
+  Post-epic review and lessons learned. Use when the user says "lets run a ret
+  rospective" or "execute epic completion review"
 user-invocable: true
 ---
 
 # Retrospective Workflow
 
-**Goal:** Run after epic completion to review overall success, extract lessons learned, and explore if new information emerged that might impact the next epic.
+**Goal:** Post-epic review and lessons learned.
 
 **Agent:** Game Dev Scrum Master (Max) **Module:** GDS
 
