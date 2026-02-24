@@ -16,6 +16,7 @@ import type { UpstreamSource } from './lib/upstream-sources.ts';
 import {
   getCoreSource,
   getEnabledSources,
+  getSource,
   shouldSkipContentFile,
 } from './lib/upstream-sources.ts';
 
@@ -287,6 +288,96 @@ async function syncSource(source: UpstreamSource): Promise<number> {
   return totalFiles;
 }
 
+/**
+ * Sync core extras that live outside the normal contentRoot paths:
+ * - Core task files → _shared/tasks/
+ * - Core special workflows (advanced-elicitation, party-mode) → skills/
+ * - TEA knowledge index → _shared/
+ */
+async function syncCoreExtras(): Promise<number> {
+  const coreSource = getCoreSource();
+  const coreRoot = join(ROOT, '.upstream', coreSource.localPath);
+  let count = 0;
+
+  // 1. Core task files → _shared/tasks/
+  const tasksDir = join(coreRoot, 'src/core/tasks');
+  if (await exists(tasksDir)) {
+    const taskFiles = await readdir(tasksDir);
+    const destDir = join(PLUGIN, '_shared', 'tasks');
+    console.log('Syncing: [core] tasks → _shared/tasks/');
+
+    for (const file of taskFiles) {
+      const srcPath = join(tasksDir, file);
+      if (DRY_RUN) {
+        console.log(`  [dry-run] _shared/tasks/${file}`);
+      } else {
+        await Bun.$`mkdir -p ${destDir}`.quiet();
+        await cp(srcPath, join(destDir, file), { force: true });
+      }
+      count++;
+    }
+    if (!DRY_RUN) console.log(`  ✓ ${taskFiles.length} task files copied`);
+  }
+
+  // 2. Core special workflows → skills/<name>/
+  // These live at src/core/workflows/ (not under the normal bmm contentRoot)
+  const specialWorkflows = ['advanced-elicitation', 'party-mode'];
+  const coreWorkflowsDir = join(coreRoot, 'src/core/workflows');
+
+  if (await exists(coreWorkflowsDir)) {
+    for (const name of specialWorkflows) {
+      const workflowDir = join(coreWorkflowsDir, name);
+      if (!(await exists(workflowDir))) continue;
+
+      const skillDir = join(PLUGIN, 'skills', name);
+      const files = await listFilesRecursive(workflowDir);
+      let pairCount = 0;
+
+      console.log(`Syncing: [core] ${name} → skills/${name}/`);
+      for (const relPath of files) {
+        const fileName = relPath.split('/').at(-1) ?? relPath;
+        if (shouldSkipContentFile(coreSource, fileName)) continue;
+
+        const srcPath = join(workflowDir, relPath);
+        const destPath = join(skillDir, relPath);
+
+        if (DRY_RUN) {
+          console.log(`  [dry-run] ${relPath}`);
+        } else {
+          await Bun.$`mkdir -p ${dirname(destPath)}`.quiet();
+          await cp(srcPath, destPath, { force: true });
+        }
+        pairCount++;
+      }
+      count += pairCount;
+      if (!DRY_RUN) console.log(`  ✓ ${pairCount} files copied`);
+    }
+  }
+
+  // 3. TEA knowledge index → _shared/
+  const teaSource = getSource('tea');
+  if (teaSource) {
+    const teaRoot = join(ROOT, '.upstream', teaSource.localPath);
+    const teaIndex = join(teaRoot, 'src/testarch/tea-index.csv');
+    if (await exists(teaIndex)) {
+      const destDir = join(PLUGIN, '_shared');
+      const destPath = join(destDir, 'tea-index.csv');
+      console.log('Syncing: [tea] tea-index.csv → _shared/');
+
+      if (DRY_RUN) {
+        console.log('  [dry-run] _shared/tea-index.csv');
+      } else {
+        await Bun.$`mkdir -p ${destDir}`.quiet();
+        await cp(teaIndex, destPath, { force: true });
+        console.log('  ✓ 1 index file copied');
+      }
+      count++;
+    }
+  }
+
+  return count;
+}
+
 // === Main ===
 
 const sources = SOURCE_FILTER
@@ -304,6 +395,19 @@ let grandTotal = 0;
 for (const source of sources) {
   const count = await syncSource(source);
   grandTotal += count;
+  console.log('');
+}
+
+// Sync core extras (tasks, special workflows, indexes)
+// Only when running all sources or when core/tea is the filter
+const shouldSyncExtras =
+  !SOURCE_FILTER ||
+  SOURCE_FILTER === 'core' ||
+  SOURCE_FILTER === 'tea';
+
+if (shouldSyncExtras) {
+  const extrasCount = await syncCoreExtras();
+  grandTotal += extrasCount;
   console.log('');
 }
 
