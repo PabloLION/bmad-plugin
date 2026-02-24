@@ -1,6 +1,7 @@
 ---
 name: 'step-02-identify-targets'
 description: 'Identify automation targets and create coverage plan'
+outputFile: '{test_artifacts}/automation-summary.md'
 nextStepFile: './step-03-generate-tests.md'
 ---
 
@@ -49,6 +50,8 @@ Determine what needs to be tested and select appropriate test levels and priorit
 - Otherwise auto-discover features in `{source_dir}`
 - Prioritize critical paths, integrations, and untested logic
 
+**If {detected_stack} is `frontend` or `fullstack`:**
+
 **Browser Exploration (if `tea_browser_automation` is `cli` or `auto`):**
 
 > **Fallback:** If CLI is not installed, fall back to MCP (if available) or skip browser exploration and rely on code/doc analysis.
@@ -61,6 +64,16 @@ Use CLI to explore the application and identify testable pages/flows:
 4. `playwright-cli -s=tea-automate close`
 
 > **Session Hygiene:** Always close sessions using `playwright-cli -s=tea-automate close`. Do NOT use `close-all` — it kills every session on the machine and breaks parallel execution.
+
+**If {detected_stack} is `backend` or `fullstack`:**
+
+**Source & API Analysis (no browser exploration):**
+
+- Scan source code for route handlers, controllers, service classes, and public APIs
+- Read OpenAPI/Swagger specs (`openapi.yaml`, `swagger.json`) if available
+- Identify database models, migrations, and data access patterns
+- Map service-to-service integrations and message queue consumers/producers
+- Check for existing contract tests (Pact, etc.)
 
 ---
 
@@ -93,6 +106,30 @@ Produce a concise coverage plan:
 - Targets by test level
 - Priority assignments
 - Justification for coverage scope (critical-paths/comprehensive/selective)
+
+---
+
+## 5. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-02-identify-targets']
+  lastStep: 'step-02-identify-targets'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-02-identify-targets'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-02-identify-targets'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section.
 
 Load next step: `{nextStepFile}`
 

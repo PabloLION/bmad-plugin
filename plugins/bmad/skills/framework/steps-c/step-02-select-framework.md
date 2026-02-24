@@ -2,6 +2,7 @@
 name: 'step-02-select-framework'
 description: 'Select Playwright or Cypress and justify choice'
 nextStepFile: './step-03-scaffold-framework.md'
+outputFile: '{test_artifacts}/framework-setup-progress.md'
 ---
 
 # Step 2: Framework Selection
@@ -36,6 +37,10 @@ Choose the most appropriate framework and document the rationale.
 
 ## 1. Selection Logic
 
+Use `{detected_stack}` from Step 1 to guide framework selection.
+
+**If {detected_stack} is `frontend` or `fullstack` (browser-based testing):**
+
 Default to **Playwright** unless strong reasons suggest Cypress.
 
 **Playwright recommended when:**
@@ -51,13 +56,52 @@ Default to **Playwright** unless strong reasons suggest Cypress.
 - Component testing focus
 - Simpler setup needed
 
-Respect `framework_preference` if explicitly set.
+**If {detected_stack} is `backend` (no browser-based testing):**
+
+Select the framework matching the project language:
+
+- **Python**: pytest (default), unittest
+- **Java/Kotlin**: JUnit 5 (default), TestNG
+- **Go**: Go test (built-in)
+- **C#/.NET**: xUnit (default), NUnit, MSTest
+- **Ruby**: RSpec (default), Minitest
+- **Rust**: cargo test (built-in)
+
+**If {detected_stack} is `fullstack`:**
+
+Select both a browser-based framework (Playwright/Cypress) AND the appropriate backend framework for the detected language.
+
+Respect `config.test_framework` if explicitly set (not `"auto"`).
 
 ---
 
 ## 2. Announce Decision
 
 State the selected framework and reasoning.
+
+---
+
+### 3. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-02-select-framework']
+  lastStep: 'step-02-select-framework'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-02-select-framework'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-02-select-framework'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 

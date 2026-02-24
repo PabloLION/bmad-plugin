@@ -1,13 +1,13 @@
 ---
 description:
-  Generate requirements-to-tests traceability matrix, analyze coverage, and ma
-  ke quality gate decision (PASS/CONCERNS/FAIL/WAIVED)
+  Generate traceability matrix and quality gate decision. Use when the user sa
+  ys 'lets create traceability matrix' or 'I want to analyze test coverage'
 user-invocable: true
 ---
 
 # Testarch Trace Workflow
 
-**Goal:** Generate requirements-to-tests traceability matrix, analyze coverage, and make quality gate decision (PASS/CONCERNS/FAIL/WAIVED).
+**Goal:** Generate traceability matrix and quality gate decision.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

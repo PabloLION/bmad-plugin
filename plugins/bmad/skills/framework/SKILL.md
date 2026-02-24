@@ -1,13 +1,13 @@
 ---
 description:
-  Initialize production-ready test framework architecture (Playwright or Cypre
-  ss) with fixtures, helpers, and configuration
+  Initialize test framework with Playwright or Cypress. Use when the user says
+   'lets setup test framework' or 'I want to initialize testing framework'
 user-invocable: true
 ---
 
 # Testarch Framework Workflow
 
-**Goal:** Initialize production-ready test framework architecture (Playwright or Cypress) with fixtures, helpers, and configuration.
+**Goal:** Initialize test framework with Playwright or Cypress.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

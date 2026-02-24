@@ -1,13 +1,13 @@
 ---
 description:
-  Scaffold CI/CD quality pipeline with test execution, burn-in loops, and arti
-  fact collection
+  Scaffold CI/CD quality pipeline with test execution. Use when the user says 
+  'lets setup CI pipeline' or 'I want to create quality gates'
 user-invocable: true
 ---
 
 # Testarch Ci Workflow
 
-**Goal:** Scaffold CI/CD quality pipeline with test execution, burn-in loops, and artifact collection.
+**Goal:** Scaffold CI/CD quality pipeline with test execution.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

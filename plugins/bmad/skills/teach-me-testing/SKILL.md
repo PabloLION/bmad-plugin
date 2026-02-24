@@ -1,13 +1,13 @@
 ---
 description:
-  Multi-session learning companion that teaches testing progressively through 
-  7 structured sessions with state persistence
+  Teach testing progressively through structured sessions. Use when user says 
+  'lets learn testing' or 'I want to study test practices'
 user-invocable: true
 ---
 
 # Teach Me Testing Workflow
 
-**Goal:** Multi-session learning companion that teaches testing progressively through 7 structured sessions with state persistence.
+**Goal:** Teach testing progressively through structured sessions.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

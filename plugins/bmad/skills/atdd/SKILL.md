@@ -1,13 +1,13 @@
 ---
 description:
-  Generate failing acceptance tests before implementation using TDD red-green-
-  refactor cycle
+  Generate failing acceptance tests using TDD cycle. Use when the user says 'l
+  ets write acceptance tests' or 'I want to do ATDD'
 user-invocable: true
 ---
 
 # Testarch Atdd Workflow
 
-**Goal:** Generate failing acceptance tests before implementation using TDD red-green-refactor cycle.
+**Goal:** Generate failing acceptance tests using TDD cycle.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

@@ -2,6 +2,7 @@
 name: 'step-03-gather-evidence'
 description: 'Collect evidence for each NFR category'
 nextStepFile: './step-04-evaluate-and-score.md'
+outputFile: '{test_artifacts}/nfr-assessment.md'
 ---
 
 # Step 3: Gather Evidence
@@ -68,6 +69,30 @@ Store artifacts under `{test_artifacts}/nfr/`
 ## 3. Evidence Gaps
 
 If evidence is missing for a category, mark that category as **CONCERNS**.
+
+---
+
+## 4. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it using the workflow template (if available) with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-03-gather-evidence']
+  lastStep: 'step-03-gather-evidence'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-03-gather-evidence'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-03-gather-evidence'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 

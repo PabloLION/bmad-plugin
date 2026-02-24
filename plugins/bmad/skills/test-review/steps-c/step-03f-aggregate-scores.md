@@ -2,13 +2,14 @@
 name: 'step-03f-aggregate-scores'
 description: 'Aggregate quality dimension scores into overall 0-100 score'
 nextStepFile: './step-04-generate-report.md'
+outputFile: '{test_artifacts}/test-review.md'
 ---
 
 # Step 3F: Aggregate Quality Scores
 
 ## STEP GOAL
 
-Read outputs from 5 parallel quality subprocesses, calculate weighted overall score (0-100), and aggregate violations for report generation.
+Read outputs from 4 quality subprocesses, calculate weighted overall score (0-100), and aggregate violations for report generation.
 
 ---
 
@@ -16,7 +17,7 @@ Read outputs from 5 parallel quality subprocesses, calculate weighted overall sc
 
 - 📖 Read the entire step file before acting
 - ✅ Speak in `{communication_language}`
-- ✅ Read all 5 subprocess outputs
+- ✅ Read all 4 subprocess outputs
 - ✅ Calculate weighted overall score
 - ✅ Aggregate violations by severity
 - ❌ Do NOT re-evaluate quality (use subprocess outputs)
@@ -36,11 +37,16 @@ Read outputs from 5 parallel quality subprocesses, calculate weighted overall sc
 ### 1. Read All Subprocess Outputs
 
 ```javascript
-const dimensions = ['determinism', 'isolation', 'maintainability', 'coverage', 'performance'];
+// Use the SAME timestamp generated in Step 3 (do not regenerate).
+const timestamp = subprocessContext?.timestamp;
+if (!timestamp) {
+  throw new Error('Missing timestamp from Step 3 context. Pass Step 3 timestamp into Step 3F.');
+}
+const dimensions = ['determinism', 'isolation', 'maintainability', 'performance'];
 const results = {};
 
 dimensions.forEach((dim) => {
-  const outputPath = `/tmp/tea-test-review-${dim}-{{timestamp}}.json`;
+  const outputPath = `/tmp/tea-test-review-${dim}-${timestamp}.json`;
   results[dim] = JSON.parse(fs.readFileSync(outputPath, 'utf8'));
 });
 ```
@@ -62,11 +68,10 @@ if (!allSucceeded) {
 
 ```javascript
 const weights = {
-  determinism: 0.25, // 25% - Most critical for reliability
-  isolation: 0.25, // 25% - Critical for parallel execution
-  maintainability: 0.2, // 20% - Important for long-term health
-  coverage: 0.15, // 15% - Important but can be improved iteratively
-  performance: 0.15, // 15% - Important but less critical than correctness
+  determinism: 0.3, // 30% - Reliability and flake prevention
+  isolation: 0.3, // 30% - Parallel safety and independence
+  maintainability: 0.25, // 25% - Readability and long-term health
+  performance: 0.15, // 15% - Speed and execution efficiency
 };
 ```
 
@@ -156,7 +161,6 @@ const reviewSummary = {
     determinism: results.determinism.score,
     isolation: results.isolation.score,
     maintainability: results.maintainability.score,
-    coverage: results.coverage.score,
     performance: results.performance.score,
   },
 
@@ -164,7 +168,6 @@ const reviewSummary = {
     determinism: results.determinism.grade,
     isolation: results.isolation.grade,
     maintainability: results.maintainability.grade,
-    coverage: results.coverage.grade,
     performance: results.performance.grade,
   },
 
@@ -176,12 +179,12 @@ const reviewSummary = {
 
   top_10_recommendations: prioritizedRecommendations,
 
-  subprocess_execution: 'PARALLEL (5 quality dimensions)',
+  subprocess_execution: 'PARALLEL (4 quality dimensions)',
   performance_gain: '~60% faster than sequential',
 };
 
 // Save for Step 4 (report generation)
-fs.writeFileSync('/tmp/tea-test-review-summary-{{timestamp}}.json', JSON.stringify(reviewSummary, null, 2), 'utf8');
+fs.writeFileSync(`/tmp/tea-test-review-summary-${timestamp}.json`, JSON.stringify(reviewSummary, null, 2), 'utf8');
 ```
 
 ---
@@ -197,8 +200,9 @@ fs.writeFileSync('/tmp/tea-test-review-summary-{{timestamp}}.json', JSON.stringi
 - Determinism:      {determinism_score}/100 ({determinism_grade})
 - Isolation:        {isolation_score}/100 ({isolation_grade})
 - Maintainability:  {maintainability_score}/100 ({maintainability_grade})
-- Coverage:         {coverage_score}/100 ({coverage_grade})
 - Performance:      {performance_score}/100 ({performance_grade})
+
+ℹ️ Coverage is excluded from `test-review` scoring. Use `trace` for coverage analysis and gates.
 
 ⚠️ Violations Found:
 - HIGH:   {high_count} violations
@@ -213,6 +217,32 @@ fs.writeFileSync('/tmp/tea-test-review-summary-{{timestamp}}.json', JSON.stringi
 
 ---
 
+---
+
+### 7. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it using the workflow template (if available) with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-03f-aggregate-scores']
+  lastStep: 'step-03f-aggregate-scores'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-03f-aggregate-scores'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-03f-aggregate-scores'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
+
+---
+
 ## EXIT CONDITION
 
 Proceed to Step 4 when:
@@ -223,6 +253,7 @@ Proceed to Step 4 when:
 - ✅ Recommendations prioritized
 - ✅ Summary saved to temp file
 - ✅ Output displayed to user
+- ✅ Progress saved to output document
 
 Load next step: `{nextStepFile}`
 
@@ -232,7 +263,7 @@ Load next step: `{nextStepFile}`
 
 ### ✅ SUCCESS:
 
-- All 5 subprocess outputs read and parsed
+- All 4 subprocess outputs read and parsed
 - Overall score calculated with proper weights
 - Violations aggregated correctly
 - Summary complete and saved
@@ -243,4 +274,4 @@ Load next step: `{nextStepFile}`
 - Score calculation incorrect
 - Summary missing or incomplete
 
-**Master Rule:** All 5 quality dimensions MUST be aggregated for accurate overall score.
+**Master Rule:** Aggregate determinism, isolation, maintainability, and performance only.

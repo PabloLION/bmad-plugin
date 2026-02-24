@@ -1,3 +1,9 @@
+---
+stepsCompleted: []
+lastStep: ''
+lastSaved: ''
+---
+
 # Test Design: Epic {epic_num} - {epic_title}
 
 **Date:** {date}

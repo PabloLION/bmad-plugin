@@ -2,6 +2,7 @@
 name: 'step-02-discover-tests'
 description: 'Find and parse test files'
 nextStepFile: './step-03-quality-evaluation.md'
+outputFile: '{test_artifacts}/test-review.md'
 ---
 
 # Step 2: Discover & Parse Tests
@@ -73,6 +74,30 @@ All commands use the same named session to target the correct browser:
 7. `playwright-cli -s=tea-review close`
 
 > **Session Hygiene:** Always close sessions using `playwright-cli -s=tea-review close`. Do NOT use `close-all` — it kills every session on the machine and breaks parallel execution.
+
+---
+
+## 4. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it using the workflow template (if available) with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-02-discover-tests']
+  lastStep: 'step-02-discover-tests'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-02-discover-tests'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-02-discover-tests'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 

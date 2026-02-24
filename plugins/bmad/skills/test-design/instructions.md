@@ -51,6 +51,13 @@ From `workflow.yaml`, resolve:
 Load, read completely, and execute:
 `${CLAUDE_PLUGIN_ROOT}/skills/test-design/steps-c/step-01-detect-mode.md`
 
+### 3. Resume Support
+
+If the user selects **Resume** mode, load, read completely, and execute:
+`${CLAUDE_PLUGIN_ROOT}/skills/test-design/steps-c/step-01b-resume.md`
+
+This checks the output document for progress tracking frontmatter and routes to the next incomplete step.
+
 ---
 
 ## OUTPUT GENERATION GUIDANCE
@@ -67,7 +74,7 @@ When populating templates in step 5, apply the following guidance for these sect
 
 - **Entry criteria**: Derive from Dependencies and Test Blockers -- what must be resolved before QA can start testing
 - **Exit criteria**: Derive from Quality Gate Criteria -- what constitutes "done" for the testing phase
-- Include project-specific criteria based on context (e.g., "feature flag enabled in staging", "seed data loaded", "Sprint 0 blockers resolved")
+- Include project-specific criteria based on context (e.g., "feature flag enabled in staging", "seed data loaded", "pre-implementation blockers resolved")
 
 ### Project Team (Optional)
 
@@ -84,12 +91,12 @@ When populating templates in step 5, apply the following guidance for these sect
 - Mark each item's status as Ready or Pending based on available information
 - This section applies only to `test-design-qa-template.md` output
 
-### Sprint Planning Handoff (Optional)
+### Implementation Planning Handoff (Optional)
 
 - Include only if test design produces implementation tasks that must be scheduled
 - Derive items from Dependencies & Test Blockers, tooling/access needs, and QA infra setup
 - If no dedicated QA, assign ownership to Dev/Platform as appropriate
-- Keep the list short; avoid per-sprint breakdown tables
+- Keep the list short; avoid per-milestone breakdown tables
 
 ### Interworking & Regression
 

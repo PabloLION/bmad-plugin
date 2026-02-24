@@ -1,14 +1,13 @@
 ---
 description:
-  Dual-mode workflow: (1) System-level testability review in Solutioning phase
-  , or (2) Epic-level test planning in Implementation phase. Auto-detects mode
-   based on project phase.
+  Create system-level or epic-level test plans. Use when the user says 'lets d
+  esign test plan' or 'I want to create test strategy'
 user-invocable: true
 ---
 
 # Testarch Test Design Workflow
 
-**Goal:** Dual-mode workflow: (1) System-level testability review in Solutioning phase, or (2) Epic-level test planning in Implementation phase.
+**Goal:** Create system-level or epic-level test plans.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

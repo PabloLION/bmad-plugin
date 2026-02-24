@@ -34,3 +34,10 @@ From `workflow.yaml`, resolve:
 
 Load, read completely, and execute:
 `${CLAUDE_PLUGIN_ROOT}/skills/trace/steps-c/step-01-load-context.md`
+
+### 3. Resume Support
+
+If the user selects **Resume** mode, load, read completely, and execute:
+`${CLAUDE_PLUGIN_ROOT}/skills/trace/steps-c/step-01b-resume.md`
+
+This checks the output document for progress tracking frontmatter and routes to the next incomplete step.

@@ -1,13 +1,13 @@
 ---
 description:
-  Expand test automation coverage after implementation or analyze existing cod
-  ebase to generate comprehensive test suite
+  Expand test automation coverage for codebase. Use when the user says 'lets e
+  xpand test coverage' or 'I want to automate tests'
 user-invocable: true
 ---
 
 # Testarch Automate Workflow
 
-**Goal:** Expand test automation coverage after implementation or analyze existing codebase to generate comprehensive test suite.
+**Goal:** Expand test automation coverage for codebase.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

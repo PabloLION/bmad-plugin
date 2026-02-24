@@ -1,13 +1,13 @@
 ---
 description:
-  Assess non-functional requirements (performance, security, reliability, main
-  tainability) before release with evidence-based validation
+  Assess NFRs like performance security and reliability. Use when the user say
+  s 'lets assess NFRs' or 'I want to evaluate non-functional requirements'
 user-invocable: true
 ---
 
 # Testarch Nfr Workflow
 
-**Goal:** Assess non-functional requirements (performance, security, reliability, maintainability) before release with evidence-based validation.
+**Goal:** Assess NFRs like performance security and reliability.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

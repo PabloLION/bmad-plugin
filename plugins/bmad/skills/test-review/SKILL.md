@@ -1,13 +1,13 @@
 ---
 description:
-  Review test quality using comprehensive knowledge base and best practices va
-  lidation
+  Review test quality using best practices validation. Use when the user says 
+  'lets review tests' or 'I want to evaluate test quality'
 user-invocable: true
 ---
 
 # Testarch Test Review Workflow
 
-**Goal:** Review test quality using comprehensive knowledge base and best practices validation.
+**Goal:** Review test quality using best practices validation.
 
 **Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 

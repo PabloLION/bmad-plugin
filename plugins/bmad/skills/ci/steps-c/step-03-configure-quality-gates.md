@@ -3,6 +3,7 @@ name: 'step-03-configure-quality-gates'
 description: 'Configure burn-in, quality gates, and notifications'
 nextStepFile: './step-04-validate-and-summary.md'
 knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
+outputFile: '{test_artifacts}/ci-pipeline-progress.md'
 ---
 
 # Step 3: Quality Gates & Notifications
@@ -42,6 +43,11 @@ Use `{knowledgeIndex}` to load `ci-burn-in.md` guidance:
 - Run N-iteration burn-in for flaky detection
 - Gate promotion based on burn-in stability
 
+**Stack-conditional burn-in:**
+
+- **Frontend or Fullstack** (`test_stack_type` is `frontend` or `fullstack`): Enable burn-in by default. Burn-in targets UI flakiness (race conditions, selector instability, timing issues).
+- **Backend only** (`test_stack_type` is `backend`): Skip burn-in by default. Backend tests (unit, integration, API) are deterministic and rarely exhibit UI-related flakiness. If the user explicitly requests burn-in for backend, honor that override.
+
 ---
 
 ## 2. Quality Gates
@@ -60,6 +66,30 @@ Configure:
 
 - Failure notifications (Slack/email)
 - Artifact links
+
+---
+
+### 4. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-03-configure-quality-gates']
+  lastStep: 'step-03-configure-quality-gates'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-03-configure-quality-gates'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-03-configure-quality-gates'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 
