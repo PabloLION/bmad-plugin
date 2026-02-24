@@ -8,7 +8,7 @@ parent_workflow: "${CLAUDE_PLUGIN_ROOT}/skills/document-project/SKILL.md"
 
 # Critical variables inherited from parent
 config_source: ".claude/bmad.local.md"
-output_folder: "{config_source}:output_folder"
+project_knowledge: "{config_source}:project_knowledge"
 user_name: "{config_source}:user_name"
 date: system-generated
 

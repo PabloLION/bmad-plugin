@@ -3,11 +3,11 @@ name: 'step-06-innovation'
 description: 'Detect and explore innovative aspects of the product (optional step)'
 
 # File References
-nextStepFile: './step-07-project-type.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-07-project-type.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Data Files
-projectTypesCSV: '../data/project-types.csv'
+projectTypesCSV: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/data/project-types.csv'
 
 # Task References
 advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'

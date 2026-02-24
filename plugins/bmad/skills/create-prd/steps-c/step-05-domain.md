@@ -3,9 +3,9 @@ name: 'step-05-domain'
 description: 'Explore domain-specific requirements for complex domains (optional step)'
 
 # File References
-nextStepFile: './step-06-innovation.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-06-innovation.md'
 outputFile: '{planning_artifacts}/prd.md'
-domainComplexityCSV: '../data/domain-complexity.csv'
+domainComplexityCSV: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/data/domain-complexity.csv'
 
 # Task References
 advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'

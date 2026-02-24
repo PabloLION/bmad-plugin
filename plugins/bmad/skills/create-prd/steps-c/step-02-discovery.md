@@ -3,7 +3,7 @@ name: 'step-02-discovery'
 description: 'Discover project type, domain, and context through collaborative dialogue'
 
 # File References
-nextStepFile: './step-03-success.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-02b-vision.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Data Files

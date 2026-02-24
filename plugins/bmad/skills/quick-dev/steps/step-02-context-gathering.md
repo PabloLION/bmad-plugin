@@ -97,7 +97,7 @@ Ready to execute? (y/n/adjust)
 
 **CRITICAL:** When user confirms ready, explicitly state:
 
-- **y:** "**NEXT:** Read fully and follow: `step-03-execute.md`"
+- **y:** "**NEXT:** Read fully and follow: `${CLAUDE_PLUGIN_ROOT}/skills/quick-dev/steps/step-03-execute.md`"
 - **n/adjust:** Continue gathering context, then re-present plan
 
 ---

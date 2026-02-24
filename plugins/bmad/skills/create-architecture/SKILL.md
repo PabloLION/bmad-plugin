@@ -1,15 +1,14 @@
 ---
 description:
-  Collaborative architectural decision facilitation for AI-agent consistency. 
-  Replaces template-driven architecture with intelligent, adaptive conversatio
-  n that produces a decision-focused architecture document optimized for preve
-  nting agent conflicts.
+  Create architecture solution design decisions for AI agent consistency. Use 
+  when the user says "lets create architecture" or "create technical architect
+  ure" or "create a solution design"
 user-invocable: true
 ---
 
 # Create Architecture Workflow
 
-**Goal:** Collaborative architectural decision facilitation for AI-agent consistency.
+**Goal:** Create architecture solution design decisions for AI agent consistency.
 
 **Agent:** Architect (Winston) **Module:** CORE
 

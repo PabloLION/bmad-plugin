@@ -174,7 +174,7 @@ Show the generated technical analysis and present complete option:
 
 - **CONTENT ALREADY WRITTEN TO DOCUMENT**
 - Update frontmatter: `stepsCompleted: [1, 2, 3, 4, 5]`
-- Load: `./step-06-research-synthesis.md`
+- Load: `${CLAUDE_PLUGIN_ROOT}/skills/research/domain-steps/step-06-research-synthesis.md`
 
 ## APPEND TO DOCUMENT:
 

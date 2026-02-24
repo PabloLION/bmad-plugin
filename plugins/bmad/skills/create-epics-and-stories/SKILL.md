@@ -1,17 +1,13 @@
 ---
 description:
-  Transform PRD requirements and Architecture decisions into comprehensive sto
-  ries organized by user value. This workflow requires completed PRD + Archite
-  cture documents (UX recommended if UI exists) and breaks down requirements i
-  nto implementation-ready epics and user stories that incorporate all availab
-  le technical and design context. Creates detailed, actionable stories with c
-  omplete acceptance criteria for development teams.
+  Break requirements into epics and user stories. Use when the user says "crea
+  te the epics and stories list"
 user-invocable: true
 ---
 
 # Create Epics And Stories Workflow
 
-**Goal:** Transform PRD requirements and Architecture decisions into comprehensive stories organized by user value.
+**Goal:** Break requirements into epics and user stories.
 
 **Agent:** Product Manager (John) **Module:** CORE
 

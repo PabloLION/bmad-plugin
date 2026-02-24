@@ -89,7 +89,7 @@ For each task:
 
 ## NEXT STEP
 
-When ALL tasks are complete (or halted on blocker), read fully and follow: `step-04-self-check.md`.
+When ALL tasks are complete (or halted on blocker), read fully and follow: `${CLAUDE_PLUGIN_ROOT}/skills/quick-dev/steps/step-04-self-check.md`.
 
 ---
 

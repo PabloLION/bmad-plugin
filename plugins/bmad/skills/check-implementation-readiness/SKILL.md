@@ -1,14 +1,13 @@
 ---
 description:
-  Critical validation workflow that assesses PRD, Architecture, and Epics & St
-  ories for completeness and alignment before implementation. Uses adversarial
-   review approach to find gaps and issues.
+  Validate PRD, UX, Architecture and Epics specs are complete. Use when the us
+  er says "check implementation readiness".
 user-invocable: true
 ---
 
 # Check Implementation Readiness Workflow
 
-**Goal:** Critical validation workflow that assesses PRD, Architecture, and Epics & Stories for completeness and alignment before implementation.
+**Goal:** Validate PRD, UX, Architecture and Epics specs are complete.
 
 **Agent:** Architect (Winston) **Module:** CORE
 

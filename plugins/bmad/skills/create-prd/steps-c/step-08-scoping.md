@@ -3,7 +3,7 @@ name: 'step-08-scoping'
 description: 'Define MVP boundaries and prioritize features across development phases'
 
 # File References
-nextStepFile: './step-09-functional.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-09-functional.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Task References

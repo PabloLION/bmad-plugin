@@ -1,13 +1,13 @@
 ---
 description:
-  Create comprehensive product briefs through collaborative step-by-step disco
-  very as creative Business Analyst working with the user as peers.
+  Create product brief through collaborative discovery. Use when the user says
+   "lets create a product brief" or "help me create a project brief"
 user-invocable: true
 ---
 
 # Create Product Brief Workflow
 
-**Goal:** Create comprehensive product briefs through collaborative step-by-step discovery as creative Business Analyst working with the user as peers.
+**Goal:** Create product brief through collaborative discovery.
 
 **Agent:** Business Analyst (Mary) **Module:** CORE
 

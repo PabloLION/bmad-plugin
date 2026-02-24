@@ -3,7 +3,7 @@ name: 'step-10-nonfunctional'
 description: 'Define quality attributes that matter for this specific product'
 
 # File References
-nextStepFile: './step-11-polish.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-11-polish.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Task References

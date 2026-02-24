@@ -1,14 +1,13 @@
 ---
 description:
-  Creates a concise project-context.md file with critical rules and patterns t
-  hat AI agents must follow when implementing code. Optimized for LLM context 
-  efficiency.
+  Create project-context.md with AI rules. Use when the user says "generate pr
+  oject context" or "create project context"
 user-invocable: true
 ---
 
 # Generate Project Context Workflow
 
-**Goal:** Creates a concise project-context.
+**Goal:** Create project-context.
 
 ---
 

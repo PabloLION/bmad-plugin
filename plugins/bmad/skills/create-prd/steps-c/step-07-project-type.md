@@ -3,7 +3,7 @@ name: 'step-07-project-type'
 description: 'Conduct project-type specific discovery using CSV-driven guidance'
 
 # File References
-nextStepFile: './step-08-scoping.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-08-scoping.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Data Files
