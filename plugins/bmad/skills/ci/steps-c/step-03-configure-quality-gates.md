@@ -2,7 +2,7 @@
 name: 'step-03-configure-quality-gates'
 description: 'Configure burn-in, quality gates, and notifications'
 nextStepFile: './step-04-validate-and-summary.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 3: Quality Gates & Notifications

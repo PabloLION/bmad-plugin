@@ -4,8 +4,8 @@ description: 'Celebrate successful agent edit completion'
 
 editPlan: '{bmb_creations_output_folder}/edit-plan-{agent-name}.md'
 
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 validationWorkflow: '{project-root}/src/modules/bmb/workflows/agent/steps-v/v-01-load-review.md'
 ---
 

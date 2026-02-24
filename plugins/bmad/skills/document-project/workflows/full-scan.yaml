@@ -4,22 +4,22 @@ description: "Complete project documentation workflow (initial scan or full resc
 author: "BMad"
 
 # This is a sub-workflow called by document-project/workflow.yaml
-parent_workflow: "{project-root}/_bmad/bmm/workflows/document-project/workflow.yaml"
+parent_workflow: "${CLAUDE_PLUGIN_ROOT}/skills/document-project/SKILL.md"
 
 # Critical variables inherited from parent
-config_source: "{project-root}/_bmad/bmb/config.yaml"
+config_source: ".claude/bmad.local.md"
 output_folder: "{config_source}:output_folder"
 user_name: "{config_source}:user_name"
 date: system-generated
 
 # Data files
-documentation_requirements_csv: "{project-root}/_bmad/bmm/workflows/document-project/documentation-requirements.csv"
+documentation_requirements_csv: "${CLAUDE_PLUGIN_ROOT}/skills/document-project/documentation-requirements.csv"
 
 # Module path and component files
-installed_path: "{project-root}/_bmad/bmm/workflows/document-project/workflows"
+installed_path: "${CLAUDE_PLUGIN_ROOT}/skills/document-project/workflows"
 template: false # Action workflow
 instructions: "{installed_path}/full-scan-instructions.md"
-validation: "{project-root}/_bmad/bmm/workflows/document-project/checklist.md"
+validation: "${CLAUDE_PLUGIN_ROOT}/skills/document-project/checklist.md"
 
 # Runtime inputs (passed from parent workflow)
 workflow_mode: "" # "initial_scan" or "full_rescan"

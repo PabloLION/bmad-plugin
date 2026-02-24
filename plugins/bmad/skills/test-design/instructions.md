@@ -49,7 +49,7 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`{project-root}/_bmad/tea/workflows/testarch/test-design/steps-c/step-01-detect-mode.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/test-design/steps-c/step-01-detect-mode.md`
 
 ---
 

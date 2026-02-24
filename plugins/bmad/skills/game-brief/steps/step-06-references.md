@@ -3,7 +3,7 @@ name: 'step-06-references'
 description: 'Define inspiration games, competitive analysis, and key differentiators'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/1-preproduction/game-brief'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-brief'
 
 # File References
 thisStepFile: './step-06-references.md'
@@ -12,8 +12,8 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-brief.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 6: Reference Framework

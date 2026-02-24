@@ -5,7 +5,7 @@ description: 'Validate agent specifications and built agents'
 nextStepFile: './step-05-workflow-specs.md'
 agentSpecTemplate: '../../templates/agent-spec-template.md'
 agentArchitectureFile: '../../data/agent-architecture.md'
-agentValidationWorkflow: '{project-root}/_bmad/bmb/workflows/agent/steps-v/step-01-validate.md'
+agentValidationWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/agent/steps-v/step-01-validate.md'
 validationReportOutput: '{validation_report_output}'
 targetPath: '{validation_target_path}'
 ---

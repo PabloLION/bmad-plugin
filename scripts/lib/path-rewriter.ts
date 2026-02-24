@@ -28,7 +28,11 @@ interface ModuleConfig {
 const MODULE_CONFIGS: Record<string, ModuleConfig> = {
   bmm: { sourceId: 'core', pathPrefix: 'workflows', categorized: true },
   core: { sourceId: 'core', pathPrefix: '', categorized: false },
-  tea: { sourceId: 'tea', pathPrefix: 'workflows/testarch', categorized: false },
+  tea: {
+    sourceId: 'tea',
+    pathPrefix: 'workflows/testarch',
+    categorized: false,
+  },
   bmb: { sourceId: 'bmb', pathPrefix: 'workflows', categorized: false },
   cis: { sourceId: 'cis', pathPrefix: 'workflows', categorized: false },
   gds: { sourceId: 'gds', pathPrefix: 'workflows', categorized: true },
@@ -180,8 +184,8 @@ export function rewriteFileContent(
   const warnings: string[] = [];
 
   // Main regex: captures module alias and the rest of the path
-  // Terminates at whitespace, quotes, angle brackets, or curly braces
-  const pattern = /\{project-root\}\/_bmad\/([a-z]+)\/((?:[^\s'"<>{}])+)/g;
+  // Terminates at whitespace, quotes, angle brackets, curly braces, backticks, or parens
+  const pattern = /\{project-root\}\/_bmad\/([a-z]+)\/((?:[^\s'"<>{}()`])+)/g;
 
   const rewritten = content.replace(pattern, (fullMatch, alias, rest) => {
     const result = rewriteSinglePath(alias as string, rest as string, map);
@@ -329,10 +333,7 @@ function rewriteWorkflowPath(
 }
 
 /** Rewrite a task path to ${CLAUDE_PLUGIN_ROOT}/_shared/tasks/<file> */
-function rewriteTaskPath(
-  _alias: string,
-  rest: string,
-): SingleRewriteResult {
+function rewriteTaskPath(_alias: string, rest: string): SingleRewriteResult {
   // rest is "tasks/<file>" — extract the file part
   const file = rest.slice('tasks/'.length);
   return {
@@ -350,10 +351,7 @@ function rewriteConfigPath(): SingleRewriteResult {
 }
 
 /** Rewrite a knowledge/index path to ${CLAUDE_PLUGIN_ROOT}/_shared/<file> */
-function rewriteIndexPath(
-  alias: string,
-  rest: string,
-): SingleRewriteResult {
+function rewriteIndexPath(alias: string, rest: string): SingleRewriteResult {
   // Extract just the filename from paths like testarch/tea-index.csv
   const fileName = rest.split('/').pop()!;
   return {

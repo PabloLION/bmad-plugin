@@ -3,7 +3,7 @@ name: 'step-10-production'
 description: 'Plan production scope including writing estimates, localization, and voice acting'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/2-design/narrative'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/narrative'
 
 # File References
 thisStepFile: './step-10-production.md'
@@ -12,8 +12,8 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/narrative-design.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 10: Production Planning

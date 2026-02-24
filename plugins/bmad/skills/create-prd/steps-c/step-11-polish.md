@@ -8,8 +8,8 @@ outputFile: '{planning_artifacts}/prd.md'
 purposeFile: '../data/prd-purpose.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 11: Document Polish

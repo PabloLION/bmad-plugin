@@ -3,7 +3,7 @@ name: 'step-12-epics'
 description: 'Define development epics and high-level story breakdown'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/2-design/gdd'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gdd'
 
 # File References
 thisStepFile: './step-12-epics.md'
@@ -13,8 +13,8 @@ outputFile: '{output_folder}/gdd.md'
 epicsOutputFile: '{output_folder}/epics.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 12: Epic Structure

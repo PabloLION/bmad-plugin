@@ -3,7 +3,7 @@ name: 'step-08-validation'
 description: 'Validate architectural coherence and completeness'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/3-technical/game-architecture'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-architecture'
 
 # File References
 thisStepFile: './step-08-validation.md'
@@ -13,8 +13,8 @@ outputFile: '{output_folder}/game-architecture.md'
 checklistFile: '{workflow_path}/checklist.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 8: Validation

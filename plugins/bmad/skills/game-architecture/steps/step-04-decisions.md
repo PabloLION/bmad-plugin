@@ -3,7 +3,7 @@ name: 'step-04-decisions'
 description: 'Facilitate collaborative architectural decision making for game systems'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/3-technical/game-architecture'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-architecture'
 
 # File References
 thisStepFile: './step-04-decisions.md'
@@ -16,8 +16,8 @@ decisionCatalog: '{workflow_path}/decision-catalog.yaml'
 architecturePatterns: '{workflow_path}/architecture-patterns.yaml'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 4: Architectural Decisions

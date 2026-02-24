@@ -30,8 +30,8 @@ This step will generate content and present choices:
 
 ## PROTOCOL INTEGRATION:
 
-- When 'A' selected: Read fully and follow: {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml
-- When 'P' selected: Read fully and follow: {project-root}/_bmad/core/workflows/party-mode/workflow.md
+- When 'A' selected: Read fully and follow: ${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml
+- When 'P' selected: Read fully and follow: ${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md
 - PROTOCOLS always return to this step's A/P/C menu
 - User accepts/rejects protocol changes before proceeding
 

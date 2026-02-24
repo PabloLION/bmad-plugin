@@ -2,7 +2,7 @@
 name: 'step-01-load-context'
 description: 'Load requirements, knowledge base, and related artifacts'
 nextStepFile: './step-02-discover-tests.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 1: Load Context & Knowledge Base

@@ -2,7 +2,7 @@
 name: edit-module
 description: Edit existing BMAD modules while maintaining coherence
 web_bundle: true
-installed_path: '{project-root}/_bmad/bmb/workflows/module'
+installed_path: '${CLAUDE_PLUGIN_ROOT}/skills/module'
 editWorkflow: './steps-e/step-01-assess.md'
 ---
 
@@ -52,7 +52,7 @@ This uses **step-file architecture** for disciplined execution.
 
 ### 1. Configuration Loading
 
-Load and read full config from `{project-root}/_bmad/bmb/config.yaml` and resolve:
+Load and read full config from `.claude/bmad.local.md` and resolve:
 
 - `project_name`, `user_name`, `communication_language`, `document_output_language`, `bmb_creations_output_folder`
 - ✅ YOU MUST ALWAYS SPEAK OUTPUT In your Agent communication style with the config `{communication_language}`

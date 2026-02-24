@@ -1,7 +1,7 @@
 ---
 name: create-prd
 description: Create a comprehensive PRD (Product Requirements Document) through structured workflow facilitation
-main_config: '{project-root}/_bmad/bmm/config.yaml'
+main_config: '.claude/bmad.local.md'
 nextStep: './steps-c/step-01-init.md'
 ---
 

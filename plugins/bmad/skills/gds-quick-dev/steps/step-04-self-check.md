@@ -2,7 +2,7 @@
 name: 'step-04-self-check'
 description: 'Self-audit implementation against tasks, tests, AC, and patterns'
 
-workflow_path: '{project-root}/_bmad/gds/workflows/gds-quick-flow/quick-dev'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-quick-dev'
 thisStepFile: './step-04-self-check.md'
 nextStepFile: './step-05-adversarial-review.md'
 ---

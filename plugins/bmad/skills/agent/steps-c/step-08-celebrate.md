@@ -8,8 +8,8 @@ workflowFile: ../workflow.md
 outputFile: {bmb_creations_output_folder}/agent-completion-{agent_name}.md
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 installationDocs: 'https://github.com/bmad-code-org/BMAD-METHOD/blob/main/docs/modules/bmb-bmad-builder/custom-content-installation.md#standalone-content-agents-workflows-tasks-tools-templates-prompts'
 validationWorkflow: '{project-root}/src/modules/bmb/workflows/agent/steps-v/v-01-load-review.md'
 ---

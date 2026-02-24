@@ -2,7 +2,7 @@
 name: 'step-03-scaffold-framework'
 description: 'Create directory structure, config, fixtures, factories, and sample tests'
 nextStepFile: './step-04-docs-and-scripts.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 3: Scaffold Framework

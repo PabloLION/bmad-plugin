@@ -33,4 +33,4 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`{project-root}/_bmad/tea/workflows/testarch/nfr-assess/steps-c/step-01-load-context.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/nfr-assess/steps-c/step-01-load-context.md`

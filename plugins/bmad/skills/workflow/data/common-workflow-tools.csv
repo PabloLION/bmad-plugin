@@ -1,7 +1,7 @@
 propose,type,tool_name,description,url,requires_install
-always,workflow,party-mode,"Enables collaborative idea generation by managing turn-taking, summarizing contributions, and synthesizing ideas from multiple AI personas in structured conversation sessions.",{project-root}/_bmad/core/workflows/party-mode/workflow.md,no
-always,workflow,advanced-elicitation,"Employs diverse elicitation strategies such as Socratic questioning, role-playing, and counterfactual analysis to critically evaluate and enhance LLM outputs.",{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml,no
-always,task,brainstorming,"Facilitates idea generation by prompting users with targeted questions and synthesizing concepts into actionable insights.",{project-root}/_bmad/core/tasks/brainstorming.xml,no
+always,workflow,party-mode,"Enables collaborative idea generation by managing turn-taking, summarizing contributions, and synthesizing ideas from multiple AI personas in structured conversation sessions.",${CLAUDE_PLUGIN_ROOT}/skills/party-mode/workflow.md,no
+always,workflow,advanced-elicitation,"Employs diverse elicitation strategies such as Socratic questioning, role-playing, and counterfactual analysis to critically evaluate and enhance LLM outputs.",${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml,no
+always,task,brainstorming,"Facilitates idea generation by prompting users with targeted questions and synthesizing concepts into actionable insights.",${CLAUDE_PLUGIN_ROOT}/_shared/tasks/brainstorming.xml,no
 always,llm-tool-feature,web-browsing,"Provides LLM with capabilities to perform real-time web searches and incorporate current information.",,no
 always,llm-tool-feature,file-io,"Enables LLM to manage file operations such as creating, reading, updating, and deleting files.",,no
 always,llm-tool-feature,sub-agents,"Allows LLM to create and manage specialized sub-agents for parallel processing and modular task delegation.",,no

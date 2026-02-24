@@ -2,7 +2,7 @@
 name: 'step-02-investigate'
 description: 'Map technical constraints and anchor points within the codebase'
 
-workflow_path: '{project-root}/_bmad/gds/workflows/gds-quick-flow/quick-spec'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-quick-spec'
 nextStepFile: './step-03-generate.md'
 wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---

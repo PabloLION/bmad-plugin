@@ -2,7 +2,7 @@
 name: 'step-03-execute'
 description: 'Execute implementation - iterate through tasks, write code, run tests'
 
-workflow_path: '{project-root}/_bmad/gds/workflows/gds-quick-flow/quick-dev'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-quick-dev'
 thisStepFile: './step-03-execute.md'
 nextStepFile: './step-04-self-check.md'
 ---

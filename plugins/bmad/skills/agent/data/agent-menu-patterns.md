@@ -40,7 +40,7 @@
 
 # Exec - workflow
 - trigger: CP or fuzzy match on create-prd
-  exec: '{project-root}/_bmad/bmm/workflows/create-prd/workflow.md'
+  exec: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/SKILL.md'
   description: '[CP] Create PRD'
 
 # Exec - unimplemented
@@ -57,7 +57,7 @@ Attach to ANY handler to pass input files.
 
 ```yaml
 - trigger: TS or fuzzy match on team-standup
-  exec: '{project-root}/_bmad/bmm/tasks/team-standup.md'
+  exec: '${CLAUDE_PLUGIN_ROOT}/_shared/tasks/team-standup.md'
   data: '{project-root}/_bmad/_config/agent-manifest.csv'
   description: '[TS] Run team standup'
 ```
@@ -96,7 +96,7 @@ menu:
 
 ```yaml
 # ✅ CORRECT
-exec: '{project-root}/_bmad/core/workflows/brainstorming/workflow.md'
+exec: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md'
 
 # ❌ WRONG
 exec: '../../../core/workflows/brainstorming/workflow.md'
@@ -172,7 +172,7 @@ menu:
     description: '[WI] Initialize workflow'
 
   - trigger: BS or fuzzy match on brainstorm
-    exec: '{project-root}/_bmad/core/workflows/brainstorming/workflow.md'
+    exec: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md'
     description: '[BS] Guided brainstorming'
 ```
 

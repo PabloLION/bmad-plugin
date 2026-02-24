@@ -1,7 +1,7 @@
 ---
 name: validate-prd
 description: Validate an existing PRD against BMAD standards - comprehensive review for completeness, clarity, and quality
-main_config: '{project-root}/_bmad/bmm/config.yaml'
+main_config: '.claude/bmad.local.md'
 validateWorkflow: './steps-v/step-v-01-discovery.md'
 ---
 

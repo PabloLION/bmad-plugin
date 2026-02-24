@@ -5,7 +5,7 @@ description: 'Optional brainstorming for agent ideas'
 # File References
 nextStepFile: './step-02-discovery.md'
 brainstormContext: ../data/brainstorm-context.md
-brainstormWorkflow: '{project-root}/_bmad/core/workflows/brainstorming/workflow.md'
+brainstormWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md'
 ---
 
 # Step 1: Optional Brainstorming

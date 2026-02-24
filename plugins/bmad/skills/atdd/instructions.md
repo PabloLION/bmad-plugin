@@ -35,4 +35,4 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`{project-root}/_bmad/tea/workflows/testarch/atdd/steps-c/step-01-preflight-and-context.md`
+`${CLAUDE_PLUGIN_ROOT}/skills/atdd/steps-c/step-01-preflight-and-context.md`

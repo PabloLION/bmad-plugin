@@ -2,7 +2,7 @@
 name: 'step-02-load-context'
 description: 'Load documents, configuration, and knowledge fragments for the chosen mode'
 nextStepFile: './step-03-risk-and-testability.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 2: Load Context & Knowledge Base

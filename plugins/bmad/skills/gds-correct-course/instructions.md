@@ -1,7 +1,7 @@
 # Correct Course - Sprint Change Management Instructions
 
-<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
-<critical>You MUST have already loaded and processed: {project-root}/_bmad/gds/workflows/4-production/correct-course/workflow.yaml</critical>
+<critical>The workflow execution engine is governed by: ${CLAUDE_PLUGIN_ROOT}/_shared/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: ${CLAUDE_PLUGIN_ROOT}/skills/gds-correct-course/SKILL.md</critical>
 <critical>Communicate all responses in {communication_language} and language MUST be tailored to {game_dev_experience}</critical>
 <critical>Generate all documents in {document_output_language}</critical>
 

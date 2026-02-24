@@ -2,7 +2,7 @@
 name: 'step-01-preflight-and-context'
 description: 'Verify prerequisites and load story, framework, and knowledge base'
 nextStepFile: './step-02-generation-mode.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 1: Preflight & Context Loading

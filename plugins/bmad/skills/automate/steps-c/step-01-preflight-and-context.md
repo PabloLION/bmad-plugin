@@ -2,7 +2,7 @@
 name: 'step-01-preflight-and-context'
 description: 'Determine mode, verify framework, and load context and knowledge'
 nextStepFile: './step-02-identify-targets.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 ---
 
 # Step 1: Preflight & Context Loading

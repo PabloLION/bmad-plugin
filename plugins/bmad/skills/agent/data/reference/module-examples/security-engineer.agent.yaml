@@ -41,7 +41,7 @@ agent:
       description: "[SR] Review code/design for security issues"
 
     - trigger: "OC or fuzzy match on owasp-check"
-      exec: "{project-root}/_bmad/bmm/tasks/owasp-top-10.xml"
+      exec: "${CLAUDE_PLUGIN_ROOT}/_shared/tasks/owasp-top-10.xml"
       description: "[OC] Check against OWASP Top 10"
 
     - trigger: "CC or fuzzy match on compliance-check"
