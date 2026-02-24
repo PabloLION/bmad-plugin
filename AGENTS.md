@@ -127,6 +127,8 @@ Script everything repeatable — never do manually what a script can do.
 - Sync content → `bun run sync --source <id>`
 - All scripts support `--source <id>` and `--dry-run` flags
 - When something breaks, **fix the script** — don't work around it manually
+- All scripts are **idempotent** — running them twice produces the same result.
+  Always run a script twice to verify idempotency after making changes to it
 
 ## Session Completion
 

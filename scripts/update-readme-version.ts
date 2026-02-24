@@ -37,6 +37,17 @@ async function getTagDate(localPath: string, version: string): Promise<string> {
   return date || 'unknown';
 }
 
+/** Date of the last commit that changed a version file (i.e. when we actually synced). */
+function getLastSyncDate(versionFile: string): string {
+  const result = Bun.spawnSync({
+    cmd: ['git', 'log', '-1', '--format=%ai', '--', versionFile],
+    cwd: ROOT,
+  });
+  const raw = new TextDecoder().decode(result.stdout).trim();
+  // %ai gives "2026-02-10 12:34:56 +0100", take date part only
+  return raw.split(' ')[0] || 'unknown';
+}
+
 const sources = getEnabledSources();
 const rows: string[] = [];
 
@@ -46,14 +57,15 @@ for (const source of sources) {
   ).trim();
   const label = SOURCE_LABELS[source.id] ?? source.id.toUpperCase();
   const tagDate = await getTagDate(source.localPath, version);
+  const syncDate = getLastSyncDate(source.versionFile);
   rows.push(
-    `| ${label} | [${source.repo}](https://github.com/${source.repo}) | ${version} | ${tagDate} |`,
+    `| ${label} | [${source.repo}](https://github.com/${source.repo}) | ${version} | ${tagDate} | ${syncDate} |`,
   );
 }
 
 const table = [
-  '| Module | Repo | Version | Released |',
-  '|---|---|---|---|',
+  '| Module | Repo | Version | Released | Last Synced |',
+  '|---|---|---|---|---|',
   ...rows,
 ].join('\n');
 
