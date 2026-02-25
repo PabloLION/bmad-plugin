@@ -20,6 +20,7 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | sync:source | `bun run sync:source <id>` | Sync a single upstream source |
 | generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
 | generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
+| sync-all | `bun run sync-all` | Run sync → generate:agents → generate:skills in sequence |
 | bump-core | `bun run bump-core` | Bump plugin version for new core BMAD-METHOD release |
 | bump-module | `bun run bump-module -- --source <id>` | Bump plugin version for new external module release |
 | update-readme | `bun run update-readme` | Update README version badge |
@@ -35,13 +36,13 @@ When upstream repos release new tags, sync them into the plugin:
 bun run bump-core                       # fetch latest tag, bump to v<core>.0
 bun run bump-core -- --tag v6.0.2       # pin to specific tag
 bun run bump-core -- --dry-run          # preview only
-# Then: bun run sync && bun run generate:agents && bun run generate:skills
+bun run sync-all                        # sync + generate agents + generate skills
 
 # External module release (tea, bmb, cis, gds)
 bun run bump-module -- --source tea              # fetch latest tag, increment .X
 bun run bump-module -- --source gds --tag v0.1.7 # pin to specific tag
 bun run bump-module -- --source tea --dry-run    # preview only
-# Then: bun run sync -- --source <id> && bun run generate:agents -- --source <id> && bun run generate:skills -- --source <id>
+bun run sync-all -- --source tea                 # sync + generate for one source
 
 # Verify
 bun run typecheck && bun run lint
@@ -122,9 +123,10 @@ The agent name (filename) is the canonical identifier. Personnel names add perso
 
 Script everything repeatable — never do manually what a script can do.
 
-- Agent files → `bun run generate:agents --source <id>`
-- Skill files → `bun run generate:skills --source <id>`
-- Sync content → `bun run sync --source <id>`
+- Full sync pipeline → `bun run sync-all [--source <id>]` (preferred)
+- Agent files → `bun run generate:agents [--source <id>]`
+- Skill files → `bun run generate:skills [--source <id>]`
+- Sync content → `bun run sync [--source <id>]`
 - All scripts support `--source <id>` and `--dry-run` flags
 - When something breaks, **fix the script** — don't work around it manually
 - All scripts are **idempotent** — running them twice produces the same result.

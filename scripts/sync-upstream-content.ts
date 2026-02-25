@@ -11,6 +11,7 @@
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
+import { listFilesRecursive } from './lib/fs-utils.ts';
 import { gitInUpstream } from './lib/git-utils.ts';
 import {
   buildWorkflowMap,
@@ -25,6 +26,7 @@ import {
   getSource,
   shouldSkipContentFile,
 } from './lib/upstream-sources.ts';
+import { getWorkflowEntries } from './lib/workflow-iterator.ts';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const SOURCE_FILTER = (() => {
@@ -38,20 +40,6 @@ const rewriteStats = {
   totalChanges: 0,
   warnings: [] as string[],
 };
-
-async function listFilesRecursive(dir: string): Promise<string[]> {
-  const results: string[] = [];
-  const entries = await readdir(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const subFiles = await listFilesRecursive(join(dir, entry.name));
-      results.push(...subFiles.map((f) => `${entry.name}/${f}`));
-    } else {
-      results.push(entry.name);
-    }
-  }
-  return results;
-}
 
 /**
  * Copy a file, applying path rewrites for text files.
@@ -81,113 +69,8 @@ async function copyWithRewrite(
   }
 }
 
-interface WorkflowSkillPair {
-  upstreamDir: string;
-  pluginDir: string;
-  label: string;
-}
-
-/** Get workflow→skill pairs for a flat source (workflow dirs directly under contentRoot). */
-async function getFlatWorkflowPairs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowSkillPair[]> {
-  const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  const entries = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || skipDirs.has(entry.name)) continue;
-    if (skipWorkflows.has(entry.name)) continue;
-
-    const skillName = workarounds[entry.name] ?? entry.name;
-    const skillPath = join(PLUGIN, 'skills', skillName);
-    if (await exists(skillPath)) {
-      pairs.push({
-        upstreamDir: join(workflowsRoot, entry.name),
-        pluginDir: skillPath,
-        label: `[${source.id}] ${skillName}`,
-      });
-    }
-  }
-  return pairs;
-}
-
-/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
-async function isLeafWorkflow(dir: string): Promise<boolean> {
-  if (await exists(join(dir, 'workflow.yaml'))) return true;
-  if (await exists(join(dir, 'workflow.md'))) return true;
-  return false;
-}
-
-/** Get workflow→skill pairs for a categorized source (category → workflow structure). */
-async function getCategorizedWorkflowPairs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowSkillPair[]> {
-  const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  const categories = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
-
-    const catDir = join(workflowsRoot, cat.name);
-
-    // Leaf workflow at top level (has workflow.yaml or workflow.md)
-    if (await isLeafWorkflow(catDir)) {
-      if (skipWorkflows.has(cat.name)) continue;
-      const skillName = workarounds[cat.name] ?? cat.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: catDir,
-          pluginDir: skillPath,
-          label: `[${source.id}] ${skillName}`,
-        });
-      }
-      continue;
-    }
-
-    // Category directory — iterate sub-workflows
-    const subs = await readdir(catDir, { withFileTypes: true });
-    for (const sub of subs) {
-      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
-      if (skipWorkflows.has(sub.name)) continue;
-
-      const skillName = workarounds[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: join(catDir, sub.name),
-          pluginDir: skillPath,
-          label: `[${source.id}] ${skillName}`,
-        });
-      }
-    }
-  }
-  return pairs;
-}
-
-/** Get all workflow→skill pairs for a source. */
-async function getWorkflowSkillPairs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowSkillPair[]> {
-  if (source.flatWorkflows) {
-    return getFlatWorkflowPairs(source, upstreamRoot);
-  }
-  return getCategorizedWorkflowPairs(source, upstreamRoot);
-}
-
 async function syncPair(
-  pair: WorkflowSkillPair,
+  pair: { upstreamDir: string; pluginDir: string },
   source: UpstreamSource,
   map: WorkflowMap,
 ): Promise<number> {
@@ -282,12 +165,17 @@ async function syncSource(
   const tag = await checkoutSource(source, upstreamRoot);
   console.log(`[${source.id}] Pinned to tag: ${tag}`);
 
-  const pairs = await getWorkflowSkillPairs(source, upstreamRoot);
+  const entries = await getWorkflowEntries(source, upstreamRoot);
   let totalFiles = 0;
 
-  for (const pair of pairs) {
-    console.log(`Syncing: ${pair.label}`);
-    const count = await syncPair(pair, source, map);
+  for (const entry of entries) {
+    const label = `[${source.id}] ${entry.skillName}`;
+    console.log(`Syncing: ${label}`);
+    const count = await syncPair(
+      { upstreamDir: entry.upstreamDir, pluginDir: entry.pluginSkillDir },
+      source,
+      map,
+    );
     totalFiles += count;
     if (!DRY_RUN) {
       console.log(`  ✓ ${count} files copied`);
@@ -469,7 +357,10 @@ if (rewriteStats.warnings.length > 0) {
   }
 }
 
-// Update version files (core-anchored strategy) — skip when filtering to a single source
+// Update version files (core-anchored strategy) — skip when filtering to a single source.
+// This block uses ad-hoc version logic (read upstream package.json, write .0 patch)
+// rather than bump-utils.ts because sync derives versions from the checked-out upstream
+// state, while bump scripts resolve versions from git tags + user input.
 if (!DRY_RUN && !SOURCE_FILTER) {
   const core = getCoreSource();
   const coreRoot = join(ROOT, '.upstream', core.localPath);
