@@ -14,8 +14,14 @@
  */
 
 import { join } from 'node:path';
-import { PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
-import { gitInUpstream } from './lib/git-utils.ts';
+import {
+  VERSION_FILES,
+  confirmProceed,
+  fetchLatestTag,
+  updateJsonVersionFiles,
+  updateReadmeBadge,
+} from './lib/bump-utils.ts';
+import { ROOT } from './lib/config.ts';
 import { getCoreSource } from './lib/upstream-sources.ts';
 
 const DRY_RUN = process.argv.includes('--dry-run');
@@ -25,59 +31,12 @@ const TAG_OVERRIDE = (() => {
   return idx >= 0 ? process.argv[idx + 1] : undefined;
 })();
 
-const VERSION_FILES = {
-  pluginVersion: join(ROOT, '.plugin-version'),
-  packageJson: join(ROOT, 'package.json'),
-  pluginJson: PLUGIN_JSON_PATH,
-  marketplaceJson: join(ROOT, '.claude-plugin/marketplace.json'),
-} as const;
-
 const core = getCoreSource();
 const upstreamRoot = join(ROOT, '.upstream', core.localPath);
 
-// --- Fetch tags ---
-
-console.log('Fetching tags from upstream BMAD-METHOD...');
-try {
-  await gitInUpstream(upstreamRoot, 'fetch', 'origin', '--tags');
-} catch {
-  console.error('⚠ Could not fetch tags (offline?). Using local tags only.');
-}
-
 // --- Resolve target version ---
 
-let targetTag: string;
-
-if (TAG_OVERRIDE) {
-  targetTag = TAG_OVERRIDE;
-} else {
-  // List all tags, filter to semver-like, sort, pick latest
-  const result = await gitInUpstream(upstreamRoot, 'tag', '--list');
-  const semverPattern = /^v?\d+\.\d+/;
-  const tags = result
-    .text()
-    .trim()
-    .split('\n')
-    .filter((t) => semverPattern.test(t));
-
-  if (tags.length === 0) {
-    console.error('No semver tags found in upstream repo.');
-    process.exit(1);
-  }
-
-  tags.sort((a, b) => {
-    const normalize = (t: string): string => t.replace(/^v/, '');
-    return normalize(a).localeCompare(normalize(b), undefined, {
-      numeric: true,
-      sensitivity: 'base',
-    });
-  });
-
-  // Non-null: length checked above
-  targetTag = tags[tags.length - 1] as string;
-}
-
-// Ensure consistent v-prefix
+const targetTag = await fetchLatestTag(upstreamRoot, TAG_OVERRIDE);
 const targetVersion = targetTag.replace(/^v/, '');
 const targetTagPrefixed = `v${targetVersion}`;
 
@@ -125,51 +84,18 @@ if (DRY_RUN) {
   process.exit(0);
 }
 
-// --- Confirm unless --yes ---
+// --- Confirm and apply ---
 
-if (!YES) {
-  process.stdout.write('Proceed? [y/N] ');
-  const response = (await Bun.stdin.text()).trim().toLowerCase();
-  if (response !== 'y' && response !== 'yes') {
-    console.log('Aborted.');
-    process.exit(0);
-  }
-}
-
-// --- Update .upstream-version-core ---
+await confirmProceed(YES);
 
 await Bun.write(join(ROOT, core.versionFile), `${targetTagPrefixed}\n`);
 console.log(`Updated ${core.versionFile} to ${targetTagPrefixed}`);
 
-// --- Update .plugin-version ---
-
 await Bun.write(VERSION_FILES.pluginVersion, `${newPluginVersionPrefixed}\n`);
 console.log(`Updated .plugin-version to ${newPluginVersionPrefixed}`);
 
-// --- Update JSON version files ---
-
-for (const key of ['packageJson', 'pluginJson', 'marketplaceJson'] as const) {
-  const path = VERSION_FILES[key];
-  const content = await Bun.file(path).text();
-  const updated = content.replace(
-    `"version": "${currentPluginVersion}"`,
-    `"version": "${newPluginVersion}"`,
-  );
-  if (updated === content) {
-    console.error(
-      `⚠ Warning: version "${currentPluginVersion}" not found in ${path}`,
-    );
-  }
-  await Bun.write(path, updated);
-}
-console.log('Updated package.json, plugin.json, marketplace.json');
-
-// --- Update README badges ---
-
-await Bun.$`bun scripts/update-readme-version.ts`.quiet();
-console.log('Updated README version badge');
-
-// --- Summary ---
+await updateJsonVersionFiles(currentPluginVersion, newPluginVersion);
+await updateReadmeBadge();
 
 console.log(`\n✓ Bumped to ${newPluginVersionPrefixed}`);
 console.log('\nNext steps:');
