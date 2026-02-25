@@ -1,13 +1,14 @@
 ---
 description:
-  Execute a story by implementing tasks/subtasks, writing tests, validating, a
-  nd updating the story file per acceptance criteria
+  Execute story implementation following a context filled story spec file. Use
+   when the user says "dev this story [story file]" or "implement the next sto
+  ry in the sprint plan"
 user-invocable: true
 ---
 
 # Dev Story Workflow
 
-**Goal:** Execute a story by implementing tasks/subtasks, writing tests, validating, and updating the story file per acceptance criteria.
+**Goal:** Execute story implementation following a context filled story spec file.
 
 **Agent:** Developer Agent (Amelia) **Module:** CORE
 

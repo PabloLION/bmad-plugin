@@ -1,13 +1,13 @@
 ---
 description:
-  Run after epic completion to review overall success, extract lessons learned
-  , and explore if new information emerged that might impact the next epic
+  Post-epic review to extract lessons and assess success. Use when the user sa
+  ys "run a retrospective" or "lets retro the epic [epic]"
 user-invocable: true
 ---
 
 # Retrospective Workflow
 
-**Goal:** Run after epic completion to review overall success, extract lessons learned, and explore if new information emerged that might impact the next epic.
+**Goal:** Post-epic review to extract lessons and assess success.
 
 **Agent:** Scrum Master (Bob) **Module:** CORE
 

@@ -1,13 +1,13 @@
 ---
 description:
-  Navigate significant changes during sprint execution by analyzing impact, pr
-  oposing solutions, and routing for implementation
+  Sprint change impact analysis and planning. Use when the user says "I want t
+  o analyze and plan significant sprint changes"
 user-invocable: true
 ---
 
 # Correct Course Workflow
 
-**Goal:** Navigate significant changes during sprint execution by analyzing impact, proposing solutions, and routing for implementation.
+**Goal:** Sprint change impact analysis and planning.
 
 **Agent:** Game Architect (Cloud Dragonborn) **Module:** GDS
 

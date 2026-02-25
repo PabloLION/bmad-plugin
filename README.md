@@ -3,23 +3,25 @@
 > BMAD Method - Breakthrough Method for Agile AI-Driven Development
 
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
+<!-- upstream-badges-start -->
 [![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmadcode/BMAD-METHOD)
 [![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise)
 [![BMB Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-bmb.json)](https://github.com/bmad-code-org/bmad-builder)
 [![CIS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-cis.json)](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite)
 [![GDS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-gds.json)](https://github.com/bmad-code-org/bmad-module-game-dev-studio)
+<!-- upstream-badges-end -->
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.0.0-Beta.8.0
+**Plugin version:** v6.0.3.3
 
-| Module | Repo | Version | Last Synced |
-|---|---|---|---|
-| Core | bmadcode/BMAD-METHOD | v6.0.0-Beta.8 | 2026-02-10 |
-| TEA | bmad-code-org/bmad-method-test-architecture-enterprise | v0.1.1-beta.3 | 2026-02-10 |
-| BMB | bmad-code-org/bmad-builder | v0.1.5 | 2026-02-10 |
-| CIS | bmad-code-org/bmad-module-creative-intelligence-suite | v0.1.4 | 2026-02-10 |
-| GDS | bmad-code-org/bmad-module-game-dev-studio | v0.1.5 | 2026-02-10 |
+| Module | Repo | Version | Released | Last Synced |
+|---|---|---|---|---|
+| Core | [bmadcode/BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) | v6.0.3 | 2026-02-23 | 2026-02-24 |
+| TEA | [bmad-code-org/bmad-method-test-architecture-enterprise](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise) | v1.2.4 | 2026-02-22 | 2026-02-24 |
+| BMB | [bmad-code-org/bmad-builder](https://github.com/bmad-code-org/bmad-builder) | v0.1.6 | 2026-02-08 | 2026-02-11 |
+| CIS | [bmad-code-org/bmad-module-creative-intelligence-suite](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) | v0.1.8 | 2026-02-23 | 2026-02-24 |
+| GDS | [bmad-code-org/bmad-module-game-dev-studio](https://github.com/bmad-code-org/bmad-module-game-dev-studio) | v0.1.9 | 2026-02-23 | 2026-02-11 |
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development

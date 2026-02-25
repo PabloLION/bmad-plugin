@@ -1,13 +1,13 @@
 ---
 description:
-  Summarize sprint-status.yaml, surface risks, and route to the right implemen
-  tation workflow.
+  Summarize sprint status and surface risks. Use when the user says "check spr
+  int status" or "show sprint status"
 user-invocable: true
 ---
 
 # Sprint Status Workflow
 
-**Goal:** Summarize sprint-status.
+**Goal:** Summarize sprint status and surface risks.
 
 ---
 

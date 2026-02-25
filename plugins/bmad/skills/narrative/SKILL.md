@@ -1,14 +1,13 @@
 ---
 description:
-  Narrative design workflow for story-driven games. Creates comprehensive narr
-  ative documentation including story structure, character arcs, world-buildin
-  g, dialogue systems, and production planning.
+  Story-driven narrative design documentation. Use when the user says "lets cr
+  eate a narrative design document"
 user-invocable: true
 ---
 
 # Narrative Workflow
 
-**Goal:** Narrative design workflow for story-driven games.
+**Goal:** Story-driven narrative design documentation.
 
 **Agent:** Game Designer (Samus Shepard) **Module:** GDS
 

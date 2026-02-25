@@ -3,7 +3,7 @@ name: 'step-09-complete'
 description: 'Complete the architecture workflow with final review and handoff guidance'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/3-technical/game-architecture'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-architecture'
 
 # File References
 thisStepFile: './step-09-complete.md'
@@ -12,7 +12,7 @@ outputFile: '{output_folder}/game-architecture.md'
 
 # Handoff References
 epicWorkflow: '{project-root}/_bmad/gds/workflows/4-production/epic-workflow/workflow.yaml'
-projectContextWorkflow: '{project-root}/_bmad/gds/workflows/3-technical/generate-project-context/workflow.md'
+projectContextWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/gds-generate-project-context/SKILL.md'
 ---
 
 # Step 9: Completion

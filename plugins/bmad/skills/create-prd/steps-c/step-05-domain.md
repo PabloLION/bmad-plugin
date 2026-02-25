@@ -3,13 +3,13 @@ name: 'step-05-domain'
 description: 'Explore domain-specific requirements for complex domains (optional step)'
 
 # File References
-nextStepFile: './step-06-innovation.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-06-innovation.md'
 outputFile: '{planning_artifacts}/prd.md'
-domainComplexityCSV: '../data/domain-complexity.csv'
+domainComplexityCSV: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/data/domain-complexity.csv'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 5: Domain-Specific Requirements (Optional)

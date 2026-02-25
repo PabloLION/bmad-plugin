@@ -29,8 +29,8 @@ This step will generate content and present choices for each rule category:
 
 ## PROTOCOL INTEGRATION:
 
-- When 'A' selected: Execute {project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml
-- When 'P' selected: Execute {project-root}/_bmad/core/workflows/party-mode
+- When 'A' selected: Execute ${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml
+- When 'P' selected: Execute ${CLAUDE_PLUGIN_ROOT}/skills/party-mode
 - PROTOCOLS always return to display this step's A/P/C menu after the A or P have completed
 - User accepts/rejects protocol changes before proceeding
 
@@ -313,6 +313,6 @@ When user selects 'C' for a category, append the content directly to `{output_fo
 
 ## NEXT STEP:
 
-After completing all rule categories and user selects 'C' for the final category, load `./step-03-complete.md` to finalize the project context file.
+After completing all rule categories and user selects 'C' for the final category, load `${CLAUDE_PLUGIN_ROOT}/skills/generate-project-context/steps/step-03-complete.md` to finalize the project context file.
 
 Remember: Do NOT proceed to step-03 until all categories are complete and user explicitly selects 'C' for each!

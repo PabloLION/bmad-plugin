@@ -1,6 +1,7 @@
 ---
 name: 'step-05-validate-and-complete'
 description: 'Validate ATDD outputs and summarize'
+outputFile: '{test_artifacts}/atdd-checklist-{story_id}.md'
 ---
 
 # Step 5: Validate & Complete
@@ -42,12 +43,25 @@ Use `checklist.md` to validate:
 - Test files created correctly
 - Checklist matches acceptance criteria
 - Tests are designed to fail before implementation
+- [ ] CLI sessions cleaned up (no orphaned browsers)
+- [ ] Temp artifacts stored in `{test_artifacts}/` not random locations
 
 Fix any gaps before completion.
 
 ---
 
-## 2. Completion Summary
+## 2. Polish Output
+
+Before finalizing, review the complete output document for quality:
+
+1. **Remove duplication**: Progressive-append workflow may have created repeated sections — consolidate
+2. **Verify consistency**: Ensure terminology, risk scores, and references are consistent throughout
+3. **Check completeness**: All template sections should be populated or explicitly marked N/A
+4. **Format cleanup**: Ensure markdown formatting is clean (tables aligned, headers consistent, no orphaned references)
+
+---
+
+## 3. Completion Summary
 
 Report:
 
@@ -55,6 +69,30 @@ Report:
 - Checklist output path
 - Key risks or assumptions
 - Next recommended workflow (e.g., implementation or `automate`)
+
+---
+
+## 4. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-05-validate-and-complete']
+  lastStep: 'step-05-validate-and-complete'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-05-validate-and-complete'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-05-validate-and-complete'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section.
 
 ## 🚨 SYSTEM SUCCESS/FAILURE METRICS:
 

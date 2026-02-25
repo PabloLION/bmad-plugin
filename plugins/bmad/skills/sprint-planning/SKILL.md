@@ -1,14 +1,13 @@
 ---
 description:
-  Generate and manage the sprint status tracking file for Phase 4 implementati
-  on, extracting all epics and stories from epic files and tracking their stat
-  us through the development lifecycle
+  Generate sprint status tracking from epics. Use when the user says "run spri
+  nt planning" or "generate sprint plan"
 user-invocable: true
 ---
 
 # Sprint Planning Workflow
 
-**Goal:** Generate and manage the sprint status tracking file for Phase 4 implementation, extracting all epics and stories from epic files and tracking their status through the development lifecycle.
+**Goal:** Generate sprint status tracking from epics.
 
 **Agent:** Scrum Master (Bob) **Module:** CORE
 

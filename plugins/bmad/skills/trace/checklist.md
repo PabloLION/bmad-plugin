@@ -95,6 +95,10 @@ This checklist covers **two sequential phases**:
   - [ ] Criteria with PARTIAL status
   - [ ] Criteria with UNIT-ONLY status
   - [ ] Criteria with INTEGRATION-ONLY status
+- [ ] Coverage heuristics gaps identified:
+  - [ ] Endpoints referenced in requirements but not covered by API tests
+  - [ ] Auth/authz criteria missing denied/invalid path tests
+  - [ ] Criteria with happy-path-only coverage (missing error scenarios)
 - [ ] Gaps prioritized by risk level using test-priorities framework:
   - [ ] **CRITICAL** - P0 criteria without FULL coverage (BLOCKER)
   - [ ] **HIGH** - P1 criteria without FULL coverage (PR blocker)
@@ -152,7 +156,7 @@ Knowledge fragments referenced:
 
 ### Traceability Matrix Markdown
 
-- [ ] File created at `{output_folder}/traceability-matrix.md`
+- [ ] File created at `{test_artifacts}/traceability-matrix.md`
 - [ ] Template from `trace-template.md` used
 - [ ] Full mapping table included
 - [ ] Coverage status section included
@@ -306,9 +310,10 @@ Knowledge fragments referenced:
 **P1 Criteria Evaluation:**
 
 - [ ] P1 test pass rate evaluated (threshold: min_p1_pass_rate)
-- [ ] P1 acceptance criteria coverage evaluated (threshold: 95%)
+- [ ] P1 acceptance criteria coverage evaluated (PASS >=90%, CONCERNS 80-89%, FAIL <80%)
 - [ ] Overall test pass rate evaluated (threshold: min_overall_pass_rate)
-- [ ] Code coverage evaluated (threshold: min_coverage)
+- [ ] Overall requirements coverage evaluated (threshold: >=80%)
+- [ ] Code coverage considered if available (informational unless explicitly required by policy)
 - [ ] P1 decision recorded: PASS or CONCERNS
 
 **P2/P3 Criteria Evaluation:**
@@ -392,7 +397,7 @@ Knowledge fragments referenced:
 **Outputs Saved:**
 
 - [ ] Gate decision document saved to `{output_file}`
-- [ ] Gate YAML saved to `{output_folder}/gate-decision-{target}.yaml`
+- [ ] Gate YAML saved to `{test_artifacts}/gate-decision-{target}.yaml`
 - [ ] All outputs are valid and readable
 
 ---

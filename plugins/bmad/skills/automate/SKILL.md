@@ -1,19 +1,27 @@
 ---
-description: Comprehensive test automation setup. Test Architecture
+description:
+  Expand test automation coverage for codebase. Use when the user says 'lets e
+  xpand test coverage' or 'I want to automate tests'
 user-invocable: true
 ---
 
-# Test Automation Workflow
+# Testarch Automate Workflow
 
-**Goal:** Generate comprehensive test automation framework.
+**Goal:** Expand test automation coverage for codebase.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

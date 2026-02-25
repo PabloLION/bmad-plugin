@@ -1,13 +1,13 @@
 ---
 description:
-  Create the next user story from epics+stories with enhanced context analysis
-   and direct ready-for-dev marking
+  User story creation from epics. Use when the user says "lets create a user s
+  tory" or "I want to create a user story"
 user-invocable: true
 ---
 
 # Create Story Workflow
 
-**Goal:** Create the next user story from epics+stories with enhanced context analysis and direct ready-for-dev marking.
+**Goal:** User story creation from epics.
 
 **Agent:** Game Dev Scrum Master (Max) **Module:** GDS
 

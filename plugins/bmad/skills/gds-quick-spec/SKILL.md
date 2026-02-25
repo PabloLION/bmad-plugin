@@ -1,13 +1,14 @@
 ---
 description:
-  Conversational spec engineering - ask questions, investigate code, produce i
-  mplementation-ready tech-spec.
+  Conversational spec engineering workflow - ask questions, investigate code, 
+  produce implementation-ready tech-spec. Use when the user says "lets create 
+  a tech spec" or "I want to create a technical specification"
 user-invocable: true
 ---
 
 # Quick Spec Workflow
 
-**Goal:** Conversational spec engineering - ask questions, investigate code, produce implementation-ready tech-spec.
+**Goal:** Conversational spec engineering workflow - ask questions, investigate code, produce implementation-ready tech-spec.
 
 **Agent:** Game Solo Dev (Indie) **Module:** GDS
 

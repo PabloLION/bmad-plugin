@@ -1,6 +1,6 @@
 ---
 name: market-research
-description: Conduct market research covering market size, growth, competition, and customer insights using current web data and verified sources.
+description: 'Conduct market research on competition and customers. Use when the user says "create a market research report about [business idea]".'
 ---
 
 # Market Research Workflow
@@ -15,7 +15,7 @@ description: Conduct market research covering market size, growth, competition, 
 
 ## CONFIGURATION
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `.claude/bmad.local.md` and resolve:
 - `project_name`, `output_folder`, `planning_artifacts`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as a system-generated value

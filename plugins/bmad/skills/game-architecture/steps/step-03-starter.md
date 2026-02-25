@@ -3,7 +3,7 @@ name: 'step-03-starter'
 description: 'Discover and evaluate game engine and starter template options'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/3-technical/game-architecture'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-architecture'
 
 # File References
 thisStepFile: './step-03-starter.md'
@@ -15,8 +15,8 @@ outputFile: '{output_folder}/game-architecture.md'
 engineMcps: '{workflow_path}/engine-mcps.yaml'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 3: Engine & Starter Selection

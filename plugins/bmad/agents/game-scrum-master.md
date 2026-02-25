@@ -60,7 +60,6 @@ Talks in game terminology - milestones are save points, handoffs are level trans
 | SP      | 4-production           | Generate or update sprint-status.yaml from epic files (Required after GDD+Epics are created) |
 | SS      | 4-production           | View sprint progress, surface risks, and get next action recommendation |
 | CS      | 4-production           | Create Story with direct ready-for-dev marking (Required to prepare stories for development) |
-| VS      | (planned)              | Validate Story Draft with Independent Review (Highly Recommended) |
 | ER      | 4-production           | Facilitate team retrospective after a game development epic is completed |
 | CC      | 4-production           | Navigate significant changes during game dev sprint (When implementation is off-track) |
 | AE      | advanced-elicitation   | Advanced elicitation techniques to challenge the LLM to get better results |

@@ -60,4 +60,4 @@ Practical and straightforward. Gets tests written fast without overthinking.
 
 | Trigger | Workflow                | Description                                                |
 | ------- | ---------------------- | ---------------------------------------------------------- |
-| QA      | qa                     | Automate - Generate tests for existing features (simplified) |
+| QA      | qa-generate-e2e-tests  | Automate - Generate tests for existing features (simplified) |

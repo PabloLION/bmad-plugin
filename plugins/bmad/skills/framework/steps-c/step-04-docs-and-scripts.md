@@ -3,13 +3,14 @@ name: 'step-04-docs-and-scripts'
 description: 'Document setup and add package.json scripts'
 nextStepFile: './step-05-validate-and-summary.md'
 outputFile: '{test_dir}/README.md'
+progressFile: '{test_artifacts}/framework-setup-progress.md'
 ---
 
 # Step 4: Documentation & Scripts
 
 ## STEP GOAL
 
-Create `tests/README.md` and update `package.json` scripts.
+Create test documentation and add build/test scripts appropriate for `{detected_stack}`.
 
 ## MANDATORY EXECUTION RULES
 
@@ -48,13 +49,47 @@ Create `{outputFile}` and include:
 
 ---
 
-## 2. package.json Scripts
+## 2. Build & Test Scripts
 
-Add at minimum:
+**If {detected_stack} is `frontend` or `fullstack`:**
 
-- `test:e2e`: framework execution command
+Add to `package.json` at minimum:
+
+- `test:e2e`: framework execution command (e.g., `npx playwright test`)
+
+**If {detected_stack} is `backend` or `fullstack`:**
+
+Add the idiomatic test commands for the detected framework:
+
+- **Python (pytest)**: Add to `pyproject.toml` scripts or `Makefile`: `pytest`, `pytest --cov`, `pytest -m integration`
+- **Java (JUnit)**: Add to `build.gradle`/`pom.xml`: `./gradlew test`, `mvn test`, `mvn verify` (integration)
+- **Go**: Add to `Makefile`: `go test ./...`, `go test -race ./...`, `go test -cover ./...`
+- **C#/.NET**: Add to CI scripts or `Makefile`: `dotnet test`, `dotnet test --collect:"XPlat Code Coverage"`
+- **Ruby (RSpec)**: Add to `Gemfile` binstubs or `Makefile`: `bundle exec rspec`, `bundle exec rspec spec/integration`
 
 ---
+
+### 3. Save Progress
+
+**Save this step's accumulated work to `{progressFile}`.**
+
+- **If `{progressFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-04-docs-and-scripts']
+  lastStep: 'step-04-docs-and-scripts'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{progressFile}` already exists**, update:
+  - Add `'step-04-docs-and-scripts'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-04-docs-and-scripts'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 

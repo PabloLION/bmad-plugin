@@ -1,20 +1,27 @@
 ---
 description:
-  Validate non-functional requirements against implementation. Test Architecture
+  Assess NFRs like performance security and reliability. Use when the user say
+  s 'lets assess NFRs' or 'I want to evaluate non-functional requirements'
 user-invocable: true
 ---
 
-# NFR Assessment Workflow
+# Testarch Nfr Workflow
 
-**Goal:** Validate non-functional requirements against implementation.
+**Goal:** Assess NFRs like performance security and reliability.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

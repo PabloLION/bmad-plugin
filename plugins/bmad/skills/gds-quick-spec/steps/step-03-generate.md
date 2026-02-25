@@ -2,7 +2,7 @@
 name: 'step-03-generate'
 description: 'Build the implementation plan based on the technical mapping of constraints'
 
-workflow_path: '{project-root}/_bmad/gds/workflows/gds-quick-flow/quick-spec'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-quick-spec'
 nextStepFile: './step-04-review.md'
 wipFile: '{implementation_artifacts}/tech-spec-wip.md'
 ---

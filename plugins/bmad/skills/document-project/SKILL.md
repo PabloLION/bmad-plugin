@@ -1,14 +1,13 @@
 ---
 description:
-  Analyzes and documents brownfield projects by scanning codebase, architectur
-  e, and patterns to create comprehensive reference documentation for AI-assis
-  ted development
+  Document brownfield projects for AI context. Use when the user says "documen
+  t this project" or "generate project docs"
 user-invocable: true
 ---
 
 # Document Project Workflow
 
-**Goal:** Analyzes and documents brownfield projects by scanning codebase, architecture, and patterns to create comprehensive reference documentation for AI-assisted development.
+**Goal:** Document brownfield projects for AI context.
 
 **Agent:** Technical Writer (Paige) **Module:** CORE
 

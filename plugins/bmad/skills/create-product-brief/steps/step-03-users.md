@@ -3,12 +3,12 @@ name: 'step-03-users'
 description: 'Define target users with rich personas and map their key interactions with the product'
 
 # File References
-nextStepFile: './step-04-metrics.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-product-brief/steps/step-04-metrics.md'
 outputFile: '{planning_artifacts}/product-brief-{{project_name}}-{{date}}.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 3: Target Users Discovery

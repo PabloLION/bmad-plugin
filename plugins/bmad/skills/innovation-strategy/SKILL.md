@@ -1,9 +1,8 @@
 ---
 description:
-  Identify disruption opportunities and architect business model innovation. T
-  his workflow guides strategic analysis of markets, competitive dynamics, and
-   business model innovation to uncover sustainable competitive advantages and
-   breakthrough opportunities.
+  Identify disruption opportunities and architect business model innovation. U
+  se when the user says "lets create an innovation strategy" or "I want to fin
+  d disruption opportunities"
 user-invocable: true
 ---
 

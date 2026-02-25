@@ -2,19 +2,68 @@
 # Release workflow: bump version on dev, create PR to main, merge, tag, release.
 # main is protected — direct push is not allowed, so we use a PR-based flow.
 #
-# Usage: ./scripts/release.sh [new-version]
+# Usage:
+#   ./scripts/release.sh                  # release current version (full run)
+#   ./scripts/release.sh 6.0.0-Beta.8.0  # bump version first, then release
+#   ./scripts/release.sh --after-ci       # finish release after CI passes
 #
-# If new-version is provided, bumps version files on dev first.
-# If omitted, releases the current version from dev as-is.
+# The script has two phases:
+#   Phase 1 (prepare): bump → beads sync → release branch → PR → wait for CI
+#   Phase 2 (finish):  merge PR → tag → GitHub release → return to dev
 #
-# Example: ./scripts/release.sh 6.0.0-Beta.7.0
-# Example: ./scripts/release.sh              # release current version
+# If CI fails or is slow to register, Phase 1 saves state to .release-state
+# and exits. Fix the issue, then run --after-ci to complete Phase 2.
 
 set -euo pipefail
 
 ROOT="$(git rev-parse --show-toplevel)"
+STATE_FILE="$ROOT/.release-state"
+
+# ── Phase 2: --after-ci ─────────────────────────────────────────────────────
+
+if [[ "${1:-}" == "--after-ci" ]]; then
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo "Error: no .release-state file found. Run a full release first." >&2
+    exit 1
+  fi
+
+  # shellcheck source=/dev/null
+  source "$STATE_FILE"
+
+  echo "Resuming release: $RELEASE_TAG (PR #$RELEASE_PR_NUMBER)"
+
+  # Verify CI has passed
+  echo "Checking CI status..."
+  if ! gh pr checks "$RELEASE_PR_NUMBER" --watch --interval 10; then
+    echo "Error: CI checks still failing on PR #$RELEASE_PR_NUMBER" >&2
+    exit 1
+  fi
+
+  echo "Merging PR #$RELEASE_PR_NUMBER..."
+  gh pr merge "$RELEASE_PR_NUMBER" --merge
+
+  echo "Tagging main..."
+  git fetch origin main
+  git tag "$RELEASE_TAG" origin/main
+  git push origin "$RELEASE_TAG"
+
+  echo "Creating GitHub release..."
+  gh release create "$RELEASE_TAG" --title "$RELEASE_TAG" --generate-notes
+
+  git checkout dev
+  git pull
+
+  rm -f "$STATE_FILE"
+
+  echo ""
+  echo "Released $RELEASE_TAG"
+  exit 0
+fi
+
+# ── Phase 1: prepare ────────────────────────────────────────────────────────
+
 CURRENT_BRANCH="$(git branch --show-current)"
-CURRENT_VERSION="$(cat "$ROOT/.plugin-version" | tr -d 'v \n')"
+CURRENT_VERSION="$(tr -d 'v \n' < "$ROOT/.plugin-version")"
 
 # Ensure we start on dev
 if [[ "$CURRENT_BRANCH" != "dev" ]]; then
@@ -85,32 +134,74 @@ git checkout -b "$RELEASE_BRANCH" dev
 git push -u origin "$RELEASE_BRANCH"
 
 echo "Creating PR to main..."
-PR_URL=$(gh pr create --base main --title "release: $TAG" --body "## Release $TAG
+PR_URL=$(gh pr create --base main --title "release: $TAG" --body "$(cat <<EOF
+## Release $TAG
 
 Merge dev into main for release.
 
 Version: $CURRENT_VERSION
-Tag: $TAG")
+Tag: $TAG
+EOF
+)")
 
 echo "PR created: $PR_URL"
 PR_NUMBER=$(echo "$PR_URL" | grep -o '[0-9]*$')
 
-# --- Step 4: Wait for CI ---
+# --- Step 4: Save state for --after-ci recovery ---
 
-echo "Waiting for CI checks..."
-if ! gh pr checks "$PR_NUMBER" --watch --interval 10; then
-  echo "Error: CI checks failed. Fix issues and re-run." >&2
+cat > "$STATE_FILE" <<EOF
+RELEASE_PR_NUMBER=$PR_NUMBER
+RELEASE_TAG=$TAG
+RELEASE_VERSION=$CURRENT_VERSION
+RELEASE_BRANCH=$RELEASE_BRANCH
+EOF
+
+# --- Step 5: Wait for CI (with retry for check registration) ---
+
+echo "Waiting for CI checks to register..."
+
+MAX_RETRIES=4
+RETRY_DELAY=15
+CI_PASSED=false
+
+for attempt in $(seq 1 $MAX_RETRIES); do
+  sleep $RETRY_DELAY
+  echo "Checking CI status (attempt $attempt/$MAX_RETRIES)..."
+
+  if gh pr checks "$PR_NUMBER" --watch --interval 10 2>/dev/null; then
+    CI_PASSED=true
+    break
+  fi
+
+  # If checks reported but failed, don't retry
+  CHECK_OUTPUT=$(gh pr checks "$PR_NUMBER" 2>&1 || true)
+  if echo "$CHECK_OUTPUT" | grep -q "fail"; then
+    echo "Error: CI checks failed." >&2
+    echo "Fix the issue, push to the release branch, then run:" >&2
+    echo "  ./scripts/release.sh --after-ci" >&2
+    echo "PR: $PR_URL" >&2
+    git checkout dev
+    exit 1
+  fi
+
+  echo "No checks reported yet, retrying in ${RETRY_DELAY}s..."
+done
+
+if [[ "$CI_PASSED" != "true" ]]; then
+  echo "CI checks did not appear after $((MAX_RETRIES * RETRY_DELAY))s." >&2
+  echo "Check the PR manually, then run:" >&2
+  echo "  ./scripts/release.sh --after-ci" >&2
   echo "PR: $PR_URL" >&2
   git checkout dev
   exit 1
 fi
 
-# --- Step 5: Merge PR ---
+# ── Phase 2: finish (inline — CI passed) ────────────────────────────────────
 
-echo "Merging PR..."
+echo "CI passed. Finishing release..."
+
+echo "Merging PR #$PR_NUMBER..."
 gh pr merge "$PR_NUMBER" --merge
-
-# --- Step 6: Tag and release ---
 
 echo "Tagging main..."
 git fetch origin main
@@ -120,10 +211,11 @@ git push origin "$TAG"
 echo "Creating GitHub release..."
 gh release create "$TAG" --title "$TAG" --generate-notes
 
-# --- Step 7: Return to dev ---
-
 git checkout dev
 git pull
 
+rm -f "$STATE_FILE"
+
+echo ""
 echo "Released $TAG"
 echo "PR: $PR_URL"

@@ -11,10 +11,18 @@
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
+import { gitInUpstream } from './lib/git-utils.ts';
+import {
+  buildWorkflowMap,
+  isTextFile,
+  rewriteFileContent,
+  type WorkflowMap,
+} from './lib/path-rewriter.ts';
 import type { UpstreamSource } from './lib/upstream-sources.ts';
 import {
   getCoreSource,
   getEnabledSources,
+  getSource,
   shouldSkipContentFile,
 } from './lib/upstream-sources.ts';
 
@@ -23,6 +31,13 @@ const SOURCE_FILTER = (() => {
   const idx = process.argv.indexOf('--source');
   return idx >= 0 ? process.argv[idx + 1] : undefined;
 })();
+
+/** Accumulated path rewrite statistics. */
+const rewriteStats = {
+  filesRewritten: 0,
+  totalChanges: 0,
+  warnings: [] as string[],
+};
 
 async function listFilesRecursive(dir: string): Promise<string[]> {
   const results: string[] = [];
@@ -36,6 +51,34 @@ async function listFilesRecursive(dir: string): Promise<string[]> {
     }
   }
   return results;
+}
+
+/**
+ * Copy a file, applying path rewrites for text files.
+ * Binary files are copied with cp(). Text files are read, rewritten, and written.
+ */
+async function copyWithRewrite(
+  srcPath: string,
+  destPath: string,
+  map: WorkflowMap,
+): Promise<void> {
+  const destDir = dirname(destPath);
+  await Bun.$`mkdir -p ${destDir}`.quiet();
+
+  if (isTextFile(srcPath)) {
+    const content = await Bun.file(srcPath).text();
+    const result = rewriteFileContent(content, map);
+    await Bun.write(destPath, result.content);
+    if (result.changeCount > 0) {
+      rewriteStats.filesRewritten++;
+      rewriteStats.totalChanges += result.changeCount;
+    }
+    if (result.warnings.length > 0) {
+      rewriteStats.warnings.push(...result.warnings);
+    }
+  } else {
+    await cp(srcPath, destPath, { force: true });
+  }
 }
 
 interface WorkflowSkillPair {
@@ -146,6 +189,7 @@ async function getWorkflowSkillPairs(
 async function syncPair(
   pair: WorkflowSkillPair,
   source: UpstreamSource,
+  map: WorkflowMap,
 ): Promise<number> {
   const upstreamFiles = await listFilesRecursive(pair.upstreamDir);
   let count = 0;
@@ -161,9 +205,7 @@ async function syncPair(
     if (DRY_RUN) {
       console.log(`  [dry-run] ${relPath}`);
     } else {
-      const destDir = dirname(destPath);
-      await Bun.$`mkdir -p ${destDir}`.quiet();
-      await cp(srcPath, destPath, { force: true });
+      await copyWithRewrite(srcPath, destPath, map);
     }
     count++;
   }
@@ -177,6 +219,7 @@ async function syncSharedFile(
   relPath: string,
   pluginSharedDir: string,
   targetSkills: string[],
+  map: WorkflowMap,
 ): Promise<number> {
   let count = 0;
 
@@ -184,8 +227,7 @@ async function syncSharedFile(
   if (DRY_RUN) {
     console.log(`  [dry-run] _shared/${relPath}`);
   } else {
-    await Bun.$`mkdir -p ${dirname(sharedDest)}`.quiet();
-    await cp(srcPath, sharedDest, { force: true });
+    await copyWithRewrite(srcPath, sharedDest, map);
   }
   count++;
 
@@ -194,22 +236,12 @@ async function syncSharedFile(
     if (DRY_RUN) {
       console.log(`  [dry-run] ${skill}/data/${relPath}`);
     } else {
-      await Bun.$`mkdir -p ${dirname(skillDest)}`.quiet();
-      await cp(srcPath, skillDest, { force: true });
+      await copyWithRewrite(srcPath, skillDest, map);
     }
     count++;
   }
 
   return count;
-}
-
-/** Run git in an upstream repo, with BEADS_DIR set to avoid hook interference. */
-function gitInUpstream(
-  upstreamRoot: string,
-  ...args: string[]
-): ReturnType<typeof Bun.$> {
-  const beadsDir = join(ROOT, '.beads');
-  return Bun.$`BEADS_DIR=${beadsDir} git -C ${upstreamRoot} ${args}`.quiet();
 }
 
 /** Checkout a source to its tracked version tag. */
@@ -237,7 +269,10 @@ async function checkoutSource(
 }
 
 /** Sync a single upstream source. */
-async function syncSource(source: UpstreamSource): Promise<number> {
+async function syncSource(
+  source: UpstreamSource,
+  map: WorkflowMap,
+): Promise<number> {
   const upstreamRoot = join(ROOT, '.upstream', source.localPath);
   if (!(await exists(join(upstreamRoot, '.git')))) {
     console.log(`⚠ Skipping ${source.id}: repo not cloned at ${upstreamRoot}`);
@@ -252,7 +287,7 @@ async function syncSource(source: UpstreamSource): Promise<number> {
 
   for (const pair of pairs) {
     console.log(`Syncing: ${pair.label}`);
-    const count = await syncPair(pair, source);
+    const count = await syncPair(pair, source, map);
     totalFiles += count;
     if (!DRY_RUN) {
       console.log(`  ✓ ${count} files copied`);
@@ -279,6 +314,7 @@ async function syncSource(source: UpstreamSource): Promise<number> {
           relPath,
           pluginSharedDir,
           targetSkills,
+          map,
         );
       }
 
@@ -295,6 +331,93 @@ async function syncSource(source: UpstreamSource): Promise<number> {
   return totalFiles;
 }
 
+/**
+ * Sync core extras that live outside the normal contentRoot paths:
+ * - Core task files → _shared/tasks/
+ * - Core special workflows (advanced-elicitation, party-mode) → skills/
+ * - TEA knowledge index → _shared/
+ */
+async function syncCoreExtras(map: WorkflowMap): Promise<number> {
+  const coreSource = getCoreSource();
+  const coreRoot = join(ROOT, '.upstream', coreSource.localPath);
+  let count = 0;
+
+  // 1. Core task files → _shared/tasks/
+  const tasksDir = join(coreRoot, 'src/core/tasks');
+  if (await exists(tasksDir)) {
+    const taskFiles = await readdir(tasksDir);
+    const destDir = join(PLUGIN, '_shared', 'tasks');
+    console.log('Syncing: [core] tasks → _shared/tasks/');
+
+    for (const file of taskFiles) {
+      const srcPath = join(tasksDir, file);
+      if (DRY_RUN) {
+        console.log(`  [dry-run] _shared/tasks/${file}`);
+      } else {
+        await copyWithRewrite(srcPath, join(destDir, file), map);
+      }
+      count++;
+    }
+    if (!DRY_RUN) console.log(`  ✓ ${taskFiles.length} task files copied`);
+  }
+
+  // 2. Core special workflows → skills/<name>/
+  // These live at src/core/workflows/ (not under the normal bmm contentRoot)
+  const specialWorkflows = ['advanced-elicitation', 'party-mode'];
+  const coreWorkflowsDir = join(coreRoot, 'src/core/workflows');
+
+  if (await exists(coreWorkflowsDir)) {
+    for (const name of specialWorkflows) {
+      const workflowDir = join(coreWorkflowsDir, name);
+      if (!(await exists(workflowDir))) continue;
+
+      const skillDir = join(PLUGIN, 'skills', name);
+      const files = await listFilesRecursive(workflowDir);
+      let pairCount = 0;
+
+      console.log(`Syncing: [core] ${name} → skills/${name}/`);
+      for (const relPath of files) {
+        const fileName = relPath.split('/').at(-1) ?? relPath;
+        if (shouldSkipContentFile(coreSource, fileName)) continue;
+
+        const srcPath = join(workflowDir, relPath);
+        const destPath = join(skillDir, relPath);
+
+        if (DRY_RUN) {
+          console.log(`  [dry-run] ${relPath}`);
+        } else {
+          await copyWithRewrite(srcPath, destPath, map);
+        }
+        pairCount++;
+      }
+      count += pairCount;
+      if (!DRY_RUN) console.log(`  ✓ ${pairCount} files copied`);
+    }
+  }
+
+  // 3. TEA knowledge index → _shared/
+  const teaSource = getSource('tea');
+  if (teaSource) {
+    const teaRoot = join(ROOT, '.upstream', teaSource.localPath);
+    const teaIndex = join(teaRoot, 'src/testarch/tea-index.csv');
+    if (await exists(teaIndex)) {
+      const destDir = join(PLUGIN, '_shared');
+      const destPath = join(destDir, 'tea-index.csv');
+      console.log('Syncing: [tea] tea-index.csv → _shared/');
+
+      if (DRY_RUN) {
+        console.log('  [dry-run] _shared/tea-index.csv');
+      } else {
+        await copyWithRewrite(teaIndex, destPath, map);
+        console.log('  ✓ 1 index file copied');
+      }
+      count++;
+    }
+  }
+
+  return count;
+}
+
 // === Main ===
 
 const sources = SOURCE_FILTER
@@ -308,16 +431,43 @@ if (sources.length === 0) {
 
 console.log(DRY_RUN ? 'Dry run — no files will be copied\n' : 'Syncing...\n');
 
+// Build workflow map from ALL sources (cross-module refs need full map)
+const workflowMap = await buildWorkflowMap();
+
 let grandTotal = 0;
 for (const source of sources) {
-  const count = await syncSource(source);
+  const count = await syncSource(source, workflowMap);
   grandTotal += count;
+  console.log('');
+}
+
+// Sync core extras (tasks, special workflows, indexes)
+// Only when running all sources or when core/tea is the filter
+const shouldSyncExtras =
+  !SOURCE_FILTER || SOURCE_FILTER === 'core' || SOURCE_FILTER === 'tea';
+
+if (shouldSyncExtras) {
+  const extrasCount = await syncCoreExtras(workflowMap);
+  grandTotal += extrasCount;
   console.log('');
 }
 
 console.log(
   `Total: ${grandTotal} files ${DRY_RUN ? 'would be' : ''} synced across ${sources.length} sources.`,
 );
+
+// Print path rewrite summary
+if (!DRY_RUN && rewriteStats.totalChanges > 0) {
+  console.log(
+    `Path rewrites: ${rewriteStats.totalChanges} paths rewritten across ${rewriteStats.filesRewritten} files.`,
+  );
+}
+if (rewriteStats.warnings.length > 0) {
+  console.log(`\n⚠ Rewrite warnings (${rewriteStats.warnings.length}):`);
+  for (const warning of rewriteStats.warnings) {
+    console.log(`  - ${warning}`);
+  }
+}
 
 // Update version files (core-anchored strategy) — skip when filtering to a single source
 if (!DRY_RUN && !SOURCE_FILTER) {

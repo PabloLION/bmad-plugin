@@ -1,13 +1,13 @@
 ---
 description:
-  Design performance testing strategy for frame rate, memory, and loading time
-  s
+  Performance test strategy designer. Use when the user says "lets create a pe
+  rformance test plan"
 user-invocable: true
 ---
 
 # Gametest Performance Workflow
 
-**Goal:** Design performance testing strategy for frame rate, memory, and loading times.
+**Goal:** Performance test strategy designer.
 
 **Agent:** Game QA Architect (GLaDOS) **Module:** GDS
 

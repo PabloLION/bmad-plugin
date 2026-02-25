@@ -24,9 +24,9 @@ agent:
       description: "[WS] Get workflow status or initialize a workflow if not already done (optional)"
 
     - trigger: CA or fuzzy match on create-architecture
-      exec: "{project-root}/_bmad/bmm/workflows/3-solutioning/create-architecture/workflow.md"
+      exec: "${CLAUDE_PLUGIN_ROOT}/skills/create-architecture/SKILL.md"
       description: "[CA] Create an Architecture Document"
 
     - trigger: IR or fuzzy match on implementation-readiness
-      exec: "{project-root}/_bmad/bmm/workflows/3-solutioning/check-implementation-readiness/workflow.md"
+      exec: "${CLAUDE_PLUGIN_ROOT}/skills/check-implementation-readiness/SKILL.md"
       description: "[IR] Implementation Readiness Review"

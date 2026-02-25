@@ -6,8 +6,8 @@ nextStepFile: './e-07-activation.md'
 editPlan: '{bmb_creations_output_folder}/edit-plan-{agent-name}.md'
 agentMenuPatterns: ../data/agent-menu-patterns.md
 
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Edit Step 6: Commands Menu

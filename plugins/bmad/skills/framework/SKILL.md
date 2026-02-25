@@ -1,20 +1,27 @@
 ---
 description:
-  Initialize production-ready test framework architecture. Test Architecture
+  Initialize test framework with Playwright or Cypress. Use when the user says
+   'lets setup test framework' or 'I want to initialize testing framework'
 user-invocable: true
 ---
 
-# Test Framework Workflow
+# Testarch Framework Workflow
 
-**Goal:** Initialize production-ready test framework architecture.
+**Goal:** Initialize test framework with Playwright or Cypress.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

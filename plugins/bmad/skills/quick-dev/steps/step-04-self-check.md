@@ -89,7 +89,7 @@ Proceeding to adversarial code review...
 
 ## NEXT STEP
 
-Proceed immediately to `step-05-adversarial-review.md`.
+Proceed immediately to `${CLAUDE_PLUGIN_ROOT}/skills/quick-dev/steps/step-05-adversarial-review.md`.
 
 ---
 

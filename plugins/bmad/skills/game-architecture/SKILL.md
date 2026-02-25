@@ -1,15 +1,13 @@
 ---
 description:
-  Collaborative game architecture workflow for AI-agent consistency. Intellige
-  nt, adaptive conversation that produces a decision-focused game architecture
-   document covering engine, systems, networking, and technical design optimiz
-  ed for game development.
+  Technical game systems architecture design. Use when the user says "lets cre
+  ate a game architecture" or "I want to design technical game systems"
 user-invocable: true
 ---
 
 # Game Architecture Workflow
 
-**Goal:** Collaborative game architecture workflow for AI-agent consistency.
+**Goal:** Technical game systems architecture design.
 
 **Agent:** Game Architect (Cloud Dragonborn) **Module:** GDS
 

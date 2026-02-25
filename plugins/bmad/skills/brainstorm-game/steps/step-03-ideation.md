@@ -3,7 +3,7 @@ name: 'step-03-ideation'
 description: 'Execute the brainstorming session with game-specific techniques'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/1-preproduction/brainstorm-game'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorm-game'
 
 # File References
 thisStepFile: './step-03-ideation.md'
@@ -12,11 +12,11 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/brainstorming-session-{date}.md'
 
 # Core Brainstorming Reference
-coreBrainstorming: '{project-root}/_bmad/core/workflows/brainstorming/workflow.md'
+coreBrainstorming: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 3: Ideation Session

@@ -3,7 +3,7 @@ name: 'step-08-complete'
 description: 'Define success criteria and complete the game brief with handoff guidance'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/1-preproduction/game-brief'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-brief'
 
 # File References
 thisStepFile: './step-08-complete.md'
@@ -11,7 +11,7 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-brief.md'
 
 # Workflow References
-gddWorkflow: '{project-root}/_bmad/gds/workflows/2-design/gdd/workflow.yaml'
+gddWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/gdd/SKILL.md'
 ---
 
 # Step 8: Success & Handoff

@@ -1,6 +1,6 @@
 ---
 name: technical-research
-description: Conduct technical research covering technology evaluation, architecture decisions, and implementation approaches using current web data and verified sources.
+description: 'Conduct technical research on technologies and architecture. Use when the user says "create a technical research report on [topic]".'
 ---
 
 # Technical Research Workflow
@@ -15,7 +15,7 @@ description: Conduct technical research covering technology evaluation, architec
 
 ## CONFIGURATION
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `.claude/bmad.local.md` and resolve:
 - `project_name`, `output_folder`, `planning_artifacts`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as a system-generated value

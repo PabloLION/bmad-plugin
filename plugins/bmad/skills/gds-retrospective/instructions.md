@@ -1,7 +1,7 @@
 # Retrospective - Epic Completion Review Instructions
 
-<critical>The workflow execution engine is governed by: {project-root}/_bmad/core/tasks/workflow.xml</critical>
-<critical>You MUST have already loaded and processed: {project-root}/_bmad/gds/workflows/4-production/retrospective/workflow.yaml</critical>
+<critical>The workflow execution engine is governed by: ${CLAUDE_PLUGIN_ROOT}/_shared/tasks/workflow.xml</critical>
+<critical>You MUST have already loaded and processed: ${CLAUDE_PLUGIN_ROOT}/skills/gds-retrospective/SKILL.md</critical>
 <critical>Communicate all responses in {communication_language} and language MUST be tailored to {game_dev_experience}</critical>
 <critical>Generate all documents in {document_output_language}</critical>
 <critical>⚠️ ABSOLUTELY NO TIME ESTIMATES - NEVER mention hours, days, weeks, months, or ANY time-based predictions. AI has fundamentally changed development speed - what once took teams weeks/months can now be done by one person in hours. DO NOT give ANY time estimates whatsoever.</critical>

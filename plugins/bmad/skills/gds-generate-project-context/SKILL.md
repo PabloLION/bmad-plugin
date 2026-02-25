@@ -1,14 +1,13 @@
 ---
 description:
-  Creates a concise project-context.md file with critical rules and patterns t
-  hat AI agents must follow when implementing game code. Optimized for LLM con
-  text efficiency.
+  Generate AI-optimized project context file. Use when the user says "lets cre
+  ate project context for game dev"
 user-invocable: true
 ---
 
 # Generate Project Context Workflow
 
-**Goal:** Creates a concise project-context.
+**Goal:** Generate AI-optimized project context file.
 
 **Agent:** Game Architect (Cloud Dragonborn) **Module:** GDS
 

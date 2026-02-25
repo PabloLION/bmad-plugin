@@ -1,8 +1,8 @@
 ---
 description:
-  Guide human-centered design processes using empathy-driven methodologies. Th
-  is workflow walks through the design thinking phases - Empathize, Define, Id
-  eate, Prototype, and Test - to create solutions deeply rooted in user needs.
+  Guide human-centered design processes using empathy-driven methodologies. Us
+  e when the user says "lets run design thinking" or "I want to apply design t
+  hinking"
 user-invocable: true
 ---
 

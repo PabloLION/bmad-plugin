@@ -45,10 +45,10 @@ agent:
       description: "[OM] Map trend to strategic opportunities"
 
     - trigger: "CT or fuzzy match on competitor-trends"
-      exec: "{project-root}/_bmad/cis/tasks/competitor-trend-watch.xml"
+      exec: "${CLAUDE_PLUGIN_ROOT}/_shared/tasks/competitor-trend-watch.xml"
       description: "[CT] Monitor competitor trend adoption"
 
     # Core workflows that exist
     - trigger: "BS or fuzzy match on brainstorm"
-      workflow: "{project-root}/_bmad/core/workflows/brainstorming/workflow.yaml"
+      workflow: "${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md"
       description: "[BS] Brainstorm trend implications"

@@ -2,7 +2,8 @@
 name: 'step-01-load-context'
 description: 'Load NFR requirements, evidence sources, and knowledge base'
 nextStepFile: './step-02-define-thresholds.md'
-knowledgeIndex: '{project-root}/_bmad/tea/testarch/tea-index.csv'
+knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
+outputFile: '{test_artifacts}/nfr-assessment.md'
 ---
 
 # Step 1: Load Context & Knowledge Base
@@ -45,7 +46,25 @@ If missing: **HALT** and request the missing inputs.
 
 ---
 
-## 2. Load Knowledge Base Fragments
+## 2. Load Configuration
+
+From `{config_source}`:
+
+- Read `tea_browser_automation`
+
+---
+
+### Tiered Knowledge Loading
+
+Load fragments based on their `tier` classification in `tea-index.csv`:
+
+1. **Core tier** (always load): Foundational fragments required for this workflow
+2. **Extended tier** (load on-demand): Load when deeper analysis is needed or when the user's context requires it
+3. **Specialized tier** (load only when relevant): Load only when the specific use case matches (e.g., contract-testing only for microservices, email-auth only for email flows)
+
+> **Context Efficiency**: Loading only core fragments reduces context usage by 40-50% compared to loading all fragments.
+
+## 3. Load Knowledge Base Fragments
 
 From `{knowledgeIndex}` load:
 
@@ -55,9 +74,17 @@ From `{knowledgeIndex}` load:
 - `playwright-config.md`
 - `error-handling.md`
 
+**Playwright CLI (if `tea_browser_automation` is "cli" or "auto"):**
+
+- `playwright-cli.md`
+
+**MCP Patterns (if `tea_browser_automation` is "mcp" or "auto"):**
+
+- (existing MCP-related fragments, if any are added in future)
+
 ---
 
-## 3. Load Artifacts
+## 4. Load Artifacts
 
 If available, read:
 
@@ -67,9 +94,35 @@ If available, read:
 
 ---
 
-## 4. Confirm Inputs
+## 5. Confirm Inputs
 
 Summarize loaded NFR sources and evidence availability.
+
+---
+
+## 6. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it using the workflow template (if available) with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-01-load-context']
+  lastStep: 'step-01-load-context'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-01-load-context'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-01-load-context'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
+
+**Update `inputDocuments`**: Set `inputDocuments` in the output template frontmatter to the list of artifact paths loaded in this step (e.g., knowledge fragments, test design documents, configuration files).
 
 Load next step: `{nextStepFile}`
 

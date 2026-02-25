@@ -59,11 +59,8 @@ Load `{moduleStandardsFile}` and determine location:
 ├── README.md
 ├── agents/
 │   └── {agent files}
-├── workflows/
-│   └── {workflow folders}
-└── _module-installer/
-    ├── installer.js
-    └── platform-specifics/
+└── workflows/
+    └── {workflow folders}
 ```
 
 "**Location:** {target_location}"
@@ -78,8 +75,6 @@ Load `{moduleStandardsFile}` and determine location:
 Create folders:
 - `{target_location}/agents/`
 - `{target_location}/workflows/`
-- `{target_location}/_module-installer/`
-- `{target_location}/_module-installer/platform-specifics/`
 
 ### 4. Update Build Tracking
 
@@ -105,5 +100,5 @@ Update `{buildTrackingFile}`:
 
 ✅ Directory structure created
 ✅ Location based on module type
-✅ Folders: agents/, workflows/, _module-installer/
+✅ Folders: agents/, workflows/
 ✅ Build tracking updated

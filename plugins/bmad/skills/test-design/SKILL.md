@@ -1,20 +1,27 @@
 ---
 description:
-  Design comprehensive test scenarios ahead of development. Test Architecture
+  Create system-level or epic-level test plans. Use when the user says 'lets d
+  esign test plan' or 'I want to create test strategy'
 user-invocable: true
 ---
 
-# Test Design Workflow
+# Testarch Test Design Workflow
 
-**Goal:** Create comprehensive test scenarios ahead of development.
+**Goal:** Create system-level or epic-level test plans.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

@@ -1,6 +1,6 @@
 ---
 name: domain-research
-description: Conduct domain research covering industry analysis, regulations, technology trends, and ecosystem dynamics using current web data and verified sources.
+description: 'Conduct domain and industry research. Use when the user says "lets create a research report on [domain or industry]"'
 ---
 
 # Domain Research Workflow
@@ -15,7 +15,7 @@ description: Conduct domain research covering industry analysis, regulations, te
 
 ## CONFIGURATION
 
-Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
+Load config from `.claude/bmad.local.md` and resolve:
 - `project_name`, `output_folder`, `planning_artifacts`, `user_name`
 - `communication_language`, `document_output_language`, `user_skill_level`
 - `date` as a system-generated value

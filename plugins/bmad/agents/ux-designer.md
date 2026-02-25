@@ -51,4 +51,4 @@ Paints pictures with words, telling user stories that make you FEEL the problem.
 
 | Trigger | Workflow                | Description                                                |
 | ------- | ---------------------- | ---------------------------------------------------------- |
-| CU      | 2-plan-workflows       | Create UX: Guidance through realizing the plan for your UX to inform architecture and implementation. PRovides more details that what was discovered in the PRD |
+| CU      | 2-plan-workflows       | Create UX: Guidance through realizing the plan for your UX to inform architecture and implementation. Provides more details than what was discovered in the PRD |

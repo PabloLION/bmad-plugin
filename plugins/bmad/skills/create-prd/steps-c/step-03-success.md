@@ -3,12 +3,12 @@ name: 'step-03-success'
 description: 'Define comprehensive success criteria covering user, business, and technical success'
 
 # File References
-nextStepFile: './step-04-journeys.md'
+nextStepFile: '${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-04-journeys.md'
 outputFile: '{planning_artifacts}/prd.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 3: Success Criteria Definition
@@ -221,6 +221,6 @@ If working in regulated domains (healthcare, fintech, govtech):
 
 ## NEXT STEP:
 
-After user selects 'C' and content is saved to document, load `./step-04-journeys.md` to map user journeys.
+After user selects 'C' and content is saved to document, load `${CLAUDE_PLUGIN_ROOT}/skills/create-prd/steps-c/step-04-journeys.md` to map user journeys.
 
 Remember: Do NOT proceed to step-04 until user explicitly selects 'C' from the A/P/C menu and content is saved!

@@ -1,19 +1,27 @@
 ---
-description: Interactive testing learning companion with 7 progressive sessions. TEA Module
+description:
+  Teach testing progressively through structured sessions. Use when user says 
+  'lets learn testing' or 'I want to study test practices'
 user-invocable: true
 ---
 
 # Teach Me Testing Workflow
 
-**Goal:** Interactive learning companion teaching testing fundamentals through advanced practices.
+**Goal:** Teach testing progressively through structured sessions.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan-teach-me-testing.md` | plan teach me testing |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

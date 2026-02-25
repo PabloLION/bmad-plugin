@@ -2,6 +2,7 @@
 name: 'step-03-map-criteria'
 description: 'Map acceptance criteria to tests and build traceability matrix'
 nextStepFile: './step-04-analyze-gaps.md'
+outputFile: '{test_artifacts}/traceability-report.md'
 ---
 
 # Step 3: Map Criteria to Tests
@@ -41,6 +42,10 @@ For each acceptance criterion:
 - Map to matching tests
 - Mark coverage status: FULL / PARTIAL / NONE / UNIT-ONLY / INTEGRATION-ONLY
 - Record test level and priority
+- Record heuristic signals:
+  - Endpoint coverage present/missing (for API-impacting criteria)
+  - Auth/authz coverage present/missing (positive and negative paths)
+  - Error-path coverage present/missing (validation, timeout, network/server failures)
 
 ---
 
@@ -50,6 +55,33 @@ Ensure:
 
 - P0/P1 criteria have coverage
 - No duplicate coverage across levels without justification
+- Criteria are not happy-path-only when requirements imply error handling
+- API criteria are not marked FULL if endpoint-level checks are missing
+- Auth/authz criteria include at least one denied/invalid-path test where applicable
+
+---
+
+### 3. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it using the workflow template (if available) with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-03-map-criteria']
+  lastStep: 'step-03-map-criteria'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-03-map-criteria'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-03-map-criteria'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section of the document.
 
 Load next step: `{nextStepFile}`
 

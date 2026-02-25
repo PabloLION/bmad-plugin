@@ -3,7 +3,7 @@ name: 'step-07-game-type'
 description: 'Process game-type specific sections from the loaded game type guide'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/2-design/gdd'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gdd'
 
 # File References
 thisStepFile: './step-07-game-type.md'
@@ -15,8 +15,8 @@ outputFile: '{output_folder}/gdd.md'
 gameTypesFolder: '{workflow_path}/game-types'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 7: Game Type Specifics

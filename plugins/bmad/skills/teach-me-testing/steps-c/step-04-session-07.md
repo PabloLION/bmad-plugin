@@ -6,15 +6,15 @@ progressFile: '{test_artifacts}/teaching-progress/{user_name}-tea-progress.yaml'
 sessionNotesTemplate: '../templates/session-notes-template.md'
 sessionNotesFile: '{test_artifacts}/tea-academy/{user_name}/session-07-notes.md'
 nextStepFile: './step-03-session-menu.md'
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
+partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
 ---
 
 # Step 4: Session 7 - Advanced Patterns
 
 ## STEP GOAL:
 
-To provide menu-driven exploration of 34 TEA knowledge fragments organized by category, allowing deep-dive into specific advanced topics on-demand.
+To provide menu-driven exploration of 35 TEA knowledge fragments organized by category, allowing deep-dive into specific advanced topics on-demand.
 
 ## MANDATORY EXECUTION RULES (READ FIRST):
 
@@ -57,7 +57,7 @@ To provide menu-driven exploration of 34 TEA knowledge fragments organized by ca
 - Can revisit this session anytime
 - No quiz - this is reference learning
 
-**34 Knowledge Fragments organized by category:**
+**35 Knowledge Fragments organized by category:**
 
 Let's explore!"
 

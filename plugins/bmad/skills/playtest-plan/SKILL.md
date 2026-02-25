@@ -1,13 +1,13 @@
 ---
 description:
-  Create structured playtesting sessions for gameplay validation and user feed
-  back
+  Playtest session planner. Use when the user says "lets create a playtest pla
+  n" or "I want to schedule gameplay testing"
 user-invocable: true
 ---
 
 # Gametest Playtest Plan Workflow
 
-**Goal:** Create structured playtesting sessions for gameplay validation and user feedback.
+**Goal:** Playtest session planner.
 
 **Agent:** Game QA Architect (GLaDOS) **Module:** GDS
 

@@ -197,7 +197,7 @@ Display:
 - **IF X (Exit):**
   - Display: "**Validation Report Saved:** {validationReportPath}"
   - Display: "**Summary:** {overall status} - {recommendation}"
-  - PRD Validation complete. Read fully and follow: `_bmad/core/tasks/help.md` with argument `Validate PRD`.
+  - PRD Validation complete. Read fully and follow: `${CLAUDE_PLUGIN_ROOT}/_shared/tasks/help.md`
 
 - **IF Any other:** Help user, then redisplay menu
 

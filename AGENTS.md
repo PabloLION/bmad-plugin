@@ -20,22 +20,52 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | sync:source | `bun run sync:source <id>` | Sync a single upstream source |
 | generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
 | generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
+| bump-core | `bun run bump-core` | Bump plugin version for new core BMAD-METHOD release |
+| bump-module | `bun run bump-module -- --source <id>` | Bump plugin version for new external module release |
 | update-readme | `bun run update-readme` | Update README version badge |
 | test | `bun run test` | Run tests |
 | release | `./scripts/release.sh [version]` | Full release workflow (see Release below) |
+
+## Upstream Sync
+
+When upstream repos release new tags, sync them into the plugin:
+
+```sh
+# Core BMAD-METHOD release
+bun run bump-core                       # fetch latest tag, bump to v<core>.0
+bun run bump-core -- --tag v6.0.2       # pin to specific tag
+bun run bump-core -- --dry-run          # preview only
+# Then: bun run sync && bun run generate:agents && bun run generate:skills
+
+# External module release (tea, bmb, cis, gds)
+bun run bump-module -- --source tea              # fetch latest tag, increment .X
+bun run bump-module -- --source gds --tag v0.1.7 # pin to specific tag
+bun run bump-module -- --source tea --dry-run    # preview only
+# Then: bun run sync -- --source <id> && bun run generate:agents -- --source <id> && bun run generate:skills -- --source <id>
+
+# Verify
+bun run typecheck && bun run lint
+```
+
+Both bump scripts fetch tags, update the upstream version file, update all 4
+plugin version files (.plugin-version, package.json, plugin.json, marketplace.json),
+and update README badges. Core bumps reset .X to 0; module bumps increment .X by 1.
 
 ## Release
 
 Run from **dev** branch with clean working tree:
 
 ```sh
-./scripts/release.sh           # release current version
-./scripts/release.sh 6.0.0-Beta.8.0  # bump + release
+./scripts/release.sh                  # release current version (full run)
+./scripts/release.sh 6.0.0-Beta.9.0  # bump version first, then release
+./scripts/release.sh --after-ci       # finish release after CI passes
 ```
 
-The script handles: beads sync → release branch → PR to main → wait for CI →
-merge → tag → GitHub release → return to dev. If version argument is provided,
-it bumps all 4 version files on dev first.
+Two phases: **prepare** (bump → beads sync → release branch → PR → wait for CI)
+and **finish** (merge → tag → GitHub release → return to dev).
+
+If CI is slow to register or fails, the script saves state to `.release-state`
+and exits with instructions. Fix the issue, then `--after-ci` completes Phase 2.
 
 ## Git Workflow
 
@@ -97,6 +127,8 @@ Script everything repeatable — never do manually what a script can do.
 - Sync content → `bun run sync --source <id>`
 - All scripts support `--source <id>` and `--dry-run` flags
 - When something breaks, **fix the script** — don't work around it manually
+- All scripts are **idempotent** — running them twice produces the same result.
+  Always run a script twice to verify idempotency after making changes to it
 
 ## Session Completion
 

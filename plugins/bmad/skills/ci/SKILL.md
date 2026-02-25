@@ -1,19 +1,27 @@
 ---
-description: CI/CD quality pipeline recommendations. Test Architecture
+description:
+  Scaffold CI/CD quality pipeline with test execution. Use when the user says 
+  'lets setup CI pipeline' or 'I want to create quality gates'
 user-invocable: true
 ---
 
-# Continuous Integration Workflow
+# Testarch Ci Workflow
 
-**Goal:** Recommend and scaffold CI/CD quality pipeline.
+**Goal:** Scaffold CI/CD quality pipeline with test execution.
 
-**Agent:** TEA (Murat) **Phase:** Test Architecture
+**Agent:** Master Test Architect and Quality Advisor (Murat) **Module:** TEA
 
 ---
 
 ## Execution
 
-Read and follow: `./instructions.md`
+Select a sub-workflow based on user intent:
+
+| Trigger | Sub-workflow | Description |
+| ------- | ------------ | ----------- |
+| PL | `./workflow-plan.md` | plan |
+
+Read and follow the selected sub-workflow file.
 
 ## Validation
 

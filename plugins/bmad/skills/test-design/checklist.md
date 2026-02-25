@@ -48,7 +48,7 @@
 - [ ] Priority levels assigned (P0/P1/P2/P3)
 - [ ] P0 scenarios meet strict criteria (blocks core + high risk + no workaround)
 - [ ] Data prerequisites identified
-- [ ] Tooling requirements documented
+- [ ] Tooling/access requirements documented when applicable
 - [ ] Execution order defined (smoke → P0 → P1 → P2/P3)
 
 ### Step 4: Deliverables Generation
@@ -177,6 +177,45 @@
 - [ ] Risk assessment informs `gate` workflow criteria
 - [ ] Integrates with `ci` workflow execution order
 
+## Accountability & Logistics
+
+### Not in Scope
+
+- [ ] Out-of-scope items explicitly listed with reasoning
+- [ ] Mitigation noted for each excluded item
+- [ ] Exclusions reviewed and accepted by stakeholders
+
+### Entry Criteria
+
+- [ ] Prerequisites for testing start are clearly defined
+- [ ] Environment readiness included
+- [ ] Test data readiness included
+- [ ] Pre-implementation blocker resolution referenced
+
+### Exit Criteria
+
+- [ ] Pass/fail thresholds defined for each priority level
+- [ ] Bug severity gate defined (e.g., no open P0/P1 bugs)
+- [ ] Coverage sufficiency criteria specified
+
+### Project Team (Optional)
+
+- [ ] If included, key roles identified (QA Lead, Dev Lead, PM, Architect minimum)
+- [ ] If included, testing responsibilities mapped to roles
+- [ ] If included, names populated where available (placeholders acceptable for draft)
+
+### Tooling & Access (System-Level Only, If Applicable)
+
+- [ ] If non-standard tools or access requests exist, list them
+- [ ] Access requirements identified for each tool/service
+- [ ] Status tracked (Ready/Pending) when applicable
+
+### Interworking & Regression
+
+- [ ] Impacted services/components identified
+- [ ] Regression scope defined per impacted service
+- [ ] Cross-team coordination noted where needed
+
 ## System-Level Mode: Two-Document Validation
 
 **When in system-level mode (PRD + ADR input), validate BOTH documents:**
@@ -186,7 +225,7 @@
 - [ ] **Purpose statement** at top (serves as contract with Architecture team)
 - [ ] **Executive Summary** with scope, business context, architecture decisions, risk summary
 - [ ] **Quick Guide** section with three tiers:
-  - [ ] 🚨 BLOCKERS - Team Must Decide (Sprint 0 critical path items)
+  - [ ] 🚨 BLOCKERS - Team Must Decide (pre-implementation critical path items)
   - [ ] ⚠️ HIGH PRIORITY - Team Should Validate (recommendations for approval)
   - [ ] 📋 INFO ONLY - Solutions Provided (no decisions needed)
 - [ ] **Risk Assessment** section - **ACTIONABLE**
@@ -223,7 +262,7 @@
   - [ ] NO "Test Levels Strategy" section (unit/integration/E2E split belongs in QA doc only)
   - [ ] NO "NFR Testing Approach" section with detailed test procedures (belongs in QA doc only)
   - [ ] NO "Test Environment Requirements" section (belongs in QA doc only)
-  - [ ] NO "Recommendations for Sprint 0" section with test framework setup (belongs in QA doc only)
+  - [ ] NO "Recommendations for pre-implementation" section with test framework setup (belongs in QA doc only)
   - [ ] NO "Quality Gate Criteria" section (pass rates, coverage targets belong in QA doc only)
   - [ ] NO "Tool Selection" section (Playwright, k6, etc. belongs in QA doc only)
 
@@ -233,7 +272,7 @@
 
 - [ ] **Purpose statement** at top (test execution recipe)
 - [ ] **Executive Summary** with risk summary and coverage summary
-- [ ] **Dependencies & Test Blockers** section in POSITION 2 (right after Executive Summary)
+- [ ] **Dependencies & Test Blockers** section appears near the top (immediately after Executive Summary, or after Not in Scope)
   - [ ] Backend/Architecture dependencies listed (what QA needs from other teams)
   - [ ] QA infrastructure setup listed (factories, fixtures, environments)
   - [ ] Code example with playwright-utils if config.tea_use_playwright_utils is true
@@ -256,7 +295,11 @@
 - [ ] **QA Effort Estimate** section (QA effort ONLY)
   - [ ] Interval-based estimates (e.g., "~1-2 weeks" NOT "36 hours")
   - [ ] NO DevOps, Backend, Data Eng, Finance effort
-  - [ ] NO Sprint breakdowns (too prescriptive)
+  - [ ] No per-milestone effort breakdowns in this section
+- [ ] **Implementation Planning Handoff** section (optional)
+  - [ ] Only include if implementation tasks must be scheduled
+  - [ ] Owners assigned (QA/Dev/Platform/etc)
+  - [ ] Target milestone may be noted, but avoid detailed per-milestone breakdowns
 - [ ] **Appendix A: Code Examples & Tagging**
 - [ ] **Appendix B: Knowledge Base References**
 
@@ -272,14 +315,14 @@
 - [ ] ❌ NO Follow-on Workflows section (BMAD commands self-explanatory)
 - [ ] ❌ NO Approval section
 - [ ] ❌ NO Infrastructure/DevOps/Finance effort tables (out of scope)
-- [ ] ❌ NO Sprint 0/1/2/3 breakdown tables
-- [ ] ❌ NO Next Steps section
+- [ ] ❌ NO detailed milestone-by-milestone breakdown tables (use Implementation Planning Handoff if needed)
+- [ ] ❌ NO generic Next Steps section (use Implementation Planning Handoff if needed)
 
 ### Cross-Document Consistency
 
 - [ ] Both documents reference same risks by ID (R-001, R-002, etc.)
 - [ ] Both documents use consistent priority levels (P0, P1, P2, P3)
-- [ ] Both documents reference same Sprint 0 blockers
+- [ ] Both documents reference same pre-implementation blockers
 - [ ] No duplicate content (cross-reference instead)
 - [ ] Dates and authors match across documents
 - [ ] ADR and PRD references consistent
@@ -318,6 +361,16 @@
   - [ ] Actionable ASRs included in 🚨 or ⚠️ sections
   - [ ] FYI ASRs included in 📋 section or omitted if obvious
 
+## BMAD Handoff Validation (System-Level Mode Only)
+
+- [ ] Handoff document generated at `{test_artifacts}/test-design/{project_name}-handoff.md`
+- [ ] TEA Artifacts Inventory table populated with actual paths
+- [ ] Epic-Level Integration Guidance populated with P0/P1 risks
+- [ ] Story-Level Integration Guidance populated with critical test scenarios
+- [ ] Risk-to-Story Mapping table populated from risk register
+- [ ] Recommended workflow sequence is accurate
+- [ ] Phase transition quality gates are defined
+
 ## Completion Criteria
 
 **All must be true:**
@@ -329,6 +382,7 @@
 - [ ] All integration points verified
 - [ ] Output file(s) complete and well-formatted
 - [ ] **System-level mode:** Both documents validated (if applicable)
+- [ ] **System-level mode:** Handoff document validated (if applicable)
 - [ ] **Epic-level mode:** Single document validated (if applicable)
 - [ ] Team review scheduled (if required)
 

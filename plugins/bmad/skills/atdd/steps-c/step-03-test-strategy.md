@@ -1,6 +1,7 @@
 ---
 name: 'step-03-test-strategy'
 description: 'Map acceptance criteria to test levels and priorities'
+outputFile: '{test_artifacts}/atdd-checklist-{story_id}.md'
 nextStepFile: './step-04-generate-tests.md'
 ---
 
@@ -44,11 +45,20 @@ Translate acceptance criteria into a prioritized, level-appropriate test plan.
 
 ## 2. Select Test Levels
 
-Choose the best level per scenario:
+Choose the best level per scenario based on `{detected_stack}`:
+
+**If {detected_stack} is `frontend` or `fullstack`:**
 
 - **E2E** for critical user journeys
 - **API** for business logic and service contracts
 - **Component** for UI behavior
+
+**If {detected_stack} is `backend` or `fullstack`:**
+
+- **Unit** for pure functions, business logic, and edge cases
+- **Integration** for service interactions, database queries, and middleware
+- **API/Contract** for endpoint validation, request/response schemas, and Pact contracts
+- **No E2E** for pure backend projects (no browser-based testing needed)
 
 ---
 
@@ -61,6 +71,30 @@ Assign P0–P3 priorities using risk and business impact.
 ## 4. Confirm Red Phase Requirements
 
 Ensure all tests are designed to **fail before implementation** (TDD red phase).
+
+---
+
+## 5. Save Progress
+
+**Save this step's accumulated work to `{outputFile}`.**
+
+- **If `{outputFile}` does not exist** (first save), create it with YAML frontmatter:
+
+  ```yaml
+  ---
+  stepsCompleted: ['step-03-test-strategy']
+  lastStep: 'step-03-test-strategy'
+  lastSaved: '{date}'
+  ---
+  ```
+
+  Then write this step's output below the frontmatter.
+
+- **If `{outputFile}` already exists**, update:
+  - Add `'step-03-test-strategy'` to `stepsCompleted` array (only if not already present)
+  - Set `lastStep: 'step-03-test-strategy'`
+  - Set `lastSaved: '{date}'`
+  - Append this step's output to the appropriate section.
 
 Load next step: `{nextStepFile}`
 

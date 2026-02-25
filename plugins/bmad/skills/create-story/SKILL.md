@@ -1,13 +1,14 @@
 ---
 description:
-  Create the next user story from epics+stories with enhanced context analysis
-   and direct ready-for-dev marking
+  Creates a dedicated story file with all the context the agent will need to i
+  mplement it later. Use when the user says "create the next story" or "create
+   story [story identifier]"
 user-invocable: true
 ---
 
 # Create Story Workflow
 
-**Goal:** Create the next user story from epics+stories with enhanced context analysis and direct ready-for-dev marking.
+**Goal:** Creates a dedicated story file with all the context the agent will need to implement it later.
 
 **Agent:** Scrum Master (Bob) **Module:** CORE
 

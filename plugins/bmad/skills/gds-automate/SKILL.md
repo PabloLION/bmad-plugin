@@ -1,13 +1,13 @@
 ---
 description:
-  Generate automated game tests for Unity, Unreal, or Godot based on test desi
-  gn scenarios
+  Automated test scenario generator. Use when the user says "I want to create 
+  automated game tests" or "Generate test scenarios for Unity Unreal or Godot"
 user-invocable: true
 ---
 
 # Gametest Automate Workflow
 
-**Goal:** Generate automated game tests for Unity, Unreal, or Godot based on test design scenarios.
+**Goal:** Automated test scenario generator.
 
 **Agent:** Game QA Architect (GLaDOS) **Module:** GDS
 

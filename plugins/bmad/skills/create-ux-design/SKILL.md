@@ -1,13 +1,13 @@
 ---
 description:
-  Work with a peer UX Design expert to plan your applications UX patterns, loo
-  k and feel.
+  Plan UX patterns and design specifications. Use when the user says "lets cre
+  ate UX design" or "create UX specifications" or "help me plan the UX"
 user-invocable: true
 ---
 
 # Create Ux Design Workflow
 
-**Goal:** Work with a peer UX Design expert to plan your applications UX patterns, look and feel.
+**Goal:** Plan UX patterns and design specifications.
 
 **Agent:** UX Designer (Sally) **Module:** CORE
 

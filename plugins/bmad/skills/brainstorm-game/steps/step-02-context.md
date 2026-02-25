@@ -3,7 +3,7 @@ name: 'step-02-context'
 description: 'Load game-specific brainstorming context and techniques'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/1-preproduction/brainstorm-game'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorm-game'
 
 # File References
 thisStepFile: './step-02-context.md'
@@ -14,7 +14,7 @@ outputFile: '{output_folder}/brainstorming-session-{date}.md'
 # Context Files
 gameContext: '{workflow_path}/game-context.md'
 gameBrainMethods: '{workflow_path}/game-brain-methods.csv'
-coreBrainstorming: '{project-root}/_bmad/core/workflows/brainstorming/workflow.md'
+coreBrainstorming: '${CLAUDE_PLUGIN_ROOT}/skills/brainstorming/SKILL.md'
 ---
 
 # Step 2: Load Context

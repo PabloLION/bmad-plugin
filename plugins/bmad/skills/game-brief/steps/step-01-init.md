@@ -3,7 +3,7 @@ name: 'step-01-init'
 description: 'Initialize the Game Brief workflow by detecting continuation state and setting up the document'
 
 # Path Definitions
-workflow_path: '{project-root}/_bmad/gds/workflows/1-preproduction/game-brief'
+workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/game-brief'
 
 # File References
 thisStepFile: './step-01-init.md'
