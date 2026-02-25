@@ -357,7 +357,10 @@ if (rewriteStats.warnings.length > 0) {
   }
 }
 
-// Update version files (core-anchored strategy) — skip when filtering to a single source
+// Update version files (core-anchored strategy) — skip when filtering to a single source.
+// This block uses ad-hoc version logic (read upstream package.json, write .0 patch)
+// rather than bump-utils.ts because sync derives versions from the checked-out upstream
+// state, while bump scripts resolve versions from git tags + user input.
 if (!DRY_RUN && !SOURCE_FILTER) {
   const core = getCoreSource();
   const coreRoot = join(ROOT, '.upstream', core.localPath);

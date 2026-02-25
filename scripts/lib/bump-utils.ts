@@ -47,6 +47,9 @@ export async function fetchLatestTag(
     process.exit(1);
   }
 
+  // NOTE: localeCompare with numeric:true sorts by dotted-number segments
+  // but does not handle semver pre-release ordering (e.g., -alpha < -beta).
+  // Sufficient for our upstreams which use simple semver or Beta.N tags.
   tags.sort((a, b) => {
     const normalize = (t: string): string => t.replace(/^v/, '');
     return normalize(a).localeCompare(normalize(b), undefined, {

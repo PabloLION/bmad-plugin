@@ -161,9 +161,9 @@ function generateSkillMd(
   const lines: string[] = [
     '---',
     'description:',
-    ...info.yaml.description
+    ...(info.yaml.description || 'No description available.')
       .match(/.{1,76}/g)!
-      .map((line, i) => (i === 0 ? `  ${line}` : `  ${line}`)),
+      .map((line) => `  ${line}`),
     'user-invocable: true',
     '---',
     '',
@@ -289,6 +289,8 @@ async function processSource(source: UpstreamSource): Promise<number> {
 
 // === Main ===
 
+// --source <id> allows targeting any source including core (escape hatch).
+// Default run excludes core since core workflows use a different generation path.
 const sources = SOURCE_FILTER
   ? ([getSource(SOURCE_FILTER)].filter(Boolean) as UpstreamSource[])
   : getEnabledSources().filter((s) => s.id !== 'core');

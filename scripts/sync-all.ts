@@ -9,6 +9,19 @@
 
 const args = process.argv.slice(2);
 
+// Validate --source if provided (fail fast before running sub-scripts)
+const sourceIdx = args.indexOf('--source');
+if (sourceIdx >= 0) {
+  const sourceId = args[sourceIdx + 1];
+  const validSources = ['core', 'tea', 'bmb', 'cis', 'gds'];
+  if (!sourceId || !validSources.includes(sourceId)) {
+    console.error(
+      `Invalid --source: "${sourceId ?? ''}". Valid: ${validSources.join(', ')}`,
+    );
+    process.exit(1);
+  }
+}
+
 const steps = [
   { script: 'scripts/sync-upstream-content.ts', label: 'sync' },
   { script: 'scripts/generate-agents.ts', label: 'generate:agents' },

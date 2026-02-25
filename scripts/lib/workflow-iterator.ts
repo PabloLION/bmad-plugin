@@ -72,7 +72,7 @@ async function getCategorizedEntries(
   const workarounds = source.workflowWorkarounds ?? {};
 
   for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
+    if (!cat.isDirectory() || skipDirs.has(cat.name)) continue;
 
     const catDir = join(workflowsRoot, cat.name);
 
