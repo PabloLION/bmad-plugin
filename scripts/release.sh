@@ -55,6 +55,9 @@ if [[ "${1:-}" == "--after-ci" ]]; then
 
   rm -f "$STATE_FILE"
 
+  echo "Triggering post-release workflows..."
+  gh workflow run sync-upstream.yml 2>/dev/null || echo "⚠ Could not trigger sync-upstream workflow"
+
   echo ""
   echo "Released $RELEASE_TAG"
   exit 0
@@ -215,6 +218,9 @@ git checkout dev
 git pull
 
 rm -f "$STATE_FILE"
+
+echo "Triggering post-release workflows..."
+gh workflow run sync-upstream.yml 2>/dev/null || echo "⚠ Could not trigger sync-upstream workflow"
 
 echo ""
 echo "Released $TAG"
