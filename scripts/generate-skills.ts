@@ -13,6 +13,7 @@ import { parse as parseYaml } from 'yaml';
 import { PLUGIN, ROOT } from './lib/config.ts';
 import type { UpstreamSource } from './lib/upstream-sources.ts';
 import { getEnabledSources, getSource } from './lib/upstream-sources.ts';
+import { getWorkflowEntries } from './lib/workflow-iterator.ts';
 
 const DRY_RUN = process.argv.includes('--dry-run');
 const SOURCE_FILTER = (() => {
@@ -241,100 +242,6 @@ async function collectWorkflowInfo(
   };
 }
 
-/** Get workflow directories for a flat source. */
-async function getFlatWorkflowDirs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowInfo[]> {
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return [];
-
-  const entries = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const pluginOnlySkills = source.pluginOnlySkills ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-  const results: WorkflowInfo[] = [];
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || skipDirs.has(entry.name)) continue;
-    if (skipWorkflows.has(entry.name)) continue;
-
-    const skillName = workarounds[entry.name] ?? entry.name;
-    if (pluginOnlySkills.has(skillName)) continue;
-
-    const info = await collectWorkflowInfo(
-      join(workflowsRoot, entry.name),
-      entry.name,
-      skillName,
-      entry.name,
-    );
-    if (info) results.push(info);
-  }
-
-  return results;
-}
-
-/** Get workflow directories for a categorized source (category → workflow structure). */
-async function getCategorizedWorkflowDirs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowInfo[]> {
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return [];
-
-  const categories = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const pluginOnlySkills = source.pluginOnlySkills ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-  const results: WorkflowInfo[] = [];
-
-  for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
-
-    const catDir = join(workflowsRoot, cat.name);
-
-    // Check if this is a leaf workflow (has workflow.yaml or workflow.md)
-    const leafMeta = await parseWorkflowMeta(catDir);
-    if (leafMeta) {
-      if (skipWorkflows.has(cat.name)) continue;
-      const skillName = workarounds[cat.name] ?? cat.name;
-      if (pluginOnlySkills.has(skillName)) continue;
-
-      const subWorkflows = await detectSubWorkflows(catDir);
-      results.push({
-        dirName: cat.name,
-        skillName,
-        yaml: leafMeta,
-        hasSubWorkflows: subWorkflows.length > 0,
-        subWorkflows,
-      });
-      continue;
-    }
-
-    // Category directory — iterate sub-workflows
-    const subs = await readdir(catDir, { withFileTypes: true });
-    for (const sub of subs) {
-      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
-      if (skipWorkflows.has(sub.name)) continue;
-
-      const skillName = workarounds[sub.name] ?? sub.name;
-      if (pluginOnlySkills.has(skillName)) continue;
-
-      const info = await collectWorkflowInfo(
-        join(catDir, sub.name),
-        sub.name,
-        skillName,
-        `${cat.name}/${sub.name}`,
-      );
-      if (info) results.push(info);
-    }
-  }
-
-  return results;
-}
-
 /** Process a single upstream source. */
 async function processSource(source: UpstreamSource): Promise<number> {
   const upstreamRoot = join(ROOT, '.upstream', source.localPath);
@@ -344,12 +251,21 @@ async function processSource(source: UpstreamSource): Promise<number> {
     return 0;
   }
 
-  const workflows = source.flatWorkflows
-    ? await getFlatWorkflowDirs(source, upstreamRoot)
-    : await getCategorizedWorkflowDirs(source, upstreamRoot);
+  const pluginOnlySkills = source.pluginOnlySkills ?? new Set();
+  const entries = await getWorkflowEntries(source, upstreamRoot);
   let count = 0;
 
-  for (const info of workflows) {
+  for (const entry of entries) {
+    if (pluginOnlySkills.has(entry.skillName)) continue;
+
+    const info = await collectWorkflowInfo(
+      entry.upstreamDir,
+      entry.dirName,
+      entry.skillName,
+      entry.skillName,
+    );
+    if (!info) continue;
+
     const skillDir = join(SKILLS_DIR, info.skillName);
     const skillPath = join(skillDir, 'SKILL.md');
 

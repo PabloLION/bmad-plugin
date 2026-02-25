@@ -8,9 +8,10 @@
 
 import { exists, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { PLUGIN, ROOT } from './config.ts';
+import { ROOT } from './config.ts';
 import type { UpstreamSource } from './upstream-sources.ts';
 import { getEnabledSources } from './upstream-sources.ts';
+import { getWorkflowEntries } from './workflow-iterator.ts';
 
 /**
  * Module alias config: how each _bmad/<alias>/ maps to upstream structure.
@@ -69,56 +70,13 @@ async function addSourceWorkflows(
   source: UpstreamSource,
 ): Promise<void> {
   const upstreamRoot = join(ROOT, '.upstream', source.localPath);
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return;
-
-  // Determine module alias for this source
   const alias = getModuleAlias(source);
   if (!map.has(alias)) map.set(alias, new Map());
   const moduleMap = map.get(alias)!;
 
-  const workarounds = source.workflowWorkarounds ?? {};
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-
-  if (source.flatWorkflows) {
-    // Flat: workflow dirs directly under contentRoot
-    const entries = await readdir(workflowsRoot, { withFileTypes: true });
-    for (const entry of entries) {
-      if (!entry.isDirectory() || skipDirs.has(entry.name)) continue;
-      if (skipWorkflows.has(entry.name)) continue;
-      const skillName = workarounds[entry.name] ?? entry.name;
-      moduleMap.set(entry.name, skillName);
-    }
-  } else {
-    // Categorized: category/workflow structure
-    const categories = await readdir(workflowsRoot, { withFileTypes: true });
-    for (const cat of categories) {
-      if (!cat.isDirectory()) continue;
-
-      const catDir = join(workflowsRoot, cat.name);
-
-      // Check for leaf workflow at category level
-      const hasWorkflowFile =
-        (await exists(join(catDir, 'workflow.yaml'))) ||
-        (await exists(join(catDir, 'workflow.md')));
-      if (hasWorkflowFile) {
-        if (!skipWorkflows.has(cat.name)) {
-          const skillName = workarounds[cat.name] ?? cat.name;
-          moduleMap.set(cat.name, skillName);
-        }
-        continue;
-      }
-
-      // Iterate sub-workflows
-      const subs = await readdir(catDir, { withFileTypes: true });
-      for (const sub of subs) {
-        if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
-        if (skipWorkflows.has(sub.name)) continue;
-        const skillName = workarounds[sub.name] ?? sub.name;
-        moduleMap.set(sub.name, skillName);
-      }
-    }
+  const entries = await getWorkflowEntries(source, upstreamRoot);
+  for (const entry of entries) {
+    moduleMap.set(entry.dirName, entry.skillName);
   }
 }
 
