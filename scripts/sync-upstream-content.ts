@@ -11,6 +11,7 @@
 import { cp, exists, readdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from './lib/config.ts';
+import { listFilesRecursive } from './lib/fs-utils.ts';
 import { gitInUpstream } from './lib/git-utils.ts';
 import {
   buildWorkflowMap,
@@ -38,20 +39,6 @@ const rewriteStats = {
   totalChanges: 0,
   warnings: [] as string[],
 };
-
-async function listFilesRecursive(dir: string): Promise<string[]> {
-  const results: string[] = [];
-  const entries = await readdir(dir, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      const subFiles = await listFilesRecursive(join(dir, entry.name));
-      results.push(...subFiles.map((f) => `${entry.name}/${f}`));
-    } else {
-      results.push(entry.name);
-    }
-  }
-  return results;
-}
 
 /**
  * Copy a file, applying path rewrites for text files.
@@ -104,14 +91,11 @@ async function getFlatWorkflowPairs(
     if (skipWorkflows.has(entry.name)) continue;
 
     const skillName = workarounds[entry.name] ?? entry.name;
-    const skillPath = join(PLUGIN, 'skills', skillName);
-    if (await exists(skillPath)) {
-      pairs.push({
-        upstreamDir: join(workflowsRoot, entry.name),
-        pluginDir: skillPath,
-        label: `[${source.id}] ${skillName}`,
-      });
-    }
+    pairs.push({
+      upstreamDir: join(workflowsRoot, entry.name),
+      pluginDir: join(PLUGIN, 'skills', skillName),
+      label: `[${source.id}] ${skillName}`,
+    });
   }
   return pairs;
 }
@@ -144,14 +128,11 @@ async function getCategorizedWorkflowPairs(
     if (await isLeafWorkflow(catDir)) {
       if (skipWorkflows.has(cat.name)) continue;
       const skillName = workarounds[cat.name] ?? cat.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: catDir,
-          pluginDir: skillPath,
-          label: `[${source.id}] ${skillName}`,
-        });
-      }
+      pairs.push({
+        upstreamDir: catDir,
+        pluginDir: join(PLUGIN, 'skills', skillName),
+        label: `[${source.id}] ${skillName}`,
+      });
       continue;
     }
 
@@ -162,14 +143,11 @@ async function getCategorizedWorkflowPairs(
       if (skipWorkflows.has(sub.name)) continue;
 
       const skillName = workarounds[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: join(catDir, sub.name),
-          pluginDir: skillPath,
-          label: `[${source.id}] ${skillName}`,
-        });
-      }
+      pairs.push({
+        upstreamDir: join(catDir, sub.name),
+        pluginDir: join(PLUGIN, 'skills', skillName),
+        label: `[${source.id}] ${skillName}`,
+      });
     }
   }
   return pairs;
