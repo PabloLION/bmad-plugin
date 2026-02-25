@@ -240,7 +240,7 @@ function rewriteWorkflowPath(
 
   // For flat sources with extra prefix (tea has testarch/)
   let startIdx = 0;
-  if (config && config.pathPrefix.includes('/')) {
+  if (config?.pathPrefix.includes('/')) {
     // tea: pathPrefix is 'workflows/testarch', skip 'testarch' segment
     const prefixParts = config.pathPrefix.split('/');
     const extraPrefix = prefixParts.slice(1).join('/');
@@ -309,7 +309,7 @@ function rewriteConfigPath(): SingleRewriteResult {
 }
 
 /** Rewrite a knowledge/index path to ${CLAUDE_PLUGIN_ROOT}/_shared/<file> */
-function rewriteIndexPath(alias: string, rest: string): SingleRewriteResult {
+function rewriteIndexPath(_alias: string, rest: string): SingleRewriteResult {
   // Extract just the filename from paths like testarch/tea-index.csv
   const fileName = rest.split('/').pop()!;
   return {

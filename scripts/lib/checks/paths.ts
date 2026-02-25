@@ -9,7 +9,7 @@
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PLUGIN } from '../config.ts';
-import { fail, pass, section, warn } from '../output.ts';
+import { pass, section, warn } from '../output.ts';
 
 /** Patterns that are expected to remain unrewritten. */
 const EXPECTED_PATTERNS = [

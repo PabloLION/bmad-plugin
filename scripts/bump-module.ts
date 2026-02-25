@@ -15,11 +15,11 @@
 
 import { join } from 'node:path';
 import {
-  VERSION_FILES,
   confirmProceed,
   fetchLatestTag,
   updateJsonVersionFiles,
   updateReadmeBadge,
+  VERSION_FILES,
 } from './lib/bump-utils.ts';
 import { ROOT } from './lib/config.ts';
 import { getSource } from './lib/upstream-sources.ts';
