@@ -1,1 +1,3 @@
-bun scripts/validate-upstream-coverage.ts
+bun run typecheck
+bun run lint
+bun run validate

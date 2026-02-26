@@ -1,7 +1,7 @@
 ---
 description:
   Review test quality using best practices validation. Use when the user says 
-  'lets review tests' or 'I want to evaluate test quality'
+  "lets review tests" or "I want to evaluate test quality"
 user-invocable: true
 ---
 

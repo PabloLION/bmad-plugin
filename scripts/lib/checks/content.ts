@@ -3,7 +3,7 @@
  * and plugin, across all enabled sources.
  */
 
-import { exists, readdir } from 'node:fs/promises';
+import { exists } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PLUGIN, ROOT } from '../config.ts';
 import { listFilesRecursive, normalize } from '../fs-utils.ts';
@@ -19,117 +19,33 @@ import {
   getEnabledSources,
   shouldSkipContentFile,
 } from '../upstream-sources.ts';
+import { getWorkflowEntries } from '../workflow-iterator.ts';
 
-interface WorkflowSkillPair {
+interface ContentPair {
   upstreamDir: string;
   pluginDir: string;
   label: string;
-  /** Source this pair belongs to (for config lookups) */
   source: UpstreamSource;
 }
 
-/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
-async function isLeafWorkflow(dir: string): Promise<boolean> {
-  if (await exists(join(dir, 'workflow.yaml'))) return true;
-  if (await exists(join(dir, 'workflow.md'))) return true;
-  return false;
-}
-
-/** Get pairs for a flat source. */
-async function getFlatPairs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowSkillPair[]> {
-  const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return pairs;
-
-  const entries = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  for (const entry of entries) {
-    if (!entry.isDirectory() || skipDirs.has(entry.name)) continue;
-    if (skipWorkflows.has(entry.name)) continue;
-    const skillName = workarounds[entry.name] ?? entry.name;
-    const skillPath = join(PLUGIN, 'skills', skillName);
-    if (await exists(skillPath)) {
-      pairs.push({
-        upstreamDir: join(workflowsRoot, entry.name),
-        pluginDir: skillPath,
-        label: `[${source.id}] ${skillName}`,
-        source,
-      });
-    }
-  }
-  return pairs;
-}
-
-/** Get pairs for a categorized source (category → workflow structure). */
-async function getCategorizedPairs(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<WorkflowSkillPair[]> {
-  const pairs: WorkflowSkillPair[] = [];
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return pairs;
-
-  const categories = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
-
-    const catDir = join(workflowsRoot, cat.name);
-
-    // Leaf workflow at top level (has workflow.yaml or workflow.md)
-    if (await isLeafWorkflow(catDir)) {
-      if (skipWorkflows.has(cat.name)) continue;
-      const skillName = workarounds[cat.name] ?? cat.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: catDir,
-          pluginDir: skillPath,
-          label: `[${source.id}] ${skillName}`,
-          source,
-        });
-      }
-      continue;
-    }
-
-    // Category directory — iterate sub-workflows
-    const subs = await readdir(catDir, { withFileTypes: true });
-    for (const sub of subs) {
-      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
-      if (skipWorkflows.has(sub.name)) continue;
-      const skillName = workarounds[sub.name] ?? sub.name;
-      const skillPath = join(PLUGIN, 'skills', skillName);
-      if (await exists(skillPath)) {
-        pairs.push({
-          upstreamDir: join(catDir, sub.name),
-          pluginDir: skillPath,
-          label: `[${source.id}] ${cat.name}/${sub.name}`,
-          source,
-        });
-      }
-    }
-  }
-  return pairs;
-}
-
-/** Get all workflow→skill pairs across all enabled sources. */
-async function getAllPairs(): Promise<WorkflowSkillPair[]> {
-  const pairs: WorkflowSkillPair[] = [];
+/** Get all workflow→skill pairs across all enabled sources (only existing plugin dirs). */
+async function getAllPairs(): Promise<ContentPair[]> {
+  const pairs: ContentPair[] = [];
   for (const source of getEnabledSources()) {
     const upstreamRoot = join(ROOT, '.upstream', source.localPath);
-    const sourcePairs = source.flatWorkflows
-      ? await getFlatPairs(source, upstreamRoot)
-      : await getCategorizedPairs(source, upstreamRoot);
-    pairs.push(...sourcePairs);
+    const entries = await getWorkflowEntries(source, upstreamRoot);
+
+    for (const entry of entries) {
+      // Content check only compares existing plugin dirs
+      if (await exists(entry.pluginSkillDir)) {
+        pairs.push({
+          upstreamDir: entry.upstreamDir,
+          pluginDir: entry.pluginSkillDir,
+          label: `[${source.id}] ${entry.skillName}`,
+          source,
+        });
+      }
+    }
   }
   return pairs;
 }

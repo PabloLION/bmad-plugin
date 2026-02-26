@@ -5,84 +5,17 @@
  * - Plugin.json manifest commands
  */
 
-import { exists, readdir } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { PLUGIN, PLUGIN_JSON_PATH, ROOT } from '../config.ts';
 import { fail, pass, section, warn } from '../output.ts';
-import type { UpstreamSource } from '../upstream-sources.ts';
 import { getEnabledSources } from '../upstream-sources.ts';
+import { getWorkflowEntries } from '../workflow-iterator.ts';
 
 export interface SkillSets {
   upstream: Set<string>;
   directories: Set<string>;
   manifest: Set<string>;
-}
-
-/** Check if a directory is a leaf workflow (has workflow.yaml or workflow.md). */
-async function isLeafWorkflow(dir: string): Promise<boolean> {
-  if (await exists(join(dir, 'workflow.yaml'))) return true;
-  if (await exists(join(dir, 'workflow.md'))) return true;
-  return false;
-}
-
-/** Collect workflow names from a flat source. */
-async function getFlatWorkflowNames(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<string[]> {
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return [];
-
-  const entries = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  return entries
-    .filter(
-      (e) =>
-        e.isDirectory() && !skipDirs.has(e.name) && !skipWorkflows.has(e.name),
-    )
-    .map((e) => workarounds[e.name] ?? e.name);
-}
-
-/** Collect workflow names from a categorized source (category → workflow structure). */
-async function getCategorizedWorkflowNames(
-  source: UpstreamSource,
-  upstreamRoot: string,
-): Promise<string[]> {
-  const names: string[] = [];
-  const workflowsRoot = join(upstreamRoot, source.contentRoot);
-  if (!(await exists(workflowsRoot))) return [];
-
-  const categories = await readdir(workflowsRoot, { withFileTypes: true });
-  const skipDirs = source.skipDirs ?? new Set();
-  const skipWorkflows = source.skipWorkflows ?? new Set();
-  const workarounds = source.workflowWorkarounds ?? {};
-
-  for (const cat of categories) {
-    if (!cat.isDirectory()) continue;
-
-    // Leaf workflow at top level (has workflow.yaml or workflow.md)
-    if (await isLeafWorkflow(join(workflowsRoot, cat.name))) {
-      if (!skipWorkflows.has(cat.name)) {
-        names.push(workarounds[cat.name] ?? cat.name);
-      }
-      continue;
-    }
-
-    // Category directory — iterate sub-workflows
-    const subs = await readdir(join(workflowsRoot, cat.name), {
-      withFileTypes: true,
-    });
-    for (const sub of subs) {
-      if (!sub.isDirectory() || skipDirs.has(sub.name)) continue;
-      if (skipWorkflows.has(sub.name)) continue;
-      names.push(workarounds[sub.name] ?? sub.name);
-    }
-  }
-
-  return names;
 }
 
 /** Collect upstream workflow names from all enabled sources. */
@@ -91,12 +24,9 @@ async function getUpstreamWorkflows(): Promise<Set<string>> {
 
   for (const source of getEnabledSources()) {
     const upstreamRoot = join(ROOT, '.upstream', source.localPath);
-    const sourceNames = source.flatWorkflows
-      ? await getFlatWorkflowNames(source, upstreamRoot)
-      : await getCategorizedWorkflowNames(source, upstreamRoot);
-
-    for (const name of sourceNames) {
-      names.add(name);
+    const entries = await getWorkflowEntries(source, upstreamRoot);
+    for (const entry of entries) {
+      names.add(entry.skillName);
     }
   }
 
