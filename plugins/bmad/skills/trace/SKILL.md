@@ -1,7 +1,7 @@
 ---
 description:
   Generate traceability matrix and quality gate decision. Use when the user sa
-  ys 'lets create traceability matrix' or 'I want to analyze test coverage'
+  ys "lets create traceability matrix" or "I want to analyze test coverage"
 user-invocable: true
 ---
 

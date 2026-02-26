@@ -1,7 +1,7 @@
 ---
 description:
-  Generate failing acceptance tests using TDD cycle. Use when the user says 'l
-  ets write acceptance tests' or 'I want to do ATDD'
+  Generate failing acceptance tests using TDD cycle. Use when the user says "l
+  ets write acceptance tests" or "I want to do ATDD"
 user-invocable: true
 ---
 
