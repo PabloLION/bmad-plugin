@@ -86,6 +86,20 @@ claude plugin install bmad@bmad-method --scope local
 | **Project** | All collaborators | `.claude/settings.json` (in repo) |
 | **Local** | You, this repo only | `.claude/settings.local.json` |
 
+### Troubleshooting: Plugin Update Shows Stale Version
+
+`claude plugin update` may report the plugin is "already at the latest version"
+even when a newer version exists. This is a
+[known Claude Code bug](https://github.com/anthropics/claude-code/issues/28540)
+where the marketplace cache is not fetched before comparing versions.
+
+Workaround — manually pull the marketplace cache, then retry:
+
+```sh
+git -C ~/.claude/plugins/marketplaces/bmad-method pull origin main
+claude plugin update bmad@bmad-method
+```
+
 ## Features
 
 - **9 Specialized Agents**: Business Analyst, Product Manager, UX Designer,
