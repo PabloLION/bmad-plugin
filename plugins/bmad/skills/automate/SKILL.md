@@ -1,7 +1,7 @@
 ---
 description:
-  Expand test automation coverage for codebase. Use when the user says 'lets e
-  xpand test coverage' or 'I want to automate tests'
+  Expand test automation coverage for codebase. Use when the user says "lets e
+  xpand test coverage" or "I want to automate tests"
 user-invocable: true
 ---
 

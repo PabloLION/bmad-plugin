@@ -1,7 +1,7 @@
 ---
 description:
-  Create system-level or epic-level test plans. Use when the user says 'lets d
-  esign test plan' or 'I want to create test strategy'
+  Create system-level or epic-level test plans. Use when the user says "lets d
+  esign test plan" or "I want to create test strategy"
 user-invocable: true
 ---
 
