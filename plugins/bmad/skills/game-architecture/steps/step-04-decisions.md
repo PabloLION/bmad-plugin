@@ -14,6 +14,7 @@ outputFile: '{output_folder}/game-architecture.md'
 # Knowledge Bases
 decisionCatalog: '{workflow_path}/decision-catalog.yaml'
 architecturePatterns: '{workflow_path}/architecture-patterns.yaml'
+engineKnowledge: '{workflow_path}/knowledge/{selected_engine}-engine.md'
 
 # Task References
 advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
@@ -70,7 +71,7 @@ Facilitate collaborative decision-making for all remaining architectural choices
 
 **Load decision catalog if available:**
 
-Load `{decisionCatalog}` and `{architecturePatterns}` to guide the decision process.
+Load `{decisionCatalog}`, `{architecturePatterns}`, and `{engineKnowledge}` (the engine-specific knowledge fragment matching the engine selected in Step 3) to guide the decision process.
 
 **Identify required decisions based on game type:**
 

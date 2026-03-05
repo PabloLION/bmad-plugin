@@ -1,6 +1,6 @@
 ---
 name: 'step-05-generate-output'
-description: 'Generate output documents and validate against checklist'
+description: 'Generate output documents with adaptive orchestration (agent-team, subagent, or sequential)'
 outputFile: '{test_artifacts}/test-design-epic-{epic_num}.md'
 progressFile: '{test_artifacts}/test-design-progress.md'
 ---
@@ -16,6 +16,8 @@ Write the final test-design document(s) using the correct template(s), then vali
 - 📖 Read the entire step file before acting
 - ✅ Speak in `{communication_language}`
 - ✅ Use the provided templates and output paths
+- ✅ Resolve execution mode from explicit user request first, then config
+- ✅ Apply fallback rules deterministically when requested mode is unsupported
 
 ---
 
@@ -36,6 +38,71 @@ Write the final test-design document(s) using the correct template(s), then vali
 
 **CRITICAL:** Follow this sequence exactly. Do not skip, reorder, or improvise.
 
+## 0. Resolve Execution Mode (User Override First)
+
+```javascript
+const orchestrationContext = {
+  config: {
+    execution_mode: config.tea_execution_mode || 'auto', // "auto" | "subagent" | "agent-team" | "sequential"
+    capability_probe: config.tea_capability_probe !== false, // true by default
+  },
+  timestamp: new Date().toISOString().replace(/[:.]/g, '-'),
+};
+
+const normalizeUserExecutionMode = (mode) => {
+  if (typeof mode !== 'string') return null;
+  const normalized = mode.trim().toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+
+  if (normalized === 'auto') return 'auto';
+  if (normalized === 'sequential') return 'sequential';
+  if (normalized === 'subagent' || normalized === 'sub agent' || normalized === 'subagents' || normalized === 'sub agents') {
+    return 'subagent';
+  }
+  if (normalized === 'agent team' || normalized === 'agent teams' || normalized === 'agentteam') {
+    return 'agent-team';
+  }
+
+  return null;
+};
+
+const normalizeConfigExecutionMode = (mode) => {
+  if (mode === 'subagent') return 'subagent';
+  if (mode === 'auto' || mode === 'sequential' || mode === 'subagent' || mode === 'agent-team') {
+    return mode;
+  }
+  return null;
+};
+
+// Explicit user instruction in the active run takes priority over config.
+const explicitModeFromUser = normalizeUserExecutionMode(runtime.getExplicitExecutionModeHint?.() || null);
+
+const requestedMode = explicitModeFromUser || normalizeConfigExecutionMode(orchestrationContext.config.execution_mode) || 'auto';
+const probeEnabled = orchestrationContext.config.capability_probe;
+
+const supports = { subagent: false, agentTeam: false };
+if (probeEnabled) {
+  supports.subagent = runtime.canLaunchSubagents?.() === true;
+  supports.agentTeam = runtime.canLaunchAgentTeams?.() === true;
+}
+
+let resolvedMode = requestedMode;
+if (requestedMode === 'auto') {
+  if (supports.agentTeam) resolvedMode = 'agent-team';
+  else if (supports.subagent) resolvedMode = 'subagent';
+  else resolvedMode = 'sequential';
+} else if (probeEnabled && requestedMode === 'agent-team' && !supports.agentTeam) {
+  resolvedMode = supports.subagent ? 'subagent' : 'sequential';
+} else if (probeEnabled && requestedMode === 'subagent' && !supports.subagent) {
+  resolvedMode = 'sequential';
+}
+```
+
+Resolution precedence:
+
+1. Explicit user request in this run (`agent team` => `agent-team`; `subagent` => `subagent`; `sequential`; `auto`)
+2. `tea_execution_mode` from config
+3. Runtime capability fallback (when probing enabled)
+
 ## 1. Select Output Template(s)
 
 ### System-Level Mode (Phase 3)
@@ -45,12 +112,16 @@ Generate **two** documents:
 - `{test_artifacts}/test-design-architecture.md` using `test-design-architecture-template.md`
 - `{test_artifacts}/test-design-qa.md` using `test-design-qa-template.md`
 
+If `resolvedMode` is `agent-team` or `subagent`, these two documents can be generated in parallel as independent workers, then reconciled for consistency.
+
 ### Epic-Level Mode (Phase 4)
 
 Generate **one** document:
 
 - `{outputFile}` using `test-design-template.md`
 - If `epic_num` is unclear, ask the user
+
+Epic-level mode remains single-worker by default (one output artifact).
 
 ---
 

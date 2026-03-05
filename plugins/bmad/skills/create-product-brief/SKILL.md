@@ -1,7 +1,7 @@
 ---
 description:
   Create product brief through collaborative discovery. Use when the user says
-  "lets create a product brief" or "help me create a project brief"
+   "lets create a product brief" or "help me create a project brief"
 user-invocable: true
 ---
 

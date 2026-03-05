@@ -13,6 +13,7 @@ outputFile: '{output_folder}/game-architecture.md'
 
 # Knowledge Bases
 patternCategories: '{workflow_path}/pattern-categories.csv'
+engineKnowledge: '{workflow_path}/knowledge/{selected_engine}-engine.md'
 
 # Task References
 advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
@@ -124,6 +125,8 @@ Walk me through how you envision {{pattern_name}} working."
 Does this capture your vision?"
 
 ### 3. Define Standard Implementation Patterns
+
+Consult `{engineKnowledge}` for engine-specific coding patterns, best practices, and common architectural patterns.
 
 "Now let's define standard implementation patterns for consistency.
 

@@ -1,14 +1,14 @@
 ---
 name: 'step-03-quality-evaluation'
-description: 'Orchestrate parallel quality dimension checks (4 subprocesses)'
+description: 'Orchestrate adaptive quality dimension checks (agent-team, subagent, or sequential)'
 nextStepFile: './step-03f-aggregate-scores.md'
 ---
 
-# Step 3: Orchestrate Parallel Quality Evaluation
+# Step 3: Orchestrate Adaptive Quality Evaluation
 
 ## STEP GOAL
 
-Launch 4 parallel subprocesses to evaluate test quality dimensions:
+Select execution mode deterministically, then evaluate quality dimensions using agent-team, subagent, or sequential execution while preserving output contracts:
 
 - Determinism
 - Isolation
@@ -21,30 +21,31 @@ Coverage is intentionally excluded from this workflow and handled by `trace`.
 
 - 📖 Read the entire step file before acting
 - ✅ Speak in `{communication_language}`
-- ✅ Launch four subprocesses in PARALLEL
-- ✅ Wait for all subprocesses to complete
-- ❌ Do NOT evaluate quality sequentially (use subprocesses)
-- ❌ Do NOT proceed until all subprocesses finish
+- ✅ Resolve execution mode from config (`tea_execution_mode`, `tea_capability_probe`)
+- ✅ Apply fallback rules deterministically when requested mode is unsupported
+- ✅ Wait for required worker steps to complete
+- ❌ Do NOT skip capability checks when probing is enabled
+- ❌ Do NOT proceed until required worker steps finish
 
 ---
 
 ## EXECUTION PROTOCOLS:
 
 - 🎯 Follow the MANDATORY SEQUENCE exactly
-- 💾 Wait for subprocess outputs
+- 💾 Wait for subagent outputs
 - 📖 Load the next step only when instructed
 
 ## CONTEXT BOUNDARIES:
 
 - Available context: test files from Step 2, knowledge fragments
-- Focus: subprocess orchestration only
-- Limits: do not evaluate quality directly (delegate to subprocesses)
+- Focus: orchestration only (mode selection + worker dispatch)
+- Limits: do not evaluate quality directly (delegate to worker steps)
 
 ---
 
 ## MANDATORY SEQUENCE
 
-### 1. Prepare Subprocess Inputs
+### 1. Prepare Execution Context
 
 **Generate unique timestamp:**
 
@@ -52,56 +53,156 @@ Coverage is intentionally excluded from this workflow and handled by `trace`.
 const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 ```
 
-**Prepare context for all subprocesses:**
+**Prepare context for all subagents:**
 
 ```javascript
-const subprocessContext = {
+const parseBooleanFlag = (value, defaultValue = true) => {
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['false', '0', 'off', 'no'].includes(normalized)) return false;
+    if (['true', '1', 'on', 'yes'].includes(normalized)) return true;
+  }
+  if (value === undefined || value === null) return defaultValue;
+  return Boolean(value);
+};
+
+const subagentContext = {
   test_files: /* from Step 2 */,
   knowledge_fragments_loaded: ['test-quality'],
+  config: {
+    execution_mode: config.tea_execution_mode || 'auto',  // "auto" | "subagent" | "agent-team" | "sequential"
+    capability_probe: parseBooleanFlag(config.tea_capability_probe, true),  // supports booleans and "false"/"true" strings
+  },
   timestamp: timestamp
 };
 ```
 
 ---
 
-### 2. Launch 4 Parallel Quality Subprocesses
+### 2. Resolve Execution Mode with Capability Probe
 
-**Subprocess A: Determinism**
+```javascript
+const normalizeUserExecutionMode = (mode) => {
+  if (typeof mode !== 'string') return null;
+  const normalized = mode.trim().toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
 
-- File: `./step-03a-subprocess-determinism.md`
+  if (normalized === 'auto') return 'auto';
+  if (normalized === 'sequential') return 'sequential';
+  if (normalized === 'subagent' || normalized === 'sub agent' || normalized === 'subagents' || normalized === 'sub agents') {
+    return 'subagent';
+  }
+  if (normalized === 'agent team' || normalized === 'agent teams' || normalized === 'agentteam') {
+    return 'agent-team';
+  }
+
+  return null;
+};
+
+const normalizeConfigExecutionMode = (mode) => {
+  if (mode === 'subagent') return 'subagent';
+  if (mode === 'auto' || mode === 'sequential' || mode === 'subagent' || mode === 'agent-team') {
+    return mode;
+  }
+  return null;
+};
+
+// Explicit user instruction in the active run takes priority over config.
+const explicitModeFromUser = normalizeUserExecutionMode(runtime.getExplicitExecutionModeHint?.() || null);
+
+const requestedMode = explicitModeFromUser || normalizeConfigExecutionMode(subagentContext.config.execution_mode) || 'auto';
+const probeEnabled = subagentContext.config.capability_probe;
+
+const supports = {
+  subagent: false,
+  agentTeam: false,
+};
+
+if (probeEnabled) {
+  supports.subagent = runtime.canLaunchSubagents?.() === true;
+  supports.agentTeam = runtime.canLaunchAgentTeams?.() === true;
+}
+
+let resolvedMode = requestedMode;
+
+if (requestedMode === 'auto') {
+  if (supports.agentTeam) resolvedMode = 'agent-team';
+  else if (supports.subagent) resolvedMode = 'subagent';
+  else resolvedMode = 'sequential';
+} else if (probeEnabled && requestedMode === 'agent-team' && !supports.agentTeam) {
+  resolvedMode = supports.subagent ? 'subagent' : 'sequential';
+} else if (probeEnabled && requestedMode === 'subagent' && !supports.subagent) {
+  resolvedMode = 'sequential';
+}
+
+subagentContext.execution = {
+  requestedMode,
+  resolvedMode,
+  probeEnabled,
+  supports,
+};
+```
+
+Resolution precedence:
+
+1. Explicit user request in this run (`agent team` => `agent-team`; `subagent` => `subagent`; `sequential`; `auto`)
+2. `tea_execution_mode` from config
+3. Runtime capability fallback (when probing enabled)
+
+If probing is disabled, honor the requested mode strictly. If that mode cannot be executed at runtime, fail with explicit error instead of silent fallback.
+
+---
+
+### 3. Dispatch 4 Quality Workers
+
+**Subagent A: Determinism**
+
+- File: `./step-03a-subagent-determinism.md`
 - Output: `/tmp/tea-test-review-determinism-${timestamp}.json`
-- Status: Running in parallel... ⟳
+- Execution:
+  - `agent-team` or `subagent`: launch non-blocking
+  - `sequential`: run blocking and wait
+- Status: Running... ⟳
 
-**Subprocess B: Isolation**
+**Subagent B: Isolation**
 
-- File: `./step-03b-subprocess-isolation.md`
+- File: `./step-03b-subagent-isolation.md`
 - Output: `/tmp/tea-test-review-isolation-${timestamp}.json`
-- Status: Running in parallel... ⟳
+- Status: Running... ⟳
 
-**Subprocess C: Maintainability**
+**Subagent C: Maintainability**
 
-- File: `./step-03c-subprocess-maintainability.md`
+- File: `./step-03c-subagent-maintainability.md`
 - Output: `/tmp/tea-test-review-maintainability-${timestamp}.json`
-- Status: Running in parallel... ⟳
+- Status: Running... ⟳
 
-**Subprocess D: Performance**
+**Subagent D: Performance**
 
-- File: `./step-03e-subprocess-performance.md`
+- File: `./step-03e-subagent-performance.md`
 - Output: `/tmp/tea-test-review-performance-${timestamp}.json`
-- Status: Running in parallel... ⟳
+- Status: Running... ⟳
+
+In `agent-team` and `subagent` modes, runtime decides worker scheduling and concurrency.
 
 ---
 
-### 3. Wait for All Subprocesses
+### 4. Wait for Expected Worker Completion
+
+**If `resolvedMode` is `agent-team` or `subagent`:**
 
 ```
-⏳ Waiting for 4 quality subprocesses to complete...
-✅ All 4 quality subprocesses completed successfully!
+⏳ Waiting for 4 quality subagents to complete...
+✅ All 4 quality subagents completed successfully!
+```
+
+**If `resolvedMode` is `sequential`:**
+
+```
+✅ Sequential mode: each worker already completed during dispatch.
 ```
 
 ---
 
-### 4. Verify All Outputs Exist
+### 5. Verify All Outputs Exist
 
 ```javascript
 const outputs = ['determinism', 'isolation', 'maintainability', 'performance'].map(
@@ -110,26 +211,25 @@ const outputs = ['determinism', 'isolation', 'maintainability', 'performance'].m
 
 outputs.forEach((output) => {
   if (!fs.existsSync(output)) {
-    throw new Error(`Subprocess output missing: ${output}`);
+    throw new Error(`Subagent output missing: ${output}`);
   }
 });
 ```
 
 ---
 
-### 5. Performance Report
+### 6. Execution Report
 
 ```
 🚀 Performance Report:
-- Execution Mode: PARALLEL (4 subprocesses)
-- Total Elapsed: ~max(all subprocesses) minutes
-- Sequential Would Take: ~sum(all subprocesses) minutes
-- Performance Gain: ~60-70% faster!
+- Execution Mode: {resolvedMode}
+- Total Elapsed: ~mode-dependent
+- Parallel Gain: ~60-70% faster when mode is subagent/agent-team
 ```
 
 ---
 
-### 6. Proceed to Aggregation
+### 7. Proceed to Aggregation
 
 Pass the same `timestamp` value to Step 3F (do not regenerate it). Step 3F must read the exact temp files written in this step.
 
@@ -137,7 +237,7 @@ Load next step: `{nextStepFile}`
 
 The aggregation step (3F) will:
 
-- Read all 4 subprocess outputs
+- Read all 4 subagent outputs
 - Calculate weighted overall score (0-100)
 - Aggregate violations by severity
 - Generate review report with top suggestions
@@ -148,11 +248,11 @@ The aggregation step (3F) will:
 
 Proceed to Step 3F when:
 
-- ✅ All 4 subprocesses completed successfully
+- ✅ All 4 subagents completed successfully
 - ✅ All output files exist and are valid JSON
-- ✅ Performance metrics displayed
+- ✅ Execution metrics displayed
 
-**Do NOT proceed if any subprocess failed.**
+**Do NOT proceed if any subagent failed.**
 
 ---
 
@@ -160,14 +260,15 @@ Proceed to Step 3F when:
 
 ### ✅ SUCCESS:
 
-- All 4 subprocesses launched and completed
+- All 4 subagents launched and completed
+- All required worker steps completed
 - Output files generated and valid
-- Parallel execution achieved ~60% performance gain
+- Fallback behavior respected configuration and capability probe rules
 
 ### ❌ FAILURE:
 
-- One or more subprocesses failed
+- One or more subagents failed
 - Output files missing or invalid
-- Sequential evaluation instead of parallel
+- Unsupported requested mode with probing disabled
 
-**Master Rule:** Parallel subprocess execution is MANDATORY for performance.
+**Master Rule:** Deterministic mode selection + stable output contract. Use the best supported mode, then aggregate normally.

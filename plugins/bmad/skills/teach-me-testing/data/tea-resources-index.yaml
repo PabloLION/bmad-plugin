@@ -120,9 +120,9 @@ documentation:
       online: "/explanation/step-file-architecture/"
       topics: ["Micro-file design", "JIT loading", "Sequential enforcement"]
 
-    - name: "Subprocess Architecture"
-      local: "/docs/explanation/subprocess-architecture.md"
-      online: "/explanation/subprocess-architecture/"
+    - name: "Subagent Architecture"
+      local: "/docs/explanation/subagent-architecture.md"
+      online: "/explanation/subagent-architecture/"
       topics: ["Parallel execution", "Context optimization"]
 
   reference:

@@ -11,6 +11,9 @@ nextStepFile: './step-07-patterns.md'
 workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-architecture.md'
 
+# Knowledge Bases
+engineKnowledge: '{workflow_path}/knowledge/{selected_engine}-engine.md'
+
 # Task References
 advancedElicitationTask: '${CLAUDE_PLUGIN_ROOT}/skills/advanced-elicitation/workflow.xml'
 partyModeWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/party-mode/SKILL.md'
@@ -76,6 +79,8 @@ Define the complete project structure including directory organization, file nam
 | **Domain-Driven** | By game domain/system            | Complex games |
 
 **Engine Conventions:**
+
+Consult `{engineKnowledge}` for engine-specific project structure conventions and naming rules.
 
 - {{engine}} typically uses: {{engine_convention}}
 

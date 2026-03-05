@@ -1,6 +1,6 @@
 ---
 name: 'step-03-scaffold-framework'
-description: 'Create directory structure, config, fixtures, factories, and sample tests'
+description: 'Create framework scaffold with adaptive orchestration (agent-team, subagent, or sequential)'
 nextStepFile: './step-04-docs-and-scripts.md'
 knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
 outputFile: '{test_artifacts}/framework-setup-progress.md'
@@ -10,13 +10,15 @@ outputFile: '{test_artifacts}/framework-setup-progress.md'
 
 ## STEP GOAL
 
-Generate the test directory structure, configuration files, fixtures, factories, helpers, and sample tests.
+Generate the test directory structure, configuration files, fixtures, factories, helpers, and sample tests using deterministic mode selection with runtime fallback.
 
 ## MANDATORY EXECUTION RULES
 
 - 📖 Read the entire step file before acting
 - ✅ Speak in `{communication_language}`
 - ✅ Apply knowledge base patterns where required
+- ✅ Resolve execution mode from explicit user request first, then config
+- ✅ Apply fallback rules deterministically when requested mode is unsupported
 
 ---
 
@@ -36,6 +38,81 @@ Generate the test directory structure, configuration files, fixtures, factories,
 ## MANDATORY SEQUENCE
 
 **CRITICAL:** Follow this sequence exactly. Do not skip, reorder, or improvise.
+
+## 0. Resolve Execution Mode (User Override First)
+
+```javascript
+const parseBooleanFlag = (value, defaultValue = true) => {
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (['false', '0', 'off', 'no'].includes(normalized)) return false;
+    if (['true', '1', 'on', 'yes'].includes(normalized)) return true;
+  }
+  if (value === undefined || value === null) return defaultValue;
+  return Boolean(value);
+};
+
+const orchestrationContext = {
+  config: {
+    execution_mode: config.tea_execution_mode || 'auto', // "auto" | "subagent" | "agent-team" | "sequential"
+    capability_probe: parseBooleanFlag(config.tea_capability_probe, true), // supports booleans and "false"/"true" strings
+  },
+  timestamp: new Date().toISOString().replace(/[:.]/g, '-'),
+};
+
+const normalizeUserExecutionMode = (mode) => {
+  if (typeof mode !== 'string') return null;
+  const normalized = mode.trim().toLowerCase().replace(/[-_]/g, ' ').replace(/\s+/g, ' ');
+
+  if (normalized === 'auto') return 'auto';
+  if (normalized === 'sequential') return 'sequential';
+  if (normalized === 'subagent' || normalized === 'sub agent' || normalized === 'subagents' || normalized === 'sub agents') {
+    return 'subagent';
+  }
+  if (normalized === 'agent team' || normalized === 'agent teams' || normalized === 'agentteam') {
+    return 'agent-team';
+  }
+
+  return null;
+};
+
+const normalizeConfigExecutionMode = (mode) => {
+  if (mode === 'subagent') return 'subagent';
+  if (mode === 'auto' || mode === 'sequential' || mode === 'subagent' || mode === 'agent-team') {
+    return mode;
+  }
+  return null;
+};
+
+// Explicit user instruction in the active run takes priority over config.
+const explicitModeFromUser = normalizeUserExecutionMode(runtime.getExplicitExecutionModeHint?.() || null);
+
+const requestedMode = explicitModeFromUser || normalizeConfigExecutionMode(orchestrationContext.config.execution_mode) || 'auto';
+const probeEnabled = orchestrationContext.config.capability_probe;
+
+const supports = { subagent: false, agentTeam: false };
+if (probeEnabled) {
+  supports.subagent = runtime.canLaunchSubagents?.() === true;
+  supports.agentTeam = runtime.canLaunchAgentTeams?.() === true;
+}
+
+let resolvedMode = requestedMode;
+if (requestedMode === 'auto') {
+  if (supports.agentTeam) resolvedMode = 'agent-team';
+  else if (supports.subagent) resolvedMode = 'subagent';
+  else resolvedMode = 'sequential';
+} else if (probeEnabled && requestedMode === 'agent-team' && !supports.agentTeam) {
+  resolvedMode = supports.subagent ? 'subagent' : 'sequential';
+} else if (probeEnabled && requestedMode === 'subagent' && !supports.subagent) {
+  resolvedMode = 'sequential';
+}
+```
+
+Resolution precedence:
+
+1. Explicit user request in this run (`agent team` => `agent-team`; `subagent` => `subagent`; `sequential`; `auto`)
+2. `tea_execution_mode` from config
+3. Runtime capability fallback (when probing enabled)
 
 ## 1. Create Directory Structure
 
@@ -59,14 +136,15 @@ Create the idiomatic test directory for the detected language:
 - **Ruby (RSpec)**: `spec/` with `spec/unit/`, `spec/integration/`, `spec/api/`, `spec/support/`
 - **Rust**: `tests/` for integration tests, inline `#[cfg(test)]` modules for unit tests
 
-**If `config.tea_use_pactjs_utils` is enabled** (and `{detected_stack}` is `backend` or `fullstack`):
+**If `config.tea_use_pactjs_utils` is enabled and runtime is Node.js/TypeScript** (i.e., `{detected_stack}` is `frontend` or `fullstack`, or `{detected_stack}` is `backend` with Node.js/TypeScript runtime):
 
-Create contract testing directory structure:
+Create Node.js/TypeScript contract testing directory structure per `pact-consumer-framework-setup.md`:
 
-- `pact/http/consumer/` — consumer contract tests
-- `pact/http/provider/` — provider verification tests and state handlers
-- `pact/http/helpers/` — shared helpers (request filter, state constants)
-- `pact/message/` — message/Kafka contract tests (if async patterns detected)
+- `tests/contract/consumer/` — consumer contract test files (`.pacttest.ts` extension)
+- `tests/contract/support/` — pact config, provider state factories, consumer helpers shim
+- `scripts/` — shell scripts (`env-setup.sh`, `publish-pact.sh`, `can-i-deploy.sh`, `record-deployment.sh`)
+- `.github/actions/detect-breaking-change/` — PR checkbox-driven breaking change detection
+- `.github/workflows/contract-test-consumer.yml` — consumer CDC CI workflow
 
 ---
 
@@ -133,6 +211,7 @@ Read `{config_source}` and use `{knowledgeIndex}` to load fragments based on `co
 
 **If Pact.js Utils enabled** (`config.tea_use_pactjs_utils`):
 
+- `pact-consumer-framework-setup.md` (CRITICAL: load this for directory structure, scripts, CI workflow, and PactV4 patterns)
 - `pactjs-utils-overview.md`, `pactjs-utils-consumer-helpers.md`, `pactjs-utils-provider-verifier.md`, `pactjs-utils-request-filter.md`, `contract-testing.md`
 - Recommend installing `@seontechnologies/pactjs-utils` and `@pact-foundation/pact`
 
@@ -180,19 +259,35 @@ Create helpers for:
 - Auth helpers
 - Test data factories (language-idiomatic patterns)
 
-**If `config.tea_use_pactjs_utils` is enabled** (and `{detected_stack}` is `backend` or `fullstack`):
+**If `config.tea_use_pactjs_utils` is enabled and runtime is Node.js/TypeScript** (i.e., `{detected_stack}` is `frontend` or `fullstack`, or `{detected_stack}` is `backend` with Node.js/TypeScript runtime):
 
-Create contract test samples in `pact/` directory:
+Create Node.js/TypeScript contract test samples per `pact-consumer-framework-setup.md`:
 
-- **Consumer test**: Example using `PactV3` + `createProviderState` for type-safe provider states
-- **Provider verification test**: Example using `buildVerifierOptions` + `createRequestFilter`
-- **Helpers**: Request filter setup (`pact/http/helpers/request-filter.ts`), shared state constants (`pact/http/helpers/states.ts`)
-- **Vitest configs** (if vitest detected): `vitest.consumer.config.mts` and `vitest.provider.config.mts` for separated test execution
-- **package.json scripts**: `test:contract:consumer`, `test:contract:provider`, `pact:publish`, `pact:can-deploy`
+- **Consumer test**: Example using PactV4 `addInteraction()` builder + `createProviderState` + real consumer code with URL injection (`.pacttest.ts` extension)
+- **Support files**: Pact config factory (`pact-config.ts`), provider state factories (`provider-states.ts`), local consumer-helpers shim (`consumer-helpers.ts`)
+- **Vitest config**: Minimal `vitest.config.pact.ts` (do NOT copy settings from unit config)
+- **Shell scripts**: `env-setup.sh`, `publish-pact.sh`, `can-i-deploy.sh`, `record-deployment.sh` in `scripts/`
+- **CI workflow**: `contract-test-consumer.yml` with detect-breaking-change action
+- **package.json scripts**: `test:pact:consumer`, `publish:pact`, `can:i:deploy:consumer`, `record:consumer:deployment`
+- **.gitignore**: Add `/pacts/` and `pact-logs/`
 
 ---
 
-### 6. Save Progress
+### 6. Orchestration Notes for This Step
+
+For this step, treat these work units as parallelizable when `resolvedMode` is `agent-team` or `subagent`:
+
+- Worker A: directory + framework config + env setup (sections 1-3)
+- Worker B: fixtures + factories (section 4)
+- Worker C: sample tests + helpers (section 5)
+
+In parallel-capable modes, runtime decides worker scheduling and concurrency.
+
+If `resolvedMode` is `sequential`, execute sections 1→5 in order.
+
+Regardless of mode, outputs must be identical in structure and quality.
+
+### 7. Save Progress
 
 **Save this step's accumulated work to `{outputFile}`.**
 
