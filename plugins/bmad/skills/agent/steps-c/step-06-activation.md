@@ -165,11 +165,11 @@ Ask user:
 - Each action should be clear and scoped
 - Document rationale for each
 
-**For agents WITH sidecar, critical_actions MUST include:**
+**For agents WITH persistent memory, critical_actions MUST include:**
 ```
-- "Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md"
-- "Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md"
-- "ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/ - private space"
+- "Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md"
+- "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md"
+- "ONLY read/write files in .claude/agent-memory/{agent-name}/ - private space"
 ```
 Plus any additional activation behaviors the agent needs.
 

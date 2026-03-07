@@ -51,46 +51,43 @@ Read `{agentValidation}`, `{criticalActions}`, `{validationReport}`, and `{agent
 **IF hasSidecar = true:**
 Perform these checks systematically - validate EVERY rule specified in agentValidation.md:
 
-#### A. Sidecar Folder Validation
-- [ ] Sidecar folder exists at specified path
-- [ ] Sidecar folder is accessible and readable
-- [ ] Sidecar folder path in metadata matches actual location
-- [ ] Folder naming follows convention: `{agent-name}-sidecar`
+#### A. Agent Memory Folder Validation
+- [ ] Agent memory folder path in metadata is `.claude/agent-memory/{agent-name}/`
+- [ ] `MEMORY.md` exists at `.claude/agent-memory/{agent-name}/MEMORY.md`
+- [ ] Agent name in memory path matches the agent's identifier
 
-#### B. Sidecar File Inventory
-- [ ] List all files in sidecar folder
-- [ ] Verify expected files are present (memories.md, instructions.md recommended)
-- [ ] Check for unexpected files
+#### B. Plugin Data Folder Validation
+- [ ] Plugin data folder exists: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/`
+- [ ] `instructions.md` exists in plugin data folder (recommended)
 - [ ] Validate file names follow conventions
 
 #### C. Path Reference Validation
-For each sidecar path reference in agent YAML:
+For each memory path reference in agent YAML:
 - [ ] Extract path from YAML reference
-- [ ] Verify path format is correct: `{project-root}/_bmad/_memory/{sidecar-folder}/...`
-- [ ] `{project-root}` is literal
-- [ ] `{sidecar-folder}` is actual folder name
+- [ ] Writable paths use: `.claude/agent-memory/{agent-name}/...`
+- [ ] Plugin data paths use: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`
+- [ ] No `{project-root}/_bmad/_memory/` paths remain
 - [ ] Validate no broken path references
 
 #### D. Critical Actions Validation (MANDATORY for hasSidecar: true)
 - [ ] critical_actions section exists in agent YAML
 - [ ] Contains at minimum 3 actions
-- [ ] Loads sidecar memories: `{project-root}/_bmad/_memory/{sidecar-folder}/memories.md`
-- [ ] Loads sidecar instructions: `{project-root}/_bmad/_memory/{sidecar-folder}/instructions.md`
-- [ ] Restricts file access: `ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/`
+- [ ] Loads agent memory: `.claude/agent-memory/{agent-name}/MEMORY.md`
+- [ ] Loads plugin instructions: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md`
+- [ ] Restricts file access: `ONLY read/write files in .claude/agent-memory/{agent-name}/`
 - [ ] No placeholder text in critical_actions
 - [ ] No compiler-injected steps
 
-#### E. Sidecar Structure Completeness
-- [ ] All referenced sidecar files present
+#### E. Memory Structure Completeness
+- [ ] All referenced memory files present
 - [ ] No orphaned references (files referenced but not present)
-- [ ] No unreferenced files (files present but not referenced)
 - [ ] File structure matches agent requirements
 
 **IF hasSidecar = false:**
-- [ ] Mark sidecar validation as N/A
-- [ ] Confirm no sidecar-folder path in metadata
-- [ ] Confirm no sidecar references in critical_actions (if present)
-- [ ] Confirm no sidecar references in menu handlers
+- [ ] Mark memory validation as N/A
+- [ ] Confirm no memory-folder path in metadata
+- [ ] Confirm no `.claude/agent-memory/` references in critical_actions (if present)
+- [ ] Confirm no agent memory references in menu handlers
 
 ### 3. Append Findings to Report
 
@@ -104,15 +101,16 @@ Append to `{validationReport}`:
 **hasSidecar:** {true|false}
 
 **Checks:**
-- [ ] metadata.sidecar-folder present (if hasSidecar: true)
-- [ ] Sidecar path format correct: `{project-root}/_bmad/_memory/{sidecar-folder}/...`
-- [ ] Sidecar files exist at specified path (if hasSidecar: true)
+- [ ] metadata.memory-folder present (if hasSidecar: true)
+- [ ] Agent memory path format correct: `.claude/agent-memory/{agent-name}/...`
+- [ ] Plugin data path format correct: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`
+- [ ] MEMORY.md exists at agent memory path (if hasSidecar: true)
 - [ ] All referenced files present
 - [ ] No broken path references
 
 **Detailed Findings:**
 
-*PASSING (for agents WITH sidecar):*
+*PASSING (for agents WITH persistent memory):*
 {List of passing checks}
 
 *WARNINGS:*
@@ -121,8 +119,8 @@ Append to `{validationReport}`:
 *FAILURES:*
 {List of blocking issues that must be fixed}
 
-*N/A (for agents WITHOUT sidecar):*
-N/A - Agent has hasSidecar: false, no sidecar required
+*N/A (for agents WITHOUT persistent memory):*
+N/A - Agent has hasSidecar: false, no memory folder required
 ```
 
 ### 4. Auto-Advance

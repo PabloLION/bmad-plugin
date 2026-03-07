@@ -71,9 +71,9 @@ agent-name.agent.yaml
 **Required critical_actions:**
 ```yaml
 critical_actions:
-  - "Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md"
-  - "Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md"
-  - "ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/"
+  - "Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md"
+  - "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md"
+  - "ONLY read/write files in .claude/agent-memory/{agent-name}/"
 ```
 
 ---

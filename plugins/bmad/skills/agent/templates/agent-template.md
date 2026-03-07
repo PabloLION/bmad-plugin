@@ -14,8 +14,7 @@ agent:
     module: {{agent_module}}{{#if agent_module_comment}}  {{!-- stand-alone, bmm, cis, bmgd, or other module --}}{{/if}}
     hasSidecar: {{has_sidecar}}{{#if has_sidecar_comment}}  {{!-- true if agent has a sidecar folder, false otherwise --}}{{/if}}
     {{#if has_sidecar}}
-    sidecar-folder: {{sidecar_folder}}
-    sidecar-path: '{project-root}/_bmad/_memory/{{sidecar_folder}}/'
+    memory-folder: '.claude/agent-memory/{{agent_name}}/'
     {{/if}}
 
   persona:

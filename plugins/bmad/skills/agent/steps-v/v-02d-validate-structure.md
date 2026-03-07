@@ -83,15 +83,16 @@ Perform these checks systematically - validate EVERY rule specified in agentComp
 - [ ] Menu handlers use only internal references (#) or inline prompts
 - [ ] Total size under ~250 lines (unless justified)
 
-**For Agents WITH Sidecar (hasSidecar is true):**
+**For Agents WITH Persistent Memory (hasSidecar is true):**
 - [ ] hasSidecar flag set correctly in metadata
-- [ ] Sidecar folder path specified in metadata
+- [ ] memory-folder path specified in metadata (`.claude/agent-memory/{agent-name}/`)
 - [ ] critical_actions section present with minimum requirements:
-  - [ ] Loads sidecar memories
-  - [ ] Loads sidecar instructions
-  - [ ] Restricts file access to sidecar folder
-- [ ] All critical_actions reference correct `{project-root}/_bmad/_memory/` paths
-- [ ] Menu handlers that update sidecar use correct path format
+  - [ ] Loads agent memory (`MEMORY.md`)
+  - [ ] Loads plugin instructions
+  - [ ] Restricts file access to agent memory folder
+- [ ] All critical_actions use `.claude/agent-memory/{agent-name}/` for writable paths
+- [ ] All critical_actions use `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` for plugin data
+- [ ] Menu handlers that update memory use correct path format
 
 ### 3. Append Findings to Report
 

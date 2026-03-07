@@ -37,27 +37,24 @@ Agents with a sidecar folder for persistent memory, custom workflows, and restri
 
 ---
 
-## CRITICAL: Sidecar Path Format
+## CRITICAL: Memory Path Format
 
-During BMAD INSTALLATION, sidecar folder is copied from the agent location to `{project-root}/_bmad/_memory/{sidecar-folder}/`
+Expert agents use Claude Code's native agent-memory system. There are two path conventions:
 
-**ALL agent YAML references MUST use:**
-
-```yaml
-{project-root}/_bmad/_memory/{sidecar-folder}/{file}
-```
-
-- `{project-root}` = literal variable (keep as-is)
-- `{sidecar-folder}` = actual folder name (e.g., `journal-keeper-sidecar`)
+| File type | Location | Purpose |
+|-----------|----------|---------|
+| Agent-writable state | `.claude/agent-memory/{agent-name}/` | `MEMORY.md` and other mutable files |
+| Stable plugin data | `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` | `instructions.md` and read-only files |
 
 ```yaml
 # ✅ CORRECT
 critical_actions:
-  - "Load COMPLETE file {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md"
-  - "ONLY read/write files in {project-root}/_bmad/_memory/journal-keeper-sidecar/"
+  - "Load COMPLETE file .claude/agent-memory/journal-keeper/MEMORY.md"
+  - "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/journal-keeper/instructions.md"
+  - "ONLY read/write files in .claude/agent-memory/journal-keeper/"
 
 menu:
-  - action: "Update {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md with insights"
+  - action: "Update .claude/agent-memory/journal-keeper/MEMORY.md with insights"
 ```
 
 ```yaml
@@ -92,9 +89,9 @@ agent:
       - Another guiding principle
 
   critical_actions:
-    - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-    - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-    - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+    - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+    - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+    - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 
   prompts:
     - id: main-action
@@ -108,7 +105,7 @@ agent:
       description: '[XX] Command description'
 
     - trigger: SM or fuzzy match on save
-      action: 'Update {project-root}/_bmad/_memory/{sidecar-folder}/memories.md with insights'
+      action: 'Update .claude/agent-memory/{agent-name}/MEMORY.md with insights'
       description: '[SM] Save session'
 ```
 
@@ -122,9 +119,9 @@ Become activation steps when compiled. Always include:
 
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 ```
 
 ### Sidecar Files (Customizable)
@@ -151,9 +148,9 @@ All action types available, including sidecar updates:
   action: '#prompt-id'
   description: '[XX] Description'
 
-# Inline that updates sidecar
+# Inline that updates agent memory
 - trigger: SM or fuzzy match on save
-  action: 'Update {project-root}/_bmad/_memory/{sidecar-folder}/memories.md with insights'
+  action: 'Update .claude/agent-memory/{agent-name}/MEMORY.md with insights'
   description: '[SM] Save session'
 ```
 
@@ -171,12 +168,12 @@ communication_style: |
 ## Domain Restriction Patterns
 
 ```yaml
-# Single folder (most common)
-- 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+# Single memory folder (most common)
+- 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 
-# Read-only knowledge
-- 'Load from {project-root}/_bmad/_memory/{sidecar-folder}/knowledge/ but NEVER modify'
-- 'Write ONLY to {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
+# Read-only plugin data + write memory
+- 'Load from ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/knowledge/ but NEVER modify'
+- 'Write ONLY to .claude/agent-memory/{agent-name}/MEMORY.md'
 
 # User folder access
 - 'ONLY access files in {user-folder}/journals/ - private space'
@@ -204,9 +201,9 @@ Compiler handles these automatically:
 
 **Features:**
 - First-person persona with memory reference patterns
-- critical_actions loading sidecar files
-- Menu items updating sidecar files
-- Proper `{project-root}/_bmad/_memory/` path format
+- critical_actions loading agent memory and plugin data
+- Menu items updating agent memory files
+- Correct `.claude/agent-memory/` path format
 
 ---
 
@@ -214,10 +211,10 @@ Compiler handles these automatically:
 
 - [ ] Valid YAML syntax
 - [ ] All metadata present (id, name, title, icon, module)
-- [ ] **ALL paths use: `{project-root}/_bmad/_memory/{sidecar-folder}/...`**
-- [ ] `{project-root}` is literal
-- [ ] Sidecar folder name is actual name
-- [ ] `critical_actions` loads sidecar files
+- [ ] **Agent-writable paths use: `.claude/agent-memory/{agent-name}/...`**
+- [ ] **Plugin data paths use: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`**
+- [ ] Agent name matches actual agent identifier
+- [ ] `critical_actions` loads `MEMORY.md` and `instructions.md`
 - [ ] `critical_actions` enforces domain restrictions
 - [ ] Menu triggers: `XX or fuzzy match on command`
 - [ ] Menu descriptions have `[XX]` codes

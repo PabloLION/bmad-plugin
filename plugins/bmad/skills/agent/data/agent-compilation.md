@@ -23,9 +23,9 @@ agent:
       - "Core belief or methodology"
 
   critical_actions:              # Optional - ANY agent can have these
-    - "Load COMPLETE file {project-root}/_bmad/_memory/journal-sidecar/memories.md"
-    - "Load COMPLETE file {project-root}/_bmad/_memory/journal-sidecar/instructions.md"
-    - "ONLY read/write files in {project-root}/_bmad/_memory/journal-sidecar/"
+    - "Load COMPLETE file .claude/agent-memory/journal-keeper/MEMORY.md"
+    - "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/journal-keeper/instructions.md"
+    - "ONLY read/write files in .claude/agent-memory/journal-keeper/"
 
   prompts:                        # Optional - standalone agents
     - id: prompt-name
@@ -130,12 +130,12 @@ You must fully embody this agent's persona...
 
 Your `critical_actions` become numbered activation steps.
 
-### With sidecar (hasSidecar: true):
+### With persistent memory (hasSidecar: true):
 ```yaml
 critical_actions:
-  - "Load COMPLETE file {project-root}/_bmad/_memory/journal-sidecar/memories.md"
-  - "Load COMPLETE file {project-root}/_bmad/_memory/journal-sidecar/instructions.md"
-  - "ONLY read/write files in {project-root}/_bmad/_memory/journal-sidecar/"
+  - "Load COMPLETE file .claude/agent-memory/journal-keeper/MEMORY.md"
+  - "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/journal-keeper/instructions.md"
+  - "ONLY read/write files in .claude/agent-memory/journal-keeper/"
 ```
 → Injected as steps 4, 5, 6
 

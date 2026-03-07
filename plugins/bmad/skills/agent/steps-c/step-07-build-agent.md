@@ -159,11 +159,11 @@ critical-actions:
     implementation: |
       {multi-line implementation}
     output: '{expected-output}'
-    sidecar-folder: '{sidecar-folder-name}'
-    sidecar-files:
-      - '{project-root}/_bmad/_memory/{sidecar-folder}/{file1}.md'
-      - '{project-root}/_bmad/_memory/{sidecar-folder}/{file2}.md'
-  # ... all critical actions referencing sidecar structure
+    memory-folder: '.claude/agent-memory/{agent-name}/'
+    memory-files:
+      - '.claude/agent-memory/{agent-name}/MEMORY.md'
+      - '${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  # ... all critical actions referencing memory structure
 
 commands:
   - name: '{command-name}'
@@ -181,8 +181,7 @@ configuration:
   # ... other configuration from plan
 
 metadata:
-  sidecar-folder: '{sidecar-folder-name}'
-  sidecar-path: '{project-root}/_bmad/_memory/{sidecar-folder}/'
+  memory-folder: '.claude/agent-memory/{agent-name}/'
   hasSidecar: true
   agent-type: 'agent'
   memory-type: 'persistent'
@@ -206,23 +205,23 @@ Skip this phase if hasSidecar: false
    # ... additional files from critical_actions
    ```
 
-3. **Add README to Sidecar**:
+3. **Add README to agent memory folder**:
    ```markdown
-   # {sidecar-folder} Sidecar
+   # {agent-name} Agent Memory
 
    This folder stores persistent memory for the **{agent-name}** agent.
+   It is managed by Claude Code's native agent-memory system.
 
    ## Purpose
    {purpose from critical_actions}
 
    ## Files
-   - memories.md: User profile, session history, patterns
-   - instructions.md: Protocols, boundaries, startup behavior
+   - MEMORY.md: User profile, session history, patterns (agent-writable)
    - {additional files}
 
-   ## Runtime Access
-   After BMAD installation, this folder will be accessible at:
-   `{project-root}/_bmad/_memory/{sidecar-folder}/{filename}.md`
+   ## Plugin Data
+   Stable read-only files (instructions, knowledge) are at:
+   `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/`
    ```
 
 ### Phase 6: Write Agent YAML

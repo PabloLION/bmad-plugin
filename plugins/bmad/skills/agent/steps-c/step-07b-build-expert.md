@@ -21,12 +21,12 @@ partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
 
 # STEP GOAL
 
-Assemble the agent plan content into a complete Expert agent YAML file with sidecar folder structure. Expert agents require persistent memory storage, so the build creates a sidecar folder next to the agent.yaml (which gets installed to `_bmad/_memory/` during BMAD installation).
+Assemble the agent plan content into a complete Expert agent YAML file with agent memory structure. Expert agents require persistent memory storage, managed by Claude Code's native agent-memory system at `.claude/agent-memory/{agent-name}/`.
 
 ## MANDATORY EXECUTION RULES
 
-1. **EXPERT AGENT = SIDECAR REQUIRED**: Every Expert agent MUST have a sidecar folder created next to agent.yaml (build location), which will be installed to `_bmad/_memory/` during BMAD installation
-2. **CRITICAL_ACTIONS FORMAT**: All critical_actions MUST use `{project-root}/_bmad/_memory/{sidecar-folder}/` for file operations (runtime path)
+1. **EXPERT AGENT = MEMORY REQUIRED**: Every Expert agent MUST use Claude Code's agent-memory system at `.claude/agent-memory/{agent-name}/`
+2. **CRITICAL_ACTIONS FORMAT**: All critical_actions MUST use `.claude/agent-memory/{agent-name}/` for writable files and `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` for plugin data
 3. **TEMPLATE COMPLIANCE**: Follow expert-agent-template.md structure exactly
 4. **YAML VALIDATION**: Ensure valid YAML syntax with proper indentation (2-space)
 5. **EXISTING CHECK**: If agentYamlOutput exists, ask user before overwriting
@@ -78,11 +78,11 @@ critical-actions:
     implementation: |
       {multi-line implementation}
     output: '{expected-output}'
-    sidecar-folder: '{sidecar-folder-name}'
-    sidecar-files:
-      - '{project-root}/_bmad/_memory/{sidecar-folder}/{file1}.md'
-      - '{project-root}/_bmad/_memory/{sidecar-folder}/{file2}.md'
-  # ... all critical actions referencing sidecar structure
+    memory-folder: '.claude/agent-memory/{agent-name}/'
+    memory-files:
+      - '.claude/agent-memory/{agent-name}/MEMORY.md'
+      - '${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  # ... all critical actions referencing memory structure
 
 commands:
   - name: '{command-name}'
@@ -99,41 +99,38 @@ configuration:
   # ... other configuration from plan
 
 metadata:
-  sidecar-folder: '{sidecar-folder-name}'
-  sidecar-path: '{project-root}/_bmad/_memory/{sidecar-folder}/'
+  memory-folder: '.claude/agent-memory/{agent-name}/'
   agent-type: 'expert'
   memory-type: 'persistent'
 ```
 
-### Phase 4: Create Sidecar Structure
+### Phase 4: Create Agent Memory Structure
 
-1. **Create Sidecar Directory** (NEXT TO agent.yaml):
-   - Path: `{agentBuildOutput}/{agent-name}-sidecar/`
-   - Use `mkdir -p` to create full path
-   - Note: This folder gets installed to `_bmad/_memory/` during BMAD installation
+1. **Agent memory is managed natively by Claude Code** at `.claude/agent-memory/{agent-name}/`
+   - Claude Code creates and manages this folder automatically when `memory: project` is set
+   - No manual folder creation needed at install time
 
-2. **Create Starter Files** (if specified in critical_actions):
-   ```bash
-   touch {agentBuildOutput}/{agent-name}-sidecar/{file1}.md
-   touch {agentBuildOutput}/{agent-name}-sidecar/{file2}.md
-   ```
+2. **Create Plugin Data Folder** for stable read-only files:
+   - Path: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/`
+   - Add `instructions.md` and any other read-only knowledge files here
 
-3. **Add README to Sidecar**:
+3. **Add README to plugin data folder**:
    ```markdown
-   # {sidecar-folder} Sidecar
+   # {agent-name} Plugin Data
 
-   This folder stores persistent memory for the **{agent-name}** Expert agent.
+   This folder contains stable read-only data for the **{agent-name}** Expert agent.
+   It ships with the plugin and is not modified at runtime.
 
    ## Purpose
    {purpose from critical_actions}
 
    ## Files
-   - {file1}.md: {description}
-   - {file2}.md: {description}
+   - instructions.md: Protocols, domain boundaries, startup behavior
+   - {additional files}
 
-   ## Runtime Access
-   After BMAD installation, this folder will be accessible at:
-   `{project-root}/_bmad/_memory/{sidecar-folder}/{filename}.md`
+   ## Agent Memory
+   The agent stores session state and learned patterns at:
+   `.claude/agent-memory/{agent-name}/MEMORY.md`
    ```
 
 ### Phase 5: Write Agent YAML
@@ -175,19 +172,20 @@ ONLY WHEN [C continue option] is selected and [complete YAML generated and writt
 
 This step produces TWO artifacts:
 1. **Agent YAML**: Complete expert agent definition at `{agentYamlOutput}`
-2. **Sidecar Structure**: Folder and files at `{agentBuildOutput}/{agent-name}-sidecar/` (build location, installs to `_bmad/_memory/` during BMAD installation)
+2. **Plugin Data Folder**: Read-only files at `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` (ships with plugin)
 
-Both must exist before proceeding to validation.
+Agent memory at `.claude/agent-memory/{agent-name}/` is managed by Claude Code natively — no manual creation needed.
 
 ## SUCCESS METRICS
 
 ✅ Agent YAML file created at expected location
 ✅ Valid YAML syntax (no parse errors)
 ✅ All template fields populated
-✅ Sidecar folder created at `{agentBuildOutput}/{agent-name}-sidecar/` (build location)
-✅ Sidecar folder contains starter files from critical_actions
-✅ critical_actions reference `{project-root}/_bmad/_memory/{sidecar-folder}/` paths
-✅ metadata.sidecar-folder populated
+✅ Plugin data folder created at `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/`
+✅ Plugin data folder contains instructions.md and other read-only files
+✅ critical_actions use `.claude/agent-memory/{agent-name}/` for writable paths
+✅ critical_actions use `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` for plugin data
+✅ metadata.memory-folder populated
 ✅ metadata.agent-type = "expert"
 ✅ User validation choice received (one-at-a-time or YOLO)
 
@@ -195,7 +193,7 @@ Both must exist before proceeding to validation.
 
 ❌ Missing required template fields
 ❌ Invalid YAML syntax
-❌ Sidecar folder creation failed
-❌ critical_actions missing sidecar-folder references
-❌ agentPlan missing expert-specific content (sidecar-folder name)
+❌ Plugin data folder creation failed
+❌ critical_actions missing memory path references
+❌ agentPlan missing expert-specific content (agent name for memory paths)
 ❌ File write permission errors

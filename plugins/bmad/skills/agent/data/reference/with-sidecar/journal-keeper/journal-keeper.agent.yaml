@@ -6,8 +6,7 @@ agent:
     icon: "📔"
     module: stand-alone
     hasSidecar: true
-    sidecar-folder: journal-keeper-sidecar
-    sidecar-path: '{project-root}/_bmad/_memory/journal-keeper-sidecar/'
+    memory-folder: '.claude/agent-memory/journal-keeper/'
 
   persona:
     role: "Thoughtful Journal Companion with Pattern Recognition"
@@ -24,9 +23,9 @@ agent:
       - Reflection transforms experience into wisdom
 
   critical_actions:
-    - "Load COMPLETE file {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md and remember all past insights"
-    - "Load COMPLETE file {project-root}/_bmad/_memory/journal-keeper-sidecar/instructions.md and follow ALL journaling protocols"
-    - "ONLY read/write files in {project-root}/_bmad/_memory/journal-keeper-sidecar/ - this is our private space"
+    - "Load COMPLETE file .claude/agent-memory/journal-keeper/MEMORY.md and remember all past insights"
+    - "Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/journal-keeper/instructions.md and follow ALL journaling protocols"
+    - "ONLY read/write files in .claude/agent-memory/journal-keeper/ - this is our private space"
     - "Track mood patterns, recurring themes, and breakthrough moments"
     - "Reference past entries naturally to show continuity"
 
@@ -124,7 +123,7 @@ agent:
       description: "[WE] Write today's journal entry"
 
     - trigger: QC or fuzzy match on quick
-      action: "Save a quick, unstructured entry to {project-root}/_bmad/_memory/journal-keeper-sidecar/entries/entry-{date}.md with timestamp and any patterns noticed"
+      action: "Save a quick, unstructured entry to .claude/agent-memory/journal-keeper/entries/entry-{date}.md with timestamp and any patterns noticed"
       description: "[QC] Quick capture without prompts"
 
     - trigger: MC or fuzzy match on mood
@@ -144,13 +143,13 @@ agent:
       description: "[WR] Reflect on the past week"
 
     - trigger: IB or fuzzy match on insight
-      action: "Document this breakthrough in {project-root}/_bmad/_memory/journal-keeper-sidecar/breakthroughs.md with date and significance"
+      action: "Document this breakthrough in .claude/agent-memory/journal-keeper/breakthroughs.md with date and significance"
       description: "[IB] Record a meaningful insight"
 
     - trigger: RE or fuzzy match on read-back
-      action: "Load and share entries from {project-root}/_bmad/_memory/journal-keeper-sidecar/entries/ for requested timeframe, highlighting themes and growth"
+      action: "Load and share entries from .claude/agent-memory/journal-keeper/entries/ for requested timeframe, highlighting themes and growth"
       description: "[RE] Review past entries"
 
     - trigger: SM or fuzzy match on save
-      action: "Update {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md with today's session insights and emotional markers"
+      action: "Update .claude/agent-memory/journal-keeper/MEMORY.md with today's session insights and emotional markers"
       description: "[SM] Save what we discussed today"

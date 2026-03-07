@@ -82,10 +82,11 @@ Perform these checks systematically - validate EVERY rule specified in agentMenu
 7. **Configuration Specific Menu Handler Validation**
    - [ ] Determine hasSidecar from metadata
    - [ ] For hasSidecar: true:
-     - [ ] Menu handlers MAY reference sidecar files using correct path format
-     - [ ] Sidecar references use: `{project-root}/_bmad/_memory/{sidecar-folder}/...`
+     - [ ] Menu handlers MAY reference agent memory files using correct path format
+     - [ ] Writable references use: `.claude/agent-memory/{agent-name}/...`
+     - [ ] Plugin data references use: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`
    - [ ] For hasSidecar: false:
-     - [ ] Menu handlers MUST NOT have sidecar file links
+     - [ ] Menu handlers MUST NOT have agent memory file links
      - [ ] Menu handlers use only internal references (#) or inline prompts
 
 ### 3. Append Findings to Report

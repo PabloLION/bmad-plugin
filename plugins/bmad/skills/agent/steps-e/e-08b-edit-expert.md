@@ -74,21 +74,23 @@ ALWAYS backup before editing:
 
 **Type Conversion TO Expert:**
 - Set `module: stand-alone` and `hasSidecar: true`
-- Add `metadata.sidecar-folder` if not present
-- Create sidecar directory next to agent.yaml: `{agent-folder}/{agent-name}-sidecar/`
+- Add `metadata.memory-folder: .claude/agent-memory/{agent-name}/`
+- Agent memory at `.claude/agent-memory/{agent-name}/` is managed by Claude Code
+- Create plugin data folder: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` with `instructions.md`
 
-**Sidecar Management:**
-- If changing sidecar-folder: update all critical_actions references
-- If removing sidecar (Expert → Simple): remove sidecar fields and folder
-- Create/update sidecar files as needed
+**Memory Management:**
+- If changing agent name: update all critical_actions references to new `.claude/agent-memory/{new-name}/` path
+- If removing memory (Expert → Simple): remove `hasSidecar`, `memory-folder` fields, and critical_actions
+- Create/update plugin data files as needed
 
 **Metadata, Persona, Commands, Critical Actions:**
 - Same as Simple agent edit
 
-### 5. Validate Sidecar Paths
+### 5. Validate Memory Paths
 
-After editing, confirm all critical_actions reference correct sidecar paths:
-`{project-root}/_bmad/_memory/{sidecar-folder}/{file}.md`
+After editing, confirm all critical_actions reference correct paths:
+- Writable files: `.claude/agent-memory/{agent-name}/{file}.md`
+- Plugin data: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/{file}.md`
 
 ### 6. Document Applied Edits
 

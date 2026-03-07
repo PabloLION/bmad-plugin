@@ -42,21 +42,22 @@ Validate Expert agents meet BMAD quality standards.
 
 - [ ] `critical_actions` section exists
 - [ ] Contains at minimum 3 actions
-- [ ] **Loads sidecar memories:** `{project-root}/_bmad/_memory/{sidecar-folder}/memories.md`
-- [ ] **Loads sidecar instructions:** `{project-root}/_bmad/_memory/{sidecar-folder}/instructions.md`
-- [ ] **Restricts file access:** `ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/`
+- [ ] **Loads agent memory:** `.claude/agent-memory/{agent-name}/MEMORY.md`
+- [ ] **Loads plugin instructions:** `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md`
+- [ ] **Restricts file access:** `ONLY read/write files in .claude/agent-memory/{agent-name}/`
 - [ ] No placeholder text in critical_actions
 - [ ] No compiler-injected steps (Load persona, Load config, greeting, etc.)
 
 ---
 
-## Sidecar Path Format (CRITICAL)
+## Memory Path Format (CRITICAL)
 
-- [ ] ALL sidecar paths use: `{project-root}/_bmad/_memory/{sidecar-folder}/...`
-- [ ] `{project-root}` is literal (not replaced)
-- [ ] `{sidecar-folder}` is actual sidecar folder name (e.g., `journal-keeper-sidecar`)
-- [ ] No relative paths like `./{sidecar-folder}/`
+- [ ] Agent-writable paths use: `.claude/agent-memory/{agent-name}/...`
+- [ ] Plugin data paths use: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`
+- [ ] `{agent-name}` is the actual agent identifier (e.g., `journal-keeper`)
+- [ ] No relative paths like `./{agent-name}-sidecar/`
 - [ ] No absolute paths like `/Users/...`
+- [ ] No `{project-root}/_bmad/_memory/` paths
 
 ---
 
@@ -83,8 +84,8 @@ Validate Expert agents meet BMAD quality standards.
 ### Action Handlers
 
 - [ ] If `action: '#prompt-id'`, corresponding prompt exists
-- [ ] If action references sidecar file, uses correct path format
-- [ ] Sidecar update actions are clear and complete
+- [ ] If action references agent memory file, uses `.claude/agent-memory/{agent-name}/` path format
+- [ ] Memory update actions are clear and complete
 
 ---
 
@@ -115,8 +116,9 @@ Validate Expert agents meet BMAD quality standards.
 ### Path Consistency
 
 - [ ] All YAML references use correct path format
-- [ ] References between sidecar files (if any) use relative paths
-- [ ] References from agent YAML to sidecar use `{project-root}/_bmad/_memory/` format
+- [ ] References within `.claude/agent-memory/{agent-name}/` use relative paths
+- [ ] References from agent YAML to memory use `.claude/agent-memory/{agent-name}/` format
+- [ ] References from agent YAML to plugin data use `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` format
 
 ---
 
@@ -153,20 +155,20 @@ These are auto-injected, don't validate for them:
 
 ## Common Issues
 
-### Issue: Wrong Sidecar Path Format
+### Issue: Wrong Memory Path Format
 
 **Wrong:** `./journal-keeper-sidecar/memories.md`
 
-**Fix:** `{project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md`
+**Fix:** `.claude/agent-memory/journal-keeper/MEMORY.md`
 
 ### Issue: Missing critical_actions
 
 **Fix:** Add at minimum:
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 ```
 
 ### Issue: Communication Style Missing Memory References

@@ -42,8 +42,8 @@
 ## hasSidecar: false
 
 ### Structure
-- [ ] Single `.agent.yaml` file (no sidecar folder)
-- [ ] No `{project-root}/_bmad/_memory/` paths
+- [ ] Single `.agent.yaml` file (no memory folder)
+- [ ] No `.claude/agent-memory/` paths
 - [ ] Size under ~250 lines (unless justified)
 
 ### critical_actions (OPTIONAL)
@@ -58,25 +58,25 @@
 ## hasSidecar: true
 
 ### Structure
-- [ ] `sidecar-folder` specified in metadata
-- [ ] Folder exists: `{name}-sidecar/`
-- [ ] Sidecar contains: `instructions.md`, `memories.md` (recommended)
+- [ ] Agent memory folder: `.claude/agent-memory/{agent-name}/`
+- [ ] Memory folder contains: `MEMORY.md` (agent-writable)
+- [ ] Plugin data folder: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` (contains `instructions.md` and other stable files)
 
 ### critical_actions (MANDATORY)
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 ```
 - [ ] Exists with ≥3 actions
-- [ ] Loads memories, loads instructions, restricts file access
+- [ ] Loads agent memory, loads plugin instructions, restricts file access
 - [ ] No placeholders, no compiler-injected steps
 
 ### Path Format (CRITICAL)
-- [ ] ALL sidecar paths: `{project-root}/_bmad/_memory/{sidecar-folder}/...`
-- [ ] `{project-root}` is literal (not replaced)
-- [ ] `{sidecar-folder}` = actual folder name
+- [ ] Agent-writable paths use: `.claude/agent-memory/{agent-name}/...`
+- [ ] Plugin data paths use: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/...`
+- [ ] No `{project-root}/_bmad/_memory/` paths
 - [ ] No `./` or `/Users/` paths
 
 ### Persona Addition
@@ -84,7 +84,7 @@ critical_actions:
 - [ ] Natural: "Last time you mentioned..." or "I've noticed patterns..."
 
 ### Menu Actions
-- [ ] Sidecar references use correct path format
+- [ ] Memory references use `.claude/agent-memory/{agent-name}/` path format
 - [ ] Update actions are complete
 
 **Reference:** `journal-keeper/`
@@ -106,6 +106,6 @@ critical_actions:
 | Behaviors in `communication_style` | Move to `identity` or `principles` |
 | `trigger: analyze` | `trigger: AN or fuzzy match on analyze` |
 | `description: 'Analyze code'` | `description: '[AC] Analyze code'` |
-| `./sidecar/memories.md` | `{project-root}/_bmad/_memory/sidecar/memories.md` |
-| Missing `critical_actions` (hasSidecar: true) | Add load memories, load instructions, restrict access |
+| `./memories.md` | `.claude/agent-memory/{agent-name}/MEMORY.md` |
+| Missing `critical_actions` (hasSidecar: true) | Add load MEMORY.md, load instructions, restrict access |
 | No memory references (hasSidecar: true) | Add to `communication_style`: "Last time you mentioned..." |

@@ -112,11 +112,11 @@ exec: '../../../core/workflows/brainstorming/workflow.md'
 | Expert | true | `prompts`, `menu`, `critical_actions` |
 | Module | true | `menu` only (external workflows) |
 
-**Expert Agent sidecar path pattern:**
+**Expert Agent memory path pattern:**
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 ```
 
 ---
@@ -145,8 +145,8 @@ menu:
 
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/journal-keeper-sidecar/'
+  - 'Load COMPLETE file .claude/agent-memory/journal-keeper/MEMORY.md'
+  - 'ONLY read/write files in .claude/agent-memory/journal-keeper/'
 
 prompts:
   - id: guided-entry
@@ -159,7 +159,7 @@ menu:
     description: '[WE] Write journal entry'
 
   - trigger: SM or fuzzy match on save-memory
-    action: 'Update {project-root}/_bmad/_memory/journal-keeper-sidecar/memories.md'
+    action: 'Update .claude/agent-memory/journal-keeper/MEMORY.md'
     description: '[SM] Save session'
 ```
 
@@ -186,4 +186,4 @@ menu:
 4. **Code uniqueness:** Required within each agent
 5. **Paths:** Always use `{project-root}`, never relative paths
 6. **Handler choice:** `action` for Agents, `exec` for Modules
-7. **Sidecar paths:** `{project-root}/_bmad/_memory/{sidecar-folder}/`
+7. **Agent memory paths:** `.claude/agent-memory/{agent-name}/`

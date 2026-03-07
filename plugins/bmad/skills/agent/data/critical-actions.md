@@ -19,9 +19,9 @@ Numbered steps executing FIRST on agent activation.
 
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
 ```
 
 ### hasSidecar: false (OPTIONAL)
@@ -37,9 +37,9 @@ critical_actions:
 
 ```yaml
 critical_actions:
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/memories.md'
-  - 'Load COMPLETE file {project-root}/_bmad/_memory/{sidecar-folder}/instructions.md'
-  - 'ONLY read/write files in {project-root}/_bmad/_memory/{sidecar-folder}/'
+  - 'Load COMPLETE file .claude/agent-memory/{agent-name}/MEMORY.md'
+  - 'Load COMPLETE file ${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md'
+  - 'ONLY read/write files in .claude/agent-memory/{agent-name}/'
   - 'Search web for biotech headlines, display before menu'
 ```
 
@@ -49,11 +49,10 @@ critical_actions:
 
 | Use | Pattern |
 |-----|---------|
-| Sidecar memory | `{project-root}/_bmad/_memory/{sidecar-folder}/file.md` |
+| Agent memory (writable) | `.claude/agent-memory/{agent-name}/MEMORY.md` |
+| Plugin data (read-only) | `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/instructions.md` |
 | Project data | `{project-root}/path/to/file.csv` |
 | Output | `{output_folder}/results/` |
-
-**Key:** `{project-root}` = literal text in YAML, resolved at runtime
 
 ---
 

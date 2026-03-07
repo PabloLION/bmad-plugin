@@ -40,10 +40,10 @@ Validate Module agents meet BMAD quality standards.
 - [ ] Pass `simple-agent-validation.md` first
 
 **If Expert-structure Module Agent:**
-- [ ] `agent.metadata.hasSidecar` is `true` (has sidecar)
-- [ ] Has sidecar folder
+- [ ] `agent.metadata.hasSidecar` is `true` (has memory folder)
+- [ ] Agent memory folder: `.claude/agent-memory/{agent-name}/`
 - [ ] Uses `exec:` for workflow references
-- [ ] Sidecar paths use `{project-root}/_bmad/_memory/{sidecar-folder}/` format
+- [ ] Agent-writable paths use `.claude/agent-memory/{agent-name}/` format
 - [ ] Pass `expert-agent-validation.md` first
 
 ---

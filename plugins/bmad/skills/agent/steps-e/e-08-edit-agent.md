@@ -93,13 +93,13 @@ For each planned edit:
 
 **Sidecar Conversion:**
 
-**false → true (Adding sidecar):**
+**false → true (Adding persistent memory):**
 - Set `hasSidecar: true`
-- Add `metadata.sidecar-folder` if not present
-- Add `critical_actions` section with sidecar file references
-- Create sidecar directory: `{agent-folder}/{agent-name}-sidecar/`
-- Create starter files: `memories.md`, `instructions.md`
-- Update all references to use `{project-root}/_bmad/_memory/{sidecar-folder}/` format
+- Add `metadata.memory-folder: .claude/agent-memory/{agent-name}/`
+- Add `critical_actions` section with agent memory references
+- Agent memory folder at `.claude/agent-memory/{agent-name}/` is managed by Claude Code
+- Create plugin data folder: `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` with `instructions.md`
+- Update all references to use `.claude/agent-memory/{agent-name}/` for writable files
 
 **true → false (Removing sidecar):**
 - Set `hasSidecar: false`
@@ -127,7 +127,8 @@ For each planned edit:
 - Additions: append to critical_actions array
 - Modifications: update specific actions
 - Removals: remove from array
-- Ensure all references use correct `{project-root}/_bmad/_memory/` paths
+- Ensure writable references use `.claude/agent-memory/{agent-name}/` paths
+- Ensure plugin data references use `${CLAUDE_PLUGIN_ROOT}/data/{agent-name}/` paths
 
 ### 5. Validate After Each Edit
 
