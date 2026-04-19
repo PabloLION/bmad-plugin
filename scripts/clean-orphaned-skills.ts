@@ -41,17 +41,21 @@ async function getValidSkillNames(): Promise<Set<string>> {
     }
   }
 
-  // Core skills synced outside the normal contentRoot (src/core/skills/ or src/core/workflows/)
+  // Core skills synced outside the normal contentRoot.
+  // Historical paths: src/core/skills/ then src/core/workflows/ — both long
+  // since removed upstream. Current path (v6.2.x+) is src/core-skills/ which
+  // is what sync-upstream-content.ts's syncCoreExtras() uses.
   const coreSource = getCoreSource();
   const coreRoot = join(ROOT, '.upstream', coreSource.localPath);
-  const coreSkillsDir = join(coreRoot, 'src/core/skills');
-  const coreWorkflowsDir = join(coreRoot, 'src/core/workflows');
-  const coreExtrasDir = (await exists(coreSkillsDir))
-    ? coreSkillsDir
-    : coreWorkflowsDir;
+  const candidateExtrasDirs = [
+    join(coreRoot, 'src/core-skills'),
+    join(coreRoot, 'src/core/skills'),
+    join(coreRoot, 'src/core/workflows'),
+  ];
 
-  if (await exists(coreExtrasDir)) {
-    const entries = await readdir(coreExtrasDir, { withFileTypes: true });
+  for (const dir of candidateExtrasDirs) {
+    if (!(await exists(dir))) continue;
+    const entries = await readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       if (entry.isDirectory()) valid.add(entry.name);
     }

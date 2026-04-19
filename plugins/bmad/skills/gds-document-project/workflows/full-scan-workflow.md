@@ -15,7 +15,7 @@ description: 'Complete project documentation workflow (initial scan or full resc
 
 ### Configuration Loading
 
-Load config from `.claude/bmad.local.md` and resolve:
+Load config from `{module_config}` and resolve:
 
 - `project_knowledge`
 - `user_name`
@@ -23,10 +23,10 @@ Load config from `.claude/bmad.local.md` and resolve:
 
 ### Paths
 
-- `installed_path` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/workflows`
+- `installed_path` = `../workflows`
 - `instructions` = `{installed_path}/full-scan-instructions.md`
-- `validation` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/checklist.md`
-- `documentation_requirements_csv` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/documentation-requirements.csv`
+- `validation` = `../checklist.md`
+- `documentation_requirements_csv` = `../documentation-requirements.csv`
 
 ### Runtime Inputs
 

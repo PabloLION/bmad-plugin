@@ -1,6 +1,6 @@
 {
   "name": "bmad-plugin",
-  "version": "6.2.2.0",
+  "version": "6.3.0.2",
   "type": "module",
   "scripts": {
     "prepare": "husky",
@@ -16,6 +16,8 @@
     "generate:manifest": "bun scripts/generate-agent-manifest.ts",
     "sync-all": "bun scripts/sync-all.ts",
     "clean:orphaned": "bun scripts/clean-orphaned-skills.ts",
+    "find-orphans": "bun scripts/find-orphan-files.ts",
+    "find-orphans:delete": "bun scripts/find-orphan-files.ts --delete",
     "bump-core": "bun scripts/bump-core.ts",
     "bump-module": "bun scripts/bump-module.ts",
     "update-readme": "bun scripts/update-readme-version.ts",

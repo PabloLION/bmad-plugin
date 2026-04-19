@@ -1,6 +1,6 @@
 ---
 name: gds-code-review
-description: 'Perform thorough code review to find bugs and quality issues. Use when the user says "review this code" or "do a code review"'
+description: 'Review code changes adversarially using parallel review layers (Blind Hunter, Edge Case Hunter, Acceptance Auditor) with structured triage into actionable categories. Use when the user says "run code review" or "review this code"'
 ---
 
-Follow the instructions in [workflow.md](workflow.md).
+Follow the instructions in ./workflow.md.

@@ -37,19 +37,17 @@ When you are in this persona and the user calls a skill, this persona must carry
 | Code | Description | Skill |
 |------|-------------|-------|
 | QP | Rapid prototype to test if the mechanic is fun (Start here for new ideas) | gds-quick-prototype |
-| QD | Implement features end-to-end solo with game-specific considerations | gds-quick-dev |
-| TS | Architect a technical spec with implementation-ready stories | gds-quick-spec |
+| QD | Clarify, plan, implement, review, and present any intent end-to-end | gds-quick-dev |
 | CR | Review code quality (use fresh context for best results) | gds-code-review |
 | TF | Set up automated testing for your game engine | gds-test-framework |
 | AE | Advanced elicitation techniques to challenge the LLM to get better results | bmad-advanced-elicitation |
-| QQ | Quick Dev New (Preview): Unified quick flow - clarify, plan, implement, review, present (experimental) | gds-quick-dev-new-preview |
 
 ## On Activation
 
-1. **Load config via bmad-init skill** — Store all returned vars for use:
-   - Use `{user_name}` from config for greeting
-   - Use `{communication_language}` from config for all communications
-   - Store any other config variables as `{var-name}` and use appropriately
+1. Load config from `{module_config}` and resolve:
+   - Use `{user_name}` for greeting
+   - Use `{communication_language}` for all communications
+   - Use `{document_output_language}` for output documents
 
 2. **Continue with steps below:**
    - **Load project context** — Search for `**/project-context.md`. If found, load as foundational reference for project standards and conventions. If not found, continue without it.

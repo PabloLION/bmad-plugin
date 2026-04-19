@@ -3,7 +3,7 @@ name: 'step-04-final-validation'
 description: 'Validate complete coverage of all requirements and ensure implementation readiness'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-epics-and-stories'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-04-final-validation.md'
@@ -12,7 +12,7 @@ outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
 advancedElicitationTask: 'skill:bmad-advanced-elicitation'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/bmad-party-mode/workflow.md'
+partyModeWorkflow: 'skill:bmad-party-mode'
 
 # Template References
 epicsTemplate: '{workflow_path}/templates/epics-template.md'

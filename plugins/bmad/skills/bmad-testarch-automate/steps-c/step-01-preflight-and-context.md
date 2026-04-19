@@ -3,7 +3,7 @@ name: 'step-01-preflight-and-context'
 description: 'Determine mode, verify framework, and load context and knowledge'
 outputFile: '{test_artifacts}/automation-summary.md'
 nextStepFile: './step-02-identify-targets.md'
-knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
+knowledgeIndex: './resources/tea-index.csv'
 ---
 
 # Step 1: Preflight & Context Loading

@@ -3,7 +3,7 @@ name: 'step-04-characters'
 description: 'Develop all characters including protagonists, antagonists, supporting cast, and their arcs'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-narrative'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-04-characters.md'
@@ -12,8 +12,8 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/narrative-design.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: 'skill:bmad-advanced-elicitation'
+partyModeWorkflow: 'skill:bmad-party-mode'
 ---
 
 # Step 4: Characters

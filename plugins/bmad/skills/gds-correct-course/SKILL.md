@@ -1,6 +1,6 @@
 ---
 name: gds-correct-course
-description: 'Manage significant changes when sprint implementation is off track. Use when the user says "correct course" or "we need a course correction"'
+description: 'Manage significant changes during sprint execution. Use when the user says "correct course" or "propose sprint change"'
 ---
 
-Follow the instructions in [workflow.md](workflow.md).
+Follow the instructions in ./workflow.md.

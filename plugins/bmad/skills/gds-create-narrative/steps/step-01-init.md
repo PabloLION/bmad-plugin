@@ -3,7 +3,7 @@ name: 'step-01-init'
 description: 'Initialize narrative workflow, load GDD context, and assess narrative complexity'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-narrative'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01-init.md'

@@ -1,6 +1,6 @@
 ---
 name: gds-sprint-status
-description: 'Summarize current sprint progress and surface risks. Use when the user says "sprint status" or "how is the sprint going"'
+description: 'Summarize sprint status and surface risks. Use when the user says "check sprint status" or "show sprint status"'
 ---
 
-Follow the instructions in [workflow.md](workflow.md).
+Follow the instructions in ./workflow.md.

@@ -3,7 +3,7 @@ name: 'step-01-validate-prerequisites'
 description: 'Validate required documents exist and extract all requirements for epic and story creation'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-epics-and-stories'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01-validate-prerequisites.md'
@@ -14,7 +14,7 @@ epicsTemplate: '{workflow_path}/templates/epics-template.md'
 
 # Task References
 advancedElicitationTask: 'skill:bmad-advanced-elicitation'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/bmad-party-mode/workflow.md'
+partyModeWorkflow: 'skill:bmad-party-mode'
 
 # Template References
 epicsTemplate: '{workflow_path}/templates/epics-template.md'

@@ -32,6 +32,11 @@ so that {{benefit}}.
 - Alignment with unified project structure (paths, modules, naming)
 - Detected conflicts or variances (with rationale)
 
+### Project Context Rules
+
+- Project-wide constraints, required frameworks, MCP integrations, and conventions extracted from project-context.md
+- [Populated automatically from project-context.md if it exists]
+
 ### References
 
 - Cite all technical details with source paths and sections, e.g. [Source: docs/<file>.md#Section]

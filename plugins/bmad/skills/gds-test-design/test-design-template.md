@@ -202,4 +202,4 @@ SCENARIO: Basic Save/Load Round Trip
 
 - Game Design Document
 - Platform Certification Guidelines
-- Knowledge Base: `qa-index.csv`
+- Knowledge Base: `qa-index.csv` (loaded by `gds-agent-game-dev` from `{skill_root}/gametest/qa-index.csv`)
