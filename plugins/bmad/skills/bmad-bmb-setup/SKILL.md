@@ -21,7 +21,7 @@ Both config scripts use an anti-zombie pattern — existing entries for this mod
 
 1. Read `./assets/module.yaml` for module metadata and variable definitions (the `code` field is the module identifier)
 2. Check if `{project-root}/_bmad/config.yaml` exists — if a section matching the module's code is already present, inform the user this is an update
-3. Check for per-module configuration at `.claude/bmad.local.md` and `.claude/bmad.local.md`. If either file exists:
+3. Check for per-module configuration at `{project-root}/_bmad/bmb/config.yaml` and `{project-root}/_bmad/core/config.yaml`. If either file exists:
    - If `{project-root}/_bmad/config.yaml` does **not** yet have a section for this module: this is a **fresh install**. Inform the user that installer config was detected and values will be consolidated into the new format.
    - If `{project-root}/_bmad/config.yaml` **already** has a section for this module: this is a **legacy migration**. Inform the user that legacy per-module config was found alongside existing config, and legacy values will be used as fallback defaults.
    - In both cases, per-module config files and directories will be cleaned up after setup.

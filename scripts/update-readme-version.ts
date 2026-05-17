@@ -1,7 +1,13 @@
 /**
- * Updates the plugin version and multi-upstream dependency table in README.md.
- * Reads from .upstream-versions/<id>.json and .plugin-version, writes between
- * marker comments.
+ * Updates the plugin version, dependency-table, and badges in README.md.
+ * Reads from .upstream-versions/<id>.json and .plugin-version, writes
+ * between marker comments.
+ *
+ * Pre-v6.5.0+ this also pulled the upstream tag date from a local git
+ * clone of each upstream repo. After the migration to installer-based
+ * sync we no longer keep those clones, so the table now shows
+ * Version + Last-Checked only (the upstream tag date is one click away
+ * via the linked module name).
  *
  * Run: bun scripts/update-readme-version.ts
  */
@@ -32,30 +38,20 @@ const pluginVersion = (
   await Bun.file(join(ROOT, '.plugin-version')).text()
 ).trim();
 
-async function getTagDate(localPath: string, version: string): Promise<string> {
-  const result = Bun.spawnSync({
-    cmd: ['git', 'tag', '-l', version, '--format=%(creatordate:short)'],
-    cwd: join(ROOT, '.upstream', localPath),
-  });
-  const date = new TextDecoder().decode(result.stdout).trim();
-  return date || 'unknown';
-}
-
 const sources = getEnabledSources();
 const rows: string[] = [];
 
 for (const source of sources) {
   const info = await readVersionInfo(source.id);
   const label = SOURCE_LABELS[source.id] ?? source.id.toUpperCase();
-  const tagDate = await getTagDate(source.localPath, info.version);
   rows.push(
-    `| [${label}](https://github.com/${source.repo}) | ${info.version} | ${tagDate} | ${info.syncedAt} |`,
+    `| [${label}](https://github.com/${source.repo}) | ${info.version} | ${info.syncedAt} |`,
   );
 }
 
 const table = [
-  '| Module | Version | Released | Last Checked |',
-  '|---|---|---|---|',
+  '| Module | Version | Last Checked |',
+  '|---|---|---|',
   ...rows,
 ].join('\n');
 

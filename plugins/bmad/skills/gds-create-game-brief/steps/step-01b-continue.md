@@ -3,7 +3,7 @@ name: 'step-01b-continue'
 description: 'Resume an interrupted Game Brief workflow from the last completed step'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-game-brief'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01b-continue.md'

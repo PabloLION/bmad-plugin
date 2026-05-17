@@ -3,7 +3,7 @@ name: 'step-01b-continue'
 description: 'Continue an existing narrative workflow from where it left off'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-narrative'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01b-continue.md'

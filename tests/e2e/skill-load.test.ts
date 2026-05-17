@@ -7,7 +7,7 @@ const PLUGIN_DIR = resolve(import.meta.dir, '../../plugins/bmad');
 const TIMEOUT = 60_000;
 
 // Each test runs claude in a fresh temp dir to avoid modifying the real
-// working directory (e.g. skills like init create files and configs).
+// working directory (e.g. skills that create files and configs).
 // mkdtempSync adds a unique suffix so parallel tests don't collide.
 const tempDirs: string[] = [];
 
@@ -48,52 +48,53 @@ afterAll(() => {
 
 describe('skill loading', () => {
   test.concurrent(
-    'help skill loads',
+    'bmad-help skill loads',
     async () => {
-      const output = await runClaude('/bmad:help');
+      const output = await runClaude('/bmad:bmad-help');
       expect(output.toLowerCase()).toMatch(/bmad|help/);
     },
     TIMEOUT,
   );
 
   test.concurrent(
-    'brainstorming skill loads',
+    'bmad-brainstorming skill loads',
     async () => {
-      const output = await runClaude('/bmad:brainstorming');
+      const output = await runClaude('/bmad:bmad-brainstorming');
       expect(output.toLowerCase()).toContain('brainstorm');
     },
     TIMEOUT,
   );
 
   test.concurrent(
-    'status skill loads',
+    'bmad-customize skill loads (NEW v6.5.0)',
     async () => {
-      const output = await runClaude('/bmad:status');
-      expect(output.toLowerCase()).toMatch(/status|project|bmad/);
-    },
-    TIMEOUT,
-  );
-
-  test.concurrent(
-    'init skill loads',
-    async () => {
-      // init is interactive (asks project info), so in single-turn mode
-      // we just verify the skill loads and mentions initialization
-      const output = await runClaude('/bmad:init');
-      expect(output.toLowerCase()).toMatch(/init|bmad|project|setup/);
+      const output = await runClaude('/bmad:bmad-customize');
+      expect(output.toLowerCase()).toMatch(/customiz|override|toml|skill/);
     },
     TIMEOUT,
   );
 });
 
-describe('agent loading', () => {
+describe('agent persona loading (now via skills)', () => {
   test.concurrent(
-    'quinn agent responds',
+    'bmad-tea (Murat) responds',
+    async () => {
+      // Agents are skills as of v6.5.0+; invoke via skill name.
+      const output = await runClaude(
+        '/bmad:bmad-tea — briefly describe your role. Reply in one sentence.',
+      );
+      expect(output.toLowerCase()).toMatch(/test|architect|quality|murat/);
+    },
+    TIMEOUT,
+  );
+
+  test.concurrent(
+    'bmad-agent-pm (John) responds',
     async () => {
       const output = await runClaude(
-        'Use the quinn agent to briefly describe your role. Reply in one sentence.',
+        '/bmad:bmad-agent-pm — briefly describe your role. Reply in one sentence.',
       );
-      expect(output.toLowerCase()).toMatch(/test|qa|quality|quinn/);
+      expect(output.toLowerCase()).toMatch(/product|manager|prd|john/);
     },
     TIMEOUT,
   );
@@ -105,16 +106,16 @@ describe('random smoke test', () => {
   const LOADED_FALLBACK = /bmad|init|plugin|project/i;
 
   const SMOKE_POOL = [
-    { skill: 'create-product-brief', expect: /brief|product/i },
-    { skill: 'create-prd', expect: /prd|requirement/i },
-    { skill: 'code-review', expect: /review|code/i },
-    { skill: 'sprint-status', expect: /sprint|status/i },
-    { skill: 'retrospective', expect: /retro|sprint/i },
-    { skill: 'automate', expect: /test|automat/i },
-    { skill: 'quick-spec', expect: /spec|story/i },
-    { skill: 'document-project', expect: /document/i },
-    { skill: 'create-architecture', expect: /architect/i },
-    { skill: 'research', expect: /research/i },
+    { skill: 'bmad-product-brief', expect: /brief|product/i },
+    { skill: 'bmad-create-prd', expect: /prd|requirement/i },
+    { skill: 'bmad-code-review', expect: /review|code/i },
+    { skill: 'bmad-sprint-status', expect: /sprint|status/i },
+    { skill: 'bmad-retrospective', expect: /retro|sprint/i },
+    { skill: 'bmad-testarch-automate', expect: /test|automat/i },
+    { skill: 'bmad-quick-dev', expect: /quick|implement/i },
+    { skill: 'bmad-document-project', expect: /document/i },
+    { skill: 'bmad-create-architecture', expect: /architect/i },
+    { skill: 'bmad-market-research', expect: /research|market/i },
   ];
 
   const pick = SMOKE_POOL[Math.floor(Math.random() * SMOKE_POOL.length)];

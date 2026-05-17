@@ -3,7 +3,7 @@ name: 'step-01b-continue'
 description: 'Continue an existing architecture workflow from where it left off'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-game-architecture'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01b-continue.md'

@@ -5,7 +5,7 @@
 """Validate a BMad module's structure and help CSV integrity.
 
 Supports two module types:
-- Multi-skill modules with a dedicated setup skill (bmad-*-setup directory)
+- Multi-skill modules with a dedicated setup skill (*-setup directory)
 - Standalone single-skill modules with self-registration (assets/module-setup.md)
 
 Performs deterministic structural checks:
@@ -34,9 +34,9 @@ CSV_HEADER = [
 
 
 def find_setup_skill(module_dir: Path) -> Path | None:
-    """Find the setup skill folder (bmad-*-setup)."""
+    """Find the setup skill folder (*-setup)."""
     for d in module_dir.iterdir():
-        if d.is_dir() and d.name.startswith("bmad-") and d.name.endswith("-setup"):
+        if d.is_dir() and d.name.endswith("-setup"):
             return d
     return None
 
@@ -106,7 +106,7 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
         standalone_dir = detect_standalone_module(module_dir)
         if not standalone_dir:
             finding("critical", "structure",
-                    "No setup skill found (bmad-*-setup directory) and no standalone module detected")
+                    "No setup skill found (*-setup directory) and no standalone module detected")
             return {"status": "fail", "findings": findings, "info": info}
 
     # Branch: standalone vs multi-skill

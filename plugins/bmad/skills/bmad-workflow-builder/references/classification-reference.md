@@ -59,5 +59,7 @@ Classify the skill type based on user requirements. This table is for internal u
 
 Module context is asked for ALL types:
 
-- **Module-based:** Part of a BMad module. Uses `bmad-{modulecode}-{skillname}` naming. Config loading includes a fallback pattern — if config is missing, the skill informs the user that the module setup skill is available and continues with sensible defaults.
-- **Standalone:** Independent skill. Uses `bmad-{skillname}` naming. Config loading is best-effort — load if available, use defaults if not, no mention of a setup skill.
+- **Module-based:** Part of a module. Uses `{modulecode}-{skillname}` naming. Config loading includes a fallback pattern — if config is missing, the skill informs the user that the module setup skill is available and continues with sensible defaults.
+- **Standalone:** Independent skill. Uses `{skillname}` naming (no prefix required). Config loading is best-effort — load if available, use defaults if not, no mention of a setup skill.
+
+The `bmad-` prefix is reserved for official BMad creations. User-created skills should not include it unless the user specifically requests it.

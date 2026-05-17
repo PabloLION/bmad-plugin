@@ -1,6 +1,6 @@
 # Quality Dimensions — Quick Reference
 
-Seven dimensions to keep in mind when building skills. The quality scanners check these automatically during quality analysis — this is a mental checklist for the build phase.
+Eight dimensions to keep in mind when building skills. The quality scanners check these automatically during quality analysis — this is a mental checklist for the build phase.
 
 ## 1. Outcome-Driven Design
 
@@ -30,9 +30,9 @@ Scripts handle plumbing (fetch, transform, validate). Prompts handle judgment (i
 
 SKILL.md stays focused. Detail goes where it belongs.
 
-- Stage instructions → `./references/`
-- Reference data, schemas, large tables → `./references/`
-- Templates, config files → `./assets/`
+- Stage instructions → `references/`
+- Reference data, schemas, large tables → `references/`
+- Templates, config files → `assets/`
 - Multi-branch SKILL.md under ~250 lines: fine as-is
 - Single-purpose up to ~500 lines (~5000 tokens): acceptable if focused
 
@@ -40,14 +40,24 @@ SKILL.md stays focused. Detail goes where it belongs.
 
 Two parts: `[5-8 word summary]. [Use when user says 'X' or 'Y'.]`
 
-Default to conservative triggering. See `./references/standard-fields.md` for full format.
+Default to conservative triggering. See `./standard-fields.md` for full format.
 
 ## 6. Path Construction
 
-Use `{project-root}` for any project-scope path. Use `./` for skill-internal paths. Config variables used directly — they already contain `{project-root}`.
+Use `{project-root}` for any project-scope path. Use `./` only for same-folder references; cross-directory paths are bare and relative to skill root. Config variables used directly — they already contain `{project-root}`.
 
-See `./references/standard-fields.md` for correct/incorrect patterns.
+See `./standard-fields.md` for correct/incorrect patterns.
 
-## 7. Token Efficiency
+## 7. Customization Surface
+
+If the workflow opts in to end-user customization, the `[workflow]` override surface is a contract with every future user. Too thin forces forks for changes that should have been a three-line TOML edit. Too loud locks the author into permutation-forest usage patterns no one can reason about.
+
+- **Opportunity test:** Does the workflow load templates, write to paths, or have lifecycle points that real users will want to vary? Lift those to named scalars (`*_template`, `*_output_path`, `on_<event>`).
+- **Abuse test:** Does the surface include boolean toggles, identity fields, more than two `on_<event>` hooks, or arrays-of-tables without `code`/`id` keys? These are usually design smells.
+- **Default:** Customization is opt-in. A workflow without a `customize.toml` is fine; a workflow that ships one should earn every field.
+
+See [Customization for Authors](/explanation/customization-for-authors) for the decision framework.
+
+## 8. Token Efficiency
 
 Remove genuine waste (repetition, defensive padding, meta-explanation). Preserve context that enables judgment (domain framing, theory of mind, design rationale). These are different things — never trade effectiveness for efficiency. A skill that works correctly but uses extra tokens is always better than one that's lean but fails edge cases.

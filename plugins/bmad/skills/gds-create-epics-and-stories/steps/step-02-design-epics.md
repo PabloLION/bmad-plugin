@@ -3,7 +3,7 @@ name: 'step-02-design-epics'
 description: 'Design and approve the epics_list that will organize all requirements into user-value-focused epics'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-epics-and-stories'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-02-design-epics.md'
@@ -13,7 +13,7 @@ outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
 advancedElicitationTask: 'skill:bmad-advanced-elicitation'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/bmad-party-mode/workflow.md'
+partyModeWorkflow: 'skill:bmad-party-mode'
 
 # Template References
 epicsTemplate: '{workflow_path}/templates/epics-template.md'

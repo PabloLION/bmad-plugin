@@ -14,44 +14,48 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | typecheck | `bun run typecheck` | Type-check all TypeScript (no emit) |
 | lint | `bun run lint` | Biome lint + format check |
 | lint:staged | `bun run lint:staged` | Biome lint + auto-fix staged files |
-| validate | `bun run validate` | Upstream coverage validation (agents, skills, content, naming) |
-| sync | `bun run sync` | Sync upstream content to plugin |
-| sync:dry | `bun run sync:dry` | Dry-run sync (preview changes) |
-| sync:source | `bun run sync:source <id>` | Sync a single upstream source |
-| generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
-| generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
-| generate:manifest | `bun run generate:manifest` | Generate _shared/agent-manifest.csv from plugin agent files |
-| sync-all | `bun run sync-all` | Run sync → generate:agents → generate:skills in sequence |
-| bump-core | `bun run bump-core` | Bump plugin version for new core BMAD-METHOD release |
-| bump-module | `bun run bump-module -- --source <id>` | Bump plugin version for new external module release |
-| update-readme | `bun run update-readme` | Update README version badge |
+| validate | `bun run validate` | Validate plugin (version consistency + skill-tree sanity) |
+| sync | `bun run sync` | Regenerate plugin tree from `npx bmad-method install` |
+| sync:dry | `bun run sync:dry` | Preview a sync without writing files |
+| update-readme | `bun run update-readme` | Update README version table + badge files |
 | test | `bun run test` | Run tests |
 | release | `./scripts/release.sh [version]` | Full release workflow (see Release below) |
 
 ## Upstream Sync
 
-When upstream repos release new tags, sync them into the plugin:
+The plugin delegates 100% of content shaping to the official
+`npx bmad-method install --tools claude-code` CLI. To bring in a new
+upstream version:
 
 ```sh
-# Core BMAD-METHOD release
-bun run bump-core                       # fetch latest tag, bump to v<core>.0
-bun run bump-core -- --tag v6.0.2       # pin to specific tag
-bun run bump-core -- --dry-run          # preview only
-bun run sync-all                        # sync + generate agents + generate skills
+# 1. Pin the new core version
+echo '{"version":"v6.5.1","syncedAt":"2026-04-28"}' > .upstream-versions/core.json
 
-# External module release (tea, bmb, cis, gds)
-bun run bump-module -- --source tea              # fetch latest tag, increment .X
-bun run bump-module -- --source gds --tag v0.1.7 # pin to specific tag
-bun run bump-module -- --source tea --dry-run    # preview only
-bun run sync-all -- --source tea                 # sync + generate for one source
+# 2. Run the installer-based sync
+bun run sync                    # uses .upstream-versions/core.json
+# OR
+bun run sync -- --tag v6.5.1    # ad-hoc tag override
 
-# Verify
-bun run typecheck && bun run lint
+# 3. Verify
+bun run typecheck && bun run lint && bun run validate && bun run test
 ```
 
-Both bump scripts fetch tags, update the upstream version file, update all 4
-plugin version files (.plugin-version, package.json, plugin.json, marketplace.json),
-and update README badges. Core bumps reset .X to 0; module bumps increment .X by 1.
+The `sync` script:
+
+1. Runs `npx -y bmad-method@<version> install --yes --directory
+   .upstream-install --modules bmm,bmb,cis,gds,tea --tools claude-code`
+2. Wipes `plugins/bmad/skills/`, `plugins/bmad/_shared/`,
+   `plugins/bmad/agents/`, `plugins/bmad/templates/`
+3. Copies `.upstream-install/.claude/skills/*` 1:1 into
+   `plugins/bmad/skills/`
+4. Bumps `.plugin-version`, `package.json`, `plugin.json`,
+   `marketplace.json`, and every `.upstream-versions/<id>.json` to
+   match the installed module versions
+5. Updates the README version table
+
+If only a non-core module changed, the installer still pulls the
+latest matching versions for that core release — there's no separate
+"bump-module" anymore (the installer auto-resolves compatible versions).
 
 ## Release
 
@@ -59,7 +63,7 @@ Run from **dev** branch with clean working tree:
 
 ```sh
 ./scripts/release.sh                  # release current version (full run)
-./scripts/release.sh 6.0.0-Beta.9.0  # bump version first, then release
+./scripts/release.sh 6.5.1.0         # bump version first, then release
 ./scripts/release.sh --after-ci       # finish release after CI passes
 ```
 
@@ -78,60 +82,51 @@ and exits with instructions. Fix the issue, then `--after-ci` completes Phase 2.
 - Releases: merge dev → main (unidirectional)
 - One branch per module/story
 
-## BMAD Agent Naming
+## Agents and Skills
 
-Two distinct names for each agent:
+As of v6.5.0+, the plugin treats **agents as skills**. Every agent
+persona — from BMM (Mary, Winston, Amelia, John, Paige, Sally) to TEA
+(Murat) to GDS (Cloud Dragonborn, Samus Shepard, …) — ships as a
+SKILL.md under `plugins/bmad/skills/<name>/`. Invoke them via
+`/bmad:bmad-agent-pm`, `/bmad:bmad-tea`, etc.
 
-| Term | Source | Example | Used for |
-|------|--------|---------|----------|
-| **Agent name** | Filename (without `.md`) | `quick-flow-solo-dev` | Invocation, delegation, code references |
-| **Personnel name** | `name` field in frontmatter or heading | Barry | Documentation, user-facing display |
+There is no longer a separate `plugins/bmad/agents/` directory. The
+upstream `module.yaml` agent rosters and the upstream installer are
+authoritative for the agent list — no plugin-side mirror is needed.
 
-The agent name (filename) is the canonical identifier. Personnel names add personality but are optional in tables.
+### Reference: BMM agent roster (from upstream module.yaml)
 
-### Current Agents
+| Slug                    | Persona  | Role                       |
+| ----------------------- | -------- | -------------------------- |
+| bmad-agent-analyst      | Mary     | Business Analyst           |
+| bmad-agent-pm           | John     | Product Manager            |
+| bmad-agent-ux-designer  | Sally    | UX Designer                |
+| bmad-agent-architect    | Winston  | System Architect           |
+| bmad-agent-dev          | Amelia   | Senior Software Engineer   |
+| bmad-agent-tech-writer  | Paige    | Technical Writer           |
+| bmad-tea (TEA)          | Murat    | Master Test Architect      |
+| bmad-cis-agent-*  (CIS) | various  | Brainstorming, design-thinking, problem-solving, etc. |
+| bmad-agent-builder (BMB)| Bond     | Agent builder              |
+| gds-agent-* (GDS)       | various  | Game architect, designer, dev, solo-dev, tech-writer |
 
-| Agent (filename)        | Personnel  | Module | Role                         |
-| ----------------------- | ---------- | ------ | ---------------------------- |
-| analyst                 | Mary       | Core   | Business Analyst             |
-| pm                      | John       | Core   | Product Manager              |
-| ux-designer             | Sally      | Core   | UX Designer                  |
-| architect               | Winston    | Core   | System Architect             |
-| sm                      | Bob        | Core   | Scrum Master                 |
-| dev                     | Amelia     | Core   | Developer                    |
-| tea                     | Murat      | TEA    | Test Architect               |
-| quinn                   | Quinn      | Core   | QA Engineer                  |
-| tech-writer             | Paige      | Core   | Technical Writer             |
-| quick-flow-solo-dev     | Barry      | Core   | Quick Flow Solo Dev          |
-| bmad-master             | —          | Core   | Orchestrator                 |
-| agent-builder           | Bond       | BMB    | Agent Building Expert        |
-| module-builder          | Morgan     | BMB    | Module Creation Master       |
-| workflow-builder        | Wendy      | BMB    | Workflow Building Master     |
-| brainstorming-coach     | Carson     | CIS    | Brainstorming Facilitator    |
-| creative-problem-solver | Dr. Quinn  | CIS    | Problem-Solving Expert       |
-| design-thinking-coach   | Maya       | CIS    | Design Thinking Coach        |
-| innovation-strategist   | Victor     | CIS    | Innovation Strategist        |
-| presentation-master     | Caravaggio | CIS    | Presentation Expert          |
-| storyteller             | Sophia     | CIS    | Master Storyteller           |
-| game-architect          | Cloud Dragonborn | GDS | Principal Game Systems Architect |
-| game-designer           | Samus Shepard | GDS | Lead Game Designer           |
-| game-dev                | Link Freeman | GDS   | Senior Game Developer        |
-| game-qa                 | GLaDOS     | GDS    | Game QA Architect            |
-| game-scrum-master       | Max        | GDS    | Game Dev Scrum Master        |
-| game-solo-dev           | Indie      | GDS    | Elite Indie Game Developer   |
+For the full canonical list, see the SKILL.md frontmatter of each
+`plugins/bmad/skills/*-agent-*` (or `bmad-tea`, `gds-agent-*`)
+directory, or run `/bmad:bmad-help` inside Claude Code.
 
 ## Automation First
 
 Script everything repeatable — never do manually what a script can do.
 
-- Full sync pipeline → `bun run sync-all [--source <id>]` (preferred)
-- Agent files → `bun run generate:agents [--source <id>]`
-- Skill files → `bun run generate:skills [--source <id>]`
-- Sync content → `bun run sync [--source <id>]`
-- All scripts support `--source <id>` and `--dry-run` flags
-- When something breaks, **fix the script** — don't work around it manually
-- All scripts are **idempotent** — running them twice produces the same result.
-  Always run a script twice to verify idempotency after making changes to it
+- Full sync → `bun run sync` (one command, runs the upstream installer
+  and rebuilds the entire plugin tree from its output)
+- Preview a sync → `bun run sync:dry`
+- README badge / version table refresh → `bun run update-readme`
+- Validate → `bun run validate` (version consistency + skill-tree sanity)
+- All scripts are **idempotent** — running them twice produces the same
+  result. Always run a script twice to verify idempotency after
+  changes.
+- When something breaks, **fix the script** — don't work around it
+  manually.
 
 ## Session Completion
 

@@ -3,7 +3,7 @@ name: 'step-04-fundamentals'
 description: 'Define core gameplay pillars, mechanics, and player experience goals'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-game-brief'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-04-fundamentals.md'
@@ -12,8 +12,8 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-brief.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: 'skill:bmad-advanced-elicitation'
+partyModeWorkflow: 'skill:bmad-party-mode'
 ---
 
 # Step 4: Game Fundamentals

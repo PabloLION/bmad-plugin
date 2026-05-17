@@ -29,7 +29,7 @@ def run_scaffold(tmp: Path, **kwargs) -> tuple[int, dict]:
         kwargs.get(
             "csv_content",
             "module,skill,display-name,menu-code,description,action,args,phase,after,before,required,output-location,outputs\n"
-            f'{module_name},bmad-{module_code}-example,Example,EX,An example skill,do-thing,,anytime,,,false,output_folder,artifact\n',
+            f'{module_name},{module_code}-example,Example,EX,An example skill,do-thing,,anytime,,,false,output_folder,artifact\n',
         )
     )
 
@@ -60,9 +60,9 @@ def test_basic_scaffold():
         code, data = run_scaffold(tmp, target_dir=str(target_dir))
         assert code == 0, f"Script failed: {data}"
         assert data["status"] == "success"
-        assert data["setup_skill"] == "bmad-tst-setup"
+        assert data["setup_skill"] == "tst-setup"
 
-        setup_dir = target_dir / "bmad-tst-setup"
+        setup_dir = target_dir / "tst-setup"
         assert setup_dir.is_dir()
         assert (setup_dir / "SKILL.md").is_file()
         assert (setup_dir / "scripts" / "merge-config.py").is_file()
@@ -87,12 +87,18 @@ def test_skill_md_frontmatter_substitution():
         )
         assert code == 0
 
-        skill_md = (target_dir / "bmad-xyz-setup" / "SKILL.md").read_text()
-        assert "bmad-xyz-setup" in skill_md
+        skill_md = (target_dir / "xyz-setup" / "SKILL.md").read_text()
+        assert "xyz-setup" in skill_md
         assert "XYZ Studio" in skill_md
         assert "{setup-skill-name}" not in skill_md
         assert "{module-name}" not in skill_md
         assert "{module-code}" not in skill_md
+
+
+def test_template_frontmatter_uses_quoted_name_placeholder():
+    """Test that the template frontmatter is valid before substitution."""
+    template_skill_md = (TEMPLATE_DIR / "SKILL.md").read_text()
+    assert 'name: "{setup-skill-name}"' in template_skill_md
 
 
 def test_generated_files_written():
@@ -115,11 +121,11 @@ def test_generated_files_written():
         )
         assert code == 0
 
-        yaml_content = (target_dir / "bmad-abc-setup" / "assets" / "module.yaml").read_text()
+        yaml_content = (target_dir / "abc-setup" / "assets" / "module.yaml").read_text()
         assert "ABC Module" in yaml_content
         assert "Custom desc" in yaml_content
 
-        csv_content = (target_dir / "bmad-abc-setup" / "assets" / "module-help.csv").read_text()
+        csv_content = (target_dir / "abc-setup" / "assets" / "module-help.csv").read_text()
         assert "bmad-abc-thing" in csv_content
         assert "DT" in csv_content
 
@@ -133,7 +139,7 @@ def test_anti_zombie_replaces_existing():
 
         # First scaffold
         run_scaffold(tmp, target_dir=str(target_dir))
-        stale_file = target_dir / "bmad-tst-setup" / "stale-marker.txt"
+        stale_file = target_dir / "tst-setup" / "stale-marker.txt"
         stale_file.write_text("should be removed")
 
         # Second scaffold should remove stale file
@@ -201,6 +207,7 @@ if __name__ == "__main__":
     tests = [
         test_basic_scaffold,
         test_skill_md_frontmatter_substitution,
+        test_template_frontmatter_uses_quoted_name_placeholder,
         test_generated_files_written,
         test_anti_zombie_replaces_existing,
         test_missing_target_dir,

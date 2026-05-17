@@ -3,7 +3,7 @@ name: 'step-04-final-validation'
 description: 'Validate complete coverage of all requirements and ensure implementation readiness'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-epics-and-stories'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-04-final-validation.md'
@@ -12,7 +12,7 @@ outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
 advancedElicitationTask: 'skill:bmad-advanced-elicitation'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/bmad-party-mode/workflow.md'
+partyModeWorkflow: 'skill:bmad-party-mode'
 
 # Template References
 epicsTemplate: '{workflow_path}/templates/epics-template.md'
@@ -147,3 +147,9 @@ When C is selected, the workflow is complete and the epics.md is ready for devel
 Epics and Stories complete. Invoke the `bmad-help` skill.
 
 Upon Completion of task output: offer to answer any questions about the Epics and Stories.
+
+## On Complete
+
+Run: `python3 {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolved `workflow.on_complete` is non-empty, follow it as the final terminal instruction before exiting.

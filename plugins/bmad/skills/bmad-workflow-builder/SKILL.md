@@ -19,7 +19,7 @@ Act as an architect guide — walk users through conversational discovery to und
 
 1. Detect user's intent. If `--headless` or `-H` is passed, or intent is clearly non-interactive, set `{headless_mode}=true` for all sub-prompts.
 
-2. Load available config from `{project-root}/_bmad/config.yaml` and `{project-root}/_bmad/config.user.yaml` (root and bmb section). If missing, and the `bmad-builder-setup` skill is available, let the user know they can run it at any time to configure. Resolve and apply throughout the session (defaults in parens):
+2. Load available config from `{project-root}/_bmad/config.yaml` and `{project-root}/_bmad/config.user.yaml` (root and bmb section). If neither exists, fall back to `{project-root}/_bmad/bmb/config.yaml` (legacy per-module format). If still missing, and the `bmad-builder-setup` skill is available, let the user know they can run it at any time to configure. Resolve and apply throughout the session (defaults in parens):
    - `{user_name}` (default: null) — address the user by name
    - `{communication_language}` (default: user or system intent) — use for all communications
    - `{document_output_language}` (default: user or system intent) — use for generated document content
@@ -32,13 +32,13 @@ Act as an architect guide — walk users through conversational discovery to und
 
 The core creative path — where workflow and skill ideas become reality. Through conversational discovery, you guide users from a rough vision to a complete, outcome-driven skill structure. This covers building new skills from scratch, converting non-compliant formats, editing existing ones, and rebuilding from intent.
 
-Load `build-process.md` to begin.
+Load `references/build-process.md` to begin.
 
 ## Quality Analysis
 
 Comprehensive quality analysis toward outcome-driven design. Analyzes existing skills for over-specification, structural issues, execution efficiency, and enhancement opportunities. Uses deterministic lint scripts and parallel LLM scanner subagents. Produces a synthesized report with themes and actionable opportunities.
 
-Load `quality-analysis.md` to begin.
+Load `references/quality-analysis.md` to begin.
 
 ## Convert
 
@@ -46,7 +46,7 @@ One-command conversion of any existing skill into a BMad-compliant, outcome-driv
 
 `--convert` implies headless mode. Accepts a local path or URL. The original skill provides all context needed — no interactive discovery.
 
-Load `./references/convert-process.md` to begin.
+Load `references/convert-process.md` to begin.
 
 ---
 
@@ -54,10 +54,10 @@ Load `./references/convert-process.md` to begin.
 
 | Intent                      | Trigger Phrases                                       | Route                                           |
 | --------------------------- | ----------------------------------------------------- | ------------------------------------------------ |
-| **Build new**               | "build/create/design a workflow/skill/tool"           | Load `build-process.md`                          |
-| **Convert**                 | `--convert path-or-url`                               | Load `./references/convert-process.md`           |
+| **Build new**               | "build/create/design a workflow/skill/tool"           | Load `references/build-process.md`               |
+| **Convert**                 | `--convert path-or-url`                               | Load `references/convert-process.md`             |
 | **Existing skill provided** | Path to existing skill, or "edit/fix/analyze"         | Ask the 3-way question below, then route         |
-| **Quality analyze**         | "quality check", "validate", "review workflow/skill"  | Load `quality-analysis.md`                       |
+| **Quality analyze**         | "quality check", "validate", "review workflow/skill"  | Load `references/quality-analysis.md`            |
 | **Unclear**                 | —                                                     | Present options and ask                          |
 
 ### When given an existing skill, ask:
@@ -66,6 +66,6 @@ Load `./references/convert-process.md` to begin.
 - **Edit** — Modify specific behavior while keeping the current approach
 - **Rebuild** — Rethink from core outcomes using this as reference material, full discovery process
 
-Analyze routes to `quality-analysis.md`. Edit and Rebuild both route to `build-process.md` with the chosen intent.
+Analyze routes to `references/quality-analysis.md`. Edit and Rebuild both route to `references/build-process.md` with the chosen intent.
 
 Regardless of path, respect headless mode if requested.

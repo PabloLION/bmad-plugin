@@ -1,8 +1,13 @@
 /**
- * Version consistency check for all upstream sources.
+ * Version consistency check.
  *
- * Core: .upstream-versions/core.json ↔ upstream package.json, plugin version anchored
- * External modules: .upstream-versions/<id>.json tracks module version independently
+ * Verifies that every .upstream-versions/<id>.json has a valid version
+ * string and that the plugin version (.plugin-version) is anchored to
+ * core (`<core>.<patch>` format).
+ *
+ * Pre-v6.5.0+ this also cross-checked against `.upstream/<repo>/package.json`
+ * from the git clones; the installer-based sync no longer keeps those
+ * clones, so the check now relies on .upstream-versions/ alone.
  */
 
 import { exists } from 'node:fs/promises';
@@ -18,8 +23,9 @@ import {
 export async function checkVersion(): Promise<void> {
   section('Version Consistency');
 
+  let coreVersion: string | null = null;
+
   for (const source of getEnabledSources()) {
-    const upstreamRoot = join(ROOT, '.upstream', source.localPath);
     const vfPath = versionFilePath(source.id);
 
     if (!(await exists(vfPath))) {
@@ -31,46 +37,38 @@ export async function checkVersion(): Promise<void> {
 
     const trackedVersion = await readVersion(source.id);
 
-    if (source.id === 'core') {
-      // Core: compare against package.json
-      const pkgJson = await Bun.file(join(upstreamRoot, 'package.json')).json();
-      const upstreamVersion = `v${pkgJson.version}`;
-
-      if (trackedVersion === upstreamVersion) {
-        pass(`[core] Upstream version: ${trackedVersion}`);
-      } else {
-        fail(
-          `[core] Version mismatch: .upstream-versions/core.json=${trackedVersion}, package.json=${upstreamVersion}`,
-        );
-      }
-
-      // Validate plugin version is anchored to core
-      const pluginRaw = await Bun.file(join(ROOT, '.plugin-version')).text();
-      const pluginVersion = pluginRaw.trim();
-
-      if (!pluginVersion.startsWith(`${trackedVersion}.`)) {
-        fail(
-          `Plugin version "${pluginVersion}" must start with upstream "${trackedVersion}."`,
-        );
-        continue;
-      }
-
-      const patch = pluginVersion.slice(trackedVersion.length + 1);
-      if (!/^\d+$/.test(patch)) {
-        fail(`Plugin version patch "${patch}" must be a non-negative integer`);
-        continue;
-      }
-
-      pass(`Plugin version: ${pluginVersion}`);
-    } else {
-      // External modules: verify the version file has content
-      if (trackedVersion) {
-        pass(`[${source.id}] Version: ${trackedVersion}`);
-      } else {
-        warn(
-          `[${source.id}] Version file .upstream-versions/${source.id}.json is empty`,
-        );
-      }
+    if (!trackedVersion) {
+      warn(
+        `[${source.id}] Version file .upstream-versions/${source.id}.json is empty`,
+      );
+      continue;
     }
+
+    if (source.id === 'core') {
+      coreVersion = trackedVersion;
+    }
+
+    pass(`[${source.id}] Version: ${trackedVersion}`);
+  }
+
+  // Validate plugin version is anchored to core: <core>.<patch>
+  if (coreVersion) {
+    const pluginRaw = await Bun.file(join(ROOT, '.plugin-version')).text();
+    const pluginVersion = pluginRaw.trim();
+
+    if (!pluginVersion.startsWith(`${coreVersion}.`)) {
+      fail(
+        `Plugin version "${pluginVersion}" must start with upstream "${coreVersion}."`,
+      );
+      return;
+    }
+
+    const patch = pluginVersion.slice(coreVersion.length + 1);
+    if (!/^\d+$/.test(patch)) {
+      fail(`Plugin version patch "${patch}" must be a non-negative integer`);
+      return;
+    }
+
+    pass(`Plugin version: ${pluginVersion}`);
   }
 }

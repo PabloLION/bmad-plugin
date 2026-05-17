@@ -3,7 +3,7 @@ name: 'step-07-patterns'
 description: 'Design implementation patterns and novel architectural patterns for consistency'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-game-architecture'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-07-patterns.md'
@@ -16,8 +16,8 @@ patternCategories: '{workflow_path}/pattern-categories.csv'
 engineKnowledge: '{workflow_path}/knowledge/{selected_engine}-engine.md'
 
 # Task References
-advancedElicitationTask: '{project-root}/_bmad/core/workflows/advanced-elicitation/workflow.xml'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/party-mode/workflow.md'
+advancedElicitationTask: 'skill:bmad-advanced-elicitation'
+partyModeWorkflow: 'skill:bmad-party-mode'
 ---
 
 # Step 7: Implementation Patterns

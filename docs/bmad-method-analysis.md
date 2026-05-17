@@ -1,6 +1,16 @@
 # BMAD-METHOD v6 Analysis
 
-> Analysis of official `bmadcode/BMAD-METHOD` repository for plugin development
+> Analysis of official `bmadcode/BMAD-METHOD` repository for plugin development.
+>
+> **📌 Historical snapshot (early 2026, source pinned to v6.0.0-alpha.23).**
+> This is the analysis that drove the plugin's initial design. It is
+> intentionally frozen — agent personas, workflow paths, and the
+> `.agent.yaml` schema described below have all evolved upstream since.
+> For the current state see [README.md](../README.md) and
+> [docs/bmad-ecosystem.md](bmad-ecosystem.md). For the design decisions
+> that followed from this analysis see
+> [docs/project-decisions.md](project-decisions.md) and
+> [docs/upstream-sync-design.md](upstream-sync-design.md).
 
 ## 1. Repository Structure
 

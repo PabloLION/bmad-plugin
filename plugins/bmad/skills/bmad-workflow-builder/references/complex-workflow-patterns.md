@@ -105,7 +105,7 @@ Each stage prompt specifies prerequisites, progression conditions, and next dest
 
 ## Module Metadata Reference
 
-BMad module workflows require extended frontmatter metadata. See `./references/metadata-reference.md` for the metadata template and field explanations.
+BMad module workflows require extended frontmatter metadata. See `./metadata-reference.md` for the metadata template and field explanations.
 
 ---
 
@@ -118,6 +118,6 @@ Before finalizing a BMad module workflow, verify:
 - [ ] Portable paths — artifacts use `{project_root}`?
 - [ ] Compaction survival — each stage writes to output document?
 - [ ] Document-as-cache — YAML front matter with status and inputs?
-- [ ] Progressive disclosure — stages in `./references/` with progression conditions?
+- [ ] Progressive disclosure — stages in `references/` with progression conditions?
 - [ ] Final polish — subagent polish step at the end?
 - [ ] Recovery — can resume by reading output doc front matter?

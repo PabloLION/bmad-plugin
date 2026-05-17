@@ -53,10 +53,10 @@ Don't rush to structure. Just listen, ask follow-ups, and capture.
 **Then: lock down module identity.** Before any skill names are written, nail these down — they affect every name and path in the document:
 
 - **Module name** — Human-friendly display name (e.g., "Content Creators' Creativity Suite")
-- **Module code** — 2-4 letter abbreviation (e.g., "cs3"). All skill names and sidecar paths derive from this. Changing it later means a find-and-replace across the entire plan.
+- **Module code** — 2-4 letter abbreviation (e.g., "cs3"). All skill names and memory paths derive from this. Changing it later means a find-and-replace across the entire plan.
 - **Description** — One-line summary of what the module does
 
-Write these to the plan document frontmatter immediately. All subsequent skill names use `bmad-{modulecode}-{skillname}`.
+Write these to the plan document frontmatter immediately. All subsequent skill names use `{modulecode}-{skillname}` (or `{modulecode}-agent-{name}` for agents). The `bmad-` prefix is reserved for official BMad creations.
 
 - **Standalone or expansion?** If expansion: which module does it extend? How do the new capabilities relate? Even expansion modules should provide value independently — the parent module being absent shouldn't break this one.
 
@@ -109,15 +109,15 @@ Even with multiple agents, each should be self-contained with its own capabiliti
 
 Present the trade-offs. Let the user decide. Document the reasoning either way — future-them will want to know why.
 
-**Memory architecture for multi-agent modules.** If the module has multiple agents, explore how memory should work. Every agent has its own sidecar (personal memory at `{project-root}/_bmad/memory/{skillName}-sidecar/`), but modules may also benefit from shared memory:
+**Memory architecture for multi-agent modules.** If the module has multiple agents, explore how memory should work. Every agent has its own memory folder (personal memory at `{project-root}/_bmad/memory/{skillName}/`), but modules may also benefit from shared memory:
 
 | Pattern                                                            | When It Fits                                                                  | Example                                                                                                                                     |
 | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Personal sidecars only**                                         | Agents have distinct domains with little overlap                              | A module with a code reviewer and a test writer — each tracks different things                                                              |
-| **Personal + shared module sidecar**                               | Agents have their own context but also learn shared things about the user     | Agents each remember domain specifics but share knowledge about the user's style and preferences                                            |
-| **Single module sidecar (recommended for tightly coupled agents)** | All agents benefit from full visibility into everything the suite has learned | A creative suite where every agent needs the user's voice, brand, and content history. Daily capture + periodic curation keeps it organized |
+| **Personal memory only**                                               | Agents have distinct domains with little overlap                              | A module with a code reviewer and a test writer — each tracks different things                                                              |
+| **Personal + shared module memory**                                    | Agents have their own context but also learn shared things about the user     | Agents each remember domain specifics but share knowledge about the user's style and preferences                                            |
+| **Single shared memory (recommended for tightly coupled agents)**      | All agents benefit from full visibility into everything the suite has learned | A creative suite where every agent needs the user's voice, brand, and content history. Daily capture + periodic curation keeps it organized |
 
-The **single sidecar with daily/curated memory** model works well for tightly coupled multi-agent modules:
+The **single shared memory with daily/curated memory** model works well for tightly coupled multi-agent modules:
 
 - **Daily files** (`daily/YYYY-MM-DD.md`) — every session, the active agent appends timestamped entries tagged by agent name. Raw, chronological, append-only.
 - **Curated files** (organized by topic) — distilled knowledge that agents load on activation. Updated through inline curation (obvious updates go straight to the file) and periodic deep curation.
@@ -154,7 +154,7 @@ For each planned skill (whether agent or workflow), build a **self-contained bri
 
 **For agents:**
 
-- **Name** — following `bmad-{modulecode}-{skillname}` convention
+- **Name** — following `{modulecode}-agent-{name}` convention (agents) or `{modulecode}-{skillname}` (workflows)
 - **Persona** — who is this agent? Communication style, expertise, personality
 - **Core outcome** — what does success look like?
 - **The non-negotiable** — the one thing this agent must get right

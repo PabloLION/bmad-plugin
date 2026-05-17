@@ -1,10 +1,23 @@
 {
   "name": "bmad",
-  "version": "6.2.2.0",
+  "version": "6.6.0.1",
   "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
   "author": {
     "name": "PabloLION",
     "email": "36828324+PabloLION@users.noreply.github.com"
   },
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Skill",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/scaffold-bmad.py"
+          }
+        ]
+      }
+    ]
+  }
 }

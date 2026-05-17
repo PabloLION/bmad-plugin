@@ -2,7 +2,7 @@
 name: 'step-03c-aggregate'
 description: 'Aggregate subagent outputs and complete test infrastructure'
 outputFile: '{test_artifacts}/automation-summary.md'
-nextStepFile: './step-04-validate-and-summarize.md'
+nextStepFile: '{skill-root}/steps-c/step-04-validate-and-summarize.md'
 ---
 
 # Step 3C: Aggregate Test Generation Results
@@ -210,10 +210,15 @@ export const mockPaymentSuccess = async (page: Page) => {
 **D) Helper Utilities** (`tests/fixtures/helpers.ts`):
 
 ```typescript
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { interceptNetworkCall } from '@seontechnologies/playwright-utils/intercept-network-call';
 
-export const waitForApiResponse = async (page: Page, urlPattern: string) => {
-  return page.waitForResponse((response) => response.url().includes(urlPattern) && response.ok());
+export const observeApiCall = (page: Page, urlPattern: string, method: string = 'GET') => {
+  return interceptNetworkCall({
+    page,
+    method,
+    url: urlPattern,
+  });
 };
 ```
 

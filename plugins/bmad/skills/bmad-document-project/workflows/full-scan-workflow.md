@@ -10,7 +10,7 @@
 
 ### Configuration Loading
 
-Load config from `.claude/bmad.local.md` and resolve:
+Load config from `{project-root}/_bmad/bmm/config.yaml` and resolve:
 
 - `project_knowledge`
 - `user_name`

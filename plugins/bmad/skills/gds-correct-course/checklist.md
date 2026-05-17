@@ -1,6 +1,6 @@
 # Change Navigation Checklist
 
-<critical>This checklist is executed as part of: ${CLAUDE_PLUGIN_ROOT}/skills/gds-correct-course/SKILL.md</critical>
+<critical>This checklist is executed as part of: ./workflow.md</critical>
 <critical>Work through each section systematically with the user, recording findings and impacts</critical>
 
 <checklist>
@@ -217,8 +217,8 @@
 <check-item id="5.5">
 <prompt>Establish agent handoff plan</prompt>
 <action>Identify which roles/agents will execute the changes:</action>
-  - Development team (for implementation)
-  - Product Owner / Scrum Master (for backlog changes)
+  - Developer agent (for implementation)
+  - Product Owner / Developer (for backlog changes)
   - Product Manager / Architect (for strategic changes)
 <action>Define responsibilities for each role</action>
 <status>[ ] Done / [ ] N/A / [ ] Action-needed</status>

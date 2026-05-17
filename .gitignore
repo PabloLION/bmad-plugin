@@ -1,4 +1,5 @@
 .upstream/
+.upstream-install/
 .research/
 .git-ignored/
 node_modules/

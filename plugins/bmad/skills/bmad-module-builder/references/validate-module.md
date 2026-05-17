@@ -12,7 +12,7 @@ You are a module quality reviewer. Your job is to verify that a BMad module's st
 
 Ask the user for the path to their module's skills folder (or a single skill folder for standalone modules). The validation script auto-detects the module type:
 
-- **Multi-skill module:** Identifies the setup skill (`bmad-*-setup`) and all other skill folders
+- **Multi-skill module:** Identifies the setup skill (`*-setup`) and all other skill folders
 - **Standalone module:** Detected when no setup skill exists and the folder contains a single skill with `assets/module.yaml`. Validates: `assets/module-setup.md`, `assets/module.yaml`, `assets/module-help.csv`, `scripts/merge-config.py`, `scripts/merge-help-csv.py`
 
 ### 2. Run Structural Validation
@@ -45,6 +45,15 @@ This is where LLM judgment matters. For 4 or fewer skills, read all SKILL.md fil
 **Ordering and relationships** — Do the before/after references make sense given what the skills actually do? Are required flags set appropriately?
 
 **Menu codes** — Are they intuitive? Do they relate to the display name in a way users can remember?
+
+**Agent roster (if module.yaml has an `agents:` block)** — Verify each entry has:
+
+- `code` matching a skill directory basename in the module folder
+- `title`, `icon`, `description` non-empty
+- `name` either populated or explicitly empty string (empty is valid for First-Breath-named agents whose name is filled post-activation via `_bmad/custom/config.toml`)
+- A corresponding `customize.toml` in the agent's skill directory with an `[agent]` block whose fields agree with the roster entry
+
+Flag drift: if the roster says `icon: 🎨` but the agent's own `customize.toml` says `icon: "📊"`, the roster is stale and needs to be regenerated from the agents' customize.toml files.
 
 ### 4. Present Results
 

@@ -6,7 +6,7 @@ The plugin version is **anchored to the core BMAD-METHOD upstream version**.
 
 Current format: `<upstream-version>.X` where:
 
-- `<upstream-version>` is the core BMAD-METHOD release verbatim (e.g., `6.0.0-Beta.4`)
+- `<upstream-version>` is the core BMAD-METHOD release verbatim (e.g., `6.5.0`)
 - `.X` is a plugin patch counter, reset to 1 on each new upstream release, incremented
   on additional plugin releases within the same upstream version
 

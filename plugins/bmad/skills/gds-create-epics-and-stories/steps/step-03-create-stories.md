@@ -3,7 +3,7 @@ name: 'step-03-create-stories'
 description: 'Generate all epics with their stories following the template structure'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-epics-and-stories'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-03-create-stories.md'
@@ -13,7 +13,7 @@ outputFile: '{planning_artifacts}/epics.md'
 
 # Task References
 advancedElicitationTask: 'skill:bmad-advanced-elicitation'
-partyModeWorkflow: '{project-root}/_bmad/core/workflows/bmad-party-mode/workflow.md'
+partyModeWorkflow: 'skill:bmad-party-mode'
 
 # Template References
 epicsTemplate: '{workflow_path}/templates/epics-template.md'

@@ -1,7 +1,6 @@
 ---
 name: bmad-advanced-elicitation
 description: 'Push the LLM to reconsider, refine, and improve its recent output. Use when user asks for deeper critique or mentions a known deeper critique method, e.g. socratic, first principles, pre-mortem, red team.'
-agent_party: '${CLAUDE_PLUGIN_ROOT}/_shared/agent-manifest.csv'
 ---
 
 # Advanced Elicitation
@@ -36,7 +35,13 @@ When invoked from another prompt or process:
 
 ### Step 1: Method Registry Loading
 
-**Action:** Load and read `./methods.csv` and `{agent_party}`
+**Action:** Load `./methods.csv` for elicitation methods. If party-mode may participate, resolve the agent roster via:
+
+```bash
+python3 {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root} --key agents
+```
+
+The resolver merges four layers in order: `_bmad/config.toml` (installer base, team-scoped), `_bmad/config.user.toml` (installer base, user-scoped), `_bmad/custom/config.toml` (team overrides), and `_bmad/custom/config.user.toml` (personal overrides). Each entry under `agents` is keyed by the agent's `code` and carries `name`, `title`, `icon`, `description`, `module`, and `team`.
 
 #### CSV Structure
 

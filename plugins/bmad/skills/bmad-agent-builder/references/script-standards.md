@@ -57,14 +57,13 @@ For scripts using only the standard library, use a plain Python shebang but stil
 - Always include `requires-python`
 - List all external dependencies with version constraints
 - Never use `requirements.txt`, `pip install`, or expect global package installs
-- The shebang is a Unix convenience — cross-platform invocation relies on `uv run scripts/foo.py`, not `./scripts/foo.py`
+- The shebang is a Unix convenience — cross-platform invocation relies on `uv run ./scripts/foo.py`, not `./scripts/foo.py`
 
 ## Invocation in SKILL.md
 
 How a built skill's SKILL.md should reference its scripts:
 
-- **Scripts with external dependencies:** `uv run scripts/analyze.py {args}`
-- **Stdlib-only scripts:** `python3 scripts/scan.py {args}` (also fine to use `uv run` for consistency)
+- **All scripts:** `uv run ./scripts/foo.py {args}` — consistent invocation regardless of whether the script has external dependencies
 
 `uv run` reads the PEP 723 metadata, silently caches dependencies in an isolated environment, and runs the script — no user prompt, no global install. Like `npx` for Python.
 
@@ -76,8 +75,8 @@ Skills may run in environments where Python or `uv` is unavailable (e.g., claude
 
 In SKILL.md, frame script steps as outcomes, not just commands:
 
-- Good: "Validate path conventions (run `scripts/scan-paths.py --help` for details)"
-- Avoid: "Execute `python3 scripts/scan-paths.py`" with no context about what it does
+- Good: "Validate path conventions (run `./scripts/scan-paths.py --help` for details)"
+- Avoid: "Execute `uv run ./scripts/scan-paths.py`" with no context about what it does
 
 ## Script Interface Standards
 
@@ -89,4 +88,4 @@ In SKILL.md, frame script steps as outcomes, not just commands:
 - `--verbose` flag for debugging
 - Output valid JSON to stdout
 - No interactive prompts, no network dependencies
-- Tests in `scripts/tests/`
+- Tests in `./scripts/tests/`

@@ -1,44 +1,56 @@
 /**
- * Three-way validation: upstream BMAD-METHOD ↔ plugin files ↔ plugin.json.
+ * Plugin validation.
  *
- * Checks:
- * 0. Upstream sync — pull latest upstream before validating
- * 1. Agent coverage — upstream agents ↔ plugin agent .md files
- * 2. Skill coverage — three-set: upstream workflows ↔ plugin directories ↔ manifest
- * 3. Content consistency — supporting files match (not SKILL.md vs workflow.md)
- * 4. Version consistency — .upstream-versions/<id>.json ↔ upstream package.json
- * 5. Naming consistency — SKILL.md frontmatter name ↔ directory name
- * 6. Agent–skill cross-reference — agent menu workflows ↔ plugin skill dirs
+ * Pre-v6.5.0+ this script ran a three-way upstream-coverage check
+ * (upstream files ↔ plugin files ↔ plugin.json manifest) plus content
+ * consistency, agent matching, naming, etc. After the migration to
+ * installer-based sync (sync-from-installer.ts), the installer is the
+ * source of truth — there is nothing to cross-check against.
  *
- * Exit 0 = pass, Exit 1 = gaps found.
+ * What survives:
+ * - Version consistency (per-module version files + plugin version
+ *   anchoring).
+ * - A sanity check that plugins/bmad/skills/ exists and is non-empty.
+ *
+ * Exit 0 = pass, exit 1 = gaps found.
  */
 
+import { exists, readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { checkVersion } from './lib/checks/index.ts';
+import { PLUGIN } from './lib/config.ts';
 import {
-  checkAgentSkills,
-  checkAgents,
-  checkContent,
-  checkPaths,
-  checkSync,
-  checkVersion,
-  checkWorkflows,
-} from './lib/checks/index.ts';
-import { GREEN, hasFailed, RED, RESET, setVerbose } from './lib/output.ts';
-import { getEnabledSources } from './lib/upstream-sources.ts';
+  fail,
+  GREEN,
+  hasFailed,
+  pass,
+  RED,
+  RESET,
+  section,
+  setVerbose,
+} from './lib/output.ts';
 
 setVerbose(process.argv.includes('--verbose'));
 
-const sourceCount = getEnabledSources().length;
-console.log(`Validating upstream coverage (${sourceCount} sources)...`);
+console.log('Validating plugin (installer-sync mode)...\n');
 
-await checkSync();
-await checkAgents();
-await checkWorkflows();
-await checkContent();
+// 1. Version consistency
 await checkVersion();
-// checkNaming() disabled — requires bmad- prefix workaround (claude-code#17271)
-// which is inactive while using auto-discovery plugin.json format
-await checkAgentSkills();
-await checkPaths();
+
+// 2. Plugin tree sanity
+section('Plugin Tree');
+const skillsDir = join(PLUGIN, 'skills');
+if (!(await exists(skillsDir))) {
+  fail(`plugins/bmad/skills/ does not exist — run \`bun run sync\` first`);
+} else {
+  const entries = await readdir(skillsDir, { withFileTypes: true });
+  const skillCount = entries.filter((e) => e.isDirectory()).length;
+  if (skillCount === 0) {
+    fail(`plugins/bmad/skills/ is empty — run \`bun run sync\` first`);
+  } else {
+    pass(`plugins/bmad/skills/ contains ${skillCount} skill directories`);
+  }
+}
 
 console.log('');
 
@@ -46,7 +58,5 @@ if (hasFailed()) {
   console.log(`${RED}✗ Validation failed — gaps found above.${RESET}`);
   process.exit(1);
 } else {
-  console.log(
-    `${GREEN}✓ All upstream content covered — agents, skills, and files in sync.${RESET}`,
-  );
+  console.log(`${GREEN}✓ Plugin valid.${RESET}`);
 }

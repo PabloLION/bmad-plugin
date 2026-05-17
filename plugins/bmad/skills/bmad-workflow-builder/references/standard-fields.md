@@ -6,7 +6,7 @@ Only these fields go in the YAML frontmatter block:
 
 | Field         | Description                                          | Example                                       |
 | ------------- | ---------------------------------------------------- | --------------------------------------------- |
-| `name`        | Full skill name (kebab-case, same as folder name)    | `bmad-workflow-builder`, `bmad-validate-json` |
+| `name`        | Full skill name (kebab-case, same as folder name)    | `validate-json`, `cis-brainstorm` |
 | `description` | [5-8 word summary]. [Use when user says 'X' or 'Y'.] | See Description Format below                  |
 
 ## Content Fields (All Types)
@@ -44,6 +44,53 @@ These are used within the SKILL.md body — never in frontmatter:
 | `headless-mode`          | Supports autonomous?              | true/false                            |
 | `config-variables`       | Beyond core vars                  | `planning_artifacts`, `output_folder` |
 | `output-artifacts`       | What it creates (output-location) | "PRD document", "agent skill"         |
+
+## Customization Surface (`customize.toml`, opt-in)
+
+Emitted only when the skill author opts in during Phase 3.5 (Configurability Discovery). The file sits next to SKILL.md and is loaded via `_bmad/scripts/resolve_customization.py` at activation.
+
+### Always-present fields (when opted in)
+
+| Field                      | Type          | Purpose                                                                    |
+| -------------------------- | ------------- | -------------------------------------------------------------------------- |
+| `activation_steps_prepend` | array[string] | Steps run before standard activation. Overrides append.                    |
+| `activation_steps_append`  | array[string] | Steps run after greet, before the workflow's first stage. Overrides append. |
+| `persistent_facts`         | array[string] | Facts (literal or `file:` prefixed paths/globs) loaded on activation. Overrides append. |
+
+### Workflow-specific scalars (lifted during Phase 3.5)
+
+Named by purpose and suffix. Override wins (scalar merge rule).
+
+| Naming pattern      | Use for                                              | Example                                             |
+| ------------------- | ---------------------------------------------------- | --------------------------------------------------- |
+| `<purpose>_template` | File path for templates the workflow loads          | `brief_template = "resources/brief-template.md"`    |
+| `<purpose>_output_path` | Writable destination paths                       | `output_path = "{project-root}/docs/briefs"`        |
+| `on_<event>`        | Prompt or command executed at a hook point           | `on_complete = ""`                                  |
+
+**Path resolution within scalar values:**
+
+- Bare paths (e.g. `resources/brief-template.md`) resolve from the skill root.
+- `{project-root}/...` resolves from the project working directory — use for org-owned overrides.
+- Never mix `{project-root}` with config variables that already contain it (no double-prefix).
+
+### How SKILL.md references the resolved values
+
+After the resolver step runs, read customized values as `{workflow.<name>}`:
+
+```markdown
+Load the brief template from `{workflow.brief_template}`.
+```
+
+At runtime, that resolves to whatever the merged `[workflow].brief_template` scalar is — the default, a team override, or a personal override.
+
+### Override files
+
+Teams and users override without editing `customize.toml` in the skill, and instead modify the following:
+
+- Team: `{project-root}/_bmad/custom/{skill-name}.toml`
+- Personal: `{project-root}/_bmad/custom/{skill-name}.user.toml`
+
+Both use the same `[workflow]` block shape. Merge order: base (skill's `customize.toml`) → team → user.
 
 ## Overview Section Format
 
@@ -114,15 +161,22 @@ This provides quick prompt priming for expertise and tone. Workflows may also us
 
 ## Path Rules
 
-### Skill-Internal Files
+### Same-Folder References
 
-All references to files within the skill use `./` prefix:
+Use `./` only when referencing a file in the same directory as the file containing the reference:
 
-- `./references/reference.md`
-- `./references/discover.md`
-- `./scripts/validate.py`
+- From `references/build-process.md` → `./classification-reference.md` (both in references/)
+- From `scripts/scan.py` → `./utils.py` (both in scripts/)
 
-This distinguishes skill-internal files from `{project-root}` paths — without the `./` prefix the LLM may confuse them.
+### Cross-Directory References
+
+Use bare paths relative to the skill root — no `./` prefix:
+
+- `references/build-process.md`
+- `scripts/validate.py`
+- `assets/template.md`
+
+These work from any file in the skill because they're always resolved from the skill root. **Never use `./` for cross-directory paths** — `./scripts/foo.py` from a file in `references/` is misleading because `scripts/` is not next to that file.
 
 ### Project-Scope Paths
 

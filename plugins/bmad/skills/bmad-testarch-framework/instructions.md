@@ -2,7 +2,6 @@
 
 # Test Framework Setup
 
-**Workflow ID**: `_bmad/tea/testarch/bmad-testarch-framework`
 **Version**: 5.0 (Step-File Architecture)
 
 ---
@@ -35,11 +34,11 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`./steps-c/step-01-preflight.md`
+`{skill-root}/steps-c/step-01-preflight.md`
 
 ### 3. Resume Support
 
 If the user selects **Resume** mode, load, read completely, and execute:
-`./steps-c/step-01b-resume.md`
+`{skill-root}/steps-c/step-01b-resume.md`
 
 This checks the output document for progress tracking frontmatter and routes to the next incomplete step.

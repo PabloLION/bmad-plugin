@@ -3,7 +3,7 @@ name: 'step-08-complete'
 description: 'Define success criteria and complete the game brief with handoff guidance'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-game-brief'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-08-complete.md'
@@ -11,7 +11,7 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-brief.md'
 
 # Workflow References
-gddWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-gdd/SKILL.md'
+gddWorkflow: 'skill:gds-create-gdd'
 ---
 
 # Step 8: Success & Handoff
@@ -295,3 +295,9 @@ The Game Brief workflow transforms a game idea into a validated vision through 8
 8. **Complete** - Set success criteria and provide handoff
 
 This step-file architecture ensures consistent, thorough game brief creation with user collaboration at every step.
+
+## On Complete
+
+Run: `python3 {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolved `workflow.on_complete` is non-empty, follow it as the final terminal instruction before exiting.

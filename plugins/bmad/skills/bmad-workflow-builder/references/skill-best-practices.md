@@ -1,6 +1,6 @@
 # Skill Authoring Best Practices
 
-For field definitions and description format, see `./references/standard-fields.md`. For quality dimensions, see `./references/quality-dimensions.md`.
+For field definitions and description format, see `./standard-fields.md`. For quality dimensions, see `./quality-dimensions.md`.
 
 ## Core Philosophy: Outcome-Based Authoring
 

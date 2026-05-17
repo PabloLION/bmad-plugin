@@ -4,7 +4,7 @@
 
 ```sh
 ./scripts/release.sh <new-version>
-# Example: ./scripts/release.sh 6.0.0-Beta.4.5
+# Example: ./scripts/release.sh 6.5.1.0
 ```
 
 The script handles:
@@ -22,7 +22,7 @@ The script handles:
 
 ## Version Format
 
-`<upstream-version>.X` (e.g., `6.0.0-Beta.4.4`)
+`<upstream-version>.X` (e.g., `6.5.0.0`)
 
 See [versioning.md](versioning.md) for the full strategy.
 

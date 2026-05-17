@@ -1,6 +1,17 @@
 # Script Pipeline
 
-How the sync, generation, validation, and release scripts work together.
+> **📌 Historical document (pre-v6.5.0+).** This describes the
+> sync-upstream-content / generate-agents / generate-skills /
+> generate-manifest / clean-orphaned-skills / find-orphan-files
+> pipeline that ran on top of multiple git clones. All those scripts
+> have been deleted as of v6.5.0.1; the plugin now uses a single
+> `scripts/sync-from-installer.ts` that delegates to the official
+> `npx bmad-method install --tools claude-code` CLI. See
+> [`AGENTS.md`](../AGENTS.md) for the current command reference and
+> [`docs/plan-npx-resync.md`](plan-npx-resync.md) for migration notes.
+> This document is kept for archaeological reference.
+
+How the sync, generation, validation, and release scripts USED TO work together.
 
 ## Data Flow
 
@@ -210,8 +221,8 @@ Four files must stay in sync:
 
 ```csv
 File,Format,Prefix
-.plugin-version,plain text,v (e.g. v6.2.0.0)
-package.json,JSON version field,no prefix (6.2.0.0)
+.plugin-version,plain text,v (e.g. v6.5.0.0)
+package.json,JSON version field,no prefix (6.5.0.0)
 plugins/bmad/.claude-plugin/plugin.json,JSON version field,no prefix
 .claude-plugin/marketplace.json,JSON version field,no prefix
 ```
@@ -242,6 +253,6 @@ Release:
 
 ```sh
 ./scripts/release.sh          # current version
-./scripts/release.sh 6.2.1.0  # bump + release
+./scripts/release.sh 6.5.1.0  # bump + release
 ./scripts/release.sh --after-ci  # resume after CI fix
 ```

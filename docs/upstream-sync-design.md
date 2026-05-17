@@ -1,6 +1,16 @@
 # Upstream Sync Design
 
-How the plugin stays synchronized with the upstream BMAD-METHOD repository.
+> **📌 Historical document (pre-v6.5.0+).** This describes the
+> multi-source git-clone-based sync pipeline that the plugin used
+> through v6.5.0.0. Starting with v6.5.0.1, the plugin instead delegates
+> all content shaping to `npx bmad-method install --tools claude-code`
+> (see [`docs/plan-npx-resync.md`](plan-npx-resync.md) for the
+> rationale and [`scripts/sync-from-installer.ts`](../scripts/sync-from-installer.ts)
+> for the implementation). The skip-files / shared-files / path-rewrite
+> machinery described below has been deleted from the codebase. This
+> doc is kept for archaeological reference only.
+
+How the plugin USED TO STAY synchronized with the upstream BMAD-METHOD repository.
 
 ## The Core Problem
 

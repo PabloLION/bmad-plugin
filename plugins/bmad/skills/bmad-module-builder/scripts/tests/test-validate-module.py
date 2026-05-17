@@ -16,7 +16,7 @@ CSV_HEADER = "module,skill,display-name,menu-code,description,action,args,phase,
 
 
 def create_module(tmp: Path, skills: list[str] | None = None, csv_rows: str = "",
-                  yaml_content: str = "", setup_name: str = "bmad-tst-setup") -> Path:
+                  yaml_content: str = "", setup_name: str = "tst-setup") -> Path:
     """Create a minimal module structure for testing."""
     module_dir = tmp / "module"
     module_dir.mkdir()
@@ -57,8 +57,8 @@ def test_valid_module():
     """A well-formed module should pass."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        csv_rows = 'Test Module,bmad-tst-foo,Do Foo,DF,Does the foo thing,run,,anytime,,,false,output_folder,report\n'
-        module_dir = create_module(tmp, skills=["bmad-tst-foo"], csv_rows=csv_rows)
+        csv_rows = 'Test Module,tst-foo,Do Foo,DF,Does the foo thing,run,,anytime,,,false,output_folder,report\n'
+        module_dir = create_module(tmp, skills=["tst-foo"], csv_rows=csv_rows)
 
         code, data = run_validate(module_dir)
         assert code == 0, f"Expected pass: {data}"
@@ -72,9 +72,9 @@ def test_missing_setup_skill():
         tmp = Path(tmp)
         module_dir = tmp / "module"
         module_dir.mkdir()
-        skill = module_dir / "bmad-tst-foo"
+        skill = module_dir / "tst-foo"
         skill.mkdir()
-        (skill / "SKILL.md").write_text("---\nname: bmad-tst-foo\n---\n")
+        (skill / "SKILL.md").write_text("---\nname: tst-foo\n---\n")
 
         code, data = run_validate(module_dir)
         assert code == 1
@@ -85,27 +85,27 @@ def test_missing_csv_entry():
     """Skill without a CSV entry should be flagged."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        module_dir = create_module(tmp, skills=["bmad-tst-foo", "bmad-tst-bar"],
-                                   csv_rows='Test Module,bmad-tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n')
+        module_dir = create_module(tmp, skills=["tst-foo", "tst-bar"],
+                                   csv_rows='Test Module,tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n')
 
         code, data = run_validate(module_dir)
         assert code == 1
         missing = [f for f in data["findings"] if f["category"] == "missing-entry"]
         assert len(missing) == 1
-        assert "bmad-tst-bar" in missing[0]["message"]
+        assert "tst-bar" in missing[0]["message"]
 
 
 def test_orphan_csv_entry():
     """CSV entry for nonexistent skill should be flagged."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        csv_rows = 'Test Module,bmad-tst-ghost,Ghost,GH,Does not exist,run,,anytime,,,false,output_folder,report\n'
+        csv_rows = 'Test Module,tst-ghost,Ghost,GH,Does not exist,run,,anytime,,,false,output_folder,report\n'
         module_dir = create_module(tmp, skills=[], csv_rows=csv_rows)
 
         code, data = run_validate(module_dir)
         orphans = [f for f in data["findings"] if f["category"] == "orphan-entry"]
         assert len(orphans) == 1
-        assert "bmad-tst-ghost" in orphans[0]["message"]
+        assert "tst-ghost" in orphans[0]["message"]
 
 
 def test_duplicate_menu_codes():
@@ -113,10 +113,10 @@ def test_duplicate_menu_codes():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         csv_rows = (
-            'Test Module,bmad-tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n'
-            'Test Module,bmad-tst-foo,Also Foo,DF,Also does foo,other,,anytime,,,false,output_folder,report\n'
+            'Test Module,tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n'
+            'Test Module,tst-foo,Also Foo,DF,Also does foo,other,,anytime,,,false,output_folder,report\n'
         )
-        module_dir = create_module(tmp, skills=["bmad-tst-foo"], csv_rows=csv_rows)
+        module_dir = create_module(tmp, skills=["tst-foo"], csv_rows=csv_rows)
 
         code, data = run_validate(module_dir)
         dupes = [f for f in data["findings"] if f["category"] == "duplicate-menu-code"]
@@ -128,21 +128,21 @@ def test_invalid_before_after_ref():
     """Before/after references to nonexistent capabilities should be flagged."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        csv_rows = 'Test Module,bmad-tst-foo,Do Foo,DF,Does foo,run,,anytime,bmad-tst-ghost:phantom,,false,output_folder,report\n'
-        module_dir = create_module(tmp, skills=["bmad-tst-foo"], csv_rows=csv_rows)
+        csv_rows = 'Test Module,tst-foo,Do Foo,DF,Does foo,run,,anytime,tst-ghost:phantom,,false,output_folder,report\n'
+        module_dir = create_module(tmp, skills=["tst-foo"], csv_rows=csv_rows)
 
         code, data = run_validate(module_dir)
         refs = [f for f in data["findings"] if f["category"] == "invalid-ref"]
         assert len(refs) == 1
-        assert "bmad-tst-ghost:phantom" in refs[0]["message"]
+        assert "tst-ghost:phantom" in refs[0]["message"]
 
 
 def test_missing_yaml_fields():
     """module.yaml with missing required fields should be flagged."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        csv_rows = 'Test Module,bmad-tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n'
-        module_dir = create_module(tmp, skills=["bmad-tst-foo"], csv_rows=csv_rows,
+        csv_rows = 'Test Module,tst-foo,Do Foo,DF,Does foo,run,,anytime,,,false,output_folder,report\n'
+        module_dir = create_module(tmp, skills=["tst-foo"], csv_rows=csv_rows,
                                    yaml_content='code: tst\n')
 
         code, data = run_validate(module_dir)
@@ -154,7 +154,7 @@ def test_empty_csv():
     """CSV with header but no rows should be flagged."""
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
-        module_dir = create_module(tmp, skills=["bmad-tst-foo"], csv_rows="")
+        module_dir = create_module(tmp, skills=["tst-foo"], csv_rows="")
 
         code, data = run_validate(module_dir)
         assert code == 1
