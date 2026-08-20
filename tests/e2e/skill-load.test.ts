@@ -105,17 +105,19 @@ describe('random smoke test', () => {
   // in an empty temp dir. Both prove the skill loaded successfully.
   const LOADED_FALLBACK = /bmad|init|plugin|project/i;
 
+  // Current-surface skills only. The v6 shims still ship, but they
+  // forward rather than run, so they prove nothing about the surface.
   const SMOKE_POOL = [
     { skill: 'bmad-product-brief', expect: /brief|product/i },
     { skill: 'bmad-prd', expect: /prd|requirement/i },
     { skill: 'bmad-code-review', expect: /review|code/i },
-    { skill: 'bmad-sprint-status', expect: /sprint|status/i },
-    { skill: 'bmad-retrospective', expect: /retro|sprint/i },
+    { skill: 'bmad-sprint-planning', expect: /sprint|status|epic/i },
+    { skill: 'bmad-retrospective', expect: /retro|epic/i },
     { skill: 'bmad-testarch-automate', expect: /test|automat/i },
-    { skill: 'bmad-quick-dev', expect: /quick|implement/i },
-    { skill: 'bmad-document-project', expect: /document/i },
+    { skill: 'bmad-review', expect: /review|lens/i },
+    { skill: 'bmad-project-context', expect: /context|agents\.md|project/i },
+    { skill: 'bmad-deep-recon', expect: /research|recon/i },
     { skill: 'bmad-architecture', expect: /architect/i },
-    { skill: 'bmad-market-research', expect: /research|market/i },
     { skill: 'bmad-spec', expect: /spec/i },
     { skill: 'bmad-forge-idea', expect: /idea|question/i },
   ];

@@ -2,72 +2,97 @@ import { describe, expect, test } from 'bun:test';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
-const PLUGIN_DIR = resolve(import.meta.dir, '../plugins/bmad');
+const ROOT = resolve(import.meta.dir, '..');
+const PLUGIN_DIR = join(ROOT, 'plugins/bmad');
 const SKILLS_DIR = join(PLUGIN_DIR, 'skills');
 const RUNTIME_DIR = join(PLUGIN_DIR, 'runtime/_bmad');
 
-function skillDirs(): string[] {
-  return readdirSync(SKILLS_DIR, { withFileTypes: true })
+function dirNames(dir: string): string[] {
+  return readdirSync(dir, { withFileTypes: true })
     .filter((e) => e.isDirectory())
     .map((e) => e.name);
 }
 
 describe('skill tree', () => {
-  test('no deprecated upstream shims survive the sync prune', () => {
-    const offenders = skillDirs().filter((name) => {
-      const skillMd = join(SKILLS_DIR, name, 'SKILL.md');
-      if (!existsSync(skillMd)) return false;
-      const text = readFileSync(skillMd, 'utf8');
-      const fm = text.match(/^---\n([\s\S]*?)\n---/);
-      return fm?.[1]?.includes('DEPRECATED') ?? false;
-    });
-    expect(offenders).toEqual([]);
+  test('ships exactly the surface the installer declared', () => {
+    const csv = readFileSync(
+      join(RUNTIME_DIR, '_config/skill-manifest.csv'),
+      'utf8',
+    );
+    const declared = new Set(
+      csv
+        .split('\n')
+        .slice(1)
+        .filter(Boolean)
+        .map((line) => line.match(/^"([^"]+)"/)?.[1]),
+    );
+    const shipped = new Set(dirNames(SKILLS_DIR));
+
+    expect([...declared].filter((id) => id && !shipped.has(id))).toEqual([]);
+    expect([...shipped].filter((id) => !declared.has(id))).toEqual([]);
   });
 
-  test('skills retired upstream are absent', () => {
-    const retired = [
-      'bmad-distillator', // superseded by bmad-spec (v6.8.0)
-      'bmad-create-ux-design', // replaced by bmad-ux (v6.8.0)
-      'bmad-investigate', // retired (v6.10.0)
-      // consolidated into intent-based gds-gdd / gds-prd / gds-ux
+  test('skills removed upstream in v6.11.0 are absent', () => {
+    // Removed outright (not shimmed) by the v6.11.0 consolidation.
+    const removed = [
+      'bmad-index-docs',
+      'bmad-shard-doc',
+      'bmad-check-implementation-readiness',
+      'bmad-agent-tech-writer',
+      // Retired before v6.11 and never reinstated.
+      'bmad-distillator',
+      'bmad-create-ux-design',
+      'bmad-investigate',
       'gds-create-gdd',
       'gds-edit-gdd',
       'gds-validate-gdd',
-      'gds-create-prd',
-      'gds-edit-prd',
-      'gds-validate-prd',
-      'gds-create-ux-design',
-      // deprecated shims pruned by sync
-      'bmad-create-prd',
-      'bmad-edit-prd',
-      'bmad-validate-prd',
-      'bmad-create-architecture',
     ];
-    const present = retired.filter((name) =>
+    const present = removed.filter((name) =>
       existsSync(join(SKILLS_DIR, name)),
     );
     expect(present).toEqual([]);
   });
 
-  test('current-surface skills introduced up to v6.10.0 are present', () => {
+  test('the v6.11.0 replacement skills are present', () => {
     const expected = [
+      'bmad-build',
+      'bmad-build-auto',
+      'bmad-review',
+      'bmad-deep-recon',
+      'bmad-project-context',
+      'bmad-sprint-planning',
       'bmad-prd',
       'bmad-architecture',
       'bmad-ux',
       'bmad-spec',
-      'bmad-forge-idea',
-      'bmad-dev-auto',
-      'bmad-eval-runner',
-      'gds-gdd',
-      'gds-prd',
-      'gds-ux',
-      'gds-investigate',
-      // bmad-loop skill module (synced from bmad-code-org/bmad-loop)
+      'bmad-retrospective',
+      'bmad-loop-setup',
       'bmad-loop-resolve',
       'bmad-loop-sweep',
-      'bmad-loop-setup',
+      'bmad-tea',
+      'gds-gdd',
     ];
     const missing = expected.filter(
+      (name) => !existsSync(join(SKILLS_DIR, name, 'SKILL.md')),
+    );
+    expect(missing).toEqual([]);
+  });
+
+  test('the v6 deprecation shims ship, because external modules call them', () => {
+    // Reversal of the pre-v6.11 prune. Upstream's v6-shims/README.md:
+    // "External module repos (gds, loop, tea, bmb, os-utils) still invoke
+    // these IDs, so they ship by default. Removal rides the v7 cut."
+    const shims = [
+      'bmad-quick-dev',
+      'bmad-dev-auto',
+      'bmad-create-story',
+      'bmad-dev-story',
+      'bmad-market-research',
+      'bmad-review-adversarial-general',
+      'bmad-document-project',
+      'bmad-sprint-status',
+    ];
+    const missing = shims.filter(
       (name) => !existsSync(join(SKILLS_DIR, name, 'SKILL.md')),
     );
     expect(missing).toEqual([]);
@@ -78,43 +103,108 @@ describe('runtime template', () => {
   test('ships the files skills resolve from {project-root}/_bmad', () => {
     const required = [
       'config.toml',
+      'config.user.toml',
       'scripts/memlog.py',
       'scripts/resolve_config.py',
       'scripts/resolve_customization.py',
+      // v6.11: bmad-build and bmad-build-auto are pure loaders that run
+      // render_skill.py and halt if it is missing.
+      'scripts/render_skill.py',
+      'scripts/config_utils.py',
       '_config/bmad-help.csv',
       '_config/manifest.yaml',
+      '_config/skill-manifest.csv',
       'bmm/config.yaml',
+      'bmad-loop/config.yaml',
       'custom/config.toml',
-      'custom/config.user.toml',
       // stored under a safe name so it can't ignore sibling template
       // files in this repo; init.sh restores the real .gitignore name
       'custom/dot.gitignore',
+      'render/dot.gitignore',
     ];
     const missing = required.filter(
       (rel) => !existsSync(join(RUNTIME_DIR, rel)),
     );
     expect(missing).toEqual([]);
     expect(existsSync(join(RUNTIME_DIR, 'custom/.gitignore'))).toBe(false);
+    expect(existsSync(join(RUNTIME_DIR, 'render/.gitignore'))).toBe(false);
   });
 
-  test('project name is templatized, not the throwaway install dir', () => {
+  test('machine-specific install values are templatized', () => {
     const configToml = readFileSync(join(RUNTIME_DIR, 'config.toml'), 'utf8');
     expect(configToml).toContain('__BMAD_PROJECT_NAME__');
     expect(configToml).not.toContain('.upstream-install');
+
+    // The v6.10 tree shipped whoever ran the sync as a literal user name.
+    const userToml = readFileSync(
+      join(RUNTIME_DIR, 'config.user.toml'),
+      'utf8',
+    );
+    expect(userToml).toContain('user_name = "__BMAD_USER_NAME__"');
+    for (const module of ['bmm', 'gds', 'tea', 'bmad-loop']) {
+      const yaml = readFileSync(
+        join(RUNTIME_DIR, module, 'config.yaml'),
+        'utf8',
+      );
+      expect(yaml).toContain('user_name: __BMAD_USER_NAME__');
+    }
+
+    const manifest = readFileSync(
+      join(RUNTIME_DIR, '_config/manifest.yaml'),
+      'utf8',
+    );
+    expect(manifest).toContain('installDate: __BMAD_INSTALL_DATE__');
+    expect(manifest).not.toMatch(/installDate: \d{4}-/);
   });
 
-  test('manifests carry no rows for pruned deprecated shims', () => {
-    for (const csv of ['skill-manifest.csv', 'files-manifest.csv']) {
-      const text = readFileSync(join(RUNTIME_DIR, '_config', csv), 'utf8');
-      expect(text).not.toMatch(
-        /bmad-create-prd|bmad-edit-prd|bmad-validate-prd|bmad-create-architecture/,
-      );
+  test('records the module versions the installer resolved', () => {
+    const manifest = readFileSync(
+      join(RUNTIME_DIR, '_config/manifest.yaml'),
+      'utf8',
+    );
+    const resolved: Array<[string, string]> = [
+      ['core', '6.11.0'],
+      ['bmb', 'v2.2.1'],
+      ['cis', 'v0.3.1'],
+      ['gds', 'v0.7.1'],
+      ['tea', 'v1.23.3'],
+      ['bmad-loop', 'v0.11.0'],
+    ];
+    for (const [id, version] of resolved) {
+      const pinned = JSON.parse(
+        readFileSync(join(ROOT, '.upstream-versions', `${id}.json`), 'utf8'),
+      ).version;
+      expect(pinned.replace(/^v/, '')).toBe(version.replace(/^v/, ''));
+      expect(manifest).toContain(`version: ${version}`);
     }
   });
 });
 
-describe('plugin manifest', () => {
-  test('declares skills and commands', () => {
+describe('marketplace', () => {
+  test('every declared plugin resolves to a real plugin directory', () => {
+    const marketplace = JSON.parse(
+      readFileSync(join(ROOT, '.claude-plugin/marketplace.json'), 'utf8'),
+    );
+    expect(marketplace.plugins.map((p: { name: string }) => p.name)).toEqual([
+      'bmad',
+    ]);
+
+    for (const entry of marketplace.plugins) {
+      const manifest = JSON.parse(
+        readFileSync(
+          join(ROOT, entry.source, '.claude-plugin/plugin.json'),
+          'utf8',
+        ),
+      );
+      expect(manifest.name).toBe(entry.name);
+      expect(manifest.version).toBe(entry.version);
+      expect(
+        dirNames(join(ROOT, entry.source, 'skills')).length,
+      ).toBeGreaterThan(0);
+    }
+  });
+
+  test('the bmad plugin declares skills and commands', () => {
     const manifest = JSON.parse(
       readFileSync(join(PLUGIN_DIR, '.claude-plugin/plugin.json'), 'utf8'),
     );

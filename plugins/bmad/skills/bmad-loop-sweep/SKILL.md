@@ -64,8 +64,9 @@ Classify each open entry into exactly ONE category:
   future story has to land first. Group entries that share a touchpoint (same
   file, same subsystem, same validator pattern) into cohesive single-goal
   bundles sized for one dev session; an entry that stands alone is a
-  one-entry bundle. `name` is kebab-case (e.g. `unicode-string-hardening`),
-  `intent` is 2–6 sentences describing the one cohesive goal.
+  one-entry bundle. `name` matches `^[a-z0-9][a-z0-9-]{1,39}\Z` (kebab-case,
+  at most 40 characters; e.g. `unicode-string-hardening`), and `intent` is
+  2–6 sentences describing the one cohesive goal.
 - **blocked** — the fix is only meaningful (or meaningfully easier) after a
   named future story/epic lands. Name the blocker verbatim.
 - **skip** — superseded, moot, or tied to a scenario the project explicitly

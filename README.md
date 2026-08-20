@@ -5,25 +5,29 @@
 [![Synced with BMAD-METHOD](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml/badge.svg)](https://github.com/PabloLION/bmad-plugin/actions/workflows/sync-upstream.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 <!-- upstream-badges-start -->
-[![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmadcode/BMAD-METHOD)
-[![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise)
-[![BMB Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-bmb.json)](https://github.com/bmad-code-org/bmad-builder)
-[![CIS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-cis.json)](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite)
-[![GDS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-gds.json)](https://github.com/bmad-code-org/bmad-module-game-dev-studio)
-[![Loop Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/PabloLION/bmad-plugin/main/.github/badges/upstream-version-loop.json)](https://github.com/bmad-code-org/bmad-loop)
+[![BMAD Method version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version.json)](https://github.com/bmad-code-org/BMAD-METHOD)
+[![TEA Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-tea.json)](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise)
+[![BMB Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-bmb.json)](https://github.com/bmad-code-org/bmad-builder)
+[![CIS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-cis.json)](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite)
+[![GDS Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-gds.json)](https://github.com/bmad-code-org/bmad-module-game-dev-studio)
+[![Loop Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-bmad-loop.json)](https://github.com/bmad-code-org/bmad-loop)
+[![Manticore Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-manticore.json)](https://github.com/bmad-code-org/bmad-manticore)
+[![Module template Module version](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/tgorka/bmad-plugin/main/.github/badges/upstream-version-module-template.json)](https://github.com/bmad-code-org/bmad-module-template)
 <!-- upstream-badges-end -->
 
 <!-- upstream-version-start -->
-**Plugin version:** v6.10.0.0
+**Plugin version:** v6.11.0.0
 
-| Module | Version | Last Checked |
-|---|---|---|
-| [BMAD Method](https://github.com/bmadcode/BMAD-METHOD) | v6.10.0 | 2026-07-04 |
-| [TEA](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise) | v1.19.0 | 2026-07-04 |
-| [BMB](https://github.com/bmad-code-org/bmad-builder) | v2.1.0 | 2026-07-04 |
-| [CIS](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) | v0.2.1 | 2026-07-04 |
-| [GDS](https://github.com/bmad-code-org/bmad-module-game-dev-studio) | v0.6.0 | 2026-07-04 |
-| [Loop](https://github.com/bmad-code-org/bmad-loop) | v0.8.0 | 2026-07-04 |
+| Module | Version | Delivery | Last Checked |
+|---|---|---|---|
+| [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD) | v6.11.0 | installer | 2026-08-20 |
+| [TEA](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise) | v1.23.3 | installer module | 2026-08-20 |
+| [BMB](https://github.com/bmad-code-org/bmad-builder) | v2.2.1 | installer module | 2026-08-20 |
+| [CIS](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) | v0.3.1 | installer module | 2026-08-20 |
+| [GDS](https://github.com/bmad-code-org/bmad-module-game-dev-studio) | v0.7.1 | installer module | 2026-08-20 |
+| [Loop](https://github.com/bmad-code-org/bmad-loop) | v0.11.0 | installer module | 2026-08-20 |
+| [Manticore](https://github.com/bmad-code-org/bmad-manticore) | v1.0.1 | custom source | 2026-08-20 |
+| [Module template](https://github.com/bmad-code-org/bmad-module-template) | f1440ec8 | vendored asset | 2026-08-20 |
 <!-- upstream-version-end -->
 
 A Claude Code plugin that transforms Claude into a complete agile development

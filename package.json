@@ -1,6 +1,6 @@
 {
   "name": "bmad-plugin",
-  "version": "6.10.0.0",
+  "version": "6.11.0.0",
   "type": "module",
   "scripts": {
     "prepare": "husky",

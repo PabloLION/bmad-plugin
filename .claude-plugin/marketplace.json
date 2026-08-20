@@ -11,7 +11,7 @@
       "name": "bmad",
       "source": "./plugins/bmad",
       "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
-      "version": "6.10.0.0"
+      "version": "6.11.0.0"
     }
   ]
 }
