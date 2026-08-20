@@ -1,0 +1,35 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Customization surface for mc-cut.
+# Override files (not edited here):
+#   {project-root}/_bmad/custom/mc-cut.toml         (team)
+#   {project-root}/_bmad/custom/mc-cut.user.toml    (personal)
+#
+# Studio-wide config (owner, paths, editor, transcription, assets, tools)
+# lives in [modules.manticore] in {project-root}/_bmad/custom/config.toml,
+# maintained by mc-setup. This file holds only this skill's own surface.
+
+[workflow]
+
+# Steps to run before / after the standard activation.
+activation_steps_prepend = []
+activation_steps_append = []
+
+# Persistent facts held for the whole run: literal sentences, or
+# "file:{project-root}/..." paths whose contents are loaded as facts.
+persistent_facts = []
+
+# Extra flags appended to the cutplan.py invocation, e.g.
+# "--min-silence 0.5" or a --marker-cues override for interview sources
+# (default marker cue "question from the interviewer"; pass
+# --marker-cues "question from claude" for projects recorded against the
+# older convention). mc-setup's marker-cue interview question records a
+# non-default cue here, in the team override file. Empty means the script
+# defaults (min-silence 0.7, retake window 16, run 3).
+cutplan_flags = ""
+
+# Extra flags appended to the render_preview.py / render_final.py
+# invocations, e.g. "--height 540" (preview) or "--parallel 4 --crf 16"
+# (final). Empty means the script defaults.
+preview_flags = ""
+final_flags = ""

@@ -1,0 +1,20 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Customization surface for mc-assets.
+# Override files (not edited here):
+#   {project-root}/_bmad/custom/mc-assets.toml         (team)
+#   {project-root}/_bmad/custom/mc-assets.user.toml    (personal)
+#
+# Studio-wide config (owner, paths, editor, transcription, assets, tools)
+# lives in [modules.manticore] in {project-root}/_bmad/custom/config.toml,
+# maintained by mc-setup. This file holds only this skill's own surface.
+
+[workflow]
+
+# Steps to run before / after the standard activation.
+activation_steps_prepend = []
+activation_steps_append = []
+
+# Persistent facts held for the whole run: literal sentences, or
+# "file:{project-root}/..." paths whose contents are loaded as facts.
+persistent_facts = []

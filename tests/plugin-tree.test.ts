@@ -6,6 +6,7 @@ const ROOT = resolve(import.meta.dir, '..');
 const PLUGIN_DIR = join(ROOT, 'plugins/bmad');
 const SKILLS_DIR = join(PLUGIN_DIR, 'skills');
 const RUNTIME_DIR = join(PLUGIN_DIR, 'runtime/_bmad');
+const MANTICORE_DIR = join(ROOT, 'plugins/bmad-manticore');
 
 function dirNames(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true })
@@ -187,6 +188,7 @@ describe('marketplace', () => {
     );
     expect(marketplace.plugins.map((p: { name: string }) => p.name)).toEqual([
       'bmad',
+      'bmad-manticore',
     ]);
 
     for (const entry of marketplace.plugins) {
@@ -204,13 +206,69 @@ describe('marketplace', () => {
     }
   });
 
-  test('the bmad plugin declares skills and commands', () => {
-    const manifest = JSON.parse(
-      readFileSync(join(PLUGIN_DIR, '.claude-plugin/plugin.json'), 'utf8'),
-    );
-    expect(manifest.skills).toBe('./skills/');
-    expect(manifest.commands).toBe('./commands/');
+  test('the bmad plugin exposes /bmad:init', () => {
+    // The manifest's `skills` / `commands` keys are no-ops for this
+    // layout (Claude Code always scans skills/ and commands/), so pinning
+    // them would fail on a valid cleanup and pass on nothing real. Assert
+    // the entry points instead.
     expect(existsSync(join(PLUGIN_DIR, 'commands/init.md'))).toBe(true);
     expect(existsSync(join(PLUGIN_DIR, 'scripts/init.sh'))).toBe(true);
+  });
+
+  test('manticore ships its mc-* skills and module metadata', () => {
+    const skills = dirNames(join(MANTICORE_DIR, 'skills'));
+    expect(skills.every((name) => name.startsWith('mc-'))).toBe(true);
+    expect(skills).toContain('mc-agent');
+    expect(skills).toContain('mc-setup');
+    // Its help rows are what /bmad:init --with-plugin merges into the
+    // aggregate catalog.
+    const helpPath = join(
+      MANTICORE_DIR,
+      'runtime/_bmad/manticore/module-help.csv',
+    );
+    expect(existsSync(helpPath)).toBe(true);
+
+    // Upstream v1.0.1 declares mc-audio, but its frontmatter is invalid
+    // YAML so the installer refuses to install it. The capture drops the
+    // row; shipping it would make bmad-help route to a missing skill.
+    const help = readFileSync(helpPath, 'utf8');
+    expect(help).not.toContain(',mc-audio,');
+    for (const row of help.split('\n').slice(1).filter(Boolean)) {
+      const skill = row.split(',')[1];
+      if (!skill || skill === '_meta') continue;
+      expect(skills).toContain(skill);
+    }
+
+    // The sibling gets its own installer manifest so the skill-surface
+    // gate covers it, not just the aggregate plugin.
+    const manifest = readFileSync(
+      join(MANTICORE_DIR, 'runtime/_bmad/_config/skill-manifest.csv'),
+      'utf8',
+    );
+    const declared = manifest
+      .split('\n')
+      .slice(1)
+      .filter(Boolean)
+      .map((line) => line.match(/^"([^"]+)"/)?.[1]);
+    expect(declared.sort()).toEqual([...skills].sort());
+  });
+});
+
+describe('vendored module template', () => {
+  test('is present but deliberately unpublished', () => {
+    const dir = join(PLUGIN_DIR, 'templates/module-template');
+    expect(existsSync(join(dir, 'README.md'))).toBe(true);
+    // A live .gitignore here would strip its siblings from every
+    // marketplace clone.
+    expect(existsSync(join(dir, 'dot.gitignore'))).toBe(true);
+    expect(existsSync(join(dir, '.gitignore'))).toBe(false);
+
+    const marketplace = JSON.parse(
+      readFileSync(join(ROOT, '.claude-plugin/marketplace.json'), 'utf8'),
+    );
+    const sources = marketplace.plugins.map(
+      (p: { source: string }) => p.source,
+    );
+    expect(sources).not.toContain('./plugins/bmad/templates/module-template');
   });
 });

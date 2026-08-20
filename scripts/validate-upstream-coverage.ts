@@ -208,6 +208,7 @@ const runtimeChecks = [
   'runtime/_bmad/scripts/resolve_customization.py',
   'scripts/init.sh',
   'commands/init.md',
+  'templates/module-template/README.md',
 ];
 for (const rel of runtimeChecks) {
   if (await exists(join(PLUGIN, rel))) {

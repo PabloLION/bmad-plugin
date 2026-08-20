@@ -1,0 +1,42 @@
+{
+  "$doc": "Brand token schema for Manticore graphics. mc-setup copies this to {brand-path}/tokens.json and fills it with the creator's brand. Every engine comp reads this file; no hardcoded colors or fonts anywhere else.",
+  "color": {
+    "canvas": "#111111",
+    "surface": "#1d1d1d",
+    "border": "#333333",
+    "accent": "#4f8cff",
+    "accentStrong": "#2f6fe0",
+    "accentSoft": "#7faaff",
+    "textPrimary": "#f5f5f5",
+    "textMuted": "#a8a8a8",
+    "white": "#FFFFFF"
+  },
+  "colorRules": {
+    "notes": "Record your accessibility decisions here: which pairs pass WCAG AA on your canvas, which accent shades are large-text-only, what your buttons/chips use. Skills follow these notes when composing graphics."
+  },
+  "font": {
+    "heading": "",
+    "headingWeights": [600, 700],
+    "body": "",
+    "bodyWeights": [400, 500, 600],
+    "code": "",
+    "files": "path to local font files, if self-hosted"
+  },
+  "logo": {
+    "badgeOnDark": "",
+    "badgeOnLight": "",
+    "lockupOnDark": "",
+    "lockupOnLight": ""
+  },
+  "motion": {
+    "easeDefault": "power2.out",
+    "easeEmphasis": "power3.inOut",
+    "durationFastMs": 250,
+    "durationBaseMs": 450,
+    "durationSlowMs": 800,
+    "stingerMaxSeconds": 2
+  },
+  "video": {
+    "notes": "Resolution and fps live in the studio config [video]; this section is for look decisions (grain, letterbox, safe areas) if you standardize them."
+  }
+}

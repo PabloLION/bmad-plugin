@@ -1,0 +1,9 @@
+{
+  "name": "bmad-manticore",
+  "version": "1.0.1",
+  "description": "BMad Manticore - AI video production pipeline for content creators",
+  "author": {
+    "name": "Brian (BMad) Madison"
+  },
+  "skills": "./skills/"
+}
