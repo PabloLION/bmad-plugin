@@ -7,25 +7,44 @@ Initialize the current working repository for the BMad plugin.
 
 The plugin's skill files are immutable, but every BMad skill resolves
 per-project files from `{project-root}/_bmad/` (module config, shared
-scripts such as `memlog.py` and `resolve_customization.py`, help
-catalogs) and writes artifacts to configured output folders. Those
+scripts such as `memlog.py`, `resolve_config.py` and `render_skill.py`,
+help catalogs) and writes artifacts to configured output folders. Those
 files must exist inside the working repo.
 
 Steps:
 
-1. Run the initializer via the Bash tool (idempotent — never
-   overwrites existing files, only fills in missing ones):
+1. Decide whether any sibling BMad plugin from this marketplace is
+   active. You can tell from your own skill list: if `mc-*` skills such
+   as `mc-agent` or `mc-setup` are available to you, the
+   **bmad-manticore** plugin is installed. A marketplace install clones
+   the whole repo, so the presence of a `plugins/bmad-manticore/`
+   directory proves nothing — only your loaded skills do.
+
+2. Run the initializer via the Bash tool (idempotent — never overwrites
+   existing files, only fills in missing ones), adding one
+   `--with-plugin` for each active sibling plugin:
 
    ```sh
    bash "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh"
+   # …or, with BMad Manticore installed:
+   bash "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh" --with-plugin bmad-manticore
    ```
 
-2. Report to the user what was created and what was already present
-   (the script prints a `+` line per created file and a summary).
+3. Report what was created and what was already present (the script
+   prints a `+` line per created file and a summary). If everything was
+   already present, say the repo was already initialized and no changes
+   were made.
 
-3. If everything was already present, tell the user the repo was
-   already initialized and no changes were made.
+4. If the script warned that `uv` is missing, relay it: BMAD v6.11
+   renders `bmad-build` and `bmad-build-auto` through
+   `_bmad/scripts/render_skill.py` and those two skills **halt** without
+   `uv` plus Python ≥3.11. The rest of the surface still works.
 
-4. Suggest reviewing `_bmad/config.toml` (team-level answers) and
-   `_bmad/custom/` (durable overrides) — and committing `_bmad/` to
-   version control so the team shares one configuration.
+5. Suggest reviewing `_bmad/config.toml` (installer-managed team answers)
+   and `_bmad/custom/` (durable overrides that survive re-initialization)
+   — and committing `_bmad/` to version control so the team shares one
+   configuration.
+
+6. If `bmad-manticore` was registered, point the user at `mc-setup`: its
+   stage skills stay inert until it writes `[modules.manticore]` into
+   `_bmad/custom/config.toml`.
