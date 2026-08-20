@@ -37,7 +37,6 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 - [ ] Response time threshold defined or marked as UNKNOWN
 - [ ] Throughput threshold defined or marked as UNKNOWN
 - [ ] Resource usage thresholds defined or marked as UNKNOWN
-- [ ] Scalability requirements defined or marked as UNKNOWN
 
 ### Security
 
@@ -58,9 +57,10 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 ### Maintainability
 
 - [ ] Test coverage threshold defined or marked as UNKNOWN
-- [ ] Code quality threshold defined or marked as UNKNOWN
-- [ ] Technical debt threshold defined or marked as UNKNOWN
-- [ ] Documentation completeness threshold defined or marked as UNKNOWN
+- [ ] Code duplication threshold defined or marked as UNKNOWN
+- [ ] Dependency vulnerability threshold defined or marked as UNKNOWN
+- [ ] Structured logging requirement defined or marked as UNKNOWN
+- [ ] Error tracking requirement defined or marked as UNKNOWN
 
 ### Custom NFR Categories (if applicable)
 
@@ -101,12 +101,11 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 
 ### Maintainability Evidence
 
-- [ ] Code coverage reports collected (Istanbul, NYC, c8, JaCoCo)
-- [ ] Static analysis results collected (ESLint, SonarQube, CodeClimate)
-- [ ] Technical debt metrics collected
-- [ ] Documentation audit results collected
-- [ ] Test review report collected (from test-review workflow, if available)
-- [ ] Git metrics collected (code churn, commit frequency, etc.)
+- [ ] CI coverage report collected
+- [ ] Code duplication report collected (jscpd)
+- [ ] Dependency vulnerability scan collected (npm audit)
+- [ ] Structured logging validated from a structured log sample, documented schema, or automated format assertion
+- [ ] Error tracking configuration validated (Sentry/monitoring integration)
 
 ---
 
@@ -117,7 +116,6 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 - [ ] Response time assessed against threshold
 - [ ] Throughput assessed against threshold
 - [ ] Resource usage assessed against threshold
-- [ ] Scalability assessed against requirements
 - [ ] Status classified (PASS/CONCERNS/FAIL) with justification
 - [ ] Evidence source documented (file path, metric name)
 
@@ -145,12 +143,12 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 ### Maintainability Assessment
 
 - [ ] Test coverage assessed against threshold
-- [ ] Code quality assessed against threshold
-- [ ] Technical debt assessed against threshold
-- [ ] Documentation completeness assessed against threshold
-- [ ] Test quality assessed (from test-review, if available)
+- [ ] Code duplication assessed against threshold
+- [ ] Dependency vulnerability scan assessed against threshold
+- [ ] Structured logging assessed
+- [ ] Error tracking assessed
 - [ ] Status classified (PASS/CONCERNS/FAIL) with justification
-- [ ] Evidence source documented (file path, coverage report)
+- [ ] Evidence source documented (file path, report)
 
 ### Custom NFR Evidence Audit (if applicable)
 
@@ -219,7 +217,7 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 - [ ] Circuit breakers suggested for reliability
 - [ ] Rate limiting suggested for performance
 - [ ] Validation gates suggested for security
-- [ ] Smoke tests suggested for maintainability
+- [ ] Coverage/duplication gates suggested for maintainability
 
 ---
 
@@ -394,9 +392,9 @@ Note: `nfr-assess` is the NFR Evidence Audit. It evaluates existing implementati
 
 **Next Actions:**
 
-- If PASS ✅: Proceed to `*gate` workflow or release
-- If CONCERNS ⚠️: Address HIGH/CRITICAL issues, re-run `*nfr-assess`
-- If FAIL ❌: Resolve FAIL status NFRs, re-run `*nfr-assess`
+- If PASS ✅: Run `/bmad-testarch-trace` Phase 2 for the release gate decision, or release
+- If CONCERNS ⚠️: Address HIGH/CRITICAL issues, re-run `/bmad-testarch-nfr`
+- If FAIL ❌: Resolve FAIL status NFRs, re-run `/bmad-testarch-nfr`
 
 **Critical Issues:** {COUNT}
 **High Priority Issues:** {COUNT}

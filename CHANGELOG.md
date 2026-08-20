@@ -4,6 +4,182 @@ All notable changes to this project are documented in this file.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [6.11.0.0] - 2026-08-20
+
+From-scratch rebuild against BMAD-METHOD **v6.11.0**, not an incremental
+bump. Module bumps: BMB v2.1.0 → **v2.2.1**, TEA v1.19.0 → **v1.23.3**,
+BMad Loop v0.8.0 → **v0.11.0**, CIS → **v0.3.1**, GDS → **v0.7.1**.
+Skill count **103 → 110** in the `bmad` plugin (core 14 + bmm 35 + gds 33
++ tea 10 + cis 10 + bmb 5 + loop 3), plus a second plugin shipping 15
+more. Rationale for every decision below:
+[docs/plan-6.11-rebuild.md](docs/plan-6.11-rebuild.md).
+
+### Changed — policy reversals
+
+- **Deprecated shims now ship. The sync no longer prunes them.** Two
+  independent reasons. First, correctness: upstream's own
+  `src/core-skills/v6-shims/README.md` states "External module repos
+  (gds, loop, tea, bmb, os-utils) still invoke these IDs, so they ship by
+  default. Removal rides the v7 cut — never a 6.x minor" — pruning them
+  in a 6.x minor breaks cross-module invocation. Second, the gate had
+  already stopped working: `pruneDeprecatedSkills()` matched a
+  `description` starting with the literal uppercase `DEPRECATED`, and
+  v6.11.0 writes `'Deprecated — forwards to bmad-prd (create intent).'`,
+  so it matched **zero** skills while still reporting success — as did
+  the companion check in `bun run validate`. Two of the twenty shims
+  (`bmad-create-story` 23 KB, `bmad-dev-story` 26 KB) are full-bodied
+  skills rather than forwarders, so the prune was never a no-op either.
+  `pruneDeprecatedSkills()` and the CSV manifest scrub it fed are gone.
+- **bmad-loop installs as a registry module.** Core v6.11.0 added
+  `bmad-modules.yaml` at its repo root, in which `bmad-loop` is an
+  official entry. The bespoke git-clone (`syncLoopSkills()`,
+  `--loop-tag`, `.upstream-loop/`) was overwriting the installer's own
+  output with tag-pinned copies; it is deleted and `bmad-loop` joins
+  `--modules`. `.upstream-versions/loop.json` → `bmad-loop.json` so the
+  id matches the installer manifest name, which is what
+  `bumpModuleVersions()` keys on.
+
+### Added
+
+- **A second plugin: `bmad-manticore`** (upstream v1.0.1, 15 `mc-*`
+  skills) — an AI video production pipeline. Manticore is a real BMad
+  module (`skills/module.yaml`, `code: manticore`) but is absent from
+  upstream's registry, so the sync clones it at a pinned tag and installs
+  it through `--custom-source` from a **local path**; a URL would
+  resolve the moving default branch and make the bundle irreproducible.
+  It gets its own installer run so the `bmad` plugin's runtime template
+  does not advertise skills that plugin does not ship.
+  Separate plugin rather than 15 more skills in the aggregate: its
+  prerequisites (ffmpeg, node/npx, uv, Python ≥ 3.11, multi-GB model
+  caches) are irrelevant to most users, 14 of its 15 skills fail closed
+  until `mc-setup` writes `[modules.manticore]` into
+  `_bmad/custom/config.toml`, and `mc-agent` is an always-on persona
+  that would compete for activation with the aggregate's agents.
+  Pinned to the tag `v1.0.1`: upstream `main` self-declares `3.1.0` but
+  its CHANGELOG marks both `3.0.0` and `3.1.0` as `- Unreleased` and no
+  tag exists above `v1.0.1`.
+  Two upstream defects at that tag are documented, not patched:
+  `mc-audio`'s frontmatter is invalid YAML (`description:` is an
+  unquoted scalar containing `": "`), so the installer's
+  `parseSkillMd()` drops it and 16 declared skills install as 15; and
+  `mc-agent` is not written into the core `config.toml` agent roster.
+- **Vendored module-authoring scaffold** at
+  `plugins/bmad/templates/module-template/`, pinned by commit
+  `f1440ec8` (the repo has no tags). Deliberately **not** published as a
+  marketplace plugin: its own manifest declares
+  `"skills": ["./skills/my-skill"]` and that directory exists in no
+  upstream ref — an early `.gitignore` rule (`.*/skills`) swallowed the
+  scaffold — so a plugin entry would be a dead `my-module` in front of
+  end users.
+- **`/bmad:init --with-plugin <name>`** registers a sibling plugin from
+  the same marketplace: materializes its `_bmad/<module>/` metadata and
+  merges its help rows into `_bmad/_config/bmad-help.csv`. Opt-in, never
+  inferred from the directory listing — a marketplace install is a git
+  clone of the whole repo, so a sibling's files are on disk whether or
+  not that plugin is enabled; `/bmad:init` decides from its own loaded
+  skill list.
+- **`uv` preflight in `/bmad:init`.** `bmad-build` and
+  `bmad-build-auto` carry no workflow logic in v6.11 — they run
+  `uv run _bmad/scripts/render_skill.py` and HALT if `uv` is missing.
+  init warns (never fails) with install instructions.
+- Runtime template gained `_bmad/render/` (content-addressed skill
+  snapshots), `_bmad/scripts/render_skill.py`,
+  `_bmad/scripts/config_utils.py`, and `_bmad/bmad-loop/`.
+- `scripts/list-sources.ts` emits the source registry as JSON;
+  `.github/workflows/sync-upstream.yml` builds its job matrix from it,
+  replacing six copy-pasted per-module jobs. Registering a source is now
+  the only edit needed to get a README row, a badge and a watcher.
+
+### Fixed
+
+- **The vendored runtime shipped the syncing operator's user name.**
+  `user_name: Dev` was baked into `config.user.toml` and all seven
+  per-module `config.yaml` files. Templatized as `__BMAD_USER_NAME__`,
+  substituted by init from `git config user.name` (falling back to
+  `$USER`). Install timestamps in `_config/manifest.yaml` likewise
+  become `__BMAD_INSTALL_DATE__`.
+- **`cis.json` and `gds.json` were transposed.** The v6.10 sync recorded
+  cis v0.6.0 / gds v0.2.1 while its own `_bmad/_config/manifest.yaml`
+  said cis v0.2.1 / gds v0.6.0. Both are now read back from the manifest,
+  so CIS moving to v0.3.1 is a correction, not a downgrade.
+- **README badges pointed at this repo's fork parent.**
+  `GITHUB_RAW_BASE` was `PabloLION/bmad-plugin`, so every version badge
+  rendered the parent's pins rather than ours. Also corrected the core
+  repo slug `bmadcode/BMAD-METHOD` → `bmad-code-org/BMAD-METHOD`.
+- **`bmad-help.csv` merge corrupted the last row.** The installer writes
+  the file without a trailing newline; appending a sibling module's rows
+  glued the first one onto the last existing row (producing a 12-column
+  line) and re-appended it on every subsequent run. init pads the newline
+  first, and the merge is dedupe-checked per row.
+- `init.sh` treated an unknown option as the target directory. Argument
+  parsing is now a shift loop and rejects unknown flags.
+
+### Removed
+
+- `bmad-index-docs`, `bmad-shard-doc`,
+  `bmad-check-implementation-readiness` (folded into
+  `bmad-sprint-planning`'s readiness gate) and `bmad-agent-tech-writer`
+  (Paige retired) — all removed upstream in v6.11.0, with no replacement
+  shim. The game-scoped `gds-agent-tech-writer` is unaffected.
+- `.github/workflows/check-workarounds.yml` — it monitored a workaround
+  `docs/workarounds.md` records as resolved on 2026-02-03, and asserted a
+  `commands` array in plugin.json that no longer holds skills.
+
+### Fixed after adversarial review
+
+Two review passes over this stack found defects that were green on every
+gate; all are fixed here, each mutation-verified.
+
+- **`/bmad:init` could only seed a repo, never upgrade one.** It skipped
+  every existing path, so a repo initialized under v6.10 kept its stale
+  shared scripts, a help catalog naming eight removed skills while
+  omitting 34 shipped ones, and the `user_name = "Dev"` leak — making
+  "safe to re-run after a plugin update" false in exactly the case it
+  was written for. `_bmad/custom/**` is now the user-owned layer and is
+  never touched; everything else is refreshed when it differs from the
+  template.
+- **Substituted values could make the runtime unparseable.** A git
+  identity containing `"`, `:`, `#` or `\` landed raw inside a TOML
+  string and an unquoted YAML scalar, breaking `resolve_config.py` —
+  which every skill calls. A literal newline aborted init mid-write,
+  unrecoverably. Values are now reduced to a set safe in both formats.
+- **An interrupted version bump was unrecoverable.** `.plugin-version`
+  was written before the three JSON manifests, so a re-run read the
+  advanced value, decided there was nothing to do, and left the
+  manifests behind forever. It is written last, the patch counter
+  survives a re-sync, and `validate` now requires all four anchors to
+  agree.
+- **The release watcher could never file anything.** This repo is a
+  fork, forks ship with issues disabled, and `gh issue list` exits 1 in
+  that state — under `set -euo pipefail` every drifted source would have
+  turned the job red and reported nothing. Drift now always lands in the
+  job summary; an issue is filed only when the tracker exists, deduped
+  on exact title rather than relevance search.
+- **A pinned tag could be shadowed by a branch.** `git clone --branch`
+  resolves branches before tags; custom sources are fetched by
+  `refs/tags/<tag>` and the vendored template's SHA is verified.
+- **`--tag=v6.12.0` was silently ignored** and the sync ran against the
+  pinned version instead, producing a tree every gate passes.
+- Sibling help rows could zombie across a point release; the catalog is
+  now reassembled rather than patched. A sibling's filtered
+  skill-manifest is no longer materialized into the user's repo, where
+  it replaced the 110-row aggregate with 15 rows. `--dry-run` no longer
+  reports work it did not do. Throwaway checkouts moved under
+  `.upstream-clones/` so one ignore rule covers them.
+
+### Gates
+
+`bun run validate` was rewritten so it cannot silently stop measuring:
+the skill surface must equal the installer's own
+`_config/skill-manifest.csv` in both directions; every declared plugin
+must resolve to a directory whose `plugin.json` agrees with its
+marketplace entry; every `plugins/<dir>` must be published; no vendored
+file may carry the install-dir name, a non-placeholder `user_name`, or a
+live nested `.gitignore`; registry and custom sources must pin a
+`v`-prefixed tag and vendored sources a full 40-character SHA. Each gate
+was mutation-verified — reintroducing the defect fails both
+`bun run validate` and `bun run test:unit`.
+
 ## [6.10.0.0] - 2026-07-04
 
 Upstream sync: bumps BMAD-METHOD core from v6.6.0 to v6.10.0 (through

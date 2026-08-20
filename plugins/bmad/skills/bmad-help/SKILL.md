@@ -23,7 +23,7 @@ When this skill completes, the user should:
 ## Data Sources
 
 - **Catalog**: `{project-root}/_bmad/_config/bmad-help.csv` — assembled manifest of all installed module skills
-- **Config**: Run `uv run --python 3.11 {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root}` and use the merged JSON to resolve `output-location` variables and read `core.communication_language` and `modules.bmm.project_knowledge`. The resolver merges `_bmad/config.toml`, `_bmad/config.user.toml`, `_bmad/custom/config.toml`, and `_bmad/custom/config.user.toml` in that order.
+- **Config**: Run `uv run {project-root}/_bmad/scripts/resolve_config.py --project-root {project-root}` and use the merged JSON to resolve `output-location` variables and read `core.communication_language` and `modules.bmm.project_knowledge`. The resolver merges `_bmad/config.toml`, `_bmad/config.user.toml`, `_bmad/custom/config.toml`, and `_bmad/custom/config.user.toml` in that order.
 - **Artifacts**: Files matching `outputs` patterns at resolved `output-location` paths reveal which steps are possibly completed; their content may also provide grounding context for recommendations
 - **Project knowledge**: If `project_knowledge` resolves to an existing path, read it for grounding context. Never fabricate project-specific details.
 - **Module docs**: Rows with `_meta` in the `skill` column carry a URL or path in `output-location` pointing to the module's documentation (e.g., llms.txt). Fetch and use these to answer general questions about that module.
@@ -38,7 +38,7 @@ module,skill,display-name,menu-code,description,action,args,phase,preceded-by,fo
 
 **Phases** determine the high-level flow:
 - `anytime` — available regardless of workflow state
-- Numbered phases (`1-analysis`, `2-planning`, etc.) flow in order; naming varies by module
+- Skills group into folders (`plan`, `ship`; some modules use numbered phases) and flow in order; naming varies by module
 
 **Sequencing** determines recommended ordering within and across phases (these are soft suggestions, not hard gates — see `required` for gating):
 - `preceded-by` — skills that should ideally complete before this one
@@ -61,7 +61,7 @@ module,skill,display-name,menu-code,description,action,args,phase,preceded-by,fo
 For each recommended item, present:
 - `[menu-code]` **Display name** — e.g., "[PR] PRD"
 - Skill name in backticks — e.g., `bmad-prd`
-- For multi-action skills: action invocation context — e.g., "tech-writer lets create a mermaid diagram!"
+- For multi-action skills: action invocation context — e.g., "dev lets run a code review!"
 - Description if present in CSV; otherwise your existing knowledge of the skill suffices
 - Args if available
 

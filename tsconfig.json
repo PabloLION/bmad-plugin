@@ -1,4 +1,10 @@
 {
+  // Only this repo's own TypeScript. Everything under plugins/ is
+  // upstream content vendored verbatim by `bun run sync` — it is never
+  // hand-edited, so type-checking it can only produce errors we are not
+  // allowed to fix (e.g. manticore ships .mjs motion-graphics templates
+  // with JSX-ish syntax).
+  "include": ["scripts/**/*.ts", "tests/**/*.ts"],
   "compilerOptions": {
     // Environment setup & latest features
     "lib": ["ESNext"],

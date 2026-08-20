@@ -10,7 +10,7 @@
 # ─────────────────────────────────────────────────────────────────
 
 [core]
-user_name = "Dev"
+user_name = "__BMAD_USER_NAME__"
 communication_language = "English"
 
 [modules.bmm]

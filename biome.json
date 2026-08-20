@@ -10,7 +10,9 @@
       "**",
       "!.beads",
       "!plugins/bmad/skills",
-      "!plugins/bmad/runtime"
+      "!plugins/bmad/runtime",
+      "!plugins/bmad/templates",
+      "!plugins/bmad-manticore"
     ]
   },
   "javascript": {

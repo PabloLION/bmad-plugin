@@ -41,8 +41,9 @@ commits the migrated ledger after validating it.
 
 1. Read the manifest and the full ledger.
 2. Keep every existing `### DW-<n>:` entry **byte-identical** — the
-   orchestrator fails the migration if a pre-existing entry's status changes
-   or an entry disappears.
+   orchestrator fails the migration if a pre-existing entry's status changes,
+   an entry disappears, or a `gate:` token an entry declared is no longer
+   present.
 3. Replace all legacy content with canonical entries per
    `./deferred-work-format.md`. Number new entries continuing
    from the highest existing `DW-<n>` (start at DW-1 when none exist), in

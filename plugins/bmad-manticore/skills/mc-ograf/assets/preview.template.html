@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>{{NAME}} — OGraf preview</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #0c1322; color: #eee;
+                   font: 14px system-ui, sans-serif; }
+      /* checkerboard to confirm transparency */
+      #stage {
+        position: relative; width: 960px; height: 540px; margin: 20px auto;
+        background-image:
+          linear-gradient(45deg, #2a2a2a 25%, transparent 25%),
+          linear-gradient(-45deg, #2a2a2a 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #2a2a2a 75%),
+          linear-gradient(-45deg, transparent 75%, #2a2a2a 75%);
+        background-size: 28px 28px;
+        background-position: 0 0, 0 14px, 14px -14px, -14px 0;
+        outline: 1px solid #333;
+      }
+      .controls { width: 960px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
+      input[type="range"] { flex: 1; }
+      button { background: #444; color: #fff; border: 0; padding: 8px 14px; border-radius: 6px;
+               cursor: pointer; font-weight: 700; }
+      label { white-space: nowrap; }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <div class="controls">
+      <button id="play">▶ Play in</button>
+      <button id="stop">■ Stop out</button>
+      <label>Scrub <span id="t">0</span> ms</label>
+      <input id="scrub" type="range" min="0" max="{{DURATION}}" value="0" step="16" />
+    </div>
+    <script type="module">
+      import Graphic from "./{{MAIN}}";
+      // The renderer normally registers the class; the preview does it itself.
+      if (!customElements.get("{{ID}}")) customElements.define("{{ID}}", Graphic);
+      const stage = document.getElementById("stage");
+      const el = document.createElement("{{ID}}");
+      stage.appendChild(el);
+      await el.load({ data: {}, renderType: "realtime" });
+
+      const scrub = document.getElementById("scrub"), tlabel = document.getElementById("t");
+      scrub.addEventListener("input", () => { tlabel.textContent = scrub.value; el.goToTime({ timestamp: +scrub.value }); });
+      document.getElementById("play").onclick = () => el.playAction({});
+      document.getElementById("stop").onclick = () => el.stopAction({});
+    </script>
+  </body>
+</html>

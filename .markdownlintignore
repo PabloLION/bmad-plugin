@@ -1,17 +1,15 @@
-# Ignore imported BMAD content from upstream
-# These files are copied from bmadcode/BMAD-METHOD and should be preserved as-is
-plugins/bmad/skills/*/steps*/*.md
-plugins/bmad/skills/*/steps/*.md
-plugins/bmad/skills/*/checklist.md
-plugins/bmad/skills/*/*.xml
-plugins/bmad/skills/*/data/*.md
-plugins/bmad/skills/*-steps/*.md
-plugins/bmad/skills/*/instructions.md
-plugins/bmad/skills/*/template.md
-plugins/bmad/skills/*/*-template.md
-plugins/bmad/skills/*/*.template.md
-plugins/bmad/skills/*/templates/*.md
-plugins/bmad/templates/*.md
+# Upstream content vendored verbatim by `bun run sync`. Never hand-edited,
+# so linting it would only produce noise we are not allowed to fix.
+#
+# No CI job runs markdownlint today; this file exists for local runs
+# (`markdownlint-cli2 '**/*.md'`) and to record what must never be linted.
+plugins/bmad/skills/
+plugins/bmad/runtime/
+plugins/bmad/templates/
+plugins/bmad-manticore/
 
-# Ignore reference repos
+# Throwaway installer runs and upstream checkouts
 .upstream/
+.upstream-install/
+.upstream-install-*/
+.upstream-clones/

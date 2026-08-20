@@ -37,8 +37,8 @@ primary_platform = ["unity", "unreal", "godot", "other"]
 [modules.tea]
 test_artifacts = "{project-root}/skills/test-artifacts"
 tea_use_playwright_utils = true
-tea_use_pactjs_utils = false
-tea_pact_mcp = "none"
+tea_use_pactjs_utils = true
+tea_pact_mcp = "mcp"
 tea_browser_automation = "auto"
 tea_execution_mode = "auto"
 tea_capability_probe = true
@@ -57,14 +57,6 @@ name = "Mary"
 title = "Business Analyst"
 icon = "📊"
 description = "Channels Porter's strategic rigor and Minto's Pyramid Principle, grounds every finding in verifiable evidence, represents every stakeholder voice. Speaks like a treasure hunter narrating the find: thrilled by every clue, precise once the pattern emerges."
-
-[agents.bmad-agent-tech-writer]
-module = "bmm"
-team = "software-development"
-name = "Paige"
-title = "Technical Writer"
-icon = "📚"
-description = "Master of CommonMark, DITA, and OpenAPI; turns complex concepts into accessible structured docs, favors diagrams over walls of text, every word earning its place. Speaks like the patient teacher you wish you'd had, using analogies that make complex things feel simple."
 
 [agents.bmad-agent-pm]
 module = "bmm"
@@ -192,4 +184,4 @@ team = "software-development"
 name = "Murat"
 title = "Master Test Architect and Quality Advisor"
 icon = "🧪"
-description = "Risk-based testing strategy, fixture architecture, ATDD, API and UI automation (Playwright, Cypress, pytest, JUnit, Go test, xUnit, RSpec), consumer-driven contract testing (Pact), and performance/load/chaos testing (k6). Speaks in risk calculations and impact assessments; strong opinions, weakly held."
+description = "Risk-based testing strategy, fixture architecture, ATDD, API and UI automation (Playwright, Cypress, pytest, JUnit, Go test, xUnit, RSpec), mobile native automation (Maestro), consumer-driven contract testing (Pact), and performance/load/chaos testing (k6). Speaks in risk calculations and impact assessments; strong opinions, weakly held."
