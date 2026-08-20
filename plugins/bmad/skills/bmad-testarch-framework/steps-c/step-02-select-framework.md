@@ -1,7 +1,7 @@
 ---
 name: 'step-02-select-framework'
 description: 'Select Playwright or Cypress and justify choice'
-nextStepFile: './step-03-scaffold-framework.md'
+nextStepFile: '{skill-root}/steps-c/step-03-scaffold-framework.md'
 outputFile: '{test_artifacts}/framework-setup-progress.md'
 ---
 
@@ -66,6 +66,20 @@ Select the framework matching the project language:
 - **C#/.NET**: xUnit (default), NUnit, MSTest
 - **Ruby**: RSpec (default), Minitest
 - **Rust**: cargo test (built-in)
+
+**If {detected_stack} is `mobile` (native app on a simulator, emulator, or device):**
+
+Default to **Maestro** for device-level flows.
+
+**Maestro recommended when:**
+
+- Declarative flows readable by the whole team are worth more than programmable test code
+- The app is React Native, Expo, Flutter, or native and needs one tool across iOS and Android
+- CI runs on emulators and needs built-in retry and artifact capture
+
+**Consider Appium instead when:** the suite must drive the app through an existing WebDriver grid, or the team already owns substantial Appium infrastructure. TEA scaffolds Maestro; an Appium suite is configured as `other`.
+
+Mobile is not only device flows. Also select the unit and component framework for the app's language (Jest or Vitest for React Native and Expo, XCTest for native iOS, JUnit for native Android, `flutter test` for Flutter), because the level framework in `mobile-test-strategy.md` puts 80% of the coverage below the device level. When both mobile and backend surfaces are detected, also retain the backend framework selection for the backend service.
 
 **If {detected_stack} is `fullstack`:**
 

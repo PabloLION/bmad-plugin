@@ -1,0 +1,216 @@
+# DO NOT EDIT -- overwritten on every update.
+#
+# Default studio configuration for BMad Manticore, in full. mc-setup reads
+# these defaults, interviews the creator, and writes the result to
+# [modules.manticore] in {project-root}/_bmad/custom/config.toml
+# (personal overrides go in config.user.toml next to it; resolve with
+# {project-root}/_bmad/scripts/resolve_config.py --key modules.manticore).
+#
+# API keys NEVER go in any TOML; only the names of env vars that hold them.
+#
+# Override files for this skill itself:
+#   {project-root}/_bmad/custom/mc-setup.toml         (team)
+#   {project-root}/_bmad/custom/mc-setup.user.toml    (personal)
+
+[workflow]
+
+activation_steps_prepend = []
+activation_steps_append = []
+persistent_facts = []
+
+# --- Studio defaults: the seed values for [modules.manticore] -------------
+
+[defaults]
+
+config-version = 1
+
+[defaults.owner]
+
+# Your name as skills should address you, and the channel/brand name.
+name = ""
+channel = ""
+# Measured speaking rate in words per minute, for script runtime estimates.
+# Measure from a real transcript; on-camera educators often run 180+.
+wpm = 145
+# Links appended to video descriptions, in order. Plain URLs or "Label: URL".
+links = []
+
+[defaults.paths]
+
+# Where your studio data lives, relative to project root unless absolute.
+# brand-path holds tokens.json, voice-bible.md, blacklist.md, exemplars/, headshots/.
+brand-path = "manticore/brand"
+# formats-path holds your editable format profiles (learnings accumulate there).
+formats-path = "manticore/formats"
+# projects-path holds one folder per video.
+projects-path = "manticore/projects"
+# engines-path holds your HyperFrames/Remotion/OGraf engine workspaces.
+engines-path = "manticore/engines"
+
+[defaults.video]
+
+record-resolution = "3840x2160"
+delivery-resolution = "1920x1080"
+fps = 30
+
+[defaults.render]
+
+# Manticore renders by default: a fast low-res preview after every cutplan or
+# beats approval, and an offered final-quality render at gate 4. The editor
+# timeline export and all assets (edl.json, cutplan.md, overlays) are ALWAYS
+# produced alongside, so you can jump into your editor at any step. The
+# creator confirms this default during setup (step 3b).
+self-render = true
+# Preview render: small and fast, for iteration.
+preview-height = 720
+preview-crf = 28
+# Final render: delivery quality, produced only on the gate-4 offer.
+final-codec = "h264"
+final-crf = 18
+
+[defaults.style]
+
+# Graphics-frequency tier: how often a graphic beat lands, on a front-loaded
+# pacing curve (denser early). Tiers:
+#   "high"    a beat roughly every 10 to 20 seconds
+#   "medium"  a beat roughly every 20 to 45 seconds
+#   "low"     a beat roughly every 45 to 90 seconds
+# Interviewed at setup; per-format overrides live in the Production Bible.
+graphics-frequency = "medium"
+
+[defaults.cta]
+
+# CTA appetite and inventory, interviewed at setup and mirrored in the
+# Production Bible's CTA section.
+appetite = "moderate"        # aggressive | moderate | minimal
+
+[[defaults.cta.items]]
+kind = "subscribe"           # subscribe | community | support | product | next-video | playlist | site
+label = ""
+url = ""
+asset = ""                   # optional path under {brand-path} (e.g. a lower-third card)
+priority = 1
+
+[defaults.live]
+
+# Live production tool, for the stream-pack lane. Values: "obs" | "ecamm" | "other".
+# OBS gets HTML browser sources and WebM stingers; ecamm/other get baked
+# PNG / ProRes alpha scenes and a tool-specific HANDOFF.md.
+tool = "obs"
+
+[defaults.editor]
+
+# Your NLE. Known values: "resolve", "fcp", "premiere", "descript", "other".
+name = "resolve"
+# Timeline format the cut stage exports for your editor.
+#   "fcpxml"  DaVinci Resolve, Final Cut Pro (implemented first)
+#   "xmeml"   Premiere Pro (planned; FCP7-style XML)
+#   "edl"     CMX3600, the universal fallback (planned)
+#   "none"    skip timeline export; you get edl.json + cutplan.md + preview.mp4
+#             and cut manually in your editor (Descript and others)
+timeline-format = "fcpxml"
+# true ONLY if your editor imports OGraf packages natively (DaVinci Resolve 21+).
+ograf-editable = false
+
+[defaults.transcription]
+
+# Word-level transcription for the cut stage. Options:
+#   "parakeet-mlx"     the default: free + local, Apple Silicon ONLY, word
+#                      timestamps, verbatim fillers preserved (validated on
+#                      real footage 2026-07-05; model parakeet-tdt-0.6b-v3)
+#   whisper.cpp / faster-whisper  local fallbacks for non-Apple-Silicon
+#                      machines (planned lane; they normalize fillers away,
+#                      so cut quality drops; see the README platform matrix)
+#   "deepgram-nova3"   metered API lane with keyterm biasing (planned; opt-in
+#                      only, chosen explicitly during setup)
+provider = "parakeet-mlx"
+# Env var holding the key for a metered provider. Leave blank for local lanes;
+# set only when choosing a metered provider.
+api-key-env = ""
+
+[defaults.assets]
+
+# Generation lanes for mc-assets. Set during setup: a registered [[tools]]
+# CLI entry (a subscription you already pay for) is the preferred lane; a
+# metered API provider ("xai-api", "veo-api") only as an explicit opt-in
+# choice. Empty means unset: mc-assets stops and asks rather than bill by
+# default.
+image-provider = ""
+video-provider = ""
+escalation-provider = ""
+# Env var names for the metered API lanes. Ship blank, like
+# [defaults.transcription] api-key-env: mc-setup step 5 fills the vendor's
+# key name only when you explicitly opt into that metered lane, and key
+# sourcing is discussed only inside that opt-in branch.
+xai-api-key-env = ""
+gemini-api-key-env = ""
+
+[defaults.audio]
+
+# Audio generation lanes for the mc-audio service skill (it farms sound the
+# way mc-assets farms pictures; called from graphics, stream-pack, and the
+# voiceover-explainer format, never a pipeline stage). Local-first ladder,
+# validated end to end 2026-07-07 on Apple Silicon. Lanes:
+#   tts-provider:
+#     "kokoro-local"   the default: Kokoro-82M via kokoro-onnx, free + local,
+#                      ~6.6x realtime on CPU. Single-voice narration and the
+#                      two-host dialogue recipe. Fixed voice set: no cloning,
+#                      so narration is stock voices, never "your voice".
+#     "gemini-tts"     cheap cloud two-host lane (planned; opt-in only)
+#     "elevenlabs-dialogue"  premium multi-speaker (planned; opt-in only)
+#   music-provider:
+#     "musicgen-local" the default: facebook/musicgen-small, ungated, free +
+#                      local. Instrumental beds and stingers only, no vocals.
+#     "stable-audio-open"  HF-gated behind a license click-through, so never
+#                      the default; opt-in only (planned)
+#     "eleven-music"   paid opt-in (planned)
+#   sfx-provider:
+#     "audioldm2-local"  the default: cvssp/audioldm2, ungated, free + local.
+#                      16 kHz output: fine under a mix, thin exposed solo.
+#   song-provider (full songs with vocals):
+#     ""               the shipped state: no validated local lane yet.
+#                      ACE-Step is the planned candidate (MIT, ungated, MLX
+#                      on Mac), NOT validated; mc-audio never promises it.
+tts-provider = "kokoro-local"
+music-provider = "musicgen-local"
+sfx-provider = "audioldm2-local"
+song-provider = ""
+# Env var for a paid audio lane's key. Ships blank; set only inside the
+# explicit opt-in branch of the interview.
+api-key-env = ""
+# Engine workspace name under [paths] engines-path: one persistent venv
+# (with the critical diffusers==0.31.0 + transformers==4.43.4 pin) plus
+# model caches for all three local engines. mc-audio's ensure_workspace.py
+# builds it with consent; an existing lab is reused, never duplicated.
+workspace = "audio-lab"
+
+[defaults.mcp]
+
+# MCP servers mc-setup has verified in this project. Skills treat false/absent
+# as "not available" and fall back gracefully.
+davinci-resolve = false
+
+# --- CLI tool registry ----------------------------------------------------
+# The creator's [[tools]] entries are written into [modules.manticore] by
+# mc-setup, one block per agentic/generation CLI. The `notes` field is the
+# persistent memory: everything a skill needs to drive the tool correctly.
+#
+# [[modules.manticore.tools]]
+# name = "grok"
+# capabilities = ["image", "video", "x"]     # Imagine image + video gen, X/Twitter access
+# headless = 'grok -p "<prompt>" --always-approve'
+# models = []                                # your preferred models, if the tool takes them
+# notes = """
+# Imagine image and video gen (image-to-video, 720p, native audio). Cinematic
+# bias. Also the lane for X/Twitter research and posting. Never use for UI or
+# readable on-screen text; text renders as gibberish.
+# """
+#
+# [[modules.manticore.tools]]
+# name = "agy"
+# capabilities = ["image"]                   # Gemini image gen on plan quota
+# headless = 'agy -p "<prompt>" --dangerously-skip-permissions'
+# notes = """
+# Gemini image gen, literal/illustrative style. Draws on plan quota, no
+# per-image billing.
+# """

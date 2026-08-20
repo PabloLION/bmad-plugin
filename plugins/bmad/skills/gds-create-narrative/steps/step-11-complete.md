@@ -3,7 +3,7 @@ name: 'step-11-complete'
 description: 'Complete the narrative workflow with final summary, visualizations, and handoff'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-create-narrative'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-11-complete.md'
@@ -11,7 +11,7 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/narrative-design.md'
 
 # Handoff References
-architectureWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/gds-game-architecture/SKILL.md'
+architectureWorkflow: 'skill:gds-game-architecture'
 ---
 
 # Step 11: Complete
@@ -330,3 +330,9 @@ The Narrative Design workflow creates comprehensive narrative documentation thro
 11. **Complete** - Visualizations and handoff
 
 This step-file architecture ensures consistent, thorough narrative design with user collaboration at every step.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolved `workflow.on_complete` is non-empty, follow it as the final terminal instruction before exiting.

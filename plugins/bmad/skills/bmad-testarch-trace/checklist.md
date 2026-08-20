@@ -6,7 +6,7 @@
 This checklist covers **two sequential phases**:
 
 - **PHASE 1**: Requirements Traceability (always executed)
-- **PHASE 2**: Quality Gate Decision (executed if `enable_gate_decision: true`)
+- **PHASE 2**: Quality Gate Decision (decision fields emitted only when `allow_gate: true` and the collection is gate-eligible)
 
 ---
 
@@ -14,9 +14,9 @@ This checklist covers **two sequential phases**:
 
 ## Prerequisites Validation
 
-- [ ] Acceptance criteria are available (from story file OR inline)
+- [ ] A coverage oracle is available or inferred (formal requirements, spec, resolvable external pointer, or synthetic journeys)
 - [ ] Test suite exists (or gaps are acknowledged and documented)
-- [ ] If tests are missing, recommend `*atdd` (trace does not run it automatically)
+- [ ] If tests are missing, recommend `/bmad-testarch-atdd` (trace does not run it automatically)
 - [ ] Test directory path is correct (`test_dir` variable)
 - [ ] Story file is accessible (if using BMad mode)
 - [ ] Knowledge base is loaded (test-priorities, traceability, risk-governance)
@@ -26,7 +26,7 @@ This checklist covers **two sequential phases**:
 ## Context Loading
 
 - [ ] Story file read successfully (if applicable)
-- [ ] Acceptance criteria extracted correctly
+- [ ] Oracle items extracted or inferred correctly
 - [ ] Story ID identified (e.g., 1.3)
 - [ ] `test-design.md` loaded (if available)
 - [ ] `tech-spec.md` loaded (if available)
@@ -38,7 +38,11 @@ This checklist covers **two sequential phases**:
 ## Test Discovery and Cataloging
 
 - [ ] Tests auto-discovered using multiple strategies (test IDs, describe blocks, file paths)
-- [ ] Tests categorized by level (E2E, API, Component, Unit)
+- [ ] Tests categorized by level (E2E, API, Component, Unit, Live)
+- [ ] Live verification results read from `{live_results_input}` when `live` is in `coverage_levels` or `collection_mode` is `runtime_manifest`
+- [ ] Each live result classified against the commit under trace (only a fresh `pass` counts as coverage)
+- [ ] `stale`, `unverifiable`, `fail`, `contradicted`, `blocked`, `skipped`, `unmatched`, and `invalid` live results raised as blockers with reasons
+- [ ] `live_only` derived from each requirement's active mapped tests, never read from a flag an earlier step was asked to set
 - [ ] Test metadata extracted:
   - [ ] Test IDs (e.g., 1.3-E2E-001)
   - [ ] Describe/context blocks
@@ -51,9 +55,9 @@ This checklist covers **two sequential phases**:
 
 ## Criteria-to-Test Mapping
 
-- [ ] Each acceptance criterion mapped to tests (or marked as NONE)
+- [ ] Each oracle item mapped to tests (or marked as NONE)
 - [ ] Explicit references found (test IDs, describe blocks mentioning criterion)
-- [ ] Test level documented (E2E, API, Component, Unit)
+- [ ] Test level documented (E2E, API, Component, Unit, Live)
 - [ ] Given-When-Then narrative verified for alignment
 - [ ] Traceability matrix table generated:
   - [ ] Criterion ID
@@ -96,9 +100,11 @@ This checklist covers **two sequential phases**:
   - [ ] Criteria with UNIT-ONLY status
   - [ ] Criteria with INTEGRATION-ONLY status
 - [ ] Coverage heuristics gaps identified:
-  - [ ] Endpoints referenced in requirements but not covered by API tests
+  - [ ] Endpoints referenced in requirements/specs but not covered by API tests
   - [ ] Auth/authz criteria missing denied/invalid path tests
   - [ ] Criteria with happy-path-only coverage (missing error scenarios)
+  - [ ] Inferred UI journeys missing E2E/component coverage
+  - [ ] Inferred UI journeys missing loading/empty/error/permission state coverage
 - [ ] Gaps prioritized by risk level using test-priorities framework:
   - [ ] **CRITICAL** - P0 criteria without FULL coverage (BLOCKER)
   - [ ] **HIGH** - P1 criteria without FULL coverage (PR blocker)
@@ -123,6 +129,7 @@ This checklist covers **two sequential phases**:
   - [ ] API coverage %
   - [ ] Component coverage %
   - [ ] Unit coverage %
+  - [ ] Live coverage %
 
 ---
 
@@ -134,7 +141,7 @@ For each mapped test, verify:
 - [ ] Test follows Given-When-Then structure
 - [ ] No hard waits or sleeps (deterministic waiting only)
 - [ ] Self-cleaning (test cleans up its data)
-- [ ] File size < 300 lines
+- [ ] File size ≤ 1000 lines
 - [ ] Test duration < 90 seconds
 
 Quality issues flagged:
@@ -164,10 +171,31 @@ Knowledge fragments referenced:
 - [ ] Quality assessment section included
 - [ ] Recommendations section included
 
-### Coverage Badge/Metric (if enabled)
+### Machine-Readable JSON Output
 
-- [ ] Badge markdown generated
-- [ ] Metrics exported to JSON for CI/CD integration
+- [ ] `e2e-trace-summary.json` written to `{e2e_trace_summary_output}`
+- [ ] JSON is valid and parseable
+- [ ] `schema_version` field present
+- [ ] `repo`, `collection_mode`, `collection_status`, `inventory_basis`, and `source_sha` fields populated
+- [ ] `gate_basis` populated (`priority_thresholds` when gate-eligible, `none` otherwise)
+- [ ] `snapshot_at` replaces the old `generated_at` timestamp field
+- [ ] Oracle metadata populated (`resolution_mode`, `confidence`, `sources`, `external_pointer_status`, `synthetic`)
+- [ ] `target.type` and `target.id` identify the evaluated story / epic / release / hotfix
+- [ ] `gate_status` populated only when `allow_gate: true` and `collection_status` is `COLLECTED`
+- [ ] `coverage.inventory` includes `covered`, `total`, and `pct`
+- [ ] `coverage.priority_breakdown` includes P0–P3 and `coverage.by_level` includes e2e/api/component/unit/live/other
+- [ ] `live_evidence` populated (`present`, `results_file`, `freshness`, `recorded_source_sha`, `current_source_sha`, `producer`, disposition counts, `requirements_live_only`)
+- [ ] `tests` counts are deduplicated from unique discovered tests (no per-requirement double counting)
+- [ ] `risk_summary` counts match Phase 1 gap analysis
+- [ ] `heuristics` fields populated (`endpoint_gaps`, `auth_negative_path_status`, `error_path_status`)
+- [ ] UI heuristic fields populated when using a source-derived oracle (`ui_journey_status`, `ui_state_status`)
+- [ ] `gate_criteria` thresholds and actuals match gate decision
+- [ ] `blockers` array present (may be empty)
+- [ ] `recommendations` array present (may be empty)
+- [ ] `links.trace_report_path` points to `traceability-matrix.md`
+- [ ] `links.trace_report_url`, `links.artifact_url`, and `links.journey_evidence_url` fields present (may be empty)
+- [ ] `gate-decision.json` written to `{gate_decision_output}` when gate-eligible
+- [ ] `gate-decision.json` contains `evaluated_at`, `gate_basis`, `gate_status`, `rationale`, and per-criterion status fields
 
 ### Updated Story File (if enabled)
 
@@ -181,7 +209,7 @@ Knowledge fragments referenced:
 
 ### Accuracy Checks
 
-- [ ] All acceptance criteria accounted for (none skipped)
+- [ ] All oracle items accounted for (none skipped)
 - [ ] Test IDs correctly formatted (e.g., 1.3-E2E-001)
 - [ ] File paths are correct and accessible
 - [ ] Coverage percentages calculated correctly
@@ -190,7 +218,7 @@ Knowledge fragments referenced:
 
 ### Completeness Checks
 
-- [ ] All test levels considered (E2E, API, Component, Unit)
+- [ ] All test levels considered (E2E, API, Component, Unit, Live)
 - [ ] All priorities considered (P0, P1, P2, P3)
 - [ ] All coverage statuses used appropriately (FULL, PARTIAL, NONE, UNIT-ONLY, INTEGRATION-ONLY)
 - [ ] All gaps have recommendations
@@ -218,7 +246,7 @@ Knowledge fragments referenced:
 
 # PHASE 2: QUALITY GATE DECISION
 
-**Note**: Phase 2 executes only if `enable_gate_decision: true` in workflow.yaml
+**Note**: Phase 2 always emits `e2e-trace-summary.json`; gate decision fields are populated only when `allow_gate: true` and `collection_status` resolves to `COLLECTED`.
 
 ---
 
@@ -230,7 +258,7 @@ Knowledge fragments referenced:
 - [ ] Story/epic/release file identified and read
 - [ ] Test design document discovered or explicitly provided (if available)
 - [ ] Traceability matrix discovered or explicitly provided (available from Phase 1)
-- [ ] NFR assessment discovered or explicitly provided (if available)
+- [ ] NFR evidence audit discovered or explicitly provided (if available)
 - [ ] Code coverage report discovered or explicitly provided (if available)
 - [ ] Burn-in results discovered or explicitly provided (if available)
 
@@ -301,7 +329,7 @@ Knowledge fragments referenced:
 **P0 Criteria Evaluation:**
 
 - [ ] P0 test pass rate evaluated (must be 100%)
-- [ ] P0 acceptance criteria coverage evaluated (must be 100%)
+- [ ] P0 oracle-item coverage evaluated (must be 100%)
 - [ ] Security issues count evaluated (must be 0)
 - [ ] Critical NFR failures evaluated (must be 0)
 - [ ] Flaky tests evaluated (must be 0 if burn-in enabled)
@@ -310,9 +338,9 @@ Knowledge fragments referenced:
 **P1 Criteria Evaluation:**
 
 - [ ] P1 test pass rate evaluated (threshold: min_p1_pass_rate)
-- [ ] P1 acceptance criteria coverage evaluated (PASS >=90%, CONCERNS 80-89%, FAIL <80%)
+- [ ] P1 oracle-item coverage evaluated (PASS >=90%, CONCERNS 80-89%, FAIL <80%)
 - [ ] Overall test pass rate evaluated (threshold: min_overall_pass_rate)
-- [ ] Overall requirements coverage evaluated (threshold: >=80%)
+- [ ] Overall oracle coverage evaluated (threshold: >=80%)
 - [ ] Code coverage considered if available (informational unless explicitly required by policy)
 - [ ] P1 decision recorded: PASS or CONCERNS
 
@@ -396,8 +424,9 @@ Knowledge fragments referenced:
 
 **Outputs Saved:**
 
-- [ ] Gate decision document saved to `{output_file}`
-- [ ] Gate YAML saved to `{test_artifacts}/gate-decision-{target}.yaml`
+- [ ] Gate decision document saved to `{outputFile}`
+- [ ] `e2e-trace-summary.json` saved to `{e2e_trace_summary_output}` (always)
+- [ ] `gate-decision.json` saved to `{gate_decision_output}` (when gate-eligible)
 - [ ] All outputs are valid and readable
 
 ---
@@ -584,7 +613,7 @@ Knowledge fragments referenced:
 **Phase 1 (Traceability):**
 
 - [ ] All prerequisites met
-- [ ] All acceptance criteria mapped or gaps documented
+- [ ] All oracle items mapped or gaps documented
 - [ ] P0 coverage is 100% OR documented as BLOCKER
 - [ ] Gap analysis is complete and prioritized
 - [ ] Test quality issues identified and flagged
@@ -595,7 +624,8 @@ Knowledge fragments referenced:
 - [ ] All quality evidence gathered
 - [ ] Decision criteria applied correctly
 - [ ] Decision rationale documented
-- [ ] Gate YAML ready for CI/CD integration
+- [ ] `e2e-trace-summary.json` written and valid JSON
+- [ ] `gate-decision.json` written when gate-eligible
 - [ ] Status file updated (if enabled)
 - [ ] Stakeholders notified (if enabled)
 
@@ -627,7 +657,7 @@ Knowledge fragments referenced:
 
 - If PASS (both phases): Proceed to deployment
 - If WARN/CONCERNS: Address gaps/issues, proceed with monitoring
-- If FAIL (either phase): Run `*atdd` for missing tests, fix issues, re-run `*trace`
+- If FAIL (either phase): Run `/bmad-testarch-atdd` for missing tests, fix issues, re-run `/bmad-testarch-trace`
 - If WAIVED: Deploy with approved waiver, schedule remediation
 
 ---

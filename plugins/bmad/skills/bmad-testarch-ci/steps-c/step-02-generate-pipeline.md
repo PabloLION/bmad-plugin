@@ -1,8 +1,8 @@
 ---
 name: 'step-02-generate-pipeline'
 description: 'Generate CI pipeline configuration with adaptive orchestration (agent-team, subagent, or sequential)'
-nextStepFile: './step-03-configure-quality-gates.md'
-knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
+nextStepFile: '{skill-root}/steps-c/step-03-configure-quality-gates.md'
+knowledgeIndex: './resources/tea-index.csv'
 outputFile: '{test_artifacts}/ci-pipeline-progress.md'
 ---
 
@@ -186,13 +186,26 @@ Write the selected pipeline configuration to the resolved output path from step 
 - **Backend (Go)**: Use `go test ./...` with coverage (`-coverprofile`), cache Go modules
 - **Backend (C#/.NET)**: Use `dotnet test` with coverage, restore NuGet packages
 - **Backend (Ruby)**: Use `bundle exec rspec` with coverage, cache `vendor/bundle`
+- **Mobile**: Two-tier pipeline, because the device layer is the expensive one. Load `mobile-ci-device-lab.md` before generating this leg; it carries the artifact, caching, and pinning details the rest of these bullets summarize:
+  - **Build artifact**: flows run against a release-shaped build (unsigned APK, simulator IPA) or a development build that the job installs. Never against a prebuilt development shell such as Expo Go: the native modules the flows need are absent, and it adds a dev server, a manifest exchange, and a third-party launch to the CI path that users never take.
+  - **Every push**: unit and component tests plus contract tests. No emulator, no app build. This is the gate people wait on.
+  - **PR**: build the app once, boot ONE emulator or simulator on the primary target, run `maestro test {maestro_root}/ --include-tags P0` (where `{maestro_root}` is the resolved Maestro root directory: `maestro/` or `.maestro/`). Skip the browser install entirely; there is no browser.
+  - **Nightly and release candidate**: full flow suite across the device matrix (primary, oldest supported OS, one small screen).
+  - **Runner**: Android emulators need a Linux runner with KVM (`ubuntu-latest` with `runs-on` hardware acceleration enabled); iOS simulators require a macOS runner, which is billed at a premium, so keep the macOS leg off the per-push path.
+  - **Install**: replace unpinned installer scripts with a release-pinned or checksum-verified release artifact (e.g., `export MAESTRO_VERSION=1.39.0; curl -fsSL "https://github.com/mobile-dev-inc/maestro/releases/download/cli-${MAESTRO_VERSION}/maestro.zip" -o maestro.zip` or pinned installer with SHA-256 verification) and cache `~/.maestro`. Then **assert the resolved version** in the job. A presence check does not catch drift, and package-manager and `curl | bash` installers both float.
+  - **Emulator step**: the `reactivecircus/android-emulator-runner` `script:` input is split on newlines and each line runs as its own `sh -c`, so `set -euo pipefail`, variables, `cd`, and multi-line blocks do not carry between lines. Emit a single line invoking a checked-in script. Cache the AVD snapshot with the split `actions/cache/restore` plus `actions/cache/save` form, pass `ram-size`/`disk-size`/`cores` on the AVD-creation step **only** (the action re-appends them to `config.ini` on every run, which makes the emulator reject the snapshot at boot), and put an image version component in the cache key.
+  - **Artifacts**: upload the per-step statuses, hierarchy dumps, screenshots, video, AND device logs on failure, resolving the newest run directory rather than globbing a flat filename that recent versions no longer write. The hierarchy dump captured at failure is what identifies a selector break; the failure screenshot is taken after teardown and frequently shows the launcher, so do not lead with it.
+  - **Cache**: Gradle or CocoaPods plus the JS toolchain for React Native and Expo.
 
 ### Contract Testing Pipeline (if `tea_use_pactjs_utils` enabled)
 
 **If `tea_use_pactjs_utils` is enabled**, use `{knowledgeIndex}` to load:
 
-- `pactjs-utils-provider-verifier.md` — `buildVerifierOptions`, broker config, and breaking change patterns for CI provider verification
+- `pact-consumer-framework-setup.md` — determinism gate, `jq -S` publish normalization, 1:1 local/CI parity, full consumer CI workflow template
+- `pactjs-utils-consumer-helpers.md` — one-interaction-per-`it()` determinism rule
+- `pactjs-utils-provider-verifier.md` — `buildVerifierOptions`, broker config, breaking change patterns, **vitest `pool: 'forks'` + `singleFork: true`** (same rule applies to consumer AND provider configs)
 - `pactjs-utils-request-filter.md` — `createRequestFilter` auth injection patterns for CI pipeline auth setup
+- `pact-broker-webhooks.md` — PactFlow → GitHub webhook auth (dedicated machine user, classic PAT with `repo` scope, PactFlow-stored secret), rotation runbook, and staleness monitoring options (the webhook is what makes `can-i-deploy` succeed end-to-end)
 
 When `tea_use_pactjs_utils` is enabled, add a `contract-test` stage after `test`:
 
@@ -208,23 +221,26 @@ env:
 
 > **Note:** `GITHUB_SHA` is auto-set by GitHub Actions, but `GITHUB_BRANCH` is **not** — it must be derived from `github.head_ref` (for PRs) or `github.ref_name` (for pushes). The pactjs-utils library reads both from `process.env`.
 
-1. **Consumer test + publish**: Run consumer contract tests, then publish pacts to broker
-   - `npm run test:pact:consumer`
-   - `npm run publish:pact`
-   - Only publish on PR and main branch pushes
+1. **Consumer test (determinism gate) + publish**: Run consumer contract tests as a determinism gate, then publish pacts to broker — each step calls the same `npm run` script a developer runs locally (1:1 parity)
+   - `npm run test:pact:consumer` — **this is the determinism gate**: runs `scripts/check-pact-determinism.sh` which invokes the inner `test:pact:consumer:run` N times (default 3) and fails if generated pact JSON is not byte-stable across runs. Never fold this into the publish step — keep it as its own visible CI step so failures are attributable to generation vs publish.
+   - `npm run publish:pact` — publishes to the broker; internally normalizes interactions via `jq -S '.interactions |= sort_by(...)'` as defense-in-depth against any ordering drift that slips past the gate.
+   - Ensure `jq` is available on the runner. It is preinstalled on GitHub `ubuntu-latest`; for other runner images or self-hosted runners, add an explicit install step (e.g., `apt-get install -y jq` or `brew install jq`) before any contract-test or publish command.
+   - Only publish on PR and main branch pushes.
 
 2. **Provider verification**: Run provider verification against published pacts
    - `npm run test:pact:provider:remote:contract`
    - `buildVerifierOptions` auto-reads `PACT_BROKER_BASE_URL`, `PACT_BROKER_TOKEN`, `GITHUB_SHA`, `GITHUB_BRANCH`
+   - Provider Vitest config (`vitest.config.contract.ts`) **must** use `pool: 'forks'` + `poolOptions.forks.singleFork: true` (see `pactjs-utils-provider-verifier.md` Example 7) — required for message providers and any multi-file provider contract suite to keep Pact Rust FFI state coherent. The SAME config is required on the consumer side (`vitest.config.pact.ts`) alongside `fileParallelism: false` — see `pact-consumer-framework-setup.md` Example 2.
    - Verification results published to broker when `CI=true`
 
 3. **Can-I-Deploy gate**: Block deployment if contracts are incompatible
    - `npm run can:i:deploy:provider`
    - Ensure the script adds `--retry-while-unknown 6 --retry-interval 10` for async verification
 
-4. **Webhook job**: Add `repository_dispatch` trigger for `pact_changed` event
+4. **Webhook job**: Add `repository_dispatch` trigger for `contract_requiring_verification_published` event
    - Provider verification runs when consumers publish new pacts
    - Ensures compatibility is checked on both consumer and provider changes
+   - Webhook authentication uses a dedicated GitHub machine user + classic PAT (`repo` scope, no expiration) stored as a PactFlow secret. See `pact-broker-webhooks.md` for the full pattern, rotation runbook, and staleness monitoring. A silently-expired PAT is the most common non-code cause of `can-i-deploy` timeouts with `There is no verified pact between ...`.
 
 5. **Breaking change handling**: When `PACT_BREAKING_CHANGE=true` env var is set:
    - Provider test passes `includeMainAndDeployed: false` to `buildVerifierOptions` — verifies only matching branch
@@ -233,9 +249,13 @@ env:
 6. **Record deployment**: After successful deployment, record version in broker
    - `npm run record:provider:deployment --env=production`
 
+7. **Staleness monitoring (recommended)**: Scheduled CI job (e.g., daily) that asserts recent verification results exist for each critical consumer/provider pair — surfaces silent webhook failures before they block a release. See `pact-broker-webhooks.md` Example 4.
+
 Required CI secrets: `PACT_BROKER_BASE_URL`, `PACT_BROKER_TOKEN`
 
 **If `tea_pact_mcp` is `"mcp"`:** Reference the SmartBear MCP `Can I Deploy` and `Matrix` tools for pipeline guidance in `pact-mcp.md`.
+
+**`tea_pact_mcp` defaults to `"mcp"`, and Pact artifacts are gated on relevance, not on this flag.** Follow `pact-mcp.md` § _When the Tools Are Not Reachable_: the probe is a tool-list check and never a broker call, its result is recorded once per run as `pact_mcp_reachable`, and the fallback order is provider source, then an OpenAPI spec, then `confidence-gate.md`. Report the outcome once and continue; never block, never retry, never present inferred provider states as broker data.
 
 ---
 

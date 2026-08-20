@@ -9,312 +9,131 @@ permissions:
   issues: write
 
 jobs:
-  check-core:
+  # The matrix comes from scripts/lib/upstream-sources.ts so a new module
+  # needs one registry entry and nothing here.
+  sources:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - id: list
+        run: |
+          set -euo pipefail
+          MATRIX=$(bun scripts/list-sources.ts)
+          # An empty matrix instantiates zero jobs and reports success —
+          # a watcher that measures nothing while looking green.
+          if [ "$(printf '%s' "$MATRIX" | jq 'length')" -eq 0 ]; then
+            echo "::error::upstream source registry produced an empty matrix"
+            exit 1
+          fi
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: sources
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        source: ${{ fromJson(needs.sources.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get upstream latest release
-        id: upstream
+      - name: Compare pinned version against the latest upstream release
+        id: compare
         env:
           GH_TOKEN: ${{ github.token }}
+          ID: ${{ matrix.source.id }}
+          REPO: ${{ matrix.source.repo }}
         run: |
-          VERSION=$(gh api repos/bmadcode/BMAD-METHOD/releases/latest --jq '.tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Latest upstream version: $VERSION"
-
-      - name: Compare versions
-        id: compare
-        run: |
-          CURRENT=$(jq -r '.version' .upstream-versions/core.json | sed 's/^v//')
-          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
-          echo "Current: $CURRENT"
+          set -euo pipefail
+          UPSTREAM=$(gh api "repos/$REPO/releases/latest" --jq '.tag_name' 2>/dev/null || true)
+          if [ -z "$UPSTREAM" ]; then
+            echo "No published release for $REPO — nothing to compare."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CURRENT=$(jq -r '.version' ".upstream-versions/$ID.json")
+          echo "Current:  $CURRENT"
           echo "Upstream: $UPSTREAM"
-          if [ "$UPSTREAM" != "$CURRENT" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
+          {
+            echo "upstream=$UPSTREAM"
+            echo "current=$CURRENT"
+          } >> "$GITHUB_OUTPUT"
+          if [ "${UPSTREAM#v}" != "${CURRENT#v}" ]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Already up to date."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create issue if update needed
+      - name: Report the drift
         if: steps.compare.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          LABEL: ${{ matrix.source.label }}
+          ID: ${{ matrix.source.id }}
+          REPO: ${{ matrix.source.repo }}
+          KIND: ${{ matrix.source.kind }}
+          UPSTREAM: ${{ steps.compare.outputs.upstream }}
+          CURRENT: ${{ steps.compare.outputs.current }}
+          TARGET_REPO: ${{ github.repository }}
         run: |
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(jq -r '.version' .upstream-versions/core.json)
+          set -euo pipefail
+          TITLE="Upstream $LABEL update: $UPSTREAM"
 
-          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMAD update: $UPSTREAM" --state open --json number -q '.[0].number')
+          case "$KIND" in
+            core)   SYNC_CMD="bun run sync -- --tag $UPSTREAM" ;;
+            custom) SYNC_CMD="bun run sync -- --$ID-tag $UPSTREAM" ;;
+            # Registry modules are resolved by the installer from the core
+            # release; they cannot be bumped independently.
+            *)      SYNC_CMD="bun run sync   # resolved by the installer for the pinned core release" ;;
+          esac
 
-          if [ -z "$EXISTING" ]; then
-            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
+          BODY=$(printf '%s\n' \
+            "A new release of [$REPO](https://github.com/$REPO) is available." \
+            "" \
+            "## Versions" \
+            "" \
+            "- **Pinned:** $CURRENT" \
+            "- **Upstream:** $UPSTREAM" \
+            "- **Delivery:** $KIND" \
+            "" \
+            "## Action required" \
+            "" \
+            "1. \`$SYNC_CMD\`" \
+            "2. \`bun run validate && bun run test:unit\`" \
+            "3. \`.upstream-versions/$ID.json\` is rewritten by the sync — never hand-edit it." \
+            "" \
+            "See [releases](https://github.com/$REPO/releases) for the changelog.")
 
-            gh issue create \
-              --repo ${{ github.repository }} \
-              --title "Upstream BMAD update: $UPSTREAM" \
-              --body "A new version of [bmadcode/BMAD-METHOD](https://github.com/bmadcode/BMAD-METHOD) is available.
+          # The job summary is the sink that always works. Issues are
+          # optional: this repository is a fork, and a fork ships with its
+          # issue tracker disabled, which makes `gh issue list` exit 1 and
+          # would otherwise abort the whole step under `set -e`.
+          {
+            echo "## $TITLE"
+            echo
+            echo "$BODY"
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::warning title=$TITLE::pinned $CURRENT, upstream $UPSTREAM"
 
-          ## Versions
-
-          - **Current:** $CURRENT
-          - **Upstream:** $UPSTREAM
-
-          ## Action Required
-
-          1. Update \`.upstream/BMAD-METHOD\` to the new version
-          2. Diff changes against current plugin content
-          3. Apply relevant updates to \`plugins/bmad/\`
-          4. Update \`.upstream-versions/core.json\` to \`$UPSTREAM\`
-
-          See [upstream releases](https://github.com/bmadcode/BMAD-METHOD/releases) for changelog." \
-              --label "upstream-sync"
+          HAS_ISSUES=$(gh api "repos/$TARGET_REPO" --jq '.has_issues' 2>/dev/null || echo false)
+          if [ "$HAS_ISSUES" != "true" ]; then
+            echo "Issues are disabled on $TARGET_REPO — reported in the job summary only."
+            exit 0
           fi
 
-  check-tea:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get TEA latest release
-        id: upstream
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION=$(gh api repos/bmad-code-org/bmad-method-test-architecture-enterprise/releases/latest --jq '.tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Latest TEA version: $VERSION"
-
-      - name: Compare versions
-        id: compare
-        run: |
-          CURRENT=$(jq -r '.version' .upstream-versions/tea.json | sed 's/^v//')
-          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
-          echo "Current: $CURRENT"
-          echo "Upstream: $UPSTREAM"
-          if [ "$UPSTREAM" != "$CURRENT" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Already up to date."
+          # Exact-title match, not GitHub's relevance-ranked full-text
+          # search: "Upstream TEA update: v1.23.3" and "… v1.24.0" share
+          # four of five tokens, so a search hit would suppress the new one.
+          EXISTING=$(gh issue list --repo "$TARGET_REPO" --state open --limit 200 \
+            --json number,title --jq "[.[] | select(.title == \"$TITLE\")][0].number" 2>/dev/null || echo "")
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            echo "Issue #$EXISTING already tracks this."
+            exit 0
           fi
 
-      - name: Create issue if update needed
-        if: steps.compare.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(jq -r '.version' .upstream-versions/tea.json)
-
-          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream TEA update: $UPSTREAM" --state open --json number -q '.[0].number')
-
-          if [ -z "$EXISTING" ]; then
-            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
-
-            gh issue create \
-              --repo ${{ github.repository }} \
-              --title "Upstream TEA update: $UPSTREAM" \
-              --body "A new version of [bmad-code-org/bmad-method-test-architecture-enterprise](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise) is available.
-
-          ## Versions
-
-          - **Current:** $CURRENT
-          - **Upstream:** $UPSTREAM
-
-          ## Action Required
-
-          1. Update \`.upstream/bmad-method-test-architecture-enterprise\` to the new version
-          2. Run \`bun run sync\` to update plugin content
-          3. Run \`bun run validate\` to verify coverage
-          4. Version file \`.upstream-versions/tea.json\` is updated automatically by sync
-
-          See [upstream releases](https://github.com/bmad-code-org/bmad-method-test-architecture-enterprise/releases) for changelog." \
-              --label "upstream-sync"
-          fi
-
-  check-bmb:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get BMB latest release
-        id: upstream
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION=$(gh api repos/bmad-code-org/bmad-builder/releases/latest --jq '.tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Latest BMB version: $VERSION"
-
-      - name: Compare versions
-        id: compare
-        run: |
-          CURRENT=$(jq -r '.version' .upstream-versions/bmb.json | sed 's/^v//')
-          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
-          echo "Current: $CURRENT"
-          echo "Upstream: $UPSTREAM"
-          if [ "$UPSTREAM" != "$CURRENT" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Already up to date."
-          fi
-
-      - name: Create issue if update needed
-        if: steps.compare.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(jq -r '.version' .upstream-versions/bmb.json)
-
-          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream BMB update: $UPSTREAM" --state open --json number -q '.[0].number')
-
-          if [ -z "$EXISTING" ]; then
-            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
-
-            gh issue create \
-              --repo ${{ github.repository }} \
-              --title "Upstream BMB update: $UPSTREAM" \
-              --body "A new version of [bmad-code-org/bmad-builder](https://github.com/bmad-code-org/bmad-builder) is available.
-
-          ## Versions
-
-          - **Current:** $CURRENT
-          - **Upstream:** $UPSTREAM
-
-          ## Action Required
-
-          1. Update \`.upstream/bmad-builder\` to the new version
-          2. Run \`bun run sync\` to update plugin content
-          3. Run \`bun run validate\` to verify coverage
-          4. Version file \`.upstream-versions/bmb.json\` is updated automatically by sync
-
-          See [upstream releases](https://github.com/bmad-code-org/bmad-builder/releases) for changelog." \
-              --label "upstream-sync"
-          fi
-
-  check-cis:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get CIS latest release
-        id: upstream
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION=$(gh api repos/bmad-code-org/bmad-module-creative-intelligence-suite/releases/latest --jq '.tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Latest CIS version: $VERSION"
-
-      - name: Compare versions
-        id: compare
-        run: |
-          CURRENT=$(jq -r '.version' .upstream-versions/cis.json | sed 's/^v//')
-          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
-          echo "Current: $CURRENT"
-          echo "Upstream: $UPSTREAM"
-          if [ "$UPSTREAM" != "$CURRENT" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Already up to date."
-          fi
-
-      - name: Create issue if update needed
-        if: steps.compare.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(jq -r '.version' .upstream-versions/cis.json)
-
-          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream CIS update: $UPSTREAM" --state open --json number -q '.[0].number')
-
-          if [ -z "$EXISTING" ]; then
-            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
-
-            gh issue create \
-              --repo ${{ github.repository }} \
-              --title "Upstream CIS update: $UPSTREAM" \
-              --body "A new version of [bmad-code-org/bmad-module-creative-intelligence-suite](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite) is available.
-
-          ## Versions
-
-          - **Current:** $CURRENT
-          - **Upstream:** $UPSTREAM
-
-          ## Action Required
-
-          1. Update \`.upstream/bmad-module-creative-intelligence-suite\` to the new version
-          2. Run \`bun run sync\` to update plugin content
-          3. Run \`bun run validate\` to verify coverage
-          4. Version file \`.upstream-versions/cis.json\` is updated automatically by sync
-
-          See [upstream releases](https://github.com/bmad-code-org/bmad-module-creative-intelligence-suite/releases) for changelog." \
-              --label "upstream-sync"
-          fi
-
-  check-gds:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Get GDS latest release
-        id: upstream
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          VERSION=$(gh api repos/bmad-code-org/bmad-module-game-dev-studio/releases/latest --jq '.tag_name')
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "Latest GDS version: $VERSION"
-
-      - name: Compare versions
-        id: compare
-        run: |
-          CURRENT=$(jq -r '.version' .upstream-versions/gds.json | sed 's/^v//')
-          UPSTREAM=$(echo "${{ steps.upstream.outputs.version }}" | sed 's/^v//')
-          echo "Current: $CURRENT"
-          echo "Upstream: $UPSTREAM"
-          if [ "$UPSTREAM" != "$CURRENT" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "Already up to date."
-          fi
-
-      - name: Create issue if update needed
-        if: steps.compare.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          UPSTREAM="${{ steps.upstream.outputs.version }}"
-          CURRENT=$(jq -r '.version' .upstream-versions/gds.json)
-
-          EXISTING=$(gh issue list --repo ${{ github.repository }} --search "Upstream GDS update: $UPSTREAM" --state open --json number -q '.[0].number')
-
-          if [ -z "$EXISTING" ]; then
-            gh label create upstream-sync --repo ${{ github.repository }} --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
-
-            gh issue create \
-              --repo ${{ github.repository }} \
-              --title "Upstream GDS update: $UPSTREAM" \
-              --body "A new version of [bmad-code-org/bmad-module-game-dev-studio](https://github.com/bmad-code-org/bmad-module-game-dev-studio) is available.
-
-          ## Versions
-
-          - **Current:** $CURRENT
-          - **Upstream:** $UPSTREAM
-
-          ## Action Required
-
-          1. Update \`.upstream/bmad-module-game-dev-studio\` to the new version
-          2. Run \`bun run sync\` to update plugin content
-          3. Run \`bun run validate\` to verify coverage
-          4. Version file \`.upstream-versions/gds.json\` is updated automatically by sync
-
-          See [upstream releases](https://github.com/bmad-code-org/bmad-module-game-dev-studio/releases) for changelog." \
-              --label "upstream-sync"
-          fi
+          gh label create upstream-sync --repo "$TARGET_REPO" \
+            --description "Upstream version update" --color "0E8A16" 2>/dev/null || true
+          gh issue create --repo "$TARGET_REPO" --title "$TITLE" --label upstream-sync --body "$BODY"

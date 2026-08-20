@@ -2,14 +2,13 @@
 
 # Acceptance Test-Driven Development (ATDD)
 
-**Workflow ID**: `_bmad/tea/testarch/bmad-testarch-atdd`
 **Version**: 5.0 (Step-File Architecture)
 
 ---
 
 ## Overview
 
-Generates **failing acceptance tests** before implementation (TDD red phase), plus an implementation checklist. Produces tests at appropriate levels (E2E/API/Component) with supporting fixtures and helpers.
+Generates **red-phase acceptance test scaffolds** before implementation (TDD red phase), plus an implementation checklist. Produces tests at appropriate levels (E2E/API/Component) with supporting fixtures and helpers.
 
 ---
 
@@ -35,11 +34,11 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`./steps-c/step-01-preflight-and-context.md`
+`{skill-root}/steps-c/step-01-preflight-and-context.md`
 
 ### 3. Resume Support
 
 If the user selects **Resume** mode, load, read completely, and execute:
-`./steps-c/step-01b-resume.md`
+`{skill-root}/steps-c/step-01b-resume.md`
 
 This checks the output document for progress tracking frontmatter and routes to the next incomplete step.

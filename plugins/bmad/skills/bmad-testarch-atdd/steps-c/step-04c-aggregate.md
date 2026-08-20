@@ -1,15 +1,15 @@
 ---
 name: 'step-04c-aggregate'
 description: 'Aggregate subagent outputs and complete ATDD test infrastructure'
-outputFile: '{test_artifacts}/atdd-checklist-{story_id}.md'
-nextStepFile: './step-05-validate-and-complete.md'
+outputFile: '{test_artifacts}/atdd-checklist-{story_key}.md'
+nextStepFile: '{skill-root}/steps-c/step-05-validate-and-complete.md'
 ---
 
 # Step 4C: Aggregate ATDD Test Generation Results
 
 ## STEP GOAL
 
-Read outputs from parallel subagents (API + E2E failing test generation), aggregate results, verify TDD red phase compliance, and create supporting infrastructure.
+Read outputs from parallel subagents (API + E2E red-phase test generation), aggregate results, verify TDD red phase compliance, and create supporting infrastructure.
 
 ---
 
@@ -22,7 +22,7 @@ Read outputs from parallel subagents (API + E2E failing test generation), aggreg
 - ✅ Generate shared fixtures based on fixture needs
 - ✅ Write all generated test files to disk
 - ❌ Do NOT remove test.skip() (that's done after feature implementation)
-- ❌ Do NOT run tests yet (that's step 5 - verify they fail)
+- ❌ Do NOT run tests yet (that's step 5 - verify scaffolds and optional RED activation)
 
 ---
 
@@ -164,7 +164,41 @@ const uniqueFixtures = [...new Set(allFixtureNeeds)];
 **Create fixtures needed by ATDD tests:**
 (Similar to automate workflow, but may be simpler for ATDD since feature not implemented)
 
-**Minimal fixtures for TDD red phase:**
+**If `use_playwright_utils` is `true` (the default), the merged-fixtures file is not optional.** Per `playwright-utils-mandate.md`. Both workers generated specs importing `test` from `../support/merged-fixtures`. If that file does not exist, every scaffold fails to resolve at green time. Create it here.
+
+```typescript
+// {test_dir}/support/merged-fixtures.ts
+import { mergeTests } from '@playwright/test';
+import { log } from '@seontechnologies/playwright-utils';
+import { test as apiRequestFixture } from '@seontechnologies/playwright-utils/api-request/fixtures';
+import { test as interceptFixture } from '@seontechnologies/playwright-utils/intercept-network-call/fixtures';
+import { test as networkErrorFixture } from '@seontechnologies/playwright-utils/network-error-monitor/fixtures';
+import { test as recurseFixture } from '@seontechnologies/playwright-utils/recurse/fixtures';
+
+export const test = mergeTests(apiRequestFixture, interceptFixture, networkErrorFixture, recurseFixture);
+
+export { expect } from '@playwright/test';
+export { log };
+```
+
+Merge in the project's auth fixture (`setAuthProvider` + `createAuthFixtures()`, per `auth-session.md`) when the story's criteria describe authenticated behavior. If the project has no auth endpoint to point at, leave the auth fixture out and list the missing wiring in the ATDD checklist so it lands before green phase, rather than emitting a form-driven login fixture.
+
+If `{test_dir}/support/merged-fixtures.ts` already exists, extend the existing `mergeTests` call instead of replacing the file.
+
+**Minimal data fixtures for TDD red phase:**
+
+```typescript
+// {test_dir}/support/factories.ts
+import { faker } from '@faker-js/faker';
+
+export const registrationPayload = (overrides = {}) => ({
+  email: faker.internet.email(),
+  password: 'SecurePass123!',
+  ...overrides,
+});
+```
+
+**When `use_playwright_utils` is `false`**, generate the simpler vanilla shape:
 
 ```typescript
 // tests/fixtures/test-data.ts
@@ -175,6 +209,8 @@ export const testUserData = {
 ```
 
 Note: More complete fixtures will be needed when moving to green phase.
+
+**Playwright Utils deviation roll-up:** collect `playwright_utils_deviations` from both worker outputs. Carry any entries into the ATDD checklist under a `Playwright Utils deviations` heading with file, line, and reason, so the developer sees them before un-skipping.
 
 ---
 
@@ -187,7 +223,7 @@ Note: More complete fixtures will be needed when moving to green phase.
 
 ## TDD Red Phase (Current)
 
-✅ Failing tests generated
+✅ Red-phase test scaffolds generated
 
 - API Tests: {api_test_count} tests (all skipped)
 - E2E Tests: {e2e_test_count} tests (all skipped)
@@ -196,14 +232,14 @@ Note: More complete fixtures will be needed when moving to green phase.
 
 {list all acceptance criteria with test coverage}
 
-## Next Steps (TDD Green Phase)
+## Next Steps (Task-by-Task Activation)
 
-After implementing the feature:
+During implementation of each task:
 
-1. Remove `test.skip()` from all test files
+1. Remove `test.skip()` from the current test file or scenario
 2. Run tests: `npm test`
-3. Verify tests PASS (green phase)
-4. If any tests fail:
+3. Verify the activated test fails first, then passes after implementation (green phase)
+4. If any activated tests still fail unexpectedly:
    - Either fix implementation (feature bug)
    - Or fix test (test bug)
 5. Commit passing tests
@@ -220,8 +256,20 @@ UI components to implement:
 **Save checklist:**
 
 ```javascript
-fs.writeFileSync(`{test_artifacts}/atdd-checklist-{story-id}.md`, checklistContent, 'utf8');
+fs.writeFileSync(`{test_artifacts}/atdd-checklist-{story_key}.md`, checklistContent, 'utf8');
 ```
+
+**If `{story_file}` exists and is writable, attempt to link artifacts back into the story:**
+
+- Add or update a `### ATDD Artifacts` subsection under `## Dev Notes`
+- Record:
+  - `Checklist: {test_artifacts}/atdd-checklist-{story_key}.md`
+  - `API tests: {api_test_file_path}` when present
+  - `E2E tests: {e2e_test_file_path}` when present
+  - `Component tests: {component_test_file_path}` when present
+- Preserve all other story content verbatim
+- The checklist template already contains the manual handoff instructions if story linking is not possible
+- If the story file cannot be updated safely, continue without failing the workflow and keep the checklist's manual handoff instructions intact
 
 ---
 
@@ -279,14 +327,14 @@ Display to user:
 ```
 ✅ ATDD Test Generation Complete (TDD RED PHASE)
 
-🔴 TDD Red Phase: Failing Tests Generated
+🔴 TDD Red Phase: Test Scaffolds Generated
 
 📊 Summary:
 - Total Tests: {total_tests} (all with test.skip())
   - API Tests: {api_tests} (RED)
   - E2E Tests: {e2e_tests} (RED)
 - Fixtures Created: {fixtures_created}
-- All tests will FAIL until feature implemented
+- Activated tests will FAIL until feature is implemented
 
 ✅ Acceptance Criteria Coverage:
 {list all covered criteria}
@@ -297,15 +345,16 @@ Display to user:
 - tests/api/[feature].spec.ts (with test.skip())
 - tests/e2e/[feature].spec.ts (with test.skip())
 - tests/fixtures/test-data.ts
-- {test_artifacts}/atdd-checklist-{story-id}.md
+- {test_artifacts}/atdd-checklist-{story_key}.md
 
 📝 Next Steps:
-1. Implement the feature
-2. Remove test.skip() from tests
-3. Run tests → verify PASS (green phase)
-4. Commit passing tests
+1. Link ATDD artifacts into the story file if available
+2. Implement the feature
+3. Remove test.skip() from the tests for the current task
+4. Run activated tests → verify they FAIL before implementation, then PASS after implementation
+5. Commit passing tests
 
-✅ Ready for validation (Step 5 - verify tests fail as expected)
+✅ Ready for validation (Step 5 - verify red-phase scaffolds and handoff metadata)
 ```
 
 ---
@@ -334,6 +383,11 @@ Proceed to Step 5 when:
   stepsCompleted: ['step-04c-aggregate']
   lastStep: 'step-04c-aggregate'
   lastSaved: '{date}'
+  storyId: '{story_id}'
+  storyKey: '{story_key}'
+  storyFile: '{story_file}'
+  atddChecklistPath: '{outputFile}'
+  generatedTestFiles: []
   ---
   ```
 
@@ -343,6 +397,11 @@ Proceed to Step 5 when:
   - Add `'step-04c-aggregate'` to `stepsCompleted` array (only if not already present)
   - Set `lastStep: 'step-04c-aggregate'`
   - Set `lastSaved: '{date}'`
+  - Set `storyId` to `{story_id}`
+  - Set `storyKey` to `{story_key}`
+  - Set `storyFile` to `{story_file}`
+  - Set `atddChecklistPath` to `{outputFile}`
+  - Set `generatedTestFiles` deterministically to the list of present test paths in this order: API, E2E, Component (omit blanks / N/A values)
   - Append this step's output to the appropriate section.
 
 Load next step: `{nextStepFile}`
@@ -358,6 +417,7 @@ Load next step: `{nextStepFile}`
 - All tests assert expected behavior (not placeholders)
 - All test files written to disk
 - ATDD checklist generated
+- Story metadata and handoff paths captured in checklist frontmatter
 
 ### ❌ SYSTEM FAILURE:
 

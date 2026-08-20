@@ -1,4 +1,9 @@
+# Throwaway installer runs and upstream checkouts created by `bun run sync`.
+# `.upstream-versions/` is tracked — do not widen these to `.upstream-*`.
 .upstream/
+.upstream-install/
+.upstream-install-*/
+.upstream-clones/
 .research/
 .git-ignored/
 node_modules/

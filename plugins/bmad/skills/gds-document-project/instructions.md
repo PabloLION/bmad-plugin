@@ -1,7 +1,7 @@
 # Document Project Workflow Router
 
-<critical>The workflow execution engine is governed by: ${CLAUDE_PLUGIN_ROOT}/_shared/tasks/workflow.xml</critical>
-<critical>You MUST have already loaded and processed: ${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/SKILL.md</critical>
+<critical>The workflow execution engine is governed by: skill:bmad-workflow</critical>
+<critical>You MUST have already loaded and processed: {installed_path}/workflow.yaml</critical>
 <critical>Communicate all responses in {communication_language}</critical>
 
 <workflow>
@@ -10,7 +10,7 @@
 
 <step n="1" goal="Validate workflow and get project info">
 
-<invoke-workflow path="{project-root}/_bmad/gds/workflows/workflow-status">
+<invoke-workflow path="skill:gds-workflow-status">
   <param>mode: data</param>
   <param>data_request: project_config</param>
 </invoke-workflow>
@@ -36,7 +36,7 @@
   </check>
 
   <!-- Now validate sequencing -->
-  <invoke-workflow path="{project-root}/_bmad/gds/workflows/workflow-status">
+  <invoke-workflow path="skill:gds-workflow-status">
     <param>mode: validate</param>
     <param>calling_workflow: document-project</param>
   </invoke-workflow>
@@ -178,7 +178,7 @@ Your choice [1/2/3]:
 <step n="4" goal="Update status and complete">
 
 <check if="status_file_found == true">
-  <invoke-workflow path="{project-root}/_bmad/gds/workflows/workflow-status">
+  <invoke-workflow path="skill:gds-workflow-status">
     <param>mode: update</param>
     <param>action: complete_workflow</param>
     <param>workflow_name: document-project</param>
@@ -215,7 +215,7 @@ Since no workflow is in progress:
 - Or run `workflow-init` to create a workflow path and get guided next steps
   {{/if}}
   </output>
-
+<action>Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete` — if the resolved value is non-empty, follow it as the final terminal instruction before exiting.</action>
 </step>
 
 </workflow>

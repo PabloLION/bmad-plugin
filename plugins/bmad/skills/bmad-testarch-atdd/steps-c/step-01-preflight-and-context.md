@@ -1,16 +1,16 @@
 ---
 name: 'step-01-preflight-and-context'
 description: 'Verify prerequisites and load story, framework, and knowledge base'
-outputFile: '{test_artifacts}/atdd-checklist-{story_id}.md'
-nextStepFile: './step-02-generation-mode.md'
-knowledgeIndex: '${CLAUDE_PLUGIN_ROOT}/_shared/tea-index.csv'
+outputFile: '{test_artifacts}/atdd-checklist-{story_key}.md'
+nextStepFile: '{skill-root}/steps-c/step-02-generation-mode.md'
+knowledgeIndex: './resources/tea-index.csv'
 ---
 
 # Step 1: Preflight & Context Loading
 
 ## STEP GOAL
 
-Verify prerequisites and load all required inputs before generating failing tests.
+Verify prerequisites and load all required inputs before generating red-phase acceptance test scaffolds.
 
 ## MANDATORY EXECUTION RULES
 
@@ -44,13 +44,16 @@ Verify prerequisites and load all required inputs before generating failing test
 **Auto-Detection Algorithm** (when `test_stack_type` is `"auto"` or not configured):
 
 - Scan `{project-root}` for project manifests:
+  - **Mobile indicators**: `.maestro/` or `maestro/` flow directory, `app.json`/`app.config.*` declaring expo or react-native, `Podfile`, `android/app/build.gradle`, `*.xcodeproj`/`*.xcworkspace`, `pubspec.yaml`
   - **Frontend indicators**: `package.json` with react/vue/angular/next dependencies, `playwright.config.*`, `vite.config.*`, `webpack.config.*`
   - **Backend indicators**: `pyproject.toml`, `pom.xml`/`build.gradle`, `go.mod`, `*.csproj`/`*.sln`, `Gemfile`, `Cargo.toml`
-  - **Both present** = `fullstack`; only frontend = `frontend`; only backend = `backend`
+  - **Check mobile first.** A React Native or Expo project carries `package.json` with react and misdetects as `frontend` otherwise.
+  - **Mobile present** = `mobile`; frontend and backend both present = `fullstack`; only frontend = `frontend`; only backend = `backend`
+  - A mobile client and its own backend in one repo detects as `mobile`. Set `test_stack_type` explicitly to cover both surfaces in one run.
 - Explicit `test_stack_type` config value overrides auto-detection
 - **Backward compatibility**: if `test_stack_type` is not in config, treat as `"auto"` (preserves current frontend behavior for existing installs)
 
-Store result as `{detected_stack}` = `frontend` | `backend` | `fullstack`
+Store result as `{detected_stack}` = `frontend` | `backend` | `fullstack` | `mobile`
 
 ---
 
@@ -71,6 +74,17 @@ If any are missing: **HALT** and notify the user.
 - Read story markdown from `{story_file}` (or ask user if not provided)
 - Extract acceptance criteria and constraints
 - Identify affected components and integrations
+- Derive and store `story_key` from the story filename when available (for BMM stories, this is the filename without `.md`, e.g. `1-2-user-authentication`)
+- Derive and store `story_id` from story metadata, the H1 heading, or the filename when available (for BMM stories, this is typically `{epic_num}.{story_num}`)
+- If a filename-based `story_key` is not available, create and persist a stable slug from the story title:
+  - lowercase the title
+  - collapse runs of whitespace to single `-`
+  - strip all non-alphanumeric and non-hyphen characters
+  - trim leading/trailing hyphens
+  - truncate to a safe max length (64 chars)
+- Use that slug as `story_key` and for `{outputFile}` basename so all checklist and handoff paths stay consistent
+- If `story_id` is still unavailable after metadata/H1/filename parsing, set it to the final `story_key` so `story_id` is never empty
+- Preserve `{story_file}` as a tracked artifact path for later handoff into BMM `dev-story`
 
 ---
 
@@ -103,13 +117,15 @@ Load fragments based on their `tier` classification in `tea-index.csv`:
 
 ### Playwright Utils Loading Profiles
 
-**If `tea_use_playwright_utils` is enabled**, select the appropriate loading profile:
+**If `tea_use_playwright_utils` is enabled**, load `playwright-utils-mandate.md` FIRST, before any profile below. It is the binding rule for this run: playwright-utils is the default implementation for every capability it covers, and a vanilla Playwright equivalent is a deviation that must be justified in the output. Red-phase scaffolds are still real test code, so the mandate applies to them exactly as it applies to green tests.
+
+Then select the appropriate loading profile:
 
 - **API-only profile** (when `{detected_stack}` is `backend` or no `page.goto`/`page.locator` found in test files):
-  Load: `overview`, `api-request`, `auth-session`, `recurse` (~1,800 lines)
+  Load: `playwright-utils-mandate`, `overview`, `api-request`, `auth-session`, `recurse` (~2,100 lines)
 
 - **Full UI+API profile** (when `{detected_stack}` is `frontend`/`fullstack` or browser tests detected):
-  Load: all Playwright Utils core fragments (~4,500 lines)
+  Load: `playwright-utils-mandate` plus all Playwright Utils core fragments (~4,800 lines)
 
 **Detection**: Scan `{test_dir}` for files containing `page.goto` or `page.locator`. If none found, use API-only profile.
 
@@ -117,7 +133,9 @@ Load fragments based on their `tier` classification in `tea-index.csv`:
 
 **If `tea_use_pactjs_utils` is enabled** (and `{detected_stack}` is `backend` or `fullstack`, or microservices indicators detected):
 
-Load: `pactjs-utils-overview.md`, `pactjs-utils-consumer-helpers.md`, `pactjs-utils-provider-verifier.md`, `pactjs-utils-request-filter.md`, `pact-consumer-di.md`
+Load `pactjs-utils-mandate.md` FIRST. It is the binding rule for any Pact artifact this run produces, and it carries the relevance gate: the flag defaults to `true` and means "use these utilities when contract tests are written", never "add contract tests to this project".
+
+Then load: `pactjs-utils-overview.md`, `pactjs-utils-consumer-helpers.md`, `pactjs-utils-provider-verifier.md`, `pactjs-utils-request-filter.md`, `pactjs-utils-zod-to-pact.md`, `pact-consumer-di.md`, `pact-consumer-framework-setup.md`, `pact-broker-webhooks.md`
 
 **If `tea_use_pactjs_utils` is disabled** but contract testing is relevant:
 
@@ -128,6 +146,8 @@ Load: `contract-testing.md`
 **If `tea_pact_mcp` is `"mcp"`:**
 
 Load: `pact-mcp.md`
+
+**`tea_pact_mcp` defaults to `"mcp"`, and Pact artifacts are gated on relevance, not on this flag.** Follow `pact-mcp.md` § _When the Tools Are Not Reachable_: the probe is a tool-list check and never a broker call, its result is recorded once per run as `pact_mcp_reachable`, and the fallback order is provider source, then an OpenAPI spec, then `confidence-gate.md`. Report the outcome once and continue; never block, never retry, never present inferred provider states as broker data.
 
 ## 5. Load Knowledge Base Fragments
 
@@ -147,7 +167,9 @@ Use `{knowledgeIndex}` to load:
 
 **Playwright Utils (if enabled and {detected_stack} is `frontend` or `fullstack`):**
 
+- `playwright-utils-mandate.md` (load first — it governs how the fragments below are applied)
 - `overview.md`, `api-request.md`, `network-recorder.md`, `auth-session.md`, `intercept-network-call.md`, `recurse.md`, `log.md`, `file-utils.md`, `network-error-monitor.md`, `fixtures-composition.md`
+- `fixture-architecture.md` and `network-first.md` for their principles only. Under the mandate the mechanism comes from the playwright-utils fragments.
 
 **Playwright CLI (if tea_browser_automation is "cli" or "auto" and {detected_stack} is `frontend` or `fullstack`):**
 
@@ -168,9 +190,10 @@ Use `{knowledgeIndex}` to load:
 - `test-priorities-matrix.md`
 - `ci-burn-in.md`
 
-**Pact.js Utils (if enabled):**
+**Pact.js Utils (if enabled and contract testing is relevant):**
 
-- `pactjs-utils-overview.md`, `pactjs-utils-consumer-helpers.md`, `pactjs-utils-provider-verifier.md`, `pactjs-utils-request-filter.md`, `pact-consumer-di.md`
+- `pactjs-utils-mandate.md` (load first — it governs how the fragments below are applied)
+- `pactjs-utils-overview.md`, `pactjs-utils-consumer-helpers.md`, `pactjs-utils-provider-verifier.md`, `pactjs-utils-request-filter.md`, `pactjs-utils-zod-to-pact.md`, `pact-consumer-di.md`, `pact-consumer-framework-setup.md`, `pact-broker-webhooks.md`
 
 **Contract Testing (if pactjs-utils disabled but relevant):**
 
@@ -210,7 +233,14 @@ Summarize loaded inputs and confirm with the user. Then proceed.
   - Set `lastSaved: '{date}'`
   - Append this step's output to the appropriate section.
 
-**Update `inputDocuments`**: Set `inputDocuments` in the output template frontmatter to the list of artifact paths loaded in this step (e.g., knowledge fragments, test design documents, configuration files).
+**Update frontmatter fields**:
+
+- Set `storyId` to `{story_id}`
+- Set `storyKey` to `{story_key}`
+- Set `storyFile` to `{story_file}`
+- Set `atddChecklistPath` to `{outputFile}`
+- Initialize `generatedTestFiles` to `[]`
+- Set `inputDocuments` to the list of artifact paths loaded in this step (e.g., knowledge fragments, test design documents, configuration files)
 
 Load next step: `{nextStepFile}`
 

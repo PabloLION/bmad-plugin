@@ -1,8 +1,8 @@
 ---
 name: 'step-04-analyze-gaps'
 description: 'Complete Phase 1 with adaptive orchestration (agent-team, subagent, or sequential)'
-nextStepFile: './step-05-gate-decision.md'
-outputFile: '{test_artifacts}/traceability-report.md'
+nextStepFile: '{skill-root}/steps-c/step-05-gate-decision.md'
+outputFile: '{test_artifacts}/traceability-matrix.md'
 tempOutputFile: '/tmp/tea-trace-coverage-matrix-{{timestamp}}.json'
 ---
 
@@ -33,7 +33,7 @@ tempOutputFile: '/tmp/tea-trace-coverage-matrix-{{timestamp}}.json'
 
 ## CONTEXT BOUNDARIES:
 
-- Available context: requirements from Step 1, tests from Step 2, traceability matrix from Step 3
+- Available context: resolved oracle items from Step 1, tests from Step 2, traceability matrix from Step 3
 - Focus: gap analysis and matrix completion
 - Limits: do not make gate decision (Phase 2 responsibility)
 
@@ -145,15 +145,147 @@ Use the heuristics inventory from Step 2 and mapped criteria from Step 3 to flag
 const endpointCoverageGaps = coverageHeuristics?.endpoints_without_tests || [];
 const authCoverageGaps = coverageHeuristics?.auth_missing_negative_paths || [];
 const errorPathGaps = coverageHeuristics?.criteria_happy_path_only || [];
+const uiJourneyGaps = coverageHeuristics?.ui_journeys_without_e2e || [];
+const uiStateGaps = coverageHeuristics?.ui_states_missing_coverage || [];
 
 const heuristicGapCounts = {
   endpoints_without_tests: endpointCoverageGaps.length,
   auth_missing_negative_paths: authCoverageGaps.length,
   happy_path_only_criteria: errorPathGaps.length,
+  ui_journeys_without_e2e: uiJourneyGaps.length,
+  ui_states_missing_coverage: uiStateGaps.length,
 };
 ```
 
 Heuristics are advisory but must influence gap severity and recommendations, especially for P0/P1 criteria.
+
+---
+
+### 2b. Roll Up Live Evidence
+
+```javascript
+// Every value below comes from Steps 2 and 3. A run resumed at this step has none of them in memory,
+// so each one falls back to the `Live Verification Results` block Step 2 wrote into the progress
+// document, then to an empty default. An undefined here would throw and take the whole step with it.
+const liveHeader = runtime.getLiveManifestHeader?.() ||
+  liveManifestHeader ||
+  progressLiveManifestHeader || {
+    present: false,
+    results_file: '',
+    source_sha: '',
+    observed_at: '',
+    producer: '',
+    read_error: '',
+    current_source_sha: '',
+  };
+const liveRecordsForRollup = runtime.getResolvedLiveRecords?.() || resolvedLiveRecords || progressLiveRecords || [];
+const liveReadErrorMessage = liveHeader.read_error || '';
+const currentSourceSha = liveHeader.current_source_sha || '';
+
+// Declared locally so this section stays self-contained when workers run in parallel.
+const coverageEligibleStatuses = new Set(['FULL', 'PARTIAL', 'UNIT-ONLY', 'INTEGRATION-ONLY']);
+const countDisposition = (disposition) => liveRecordsForRollup.filter((record) => record.disposition === disposition).length;
+
+// `live_only` is DERIVED here, never read from a flag an earlier step was asked to set. The whole
+// PASS-prevention guarantee hangs on this one number, and a flag that must be remembered is a flag
+// that silently disables the cap when it is forgotten. Skipped, fixme, and pending tests are excluded
+// deliberately: a `test.skip` mapped to a requirement does not make its coverage any less live-only,
+// and treating it as static evidence would turn one skipped test into a way to buy back a PASS.
+const isActiveTest = (test) => {
+  const status = String(test.status || '')
+    .trim()
+    .toLowerCase();
+  if (['skipped', 'pending', 'fixme'].includes(status)) return false;
+  return test.skipped !== true && test.pending !== true && test.fixme !== true;
+};
+const liveOnlyRequirements = traceabilityMatrix.filter((req) => {
+  if (!coverageEligibleStatuses.has(req.coverage)) return false;
+  const activeTests = (req.tests || []).filter(isActiveTest);
+  return (
+    activeTests.length > 0 &&
+    activeTests.every(
+      (test) =>
+        String(test.level || '')
+          .trim()
+          .toLowerCase() === 'live',
+    )
+  );
+});
+
+// A dropped live result is worse than a missing one: someone believes that requirement was verified.
+// Every non-counting record is reported by name so the reason is visible in the matrix.
+const liveBlockers = liveRecordsForRollup
+  .filter((record) => record.disposition !== 'counted')
+  .map((record) => ({
+    id: record.id || `live-record-${record.requirement_id || 'unknown'}`,
+    severity: ['stale', 'unverifiable', 'fail', 'contradicted'].includes(record.disposition) ? 'high' : 'medium',
+    reason: {
+      stale: `Live result recorded against ${record.recorded_source_sha || 'an unrecorded commit'}, which is not the commit under trace (${currentSourceSha || 'unresolved'}). Re-verify and re-record.`,
+      unverifiable: 'Live result cannot be checked for freshness because the current commit sha could not be resolved.',
+      fail: 'Live verification failed.',
+      contradicted: `Live result passed, but the same file records a failure for requirement "${record.requirement_id}". Replace the record rather than appending a retry.`,
+      blocked: 'Live verification was blocked before it could reach a verdict.',
+      skipped: 'Live verification was skipped.',
+      unmatched: `Live result names requirement "${record.requirement_id}", which is not in the resolved coverage oracle.`,
+      invalid: `Live result is not usable: ${record.invalid_reason || 'missing id, requirement_id, source_sha, or a recognized status'}.`,
+    }[record.disposition],
+    test_file: '',
+    test_title: record.title,
+  }));
+
+if (liveReadErrorMessage) {
+  liveBlockers.push({
+    id: 'live-results-unreadable',
+    severity: 'high',
+    reason: liveReadErrorMessage,
+    test_file: liveHeader.results_file || '',
+    test_title: 'Live verification results file',
+  });
+}
+
+const staleCount = countDisposition('stale');
+const unverifiableCount = countDisposition('unverifiable');
+const countedCount = countDisposition('counted');
+
+const liveEvidence = {
+  present: Boolean(liveHeader.present),
+  results_file: liveHeader.results_file || '',
+  // `fresh` means every record was checkable and current. `mixed` exists so that one counted record
+  // among twenty stale ones cannot report as clean; a CI job gating on `freshness === 'fresh'` would
+  // otherwise accept a file containing a stale P0 observation.
+  freshness: liveReadErrorMessage
+    ? 'unreadable'
+    : !liveHeader.present
+      ? 'not_present'
+      : !currentSourceSha
+        ? 'unverifiable'
+        : staleCount + unverifiableCount === 0
+          ? 'fresh'
+          : countedCount > 0
+            ? 'mixed'
+            : 'stale',
+  // Report the sha the counted records were actually classified against. Per-record `source_sha`
+  // overrides the file-level value, so preferring the file-level one can name a commit nothing was
+  // verified at, and step-05 puts this exact string into the gate rationale.
+  recorded_source_sha:
+    liveRecordsForRollup.find((record) => record.disposition === 'counted' && record.recorded_source_sha)?.recorded_source_sha ||
+    liveHeader.source_sha ||
+    liveRecordsForRollup.find((record) => record.recorded_source_sha)?.recorded_source_sha ||
+    '',
+  current_source_sha: currentSourceSha,
+  producer: liveHeader.producer || '',
+  counted: countedCount,
+  stale: staleCount,
+  unverifiable: unverifiableCount,
+  failed: countDisposition('fail'),
+  contradicted: countDisposition('contradicted'),
+  blocked: countDisposition('blocked'),
+  skipped: countDisposition('skipped'),
+  unmatched: countDisposition('unmatched'),
+  invalid: countDisposition('invalid'),
+  requirements_live_only: liveOnlyRequirements.length,
+};
+```
 
 ---
 
@@ -162,13 +294,61 @@ Heuristics are advisory but must influence gap severity and recommendations, esp
 **Based on gap analysis:**
 
 ```javascript
+const progressDoc = fs.existsSync('{outputFile}') ? fs.readFileSync('{outputFile}', 'utf8') : '';
+const progressFrontmatterMatch = progressDoc.match(/^---\n([\s\S]*?)\n---/);
+const progressFrontmatter = progressFrontmatterMatch ? yaml.parse(progressFrontmatterMatch[1]) : {};
+
+const isUnresolved = (value) => typeof value === 'string' && value.startsWith('{') && value.endsWith('}');
+const normalizeResolvedToken = (value) => {
+  if (value === undefined || value === null) return null;
+  const normalized = String(value).trim().toLowerCase();
+  if (!normalized || normalized === 'auto' || isUnresolved(normalized)) return null;
+  return normalized;
+};
+const firstResolvedToken = (...values) => {
+  for (const value of values) {
+    const normalized = normalizeResolvedToken(value);
+    if (normalized) return normalized;
+  }
+  return null;
+};
+
+const oracleResolutionMode =
+  firstResolvedToken(runtime.getOracleResolutionMode?.(), progressFrontmatter.oracleResolutionMode) || 'formal_requirements';
+const resolvedCoverageBasis =
+  firstResolvedToken(runtime.getResolvedCoverageBasis?.(), progressFrontmatter.coverageBasis) ||
+  {
+    formal_requirements: 'acceptance_criteria',
+    spec_artifact: 'openapi_endpoints',
+    external_pointer: 'acceptance_criteria',
+    synthetic_source: 'user_journeys',
+  }[oracleResolutionMode] ||
+  'acceptance_criteria';
+const resolvedOracleConfidence =
+  firstResolvedToken(runtime.getResolvedOracleConfidence?.(), progressFrontmatter.oracleConfidence) ||
+  {
+    formal_requirements: 'high',
+    spec_artifact: 'high',
+    external_pointer: 'medium',
+    synthetic_source: 'medium',
+  }[oracleResolutionMode] ||
+  'medium';
+const oracleSources = runtime.getOracleSources?.() || progressFrontmatter.oracleSources || [];
+const externalPointerStatus =
+  firstResolvedToken(runtime.getExternalPointerStatus?.(), progressFrontmatter.externalPointerStatus) || 'not_used';
+// Step 2 resolves collection status because it is the step that learns whether the evidence was readable.
+// Routed through firstResolvedToken like every other frontmatter read: an unsubstituted placeholder
+// reaching step-05 would compare unequal to 'COLLECTED' and silently suppress every gate.
+const resolvedCollectionStatus = (
+  firstResolvedToken(runtime.getCollectionStatus?.(), progressFrontmatter.collectionStatus) || 'collected'
+).toUpperCase();
 const recommendations = [];
 
 // Critical gaps (P0)
 if (criticalGaps.length > 0) {
   recommendations.push({
     priority: 'URGENT',
-    action: `Run /bmad:tea:atdd for ${criticalGaps.length} P0 requirements`,
+    action: `Run /bmad-testarch-atdd for ${criticalGaps.length} P0 requirements`,
     requirements: criticalGaps.map((r) => r.id),
   });
 }
@@ -177,7 +357,7 @@ if (criticalGaps.length > 0) {
 if (highGaps.length > 0) {
   recommendations.push({
     priority: 'HIGH',
-    action: `Run /bmad:tea:automate to expand coverage for ${highGaps.length} P1 requirements`,
+    action: `Run /bmad-testarch-automate to expand coverage for ${highGaps.length} P1 requirements`,
     requirements: highGaps.map((r) => r.id),
   });
 }
@@ -215,12 +395,54 @@ if (errorPathGaps.length > 0) {
   });
 }
 
+if (uiJourneyGaps.length > 0) {
+  recommendations.push({
+    priority: 'HIGH',
+    action: `Add E2E or component coverage for ${uiJourneyGaps.length} inferred UI journey(s)`,
+    requirements: uiJourneyGaps.map((r) => r.id || r.route || r.journey || 'unknown'),
+  });
+}
+
+if (uiStateGaps.length > 0) {
+  recommendations.push({
+    priority: 'MEDIUM',
+    action: `Add loading/empty/error/permission state coverage for ${uiStateGaps.length} UI journey(s)`,
+    requirements: uiStateGaps.map((r) => r.id || r.route || r.journey || 'unknown'),
+  });
+}
+
+// `liveRecordsForRollup` and `liveOnlyRequirements` come from section 2b.
+const uncountedLiveRecords = liveRecordsForRollup.filter((record) => ['stale', 'unverifiable'].includes(record.disposition));
+if (uncountedLiveRecords.length > 0) {
+  recommendations.push({
+    priority: 'HIGH',
+    action: `Re-record ${uncountedLiveRecords.length} live verification result(s) against the commit under trace; they no longer count as coverage`,
+    requirements: uncountedLiveRecords.map((record) => record.requirement_id || 'unknown'),
+  });
+}
+
+if (liveOnlyRequirements.length > 0) {
+  recommendations.push({
+    priority: 'MEDIUM',
+    action: `Add a re-runnable test for ${liveOnlyRequirements.length} requirement(s) covered only by recorded live verification; live-only coverage caps the gate at CONCERNS`,
+    requirements: liveOnlyRequirements.map((req) => req.id),
+  });
+}
+
 // Quality issues
 recommendations.push({
   priority: 'LOW',
-  action: 'Run /bmad:tea:test-review to assess test quality',
+  action: 'Run /bmad-testarch-test-review to assess test quality',
   requirements: [],
 });
+
+if (oracleResolutionMode === 'synthetic_source') {
+  recommendations.push({
+    priority: 'MEDIUM',
+    action: 'Promote inferred journeys into formal acceptance criteria when the team confirms they reflect intended behavior',
+    requirements: traceabilityMatrix.map((r) => r.id),
+  });
+}
 ```
 
 ---
@@ -253,6 +475,119 @@ const p3CoveragePercentage = safePct(p3Covered, p3Total);
 
 ---
 
+### 4b. Build Deduplicated Test Inventory and Trace Metadata
+
+Persist the unique discovered tests in Phase 1 so Step 5 does not need to reconstruct counts from per-requirement mappings.
+
+```javascript
+// Declared locally so this section stays self-contained when workers run in parallel.
+const coverageEligibleStatuses = new Set(['FULL', 'PARTIAL', 'UNIT-ONLY', 'INTEGRATION-ONLY']);
+const byLevel = {
+  e2e: { tests: 0, criteria_covered: 0 },
+  api: { tests: 0, criteria_covered: 0 },
+  component: { tests: 0, criteria_covered: 0 },
+  unit: { tests: 0, criteria_covered: 0 },
+  live: { tests: 0, criteria_covered: 0 }, // recorded runtime verification; no file on disk
+  other: { tests: 0, criteria_covered: 0 }, // captures tests with unrecognized or empty level
+};
+
+const normalizeTestStatus = (test) => {
+  const explicitStatus = String(test.status || '')
+    .trim()
+    .toLowerCase();
+  if (['skipped', 'pending', 'fixme'].includes(explicitStatus)) return explicitStatus;
+  if (test.fixme === true) return 'fixme';
+  if (test.pending === true) return 'pending';
+  if (test.skipped === true) return 'skipped';
+  return 'active';
+};
+
+const uniqueTests = new Map();
+(traceabilityMatrix || []).forEach((req) => {
+  (req.tests || []).forEach((test, index) => {
+    // Do NOT use the per-requirement `index` as a fallback — the same test can appear
+    // at different indices across requirements, producing spurious duplicate entries.
+    // Use only stable, test-intrinsic fields; omit line when unavailable.
+    const stableId =
+      test.id ||
+      [test.file, test.title || test.name, test.line].filter((value) => value !== undefined && value !== null && value !== '').join(':') ||
+      null; // unresolvable — skip rather than manufacture a key
+
+    if (stableId === null || uniqueTests.has(stableId)) return;
+    const status = normalizeTestStatus(test);
+    uniqueTests.set(stableId, {
+      id: stableId,
+      file: test.file || '',
+      line: test.line ?? null,
+      title: test.title || test.name || stableId,
+      level: String(test.level || '')
+        .trim()
+        .toLowerCase(),
+      status: status,
+      skipped: status === 'skipped',
+      fixme: status === 'fixme',
+      pending: status === 'pending',
+      blocker_reason: test.skip_reason || test.blocker_reason || test.fixme_reason || test.pending_reason || '',
+    });
+  });
+});
+
+[...uniqueTests.values()].forEach((test) => {
+  const bucket = byLevel[test.level] ? test.level : 'other';
+  if (bucket === 'other' && test.level) {
+    console.warn(`[trace] unknown test level "${test.level}" for test "${test.id}" — counted in "other"`);
+  }
+  byLevel[bucket].tests += 1;
+});
+
+(traceabilityMatrix || []).forEach((req) => {
+  if (!coverageEligibleStatuses.has(req.coverage)) return;
+  const requirementLevels = new Set(
+    (req.tests || []).map((test) => {
+      const level = String(test.level || '')
+        .trim()
+        .toLowerCase();
+      return byLevel[level] ? level : 'other';
+    }),
+  );
+  requirementLevels.forEach((level) => {
+    byLevel[level].criteria_covered += 1;
+  });
+});
+
+const deduplicatedTests = [...uniqueTests.values()];
+const deduplicatedTestInventory = {
+  summary: {
+    files: [...new Set(deduplicatedTests.map((test) => test.file).filter(Boolean))].length,
+    cases: deduplicatedTests.length,
+    skipped_cases: deduplicatedTests.filter((test) => test.skipped).length,
+    fixme_cases: deduplicatedTests.filter((test) => test.fixme).length,
+    pending_cases: deduplicatedTests.filter((test) => test.pending).length,
+    by_level: byLevel,
+  },
+  tests: deduplicatedTests,
+  blockers: deduplicatedTests
+    .filter((test) => ['skipped', 'pending', 'fixme'].includes(test.status))
+    .map((test) => ({
+      id: test.id,
+      severity: test.status === 'skipped' ? 'high' : 'medium',
+      reason: test.blocker_reason || `Test marked ${test.status} during trace collection`,
+      test_file: test.file,
+      test_title: test.title,
+    })),
+};
+
+const extractedTargetId = runtime.getTraceTargetId?.() || null;
+const extractedTargetLabel = runtime.getTraceTargetLabel?.() || null;
+const traceTarget = {
+  type: '{gate_type}',
+  id: extractedTargetId, // story_id / epic_num / release_version / hotfix identifier from Step 1
+  label: extractedTargetLabel || null,
+};
+```
+
+---
+
 ### 5. Generate Complete Coverage Matrix
 
 **Compile all Phase 1 outputs:**
@@ -261,6 +596,19 @@ const p3CoveragePercentage = safePct(p3Covered, p3Total);
 const coverageMatrix = {
   phase: 'PHASE_1_COMPLETE',
   generated_at: new Date().toISOString(),
+  trace_target: traceTarget,
+  collection_mode: '{collection_mode}',
+  collection_status: resolvedCollectionStatus,
+  allow_gate: '{allow_gate}',
+  coverage_basis: resolvedCoverageBasis,
+  summary_confidence: resolvedOracleConfidence,
+  oracle: {
+    resolution_mode: oracleResolutionMode,
+    confidence: resolvedOracleConfidence,
+    sources: oracleSources,
+    external_pointer_status: externalPointerStatus,
+    synthetic: oracleResolutionMode === 'synthetic_source',
+  },
 
   requirements: traceabilityMatrix, // Full matrix from Step 3
 
@@ -292,9 +640,18 @@ const coverageMatrix = {
     endpoint_gaps: endpointCoverageGaps,
     auth_negative_path_gaps: authCoverageGaps,
     happy_path_only_gaps: errorPathGaps,
+    ui_journey_gaps: uiJourneyGaps,
+    ui_state_gaps: uiStateGaps,
     counts: heuristicGapCounts,
   },
 
+  live_evidence: liveEvidence,
+  live_records: liveRecordsForRollup,
+
+  test_inventory: deduplicatedTestInventory,
+  // Section 5 is the deterministic merge point, so the two blocker sources are joined here rather than
+  // inside section 4b, which would make Worker C depend on Worker B's output.
+  blockers: deduplicatedTestInventory.blockers.concat(liveBlockers),
   recommendations: recommendations,
 };
 ```
@@ -311,6 +668,16 @@ fs.writeFileSync(outputPath, JSON.stringify(coverageMatrix, null, 2), 'utf8');
 
 console.log(`✅ Phase 1 Complete: Coverage matrix saved to ${outputPath}`);
 ```
+
+**Record the resolved path in the progress document** so Step 5 can read the exact same file rather than re-evaluating the timestamp expression:
+
+After writing the temp file, update the YAML frontmatter in `{outputFile}` to include:
+
+```yaml
+tempCoverageMatrixPath: '<resolved outputPath>'
+```
+
+Step 5 reads `tempCoverageMatrixPath` from the frontmatter first; falls back to reconstructing `{tempOutputFile}` only when the key is absent.
 
 ---
 
@@ -342,6 +709,13 @@ console.log(`✅ Phase 1 Complete: Coverage matrix saved to ${outputPath}`);
 - Auth negative-path gaps: {authCoverageGaps.length}
 - Happy-path-only criteria: {errorPathGaps.length}
 
+{if liveEvidence.present}
+🔴 Live Evidence: {liveEvidence.freshness}
+- Counted as coverage: {liveEvidence.counted}
+- Not counted (stale/unverifiable/failed/contradicted/blocked/skipped/unmatched/invalid): {liveEvidence.stale + liveEvidence.unverifiable + liveEvidence.failed + liveEvidence.contradicted + liveEvidence.blocked + liveEvidence.skipped + liveEvidence.unmatched + liveEvidence.invalid}
+- Requirements covered only by live evidence: {liveEvidence.requirements_live_only}
+{endif}
+
 📝 Recommendations: {recommendations.length}
 
 🔄 Phase 2: Gate decision (next step)
@@ -352,10 +726,10 @@ console.log(`✅ Phase 1 Complete: Coverage matrix saved to ${outputPath}`);
 When `resolvedMode` is `agent-team` or `subagent`, parallelize only dependency-safe sections:
 
 - Worker A: gap classification (section 1)
-- Worker B: heuristics gap extraction (section 2)
+- Worker B: heuristics gap extraction and live evidence rollup (sections 2 and 2b)
 - Worker C: coverage statistics (section 4)
 
-Section 3 (recommendation synthesis) depends on outputs from sections 1 and 2, so run it only after Workers A and B complete.
+Each worker's sections declare their own constants, so the three are independent. Section 3 (recommendation synthesis) depends on outputs from sections 1, 2, and 2b, so run it only after Workers A and B complete. Section 5 joins section 2b's `liveBlockers` with section 4b's inventory, which is safe because section 5 is the merge point after all workers finish.
 
 Section 5 remains the deterministic merge point after sections 1-4 are finished.
 

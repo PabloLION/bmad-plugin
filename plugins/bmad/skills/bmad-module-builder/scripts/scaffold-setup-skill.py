@@ -4,7 +4,7 @@
 # ///
 """Scaffold a BMad module setup skill from template.
 
-Copies the setup-skill-template into the target directory as bmad-{code}-setup/,
+Copies the setup-skill-template into the target directory as {code}-setup/,
 then writes the generated module.yaml and module-help.csv into the assets folder
 and updates the SKILL.md frontmatter with the module's identity.
 """
@@ -51,7 +51,7 @@ def main() -> int:
     args = parser.parse_args()
 
     template_dir = Path(__file__).resolve().parent.parent / "assets" / "setup-skill-template"
-    setup_skill_name = f"bmad-{args.module_code}-setup"
+    setup_skill_name = f"{args.module_code}-setup"
     target = Path(args.target_dir) / setup_skill_name
 
     if not template_dir.is_dir():

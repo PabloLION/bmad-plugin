@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ograf.ebu.io/v1/specification/json-schemas/graphics/schema.json",
+  "id": "{{ID}}",
+  "name": "{{NAME}}",
+  "version": "1.0.0",
+  "description": "{{DESCRIPTION}}",
+  "author": { "name": "{{AUTHOR}}" },
+  "main": "{{MAIN}}",
+  "supportsRealTime": true,
+  "supportsNonRealTime": true,
+  "stepCount": 1,
+  "actionDurations": [
+    { "type": "playAction", "duration": 1300 },
+    { "type": "updateAction", "duration": 400 },
+    { "type": "stopAction", "duration": 800 }
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {{SCHEMA_PROPERTIES}}
+  }
+}

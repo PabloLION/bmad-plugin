@@ -1,12 +1,9 @@
 /**
- * Barrel export for all check functions.
+ * Barrel export for validation check functions.
+ *
+ * After the v6.5.0+ migration to installer-based sync, only the version
+ * check survives — three-way upstream-coverage validation is unnecessary
+ * because the installer is the source of truth.
  */
 
-export { checkAgentSkills } from './agent-skills.ts';
-export { checkAgents } from './agents.ts';
-export { checkContent } from './content.ts';
-export { checkNaming } from './naming.ts';
-export { checkPaths } from './paths.ts';
-export { checkSync } from './sync.ts';
 export { checkVersion } from './version.ts';
-export { checkWorkflows } from './workflows.ts';

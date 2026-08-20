@@ -359,6 +359,14 @@ func change_scene_async(path: String) -> void:
 | **Godot Google Play** | Google Play services integration | GitHub |
 | **Godot Admob** | Ad monetization for mobile | GitHub |
 
+## AI-Assisted Development
+
+Godot has no official MCP server, but being open source it has spawned several community ones — all free, unlike Unity's official MCP, which sits behind a paid Unity AI subscription. An **MCP (Model Context Protocol)** server lets an AI assistant inspect and edit your project directly rather than guessing from chat descriptions.
+
+- **GoPeak** (`HaD0Yun/Gopeak-godot-mcp`) — MIT-licensed, actively maintained, ~95+ tools for Godot 4.x. Covers the full edit → run → inspect → fix loop: scene and GDScript editing, resource and shader work, LSP diagnostics, DAP breakpoints, live scene-tree inspection, screenshots, and input injection for testing. Run it with `npx -y gopeak`, then point your MCP client at the Godot executable and a tool profile (compact, full, or legacy).
+
+Other community options — `tugcantopaloglu/godot-mcp` (149 tools, runtime GDScript over TCP), plus `bradypp/godot-mcp` and `ee0pdt/Godot-MCP` — are catalogued with install steps in `engine-mcps.yaml`. MCP repos move fast, so confirm a project is still maintained before adopting it.
+
 ## Common Architectural Patterns
 
 ### Component Pattern (Composition over Inheritance)

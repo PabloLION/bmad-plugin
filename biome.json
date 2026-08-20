@@ -9,8 +9,10 @@
     "includes": [
       "**",
       "!.beads",
-      "!plugins/bmad/skills/**/templates",
-      "!plugins/bmad/skills/**/data"
+      "!plugins/bmad/skills",
+      "!plugins/bmad/runtime",
+      "!plugins/bmad/templates",
+      "!plugins/bmad-manticore"
     ]
   },
   "javascript": {

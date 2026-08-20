@@ -1,10 +1,11 @@
 {
   "name": "bmad",
-  "version": "6.2.2.0",
+  "version": "6.11.0.0",
   "description": "BMAD Method - Breakthrough Method for Agile AI-Driven Development",
   "author": {
     "name": "PabloLION",
     "email": "36828324+PabloLION@users.noreply.github.com"
   },
-  "skills": "./skills/"
+  "skills": "./skills/",
+  "commands": "./commands/"
 }

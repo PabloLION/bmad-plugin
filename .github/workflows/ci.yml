@@ -21,3 +21,9 @@ jobs:
 
       - name: Lint
         run: bun run lint
+
+      - name: Validate plugin
+        run: bun run validate
+
+      - name: Unit tests
+        run: bun run test:unit

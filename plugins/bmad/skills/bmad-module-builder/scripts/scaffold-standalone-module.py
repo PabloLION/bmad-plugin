@@ -146,7 +146,7 @@ def main() -> int:
 
     skill_dir_name = skill_dir.name
     marketplace_data = {
-        "name": f"bmad-{args.module_code}",
+        "name": args.module_code,
         "owner": {"name": ""},
         "license": "",
         "homepage": "",
@@ -154,7 +154,7 @@ def main() -> int:
         "keywords": ["bmad"],
         "plugins": [
             {
-                "name": f"bmad-{args.module_code}",
+                "name": args.module_code,
                 "source": "./",
                 "description": module_description,
                 "version": module_version,

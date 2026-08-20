@@ -1,354 +1,57 @@
-# Quality Scan Script Opportunities — Reference Guide
+# Script Opportunities Reference
 
-**Reference: `references/script-standards.md` for script creation guidelines.**
+Hunting for deterministic work to push out of prompts and into native Python is the builder's differentiator. A capability prompt that asks the model to count, parse, validate, or diff is paying generation cost on every run for an answer a script gives once, exactly, for free. The hunt is always on, not a finalize-time afterthought.
 
-This document identifies deterministic operations that should be offloaded from the LLM into scripts for quality validation of BMad agents.
+This file covers the determinism test that decides script-or-prompt, the signal-verb scan that surfaces candidates inside a draft, the opportunity categories, the pre-pass JSON pattern, and the transcript-detected repeated-work signal that eval runs expose. Reference `references/script-standards.md` for the full authoring conventions (PEP 723, output schema, testing).
 
----
+## The line that decides it
 
-## Core Principle
+Scripts handle deterministic operations. Prompts handle judgment. If a check has clear pass/fail criteria and the same input always yields the same output, it belongs in a script, and a prompt that does it instead is friction that does not beat its own absence.
 
-Scripts validate structure and syntax (deterministic). Prompts evaluate semantics and meaning (judgment). Create scripts for checks that have clear pass/fail criteria.
+## The determinism test
 
----
+Run three questions over any step you are about to write as a prompt instruction:
 
-## How to Spot Script Opportunities
+1. Given identical input, will it always produce identical output? If yes, it is a script candidate.
+2. Could you write a unit test with an expected output? If yes, it is definitely a script.
+3. Does it require interpreting meaning, tone, or context? If yes, keep it as a prompt.
 
-During build, walk through every capability/operation and apply these tests:
+The boundary between the two:
 
-### The Determinism Test
+| Scripts handle | Prompts handle |
+| --- | --- |
+| Fetch, transform, validate | Interpret, classify when ambiguous |
+| Count, parse, compare | Create, decide on incomplete info |
+| Extract, format, check structure | Evaluate quality, synthesize meaning |
 
-For each operation the agent performs, ask:
+## The signal-verb scan
 
-- Given identical input, will this ALWAYS produce identical output? → Script
-- Does this require interpreting meaning, tone, context, or ambiguity? → Prompt
-- Could you write a unit test with expected output for every input? → Script
+When a draft's instructions contain these verbs, look for a script first: validate, count, extract, convert, transform, compare, scan for, check structure, against schema, graph or map dependencies, list all, detect pattern, diff or changes between. Each one names work that produces the same answer every time, so paying a model to do it is waste.
 
-### The Judgment Boundary
+## Opportunity categories
 
-Scripts handle: fetch, transform, validate, count, parse, compare, extract, format, check structure
-Prompts handle: interpret, classify with ambiguity, create, decide with incomplete info, evaluate quality, synthesize meaning
+| Category | What it does | Example |
+| --- | --- | --- |
+| Validation | Check structure, format, schema, naming | Confirm frontmatter fields exist |
+| Data extraction | Pull structured data without interpreting meaning | Extract every `{variable}` reference from markdown |
+| Transformation | Convert between known formats | Template emission via process-template.py |
+| Metrics | Count, tally, aggregate | Token count per file via count_tokens.py |
+| Comparison | Diff, cross-reference, verify consistency | Cross-ref capability names against the routing table |
+| Structure checks | Verify directory layout, file existence | Confirm a sanctum ships its six templates |
+| Dependency analysis | Trace references, imports, relationships | Build a capability reference graph |
+| Pre-processing | Extract compact data from large files before the model reads them | Pre-extract file metrics into JSON for a lens |
+| Post-processing | Verify model output meets structural requirements | Confirm an emitted template carries no leftover `{if-...}` markers |
 
-### Pattern Recognition Checklist
+## The pre-pass JSON pattern
 
-Table of signal verbs/patterns mapping to script types:
-| Signal Verb/Pattern | Script Type |
-|---------------------|-------------|
-| "validate", "check", "verify" | Validation script |
-| "count", "tally", "aggregate", "sum" | Metric/counting script |
-| "extract", "parse", "pull from" | Data extraction script |
-| "convert", "transform", "format" | Transformation script |
-| "compare", "diff", "match against" | Comparison script |
-| "scan for", "find all", "list all" | Pattern scanning script |
-| "check structure", "verify exists" | File structure checker |
-| "against schema", "conforms to" | Schema validation script |
-| "graph", "map dependencies" | Dependency analysis script |
+When a flow would otherwise have the model read raw files to gather facts (token counts, frontmatter values, file inventories, agent-type classification), write a pre-pass script that does the reading and emits compact JSON, then have the prompt consume the JSON instead. The model reasons over metrics rather than burning context on raw bytes, the facts are exact rather than estimated, and the stage runs cheaper. The Analyze lenses use this pattern: `scripts/prepass.py` and the lint scanners run first and hand each lens compact JSON, so the lenses read numbers, not whole files.
 
-### The Outside-the-Box Test
+## The transcript-detected repeated-work signal
 
-Beyond obvious validation, consider:
+The eval-runner produces transcripts when an agent runs on real input. Read them for the same helper being re-derived run after run. If the model writes a small parser, a counter, a format converter, or a validation snippet inline on turn after turn, that work is deterministic by definition (it produces the same code each time) and it is paying generation cost every run. Bundle it once as a script the agent calls, and the repeated inline derivation disappears.
 
-- Could any data gathering step be a script that returns structured JSON for the LLM to interpret?
-- Could pre-processing reduce what the LLM needs to read?
-- Could post-processing validate what the LLM produced?
-- Could metric collection feed into LLM decision-making without the LLM doing the counting?
+This is the strongest possible evidence for a script, because it is not a guess about what the model might do, it is the model demonstrably doing the same deterministic thing repeatedly. When an eval run shows this pattern, the recommendation is a named script, and the next eval run should show the inline derivation gone.
 
-### Your Toolbox
+## Authoring the script
 
-**Python is the default** for all script logic (cross-platform: macOS, Linux, Windows/WSL). See `references/script-standards.md` for full rationale and safe bash commands.
-
-- **Python:** Standard library (`json`, `pathlib`, `re`, `argparse`, `collections`, `difflib`, `ast`, `csv`, `xml`, etc.) plus PEP 723 inline-declared dependencies (`tiktoken`, `jsonschema`, `pyyaml`, etc.)
-- **Safe shell commands:** `git`, `gh`, `uv run`, `npm`/`npx`/`pnpm`, `mkdir -p`
-- **Avoid bash for logic** — no piping, `jq`, `grep`, `sed`, `awk`, `find`, `diff`, `wc` in scripts. Use Python equivalents instead.
-
-If you can express the logic as deterministic code, it's a script candidate.
-
-### The --help Pattern
-
-All scripts use PEP 723 and `--help`. When a skill's prompt needs to invoke a script, it can say "Run `scripts/foo.py --help` to understand inputs/outputs, then invoke appropriately" instead of inlining the script's interface. This saves tokens in prompts and keeps a single source of truth for the script's API.
-
----
-
-## Priority 1: High-Value Validation Scripts
-
-### 1. Frontmatter Validator
-
-**What:** Validate SKILL.md frontmatter structure and content
-
-**Why:** Frontmatter is the #1 factor in skill triggering. Catch errors early.
-
-**Checks:**
-
-```python
-# checks:
-- name exists and is kebab-case
-- description exists and follows pattern "Use when..."
-- No forbidden fields (XML, reserved prefixes)
-- Optional fields have valid values if present
-```
-
-**Output:** JSON with pass/fail per field, line numbers for errors
-
-**Implementation:** Python with argparse, no external deps needed
-
----
-
-### 2. Template Artifact Scanner
-
-**What:** Scan for orphaned template substitution artifacts
-
-**Why:** Build process may leave `{if-autonomous}`, `{displayName}`, etc.
-
-**Output:** JSON with file path, line number, artifact type
-
-**Implementation:** Bash script with JSON output via jq
-
----
-
-### 3. Access Boundaries Extractor
-
-**What:** Extract and validate access boundaries from memory-system.md
-
-**Why:** Security critical — must be defined before file operations
-
-**Checks:**
-
-```python
-# Parse memory-system.md for:
-- ## Read Access section exists
-- ## Write Access section exists
-- ## Deny Zones section exists (can be empty)
-- Paths use placeholders correctly ({project-root} for project-scope paths, ./ for skill-internal)
-```
-
-**Output:** Structured JSON of read/write/deny zones
-
-**Implementation:** Python with markdown parsing
-
----
-
----
-
-## Priority 2: Analysis Scripts
-
-### 4. Token Counter
-
-**What:** Count tokens in each file of an agent
-
-**Why:** Identify verbose files that need optimization
-
-**Checks:**
-
-```python
-# For each .md file:
-- Total tokens (approximate: chars / 4)
-- Code block tokens
-- Token density (tokens / meaningful content)
-```
-
-**Output:** JSON with file path, token count, density score
-
-**Implementation:** Python with tiktoken for accurate counting, or char approximation
-
----
-
-### 5. Dependency Graph Generator
-
-**What:** Map skill → external skill dependencies
-
-**Why:** Understand agent's dependency surface
-
-**Checks:**
-
-```python
-# Parse SKILL.md for skill invocation patterns
-# Parse prompt files for external skill references
-# Build dependency graph
-```
-
-**Output:** DOT format (GraphViz) or JSON adjacency list
-
-**Implementation:** Python, JSON parsing only
-
----
-
-### 6. Activation Flow Analyzer
-
-**What:** Parse SKILL.md On Activation section for sequence
-
-**Why:** Validate activation order matches best practices
-
-**Checks:**
-
-Validate that the activation sequence is logically ordered (e.g., config loads before config is used, memory loads before memory is referenced).
-
-**Output:** JSON with detected steps, missing steps, out-of-order warnings
-
-**Implementation:** Python with regex pattern matching
-
----
-
-### 7. Memory Structure Validator
-
-**What:** Validate memory-system.md structure
-
-**Why:** Memory files have specific requirements
-
-**Checks:**
-
-```python
-# Required sections:
-- ## Core Principle
-- ## File Structure
-- ## Write Discipline
-- ## Memory Maintenance
-```
-
-**Output:** JSON with missing sections, validation errors
-
-**Implementation:** Python with markdown parsing
-
----
-
-### 8. Subagent Pattern Detector
-
-**What:** Detect if agent uses BMAD Advanced Context Pattern
-
-**Why:** Agents processing 5+ sources MUST use subagents
-
-**Checks:**
-
-```python
-# Pattern detection in SKILL.md:
-- "DO NOT read sources yourself"
-- "delegate to sub-agents"
-- "/tmp/analysis-" temp file pattern
-- Sub-agent output template (50-100 token summary)
-```
-
-**Output:** JSON with pattern found/missing, recommendations
-
-**Implementation:** Python with keyword search and context extraction
-
----
-
-## Priority 3: Composite Scripts
-
-### 9. Agent Health Check
-
-**What:** Run all validation scripts and aggregate results
-
-**Why:** One-stop shop for agent quality assessment
-
-**Composition:** Runs Priority 1 scripts, aggregates JSON outputs
-
-**Output:** Structured health report with severity levels
-
-**Implementation:** Bash script orchestrating Python scripts, jq for aggregation
-
----
-
-### 10. Comparison Validator
-
-**What:** Compare two versions of an agent for differences
-
-**Why:** Validate changes during iteration
-
-**Checks:**
-
-```bash
-# Git diff with structure awareness:
-- Frontmatter changes
-- Capability additions/removals
-- New prompt files
-- Token count changes
-```
-
-**Output:** JSON with categorized changes
-
-**Implementation:** Bash with git, jq, python for analysis
-
----
-
-## Script Output Standard
-
-All scripts MUST output structured JSON for agent consumption:
-
-```json
-{
-  "script": "script-name",
-  "version": "1.0.0",
-  "agent_path": "/path/to/agent",
-  "timestamp": "2025-03-08T10:30:00Z",
-  "status": "pass|fail|warning",
-  "findings": [
-    {
-      "severity": "critical|high|medium|low|info",
-      "category": "structure|security|performance|consistency",
-      "location": { "file": "SKILL.md", "line": 42 },
-      "issue": "Clear description",
-      "fix": "Specific action to resolve"
-    }
-  ],
-  "summary": {
-    "total": 10,
-    "critical": 1,
-    "high": 2,
-    "medium": 3,
-    "low": 4
-  }
-}
-```
-
----
-
-## Implementation Checklist
-
-When creating validation scripts:
-
-- [ ] Uses `--help` for documentation
-- [ ] Accepts `--agent-path` for target agent
-- [ ] Outputs JSON to stdout
-- [ ] Writes diagnostics to stderr
-- [ ] Returns meaningful exit codes (0=pass, 1=fail, 2=error)
-- [ ] Includes `--verbose` flag for debugging
-- [ ] Has tests in `scripts/tests/` subfolder
-- [ ] Self-contained (PEP 723 for Python)
-- [ ] No interactive prompts
-
----
-
-## Integration with Quality Analysis
-
-The Quality Analysis skill should:
-
-1. **First**: Run available scripts for fast, deterministic checks
-2. **Then**: Use sub-agents for semantic analysis (requires judgment)
-3. **Finally**: Synthesize both sources into report
-
-**Example flow:**
-
-```bash
-# Run all validation scripts
-python scripts/validate-frontmatter.py --agent-path {path}
-bash scripts/scan-template-artifacts.sh --agent-path {path}
-
-# Collect JSON outputs
-# Spawn sub-agents only for semantic checks
-# Synthesize complete report
-```
-
----
-
-## Script Creation Priorities
-
-**Phase 1 (Immediate value):**
-
-1. Template Artifact Scanner (Bash + jq)
-2. Access Boundaries Extractor (Python)
-
-**Phase 2 (Enhanced validation):** 4. Token Counter (Python) 5. Subagent Pattern Detector (Python) 6. Activation Flow Analyzer (Python)
-
-**Phase 3 (Advanced features):** 7. Dependency Graph Generator (Python) 8. Memory Structure Validator (Python) 9. Agent Health Check orchestrator (Bash)
-
-**Phase 4 (Comparison tools):** 10. Comparison Validator (Bash + Python)
+Once a candidate is confirmed, `references/script-standards.md` owns how to write it: native Python over bash, stdlib-first, PEP 723 metadata, `uv run` for declared dependencies, a graceful fallback when an optional dependency's import is unavailable, and the `--help`/output/exit-code/testing checklist. One tip worth carrying into the prompt: point it at `scripts/foo.py --help` instead of inlining the interface, so the interface stays defined once and the prompt stays short.

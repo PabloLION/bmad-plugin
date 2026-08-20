@@ -2,8 +2,8 @@
 name: 'step-v-01-validate'
 description: 'Validate teach-me-testing workflow quality against BMAD standards'
 
-workflowPath: '../'
-checklistFile: '../checklist.md'
+workflowPath: '{skill-root}'
+checklistFile: '{skill-root}/checklist.md'
 validationReport: '{test_artifacts}/workflow-validation/teach-me-testing-validation-{date}.md'
 ---
 
@@ -63,7 +63,8 @@ This will validate:
 
 **Check:**
 
-- [ ] workflow.md exists with proper frontmatter
+- [ ] SKILL.md exists with proper frontmatter
+- [ ] customize.toml defines workflow customization surface
 - [ ] Tri-modal routing logic present
 - [ ] Configuration loading correct
 - [ ] First step path correct
@@ -80,7 +81,7 @@ Report findings: Pass/Fail for each check.
 - [ ] Session status fields present
 - [ ] stepsCompleted array present
 - [ ] session-notes-template.md has required sections
-- [ ] certificate-template.md includes all 7 sessions
+- [ ] completion-summary-template.md includes all 7 sessions
 
 Report findings.
 
@@ -261,3 +262,11 @@ Workflow is usable but could be improved.
 ✅ All validation checks run, comprehensive report generated, issues identified with remediation guidance, overall status determined.
 
 **Master Rule:** Check everything systematically, report findings clearly, provide actionable remediation.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolver succeeds and returns a non-empty `workflow.on_complete`, execute that value as the final terminal instruction before exiting.
+
+If the resolver fails, returns no output, or resolves an empty value, skip the hook and exit normally.

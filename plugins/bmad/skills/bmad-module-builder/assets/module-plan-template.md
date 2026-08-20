@@ -27,13 +27,13 @@ updated: ''
 
 ### Memory Architecture
 
-<!-- Which pattern: personal sidecars only, personal + shared, or single module sidecar? -->
-<!-- If single sidecar: include the full folder structure -->
+<!-- Which pattern: personal memory only, personal + shared, or single shared memory? -->
+<!-- If single shared memory: include the full folder structure -->
 <!-- If shared memory: define the memory contract below -->
 
 ### Memory Contract
 
-<!-- For each curated file in the sidecar, document: -->
+<!-- For each curated file in the memory folder, document: -->
 <!-- - Filename and purpose -->
 <!-- - What agents read it -->
 <!-- - What agents write to it -->
@@ -70,7 +70,7 @@ updated: ''
 
 **Memory:** <!-- What does this agent read on activation? Write to? Daily log tag? -->
 
-**Init Responsibility:** <!-- What happens on first run? Shared sidecar creation? Domain onboarding? -->
+**Init Responsibility:** <!-- What happens on first run? Shared memory creation? Domain onboarding? -->
 
 **Activation Modes:** <!-- Interactive, headless, or both? -->
 

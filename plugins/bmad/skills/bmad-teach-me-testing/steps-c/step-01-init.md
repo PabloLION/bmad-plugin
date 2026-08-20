@@ -2,7 +2,7 @@
 name: 'step-01-init'
 description: 'Initialize TEA Academy - check for existing progress and route to continuation or new assessment'
 
-nextStepFile: './step-02-assess.md'
+nextStepFile: '{skill-root}/steps-c/step-02-assess.md'
 continueFile: './step-01b-continue.md'
 progressFile: '{test_artifacts}/teaching-progress/{user_name}-tea-progress.yaml'
 progressTemplate: '../templates/progress-template.yaml'
@@ -190,8 +190,8 @@ stepsCompleted: ['step-01-init']
 lastStep: 'step-01-init'
 lastContinued: { current_date }
 
-certificate_generated: false
-certificate_path: null
+summary_generated: false
+summary_path: null
 completion_date: null
 ---
 ```

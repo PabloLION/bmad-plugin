@@ -3,7 +3,7 @@ name: 'step-09-complete'
 description: 'Complete the architecture workflow with final review and handoff guidance'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-game-architecture'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-09-complete.md'
@@ -11,8 +11,8 @@ workflowFile: '{workflow_path}/workflow.md'
 outputFile: '{output_folder}/game-architecture.md'
 
 # Handoff References
-epicWorkflow: '{project-root}/_bmad/gds/workflows/4-production/epic-workflow/workflow.yaml'
-projectContextWorkflow: '${CLAUDE_PLUGIN_ROOT}/skills/gds-generate-project-context/SKILL.md'
+epicWorkflow: 'skill:gds-create-epics-and-stories'
+projectContextWorkflow: 'skill:gds-generate-project-context'
 ---
 
 # Step 9: Completion
@@ -373,3 +373,9 @@ The Game Architecture workflow transforms a GDD into a comprehensive architectur
 9. **Complete** - Finalize and provide handoff
 
 This step-file architecture ensures consistent, thorough architecture creation with user collaboration at every step.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolved `workflow.on_complete` is non-empty, follow it as the final terminal instruction before exiting.

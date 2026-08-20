@@ -3,7 +3,7 @@ name: 'step-01-init'
 description: 'Initialize the architecture workflow, validate readiness, and discover input documents'
 
 # Path Definitions
-workflow_path: '${CLAUDE_PLUGIN_ROOT}/skills/gds-game-architecture'
+workflow_path: '{installed_path}'
 
 # File References
 thisStepFile: './step-01-init.md'

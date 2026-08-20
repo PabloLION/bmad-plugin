@@ -1,5 +1,17 @@
 # BMAD Plugin Research
 
+> **📌 Historical snapshot (2026-01-25).** This document captures the
+> initial research that motivated the plugin and is intentionally frozen as
+> a record of the project's starting point. Numbers, versions, and "verified"
+> stamps below were correct at the time of writing only. For the current
+> state see [README.md](../README.md), [docs/bmad-ecosystem.md](bmad-ecosystem.md),
+> and [CHANGELOG.md](../CHANGELOG.md).
+>
+> At time of writing, upstream BMAD-METHOD was at **v6.0.0-alpha.23**.
+> As of 2026-08-20 the plugin tracks core BMAD **v6.11.0** and
+> `.claude-plugin/marketplace.json` publishes **two** plugins — `bmad`
+> (v6.11.0.0) and `bmad-manticore` (v1.0.1).
+
 Research findings on BMAD Method and Claude Code plugin ecosystem.
 
 ## Background

@@ -30,6 +30,8 @@ Always prefer Python's standard library over external dependencies. The stdlib i
 
 Only pull in external dependencies when the stdlib genuinely cannot do the job (e.g., `tiktoken` for accurate token counting, `pyyaml` for YAML parsing, `jsonschema` for schema validation). **External dependencies must be confirmed with the user during the build process** — they add install-time cost, supply-chain surface, and require `uv` to be available.
 
+When a script does rely on a non-stdlib dependency, give it a graceful fallback for when the import is unavailable. `count_tokens.py` is the model: it uses `tiktoken` when present and a chars-over-four estimate when absent, so the script still produces a usable answer rather than crashing.
+
 ## PEP 723 Inline Metadata (Required)
 
 Every Python script MUST include a PEP 723 metadata block. For scripts with external dependencies, use the `uv run` shebang:
@@ -57,14 +59,13 @@ For scripts using only the standard library, use a plain Python shebang but stil
 - Always include `requires-python`
 - List all external dependencies with version constraints
 - Never use `requirements.txt`, `pip install`, or expect global package installs
-- The shebang is a Unix convenience — cross-platform invocation relies on `uv run scripts/foo.py`, not `./scripts/foo.py`
+- The shebang is a Unix convenience only — cross-platform invocation always uses `uv run scripts/foo.py`
 
 ## Invocation in SKILL.md
 
-How a built skill's SKILL.md should reference its scripts:
+How a built skill's SKILL.md should reference its scripts (bare path from the skill root, per the path conventions):
 
-- **Scripts with external dependencies:** `uv run scripts/analyze.py {args}`
-- **Stdlib-only scripts:** `python3 scripts/scan.py {args}` (also fine to use `uv run` for consistency)
+- **All scripts:** `uv run scripts/foo.py {args}` — consistent invocation regardless of whether the script has external dependencies
 
 `uv run` reads the PEP 723 metadata, silently caches dependencies in an isolated environment, and runs the script — no user prompt, no global install. Like `npx` for Python.
 
@@ -77,7 +78,7 @@ Skills may run in environments where Python or `uv` is unavailable (e.g., claude
 In SKILL.md, frame script steps as outcomes, not just commands:
 
 - Good: "Validate path conventions (run `scripts/scan-paths.py --help` for details)"
-- Avoid: "Execute `python3 scripts/scan-paths.py`" with no context about what it does
+- Avoid: "Execute `uv run scripts/scan-paths.py`" with no context about what it does
 
 ## Script Interface Standards
 

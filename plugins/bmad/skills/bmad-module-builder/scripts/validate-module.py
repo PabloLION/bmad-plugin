@@ -5,7 +5,7 @@
 """Validate a BMad module's structure and help CSV integrity.
 
 Supports two module types:
-- Multi-skill modules with a dedicated setup skill (bmad-*-setup directory)
+- Multi-skill modules with a dedicated setup skill (*-setup directory)
 - Standalone single-skill modules with self-registration (assets/module-setup.md)
 
 Performs deterministic structural checks:
@@ -13,7 +13,7 @@ Performs deterministic structural checks:
 - All skill folders have at least one capability entry in the CSV
 - No orphan CSV entries pointing to nonexistent skills
 - Menu codes are unique
-- Before/after references point to real capability entries
+- preceded-by/followed-by references point to real capability entries
 - Required module.yaml fields are present
 - CSV column count is consistent
 """
@@ -28,15 +28,15 @@ from pathlib import Path
 REQUIRED_YAML_FIELDS = {"code", "name", "description"}
 CSV_HEADER = [
     "module", "skill", "display-name", "menu-code", "description",
-    "action", "args", "phase", "after", "before", "required",
+    "action", "args", "phase", "preceded-by", "followed-by", "required",
     "output-location", "outputs",
 ]
 
 
 def find_setup_skill(module_dir: Path) -> Path | None:
-    """Find the setup skill folder (bmad-*-setup)."""
+    """Find the setup skill folder (*-setup)."""
     for d in module_dir.iterdir():
-        if d.is_dir() and d.name.startswith("bmad-") and d.name.endswith("-setup"):
+        if d.is_dir() and d.name.endswith("-setup"):
             return d
     return None
 
@@ -51,7 +51,16 @@ def find_skill_folders(module_dir: Path, exclude_name: str = "") -> list[str]:
 
 
 def detect_standalone_module(module_dir: Path) -> Path | None:
-    """Detect a standalone module: single skill folder with assets/module.yaml."""
+    """Detect a standalone module: a single skill folder with assets/module.yaml.
+
+    Works whether ``module_dir`` is the parent folder that contains the skill, or
+    the standalone skill directory itself (the path a user is most likely to hand
+    over for a single-skill module).
+    """
+    # Given the skill directory directly.
+    if (module_dir / "SKILL.md").is_file() and (module_dir / "assets" / "module.yaml").is_file():
+        return module_dir
+    # Given the parent folder containing exactly one skill.
     skill_dirs = [
         d for d in module_dir.iterdir()
         if d.is_dir() and (d / "SKILL.md").is_file()
@@ -77,12 +86,22 @@ def parse_yaml_minimal(text: str) -> dict[str, str]:
     return result
 
 
-def parse_csv_rows(csv_text: str) -> tuple[list[str], list[dict[str, str]]]:
-    """Parse CSV text into header and list of row dicts."""
-    reader = csv.DictReader(StringIO(csv_text))
+def parse_csv_rows(csv_text: str) -> tuple[list[str], list[dict[str, str]], list[int]]:
+    """Parse CSV text into (header, row dicts, raw column count per data row).
+
+    ``restval=""`` fills missing trailing fields in a short row with empty strings
+    instead of ``None``, so downstream ``.strip()`` calls stay safe on malformed
+    rows. DictReader pads short rows to the header width, so ``len(row)`` cannot
+    reveal a field shortfall; the raw per-row column counts from ``csv.reader``
+    (blank lines skipped, to stay aligned with DictReader) are returned separately
+    for the column-count consistency check.
+    """
+    reader = csv.DictReader(StringIO(csv_text), restval="")
     header = reader.fieldnames or []
     rows = list(reader)
-    return header, rows
+    raw_rows = list(csv.reader(StringIO(csv_text)))
+    col_counts = [len(r) for r in raw_rows[1:] if r != []]
+    return header, rows, col_counts
 
 
 def validate(module_dir: Path, verbose: bool = False) -> dict:
@@ -106,7 +125,7 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
         standalone_dir = detect_standalone_module(module_dir)
         if not standalone_dir:
             finding("critical", "structure",
-                    "No setup skill found (bmad-*-setup directory) and no standalone module detected")
+                    "No setup skill found (*-setup directory) and no standalone module detected")
             return {"status": "fail", "findings": findings, "info": info}
 
     # Branch: standalone vs multi-skill
@@ -120,14 +139,32 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
             "assets/module.yaml": skill_dir / "assets" / "module.yaml",
             "assets/module-help.csv": skill_dir / "assets" / "module-help.csv",
             "assets/module-setup.md": skill_dir / "assets" / "module-setup.md",
-            "scripts/merge-config.py": skill_dir / "scripts" / "merge-config.py",
-            "scripts/merge-help-csv.py": skill_dir / "scripts" / "merge-help-csv.py",
         }
+        # Merge scripts: accept either the dash form the scaffolder emits
+        # (merge-config.py) or the importable underscore form (merge_config.py).
+        # Both are valid — a module may rename them to be importable from
+        # module-setup.md without that being a structural defect.
+        required_any = {
+            "scripts/merge-config.py (or merge_config.py)": [
+                skill_dir / "scripts" / "merge-config.py",
+                skill_dir / "scripts" / "merge_config.py",
+            ],
+            "scripts/merge-help-csv.py (or merge_help_csv.py)": [
+                skill_dir / "scripts" / "merge-help-csv.py",
+                skill_dir / "scripts" / "merge_help_csv.py",
+            ],
+        }
+        ok = True
         for label, path in required_files.items():
             if not path.is_file():
                 finding("critical", "structure", f"Missing required file: {label}")
+                ok = False
+        for label, candidates in required_any.items():
+            if not any(p.is_file() for p in candidates):
+                finding("critical", "structure", f"Missing required file: {label}")
+                ok = False
 
-        if not all(p.is_file() for p in required_files.values()):
+        if not ok:
             return {"status": "fail", "findings": findings, "info": info}
 
         yaml_dir = skill_dir
@@ -163,7 +200,7 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
 
     # 4. Parse and validate CSV
     csv_text = (csv_dir / "assets" / "module-help.csv").read_text(encoding="utf-8")
-    header, rows = parse_csv_rows(csv_text)
+    header, rows, col_counts = parse_csv_rows(csv_text)
 
     # Check header
     if header != CSV_HEADER:
@@ -182,17 +219,22 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
 
     info["csv_entries"] = len(rows)
 
-    # 5. Check column count consistency
+    # 5. Check column count consistency (using raw field counts: DictReader pads
+    #    short rows to the header width, so len(row) alone can't detect a shortfall)
     expected_cols = len(CSV_HEADER)
-    for i, row in enumerate(rows):
-        if len(row) != expected_cols:
-            finding("medium", "csv-columns", f"Row {i + 2} has {len(row)} columns, expected {expected_cols}",
+    for i, (row, n_cols) in enumerate(zip(rows, col_counts)):
+        if n_cols != expected_cols:
+            finding("medium", "csv-columns", f"Row {i + 2} has {n_cols} columns, expected {expected_cols}",
                     f"skill={row.get('skill', '?')}")
 
     # 6. Collect skills from CSV and filesystem
     csv_skills = {row.get("skill", "") for row in rows}
-    exclude_name = setup_dir.name if setup_dir else ""
-    skill_folders = find_skill_folders(module_dir, exclude_name)
+    if standalone_dir:
+        # The only valid skill is the standalone skill itself, whether we were
+        # handed the module's parent folder or the skill directory directly.
+        skill_folders = [standalone_dir.name]
+    else:
+        skill_folders = find_skill_folders(module_dir, setup_dir.name)
     info["skill_folders"] = skill_folders
     info["csv_skills"] = sorted(csv_skills)
 
@@ -204,10 +246,15 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
     # 8. Orphan CSV entries
     setup_name = setup_dir.name if setup_dir else ""
     for skill in csv_skills:
-        if skill not in skill_folders and skill != setup_name:
-            # Check if it's the setup skill itself (valid)
-            if not (module_dir / skill / "SKILL.md").is_file():
-                finding("high", "orphan-entry", f"CSV references skill '{skill}' which does not exist in the module folder")
+        if skill in skill_folders or skill == setup_name:
+            continue
+        # For a standalone module, skill_folders already enumerates every valid
+        # skill, so any other CSV skill is an orphan — never look at the parent
+        # folder (which may hold unrelated sibling skills when validating a skill
+        # dir directly). For a multi-skill module, re-check the filesystem: the
+        # setup skill lives alongside the others and is excluded from skill_folders.
+        if standalone_dir or not (module_dir / skill / "SKILL.md").is_file():
+            finding("high", "orphan-entry", f"CSV references skill '{skill}' which does not exist in the module folder")
 
     # 9. Unique menu codes
     menu_codes: dict[str, list[str]] = {}
@@ -220,7 +267,7 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
         if len(names) > 1:
             finding("high", "duplicate-menu-code", f"Menu code '{code}' used by multiple entries: {', '.join(names)}")
 
-    # 10. Before/after reference validation
+    # 10. preceded-by/followed-by reference validation
     # Build set of valid capability references (skill:action)
     valid_refs = set()
     for row in rows:
@@ -231,14 +278,22 @@ def validate(module_dir: Path, verbose: bool = False) -> dict:
 
     for row in rows:
         display = row.get("display-name", "?")
-        for field in ("after", "before"):
+        for field in ("preceded-by", "followed-by"):
             value = row.get(field, "").strip()
             if not value:
                 continue
             # Can be comma-separated
             for ref in value.split(","):
                 ref = ref.strip()
-                if ref and ref not in valid_refs:
+                if not ref:
+                    continue
+                # A colon-less ref is a cross-module positional reference (a bare
+                # sibling-module skill name, e.g. "bmad-sprint-planning"). Other
+                # installed modules aren't visible here, so it can't be resolved
+                # and isn't a defect — only validate intra-module skill:action refs.
+                if ":" not in ref:
+                    continue
+                if ref not in valid_refs:
                     finding("medium", "invalid-ref",
                             f"'{display}' {field} references '{ref}' which is not a valid capability",
                             "Expected format: skill-name:action-name")

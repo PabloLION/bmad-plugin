@@ -21,6 +21,13 @@ For each skill, understand:
 - What it produces and where
 - Dependencies on other skills or external tools
 
+**Also read `customize.toml` if present.** Skills built by the agent-builder ship a `customize.toml` alongside SKILL.md with an `[agent]` metadata block — `code`, `name`, `title`, `icon`, `description`, `agent_type`. Skills built by the workflow-builder may ship a `customize.toml` with a `[workflow]` block when the author opted in to end-user customization. Capture:
+
+- **Agent metadata:** the full `[agent]` block from each agent skill — this will populate `module.yaml:agents[]` in step 3.5.
+- **Workflow customization:** presence/absence of `[workflow]` is informational only; workflows don't contribute to the module's agent roster.
+
+Skills without a `customize.toml` are fine — older skills or ones that predate customization support. Their metadata comes from the SKILL.md body (title heading, description frontmatter) as a fallback.
+
 **Single skill detection:** If the folder contains exactly one skill (one directory with a SKILL.md), or the user provided a direct path to a single skill, note this as a **standalone module candidate**.
 
 ### 1.5. Confirm Approach
@@ -84,6 +91,30 @@ Ask the user about:
 - `outputs`: describe file patterns bmad-help should look for to detect completion (e.g., "quality report", "converted skill")
 - `menu-code`: unique 1-3 letter shortcodes displayed as `[CODE] Display Name` in help
 
+### 3.5. Populate the Agent Roster
+
+If any skills in the folder are agents (identified by a `customize.toml` with an `[agent]` block, or for legacy skills by an `agent-` segment anywhere in the skill name, e.g. `agent-foo` or `cis-agent-foo`), add them to `module.yaml` under an `agents:` key. Each entry carries the five install-time roster fields read from the agent's `[agent]` block:
+
+```yaml
+agents:
+  - code: analyst
+    name: Mary
+    title: Business Analyst
+    icon: 📊
+    description: Strategic business analyst and requirements expert.
+  - code: creative-muse
+    name: ""                    # learned at First Breath — owner fills post-activation
+    title: Creative Muse
+    icon: ✨
+    description: Creative companion and muse.
+```
+
+**First-Breath-named agents:** if an agent's `[agent]` block has `name = ""`, carry the empty string through to `module.yaml` verbatim. The installer tolerates it, and roster-consuming UIs fall back to `title` until the owner fills the name by adding `[agents.<code>] name = "..."` to `{project-root}/_bmad/custom/config.toml` after their first activation.
+
+**Skills without `customize.toml`:** if an agent skill predates the customization surface and has no `customize.toml`, reconstruct the metadata from SKILL.md: `code` from the skill directory basename (stripped of module prefix), `title` from the first `#` heading, `description` from frontmatter `description`, `name` and `icon` from the user (ask if not obvious from the SKILL.md body).
+
+**Confirm with the user before writing** — show the proposed `agents:` block alongside the other module.yaml content in step 6.
+
 ### 4. Define Configuration Variables
 
 Does the module need custom installation questions? For each custom variable:
@@ -139,7 +170,7 @@ Iterate until the user confirms everything is correct.
 Write the confirmed module.yaml and module-help.csv content to temporary files at `{bmad_builder_reports}/{module-code}-temp-module.yaml` and `{bmad_builder_reports}/{module-code}-temp-help.csv`. Run the scaffold script:
 
 ```bash
-python3 ./scripts/scaffold-setup-skill.py \
+uv run ./scripts/scaffold-setup-skill.py \
   --target-dir "{skills-folder}" \
   --module-code "{code}" \
   --module-name "{name}" \
@@ -147,7 +178,7 @@ python3 ./scripts/scaffold-setup-skill.py \
   --module-csv "{bmad_builder_reports}/{module-code}-temp-help.csv"
 ```
 
-This creates `bmad-{code}-setup/` in the user's skills folder containing:
+This creates `{code}-setup/` in the user's skills folder containing:
 
 - `./SKILL.md` — Generic setup skill with module-specific frontmatter
 - `./scripts/` — merge-config.py, merge-help-csv.py, cleanup-legacy.py
@@ -159,7 +190,7 @@ This creates `bmad-{code}-setup/` in the user's skills folder containing:
 Write the confirmed module.yaml and module-help.csv directly to the skill's `assets/` folder (create the folder if needed). Then run the standalone scaffold script to copy the template infrastructure:
 
 ```bash
-python3 ./scripts/scaffold-standalone-module.py \
+uv run ./scripts/scaffold-standalone-module.py \
   --skill-dir "{skill-folder}" \
   --module-code "{code}" \
   --module-name "{name}"
@@ -174,7 +205,7 @@ This adds to the existing skill:
 
 After scaffolding, read the skill's SKILL.md and integrate the registration check into its **On Activation** section. How you integrate depends on whether the skill has an existing first-run init flow:
 
-**If the skill has a first-run init** (e.g., agents with sidecar memory — if sidecar doesn't exist, the skill loads an init template for first-time onboarding): add the module registration to that existing first-run flow. The init reference should load `./assets/module-setup.md` before or as part of first-time setup, so the user gets both module registration and skill initialization in a single first-run experience. The `setup`/`configure` arg should still work independently for reconfiguration.
+**If the skill has a first-run init** (e.g., agents with persistent memory — if the agent memory doesn't exist, the skill loads an init template for first-time onboarding): add the module registration to that existing first-run flow. The init reference should load `./assets/module-setup.md` before or as part of first-time setup, so the user gets both module registration and skill initialization in a single first-run experience. The `setup`/`configure` arg should still work independently for reconfiguration.
 
 **If the skill has no first-run init** (e.g., simple workflows): add a standalone registration check before any config loading:
 
@@ -232,7 +263,7 @@ In headless mode: skip interactive questions, scaffold immediately, and return s
   "status": "success|error",
   "approach": "standalone|setup-skill",
   "module_code": "...",
-  "setup_skill": "bmad-{code}-setup",
+  "setup_skill": "{code}-setup",
   "skill_dir": "/path/to/skill/",
   "location": "/path/to/...",
   "files_created": ["..."],

@@ -16,7 +16,7 @@ description: 'Exhaustive deep-dive documentation of specific project areas'
 
 ### Configuration Loading
 
-Load config from `.claude/bmad.local.md` and resolve:
+Load config from `{module_config}` and resolve:
 
 - `project_knowledge`
 - `user_name`
@@ -24,10 +24,10 @@ Load config from `.claude/bmad.local.md` and resolve:
 
 ### Paths
 
-- `installed_path` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/workflows`
+- `installed_path` = `../workflows`
 - `instructions` = `{installed_path}/deep-dive-instructions.md`
-- `validation` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/checklist.md`
-- `deep_dive_template` = `${CLAUDE_PLUGIN_ROOT}/skills/gds-document-project/templates/deep-dive-template.md`
+- `validation` = `../checklist.md`
+- `deep_dive_template` = `../templates/deep-dive-template.md`
 
 ### Runtime Inputs
 

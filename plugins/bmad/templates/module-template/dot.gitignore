@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# System
+.DS_Store
+Thumbs.db
+
+# Build output
+build/
+
+# BMad project files (generated at install time)
+_bmad/
+_bmad-output/
+.*/skills

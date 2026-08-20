@@ -50,7 +50,7 @@ Before starting this workflow, verify:
 
 ---
 
-## Step 3: Failing Tests Generated
+## Step 3: Red-Phase Test Scaffolds Generated
 
 ### Test File Structure Created
 
@@ -68,8 +68,8 @@ Before starting this workflow, verify:
 - [ ] One assertion per test (atomic test design)
 - [ ] No hard waits or sleeps (explicit waits only)
 - [ ] Network-first pattern applied (route interception BEFORE navigation)
-- [ ] Tests fail initially (RED phase verified by local test run)
-- [ ] Failure messages are clear and actionable
+- [ ] Tests are generated as `test.skip()` scaffolds
+- [ ] Activation guidance is documented for the current task
 
 ### API Tests (If Applicable)
 
@@ -79,7 +79,7 @@ Before starting this workflow, verify:
 - [ ] HTTP status codes verified
 - [ ] Response body validation includes all required fields
 - [ ] Error cases tested (400, 401, 403, 404, 500)
-- [ ] Tests fail initially (RED phase verified)
+- [ ] Tests are generated as `test.skip()` scaffolds
 
 ### Component Tests (If Applicable)
 
@@ -89,7 +89,7 @@ Before starting this workflow, verify:
 - [ ] Interaction testing covers user actions (click, hover, keyboard)
 - [ ] State management within component validated
 - [ ] Props and events tested
-- [ ] Tests fail initially (RED phase verified)
+- [ ] Tests are generated as `test.skip()` scaffolds
 
 ### Test Quality Validation
 
@@ -144,7 +144,7 @@ Before starting this workflow, verify:
 ## Step 5: Implementation Checklist Created
 
 - [ ] Implementation checklist created with clear structure
-- [ ] Each failing test mapped to concrete implementation tasks
+- [ ] Each scaffolded test mapped to concrete implementation tasks
 - [ ] Tasks include:
   - [ ] Route/component creation
   - [ ] Business logic implementation
@@ -170,12 +170,12 @@ Before starting this workflow, verify:
 
 ### ATDD Checklist Document Created
 
-- [ ] Output file created at `{test_artifacts}/atdd-checklist-{story_id}.md`
+- [ ] Output file created at `{test_artifacts}/atdd-checklist-{story_key}.md`
 - [ ] Document follows template structure from `atdd-checklist-template.md`
 - [ ] Document includes all required sections:
   - [ ] Story summary
   - [ ] Acceptance criteria breakdown
-  - [ ] Failing tests created (paths and line counts)
+  - [ ] Red-phase test scaffolds created (paths and line counts)
   - [ ] Data factories created
   - [ ] Fixtures created
   - [ ] Mock requirements
@@ -184,15 +184,16 @@ Before starting this workflow, verify:
   - [ ] Red-green-refactor workflow
   - [ ] Execution commands
   - [ ] Next steps for DEV team
-- [ ] Output shared with DEV workflow (manual handoff; not auto-consumed)
+- [ ] Checklist frontmatter includes `storyId`, `storyKey`, `storyFile`, `atddChecklistPath`, and generated test file paths
+- [ ] If a writable story file was provided, ATDD artifacts were linked back into story context
+- [ ] If a story file could not be updated, manual handoff instructions are present
 
-### All Tests Verified to Fail (RED Phase)
+### Red-Phase Scaffolds Verified
 
-- [ ] Full test suite run locally before finalizing
-- [ ] All tests fail as expected (RED phase confirmed)
-- [ ] No tests passing before implementation (if passing, test is invalid)
-- [ ] Failure messages documented in ATDD checklist
-- [ ] Failures are due to missing implementation, not test bugs
+- [ ] All generated acceptance test scaffolds are marked with `test.skip()`
+- [ ] No scaffold was emitted as an active passing test before implementation
+- [ ] Activation guidance is documented: remove `test.skip()` for the current task, then confirm RED before implementing
+- [ ] Any assumptions or expected failure reasons are documented in ATDD checklist
 - [ ] Test run output captured for reference
 
 ### Summary Provided
@@ -225,8 +226,41 @@ Before starting this workflow, verify:
 - [ ] Tests are atomic (one assertion per test)
 - [ ] Tests are fast (no unnecessary waits or delays)
 
+### Playwright Utils Mandate (if `tea_use_playwright_utils` is true)
+
+Per `playwright-utils-mandate.md`. Skip this section entirely when the flag is false, and for Cypress and non-Playwright suites. A red-phase scaffold is held to the same standard as a green test.
+
+- [ ] `{test_dir}/support/merged-fixtures.ts` exists and composes with `mergeTests`
+- [ ] Every scaffold imports `test` from the merged fixtures, not from `@playwright/test`
+- [ ] Application API calls use `interceptNetworkCall`, not `page.route` or `page.waitForResponse`
+- [ ] API scaffolds use `apiRequest`, not the raw `request` fixture
+- [ ] Async waits use `recurse`, not `page.waitForTimeout`
+- [ ] Report output uses `log`, not `console.log`
+- [ ] Authenticated journeys take `authToken` from the auth-session fixture, or the missing auth wiring is listed in the ATDD checklist
+- [ ] Package name is `@seontechnologies/playwright-utils` everywhere (never `@playwright-utils/*`)
+- [ ] Every remaining vanilla call carries a `// playwright-utils deviation: <reason>` comment and appears in the checklist's deviation list
+
+### Pact.js Utils Mandate (if `tea_use_pactjs_utils` is true and contract tests are in scope)
+
+Per `pactjs-utils-mandate.md`. Skip entirely when the flag is false, when `@seontechnologies/pactjs-utils` is not installed, or when the project has no consumer-provider boundary — the flag never means a project should have contract tests.
+
+- [ ] Contract artifacts generated only against a real consumer-provider boundary, with the reason stated when skipped
+- [ ] `@seontechnologies/pactjs-utils` and `@pact-foundation/pact` present in `package.json`
+- [ ] Provider states built with `createProviderState`, never a hand-cast `.given('name', obj as JsonMap)`
+- [ ] Verifier options built with `buildVerifierOptions` / `buildMessageVerifierOptions`, never a literal options object
+- [ ] Auth injection uses `createRequestFilter` or `noOpRequestFilter`, never bespoke middleware
+- [ ] PactV4 builder callbacks use `setJsonContent` / `setJsonBody` rather than repeated inline lambdas
+- [ ] `zodToPactMatchers` used where the project already has a Zod schema
+- [ ] `executeTest` exercises the real consumer client via the `pact-consumer-di.md` injection, or the reason it cannot is stated
+- [ ] Exactly one `addInteraction()` per `it()` block
+- [ ] Consumer Vitest config carries `fileParallelism: false` AND `pool: 'forks'` AND `singleFork: true`; provider config carries the pool pair
+- [ ] Every interaction carries its `// Provider endpoint:` comment and provider-scrutiny evidence
+- [ ] Package name is `@seontechnologies/pactjs-utils` everywhere
+- [ ] Every remaining raw-Pact construct carries a `// pactjs-utils deviation: <reason>` comment and appears in the summary's deviation list
+
 ### Knowledge Base Integration
 
+- [ ] playwright-utils-mandate.md applied to all generated specs (if `tea_use_playwright_utils` is true)
 - [ ] fixture-architecture.md patterns applied to all fixtures
 - [ ] data-factories.md patterns applied to all factories
 - [ ] network-first.md patterns applied to E2E tests with network requests
@@ -279,9 +313,9 @@ Before starting this workflow, verify:
 All of the following must be true before marking this workflow as complete:
 
 - [ ] **Story acceptance criteria analyzed** and mapped to appropriate test levels
-- [ ] **Failing tests created** at all appropriate levels (E2E, API, Component)
+- [ ] **Red-phase test scaffolds created** at all appropriate levels (E2E, API, Component)
 - [ ] **Given-When-Then format** used consistently across all tests
-- [ ] **RED phase verified** by local test run (all tests failing as expected)
+- [ ] **RED phase verified** by scaffold generation plus task-by-task activation guidance
 - [ ] **Network-first pattern** applied to E2E tests with network requests
 - [ ] **Data factories created** using faker (no hardcoded test data)
 - [ ] **Fixtures created** with auto-cleanup in teardown
@@ -316,8 +350,8 @@ All of the following must be true before marking this workflow as complete:
 
 **Resolution:**
 
-- Move `await page.route()` calls BEFORE `await page.goto()`
-- Review `network-first.md` knowledge fragment
+- Move the interception BEFORE `await page.goto()`. With `tea_use_playwright_utils` true that means declaring `const call = interceptNetworkCall({ url })` above the navigation and awaiting it after; with the flag false it means moving `await page.route()` above the navigation.
+- Review `network-first.md` for the principle and `intercept-network-call.md` for the mechanism
 - Update all E2E tests to follow network-first pattern
 
 ### Issue: Hardcoded test data in tests

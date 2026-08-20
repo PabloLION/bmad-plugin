@@ -2,7 +2,7 @@
 name: 'step-e-02-apply-edits'
 description: 'Apply modifications to the teaching workflow based on edit plan'
 
-workflowPath: '../'
+workflowPath: '{skill-root}'
 ---
 
 # Edit Step 2: Apply Edits
@@ -107,8 +107,8 @@ The teach-me-testing workflow has been updated.
 
 **Recommended next steps:**
 
-1. Run validation: `bmad run teach-me-testing -v`
-2. Test the workflow: `bmad run teach-me-testing`
+1. Run validation: `/bmad-teach-me-testing validate` (Codex: `$bmad-teach-me-testing validate`)
+2. Test the workflow: `/bmad-teach-me-testing` (Codex: `$bmad-teach-me-testing`)
 3. Make additional edits if needed"
 
 **This is the final edit step - workflow ends here.**
@@ -120,3 +120,11 @@ The teach-me-testing workflow has been updated.
 ✅ Edits applied to approved files only, changes validated, workflow integrity maintained, user informed of modifications.
 
 **Master Rule:** Show changes, get approval, apply edits, validate integrity.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolver succeeds and returns a non-empty `workflow.on_complete`, execute that value as the final terminal instruction before exiting.
+
+If the resolver fails, returns no output, or resolves an empty value, skip the hook and exit normally.

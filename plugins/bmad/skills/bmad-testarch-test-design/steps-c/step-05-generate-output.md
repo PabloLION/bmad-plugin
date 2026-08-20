@@ -2,7 +2,7 @@
 name: 'step-05-generate-output'
 description: 'Generate output documents with adaptive orchestration (agent-team, subagent, or sequential)'
 outputFile: '{test_artifacts}/test-design-epic-{epic_num}.md'
-progressFile: '{test_artifacts}/test-design-progress.md'
+progressFile: '{test_artifacts}/test-design-progress-{run_key}.md'
 ---
 
 # Step 5: Generate Outputs & Validate
@@ -119,7 +119,7 @@ If `resolvedMode` is `agent-team` or `subagent`, these two documents can be gene
 Generate **one** document:
 
 - `{outputFile}` using `test-design-template.md`
-- If `epic_num` is unclear, ask the user
+- Use the `epic_num` resolved in step 1. It is the value that named this run's progress checkpoint, so the plan and its checkpoint always identify the same run. Do not re-derive it and do not ask the user again.
 
 Epic-level mode remains single-worker by default (one output artifact).
 
@@ -130,7 +130,9 @@ Epic-level mode remains single-worker by default (one output artifact).
 Ensure the outputs include:
 
 - Risk assessment matrix
+- NFR planning summary (thresholds, missing thresholds, planned evidence, and NFR-derived risks) — when NFRs are in scope
 - Coverage matrix and priorities
+- NFR coverage and planned evidence mapping — when NFRs are in scope
 - Execution strategy
 - Resource estimates (ranges)
 - Quality gate criteria
@@ -196,8 +198,13 @@ Summarize:
 
   ```yaml
   ---
+  runScope: '{run_scope}'
+  runKey: '{run_key}'
+  workflowStatus: 'completed'
+  totalSteps: 5
   stepsCompleted: ['step-05-generate-output']
   lastStep: 'step-05-generate-output'
+  nextStep: ''
   lastSaved: '{date}'
   ---
   ```
@@ -205,8 +212,12 @@ Summarize:
   Then write this step's output below the frontmatter.
 
 - **If `{progressFile}` already exists**, update:
+  - Leave `runScope` and `runKey` exactly as step 1 wrote them
+  - Set `workflowStatus: 'completed'`
+  - Set `totalSteps: 5`
   - Add `'step-05-generate-output'` to `stepsCompleted` array (only if not already present)
   - Set `lastStep: 'step-05-generate-output'`
+  - Set `nextStep: ''`
   - Set `lastSaved: '{date}'`
   - Append this step's output to the appropriate section of the document.
 
@@ -220,3 +231,11 @@ Summarize:
 
 - Skipped sequence steps or missing outputs
   **Master Rule:** Skipping steps is FORBIDDEN.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolver succeeds and returns a non-empty `workflow.on_complete`, execute that value as the final terminal instruction before exiting.
+
+If the resolver fails, returns no output, or resolves an empty value, skip the hook and exit normally.

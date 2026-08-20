@@ -14,44 +14,88 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | typecheck | `bun run typecheck` | Type-check all TypeScript (no emit) |
 | lint | `bun run lint` | Biome lint + format check |
 | lint:staged | `bun run lint:staged` | Biome lint + auto-fix staged files |
-| validate | `bun run validate` | Upstream coverage validation (agents, skills, content, naming) |
-| sync | `bun run sync` | Sync upstream content to plugin |
-| sync:dry | `bun run sync:dry` | Dry-run sync (preview changes) |
-| sync:source | `bun run sync:source <id>` | Sync a single upstream source |
-| generate:agents | `bun run generate:agents` | Generate agent .md files from upstream YAML |
-| generate:skills | `bun run generate:skills` | Generate SKILL.md files from upstream workflows |
-| generate:manifest | `bun run generate:manifest` | Generate _shared/agent-manifest.csv from plugin agent files |
-| sync-all | `bun run sync-all` | Run sync → generate:agents → generate:skills in sequence |
-| bump-core | `bun run bump-core` | Bump plugin version for new core BMAD-METHOD release |
-| bump-module | `bun run bump-module -- --source <id>` | Bump plugin version for new external module release |
-| update-readme | `bun run update-readme` | Update README version badge |
-| test | `bun run test` | Run tests |
+| validate | `bun run validate` | Validate version pinning, marketplace integrity, skill surface, templatization |
+| sync | `bun run sync` | Regenerate plugin tree from `npx bmad-method install` |
+| sync:dry | `bun run sync:dry` | Preview a sync without writing files |
+| update-readme | `bun run update-readme` | Update README version table + badge files |
+| test | `bun run test` | Run all tests (incl. e2e — needs the `claude` CLI) |
+| test:unit | `bun run test:unit` | Run unit tests only (plugin tree + init script; runs in CI) |
 | release | `./scripts/release.sh [version]` | Full release workflow (see Release below) |
 
 ## Upstream Sync
 
-When upstream repos release new tags, sync them into the plugin:
+The plugin delegates 100% of content shaping to the official
+`npx bmad-method install --tools claude-code` CLI. To bring in a new
+upstream version:
 
 ```sh
-# Core BMAD-METHOD release
-bun run bump-core                       # fetch latest tag, bump to v<core>.0
-bun run bump-core -- --tag v6.0.2       # pin to specific tag
-bun run bump-core -- --dry-run          # preview only
-bun run sync-all                        # sync + generate agents + generate skills
+# Regenerate against a new core release (also rewrites the pin)
+bun run sync -- --tag v6.11.0
 
-# External module release (tea, bmb, cis, gds)
-bun run bump-module -- --source tea              # fetch latest tag, increment .X
-bun run bump-module -- --source gds --tag v0.1.7 # pin to specific tag
-bun run bump-module -- --source tea --dry-run    # preview only
-bun run sync-all -- --source tea                 # sync + generate for one source
+# …or re-run against the currently pinned versions
+bun run sync
 
 # Verify
-bun run typecheck && bun run lint
+bun run typecheck && bun run lint && bun run validate && bun run test
 ```
 
-Both bump scripts fetch tags, update the upstream version file, update all 4
-plugin version files (.plugin-version, package.json, plugin.json, marketplace.json),
-and update README badges. Core bumps reset .X to 0; module bumps increment .X by 1.
+Two installer runs happen, into two throwaway directories:
+
+1. `.upstream-install/` — the registry modules
+   (`bmm,bmb,cis,gds,tea,bmad-loop`). Feeds the `bmad` plugin.
+2. `.upstream-install-<id>/` — one per **custom source**: a real BMad
+   module absent from upstream's `bmad-modules.yaml` registry, cloned at
+   a pinned tag and handed to the installer as a local
+   `--custom-source` path. Feeds its own sibling plugin. Currently just
+   `manticore` → `plugins/bmad-manticore`.
+
+Splitting the runs keeps each plugin's runtime template describing only
+the modules that plugin ships.
+
+The `sync` script:
+
+1. Clones every custom source at the tag in
+   `.upstream-versions/<id>.json` (`--<id>-tag` to override). A local
+   path, not a URL — `--custom-source <url>` resolves the moving default
+   branch.
+2. Runs the registry installer into `.upstream-install/`.
+3. Wipes `plugins/bmad/{skills,runtime,_shared,agents}`,
+   `plugins/bmad/templates/module-template`, and each sibling plugin's
+   `skills/` + `runtime/`.
+4. Copies `.upstream-install/.claude/skills/*` 1:1 into
+   `plugins/bmad/skills/`. **Deprecated shims are not pruned** — upstream
+   keeps them because external module repos still invoke those IDs, and
+   removes them at the v7 cut.
+5. Captures `.upstream-install/_bmad/` into `plugins/bmad/runtime/_bmad/`,
+   replacing the installing machine's values with
+   `__BMAD_PROJECT_NAME__`, `__BMAD_USER_NAME__` and
+   `__BMAD_INSTALL_DATE__`, and storing nested `.gitignore` files as
+   `dot.gitignore`.
+6. Vendors `bmad-module-template` at its pinned commit into
+   `plugins/bmad/templates/module-template/`.
+7. Per custom source: second installer run, copy the prefixed skills into
+   the sibling plugin, capture its `_bmad/<code>/`.
+8. Bumps `.plugin-version`, `package.json`, `plugin.json`,
+   `marketplace.json`, and every `.upstream-versions/<id>.json` — module
+   versions read back from the installer's own
+   `_bmad/_config/manifest.yaml`, never guessed.
+9. Regenerates the README version table and the badge files.
+
+**Never hand-edit `plugins/*/skills/`, `plugins/*/runtime/` or
+`plugins/bmad/templates/module-template/`** — all are wiped and
+regenerated on every sync, and all are excluded from biome, markdownlint
+and tsc so upstream content stays byte-for-byte identical to the
+installer output.
+
+`scripts/lib/upstream-sources.ts` is the single registry of upstream
+sources. Each entry carries a `kind`: `core`, `registry`, `custom`, or
+`vendored`. Adding a source there is enough to get a README row, a badge
+file, and a weekly release-watcher job — `.github/workflows/sync-upstream.yml`
+builds its matrix from `scripts/list-sources.ts`. See
+`docs/module-integration.md`.
+
+Registry module versions cannot be bumped independently: the installer
+resolves them for the pinned core release.
 
 ## Release
 
@@ -59,7 +103,7 @@ Run from **dev** branch with clean working tree:
 
 ```sh
 ./scripts/release.sh                  # release current version (full run)
-./scripts/release.sh 6.0.0-Beta.9.0  # bump version first, then release
+./scripts/release.sh 6.5.1.0         # bump version first, then release
 ./scripts/release.sh --after-ci       # finish release after CI passes
 ```
 
@@ -71,67 +115,81 @@ and exits with instructions. Fix the issue, then `--after-ci` completes Phase 2.
 
 ## Git Workflow
 
-- **main** is for releases only — never commit directly to main
-- **dev** branch accepts PRs from feature branches
-- PRs target **dev**, not main
-- When merging PRs to dev: **do not squash** — preserve individual commits
-- Releases: merge dev → main (unidirectional)
-- One branch per module/story
+- **main** is the trunk. Every merged PR to date targets `main`; the
+  `dev` branch is 51 commits behind and carries nothing of its own.
+  Base new work on `main` unless `dev` is revived.
+- Do not commit directly to the trunk — open a PR.
+- Related changes ship as a **stack** of one-concern PRs
+  (`gh stack init --base main <branch>` / `gh stack add`), each of which
+  passes its own gates alone.
+- When merging: **do not squash** — preserve individual commits.
+- One branch per concern.
 
-## BMAD Agent Naming
+## Marketplace
 
-Two distinct names for each agent:
+`.claude-plugin/marketplace.json` publishes two plugins:
 
-| Term | Source | Example | Used for |
-|------|--------|---------|----------|
-| **Agent name** | Filename (without `.md`) | `quick-flow-solo-dev` | Invocation, delegation, code references |
-| **Personnel name** | `name` field in frontmatter or heading | Barry | Documentation, user-facing display |
+| Plugin | Source | Version tracks |
+| --- | --- | --- |
+| `bmad` | `./plugins/bmad` | the plugin version (`<core>.<patch>`) |
+| `bmad-manticore` | `./plugins/bmad-manticore` | the upstream module version |
 
-The agent name (filename) is the canonical identifier. Personnel names add personality but are optional in tables.
+Every directory under `plugins/` must be published — `bun run validate`
+fails on an unlisted one, because a marketplace install is a git clone of
+the whole repo and unpublished directories are dead weight in it. That is
+also why `plugins/bmad/templates/module-template/` lives inside the
+`bmad` plugin rather than as a directory of its own.
 
-### Current Agents
+## Agents and Skills
 
-| Agent (filename)        | Personnel  | Module | Role                         |
-| ----------------------- | ---------- | ------ | ---------------------------- |
-| analyst                 | Mary       | Core   | Business Analyst             |
-| pm                      | John       | Core   | Product Manager              |
-| ux-designer             | Sally      | Core   | UX Designer                  |
-| architect               | Winston    | Core   | System Architect             |
-| sm                      | Bob        | Core   | Scrum Master                 |
-| dev                     | Amelia     | Core   | Developer                    |
-| tea                     | Murat      | TEA    | Test Architect               |
-| quinn                   | Quinn      | Core   | QA Engineer                  |
-| tech-writer             | Paige      | Core   | Technical Writer             |
-| quick-flow-solo-dev     | Barry      | Core   | Quick Flow Solo Dev          |
-| bmad-master             | —          | Core   | Orchestrator                 |
-| agent-builder           | Bond       | BMB    | Agent Building Expert        |
-| module-builder          | Morgan     | BMB    | Module Creation Master       |
-| workflow-builder        | Wendy      | BMB    | Workflow Building Master     |
-| brainstorming-coach     | Carson     | CIS    | Brainstorming Facilitator    |
-| creative-problem-solver | Dr. Quinn  | CIS    | Problem-Solving Expert       |
-| design-thinking-coach   | Maya       | CIS    | Design Thinking Coach        |
-| innovation-strategist   | Victor     | CIS    | Innovation Strategist        |
-| presentation-master     | Caravaggio | CIS    | Presentation Expert          |
-| storyteller             | Sophia     | CIS    | Master Storyteller           |
-| game-architect          | Cloud Dragonborn | GDS | Principal Game Systems Architect |
-| game-designer           | Samus Shepard | GDS | Lead Game Designer           |
-| game-dev                | Link Freeman | GDS   | Senior Game Developer        |
-| game-qa                 | GLaDOS     | GDS    | Game QA Architect            |
-| game-scrum-master       | Max        | GDS    | Game Dev Scrum Master        |
-| game-solo-dev           | Indie      | GDS    | Elite Indie Game Developer   |
+As of v6.5.0+, the plugin treats **agents as skills**. Every agent
+persona — from BMM (Mary, Winston, Amelia, John, Sally) to TEA (Murat)
+to GDS (Cloud Dragonborn, Samus Shepard, …) — ships as a SKILL.md under
+`plugins/bmad/skills/<name>/`. Invoke them via `/bmad:bmad-agent-pm`,
+`/bmad:bmad-tea`, etc.
+
+There is no longer a separate `plugins/bmad/agents/` directory. The
+upstream `module.yaml` agent rosters and the upstream installer are
+authoritative for the agent list — no plugin-side mirror is needed.
+
+### Reference: agent roster (from `_bmad/config.toml`, 17 personas)
+
+| Slug                    | Persona  | Role                       |
+| ----------------------- | -------- | -------------------------- |
+| bmad-agent-analyst      | Mary     | Business Analyst           |
+| bmad-agent-pm           | John     | Product Manager            |
+| bmad-agent-ux-designer  | Sally    | UX Designer                |
+| bmad-agent-architect    | Winston  | System Architect           |
+| bmad-agent-dev          | Amelia   | Senior Software Engineer   |
+| bmad-tea (TEA)          | Murat    | Master Test Architect      |
+| bmad-cis-agent-*  (CIS) | various  | Brainstorming, design-thinking, problem-solving, innovation, storytelling, presentation |
+| bmad-agent-builder (BMB)| Bond     | Agent builder              |
+| gds-agent-* (GDS)       | various  | Game architect, designer, dev, solo-dev, tech-writer |
+
+`bmad-agent-tech-writer` (Paige, BMM) was **retired upstream in
+v6.11.0**; the game-scoped `gds-agent-tech-writer` is unaffected.
+`mc-agent` (Manny) ships with the `bmad-manticore` plugin but upstream
+does not write it into the core roster.
+
+For the full canonical list, see the SKILL.md frontmatter of each
+`plugins/bmad/skills/*-agent-*` (or `bmad-tea`, `gds-agent-*`)
+directory, or run `/bmad:bmad-help` inside Claude Code.
 
 ## Automation First
 
 Script everything repeatable — never do manually what a script can do.
 
-- Full sync pipeline → `bun run sync-all [--source <id>]` (preferred)
-- Agent files → `bun run generate:agents [--source <id>]`
-- Skill files → `bun run generate:skills [--source <id>]`
-- Sync content → `bun run sync [--source <id>]`
-- All scripts support `--source <id>` and `--dry-run` flags
-- When something breaks, **fix the script** — don't work around it manually
-- All scripts are **idempotent** — running them twice produces the same result.
-  Always run a script twice to verify idempotency after making changes to it
+- Full sync → `bun run sync` (one command, runs the upstream installer
+  and rebuilds the entire plugin tree from its output)
+- Preview a sync → `bun run sync:dry`
+- README badge / version table refresh → `bun run update-readme`
+- Validate → `bun run validate` (version consistency + skill-tree
+  sanity + no-deprecated-shims + runtime-template/init assets)
+- All scripts are **idempotent** — running them twice produces the same
+  result. Always run a script twice to verify idempotency after
+  changes.
+- When something breaks, **fix the script** — don't work around it
+  manually.
 
 ## Session Completion
 

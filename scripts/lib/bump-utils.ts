@@ -70,6 +70,15 @@ export async function updateJsonVersionFiles(
   for (const key of ['packageJson', 'pluginJson', 'marketplaceJson'] as const) {
     const path = VERSION_FILES[key];
     const content = await Bun.file(path).text();
+    if (currentVersion === newVersion) {
+      // Idempotent re-run: nothing to rewrite, just verify presence.
+      if (!content.includes(`"version": "${newVersion}"`)) {
+        console.error(
+          `⚠ Warning: version "${newVersion}" not found in ${path}`,
+        );
+      }
+      continue;
+    }
     const updated = content.replace(
       `"version": "${currentVersion}"`,
       `"version": "${newVersion}"`,

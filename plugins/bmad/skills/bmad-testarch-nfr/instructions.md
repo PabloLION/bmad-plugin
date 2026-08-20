@@ -1,4 +1,4 @@
-# Non-Functional Requirements Assessment
+# NFR Evidence Audit
 
 **Workflow:** `bmad-testarch-nfr`
 **Version:** 5.0 (Step-File Architecture)
@@ -7,7 +7,9 @@
 
 ## Overview
 
-Assess non-functional requirements (performance, security, reliability, maintainability) with evidence-based validation and deterministic PASS/CONCERNS/FAIL outcomes.
+Audit non-functional requirement evidence (performance, security, reliability, maintainability) with deterministic PASS/CONCERNS/FAIL outcomes.
+
+Use this workflow after implementation evidence exists: tests, scans, metrics, logs, monitoring data, CI results, or other release evidence. Use `test-design` earlier to define NFR thresholds, planned evidence, and NFR-derived risks.
 
 ---
 
@@ -33,11 +35,11 @@ From `workflow.yaml`, resolve:
 ### 2. First Step
 
 Load, read completely, and execute:
-`./steps-c/step-01-load-context.md`
+`{skill-root}/steps-c/step-01-load-context.md`
 
 ### 3. Resume Support
 
 If the user selects **Resume** mode, load, read completely, and execute:
-`./steps-c/step-01b-resume.md`
+`{skill-root}/steps-c/step-01b-resume.md`
 
 This checks the output document for progress tracking frontmatter and routes to the next incomplete step.

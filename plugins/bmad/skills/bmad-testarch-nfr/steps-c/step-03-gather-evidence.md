@@ -1,7 +1,7 @@
 ---
 name: 'step-03-gather-evidence'
 description: 'Collect evidence for each NFR category'
-nextStepFile: './step-04-evaluate-and-score.md'
+nextStepFile: '{skill-root}/steps-c/step-04-evaluate-and-score.md'
 outputFile: '{test_artifacts}/nfr-assessment.md'
 ---
 
@@ -42,7 +42,7 @@ Collect evidence for:
 - **Performance**: load tests, metrics, response time data
 - **Security**: scans, auth tests, vuln reports
 - **Reliability**: error rates, burn-in runs, failover tests
-- **Maintainability**: test quality, code health signals
+- **Maintainability**: CI coverage report, jscpd duplication report, npm audit results, structured logging and error-tracking config
 - **Other categories**: logs, monitoring, DR drills, deployability checks
 
 ---

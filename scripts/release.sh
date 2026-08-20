@@ -4,7 +4,7 @@
 #
 # Usage:
 #   ./scripts/release.sh                  # release current version (full run)
-#   ./scripts/release.sh 6.0.0-Beta.8.0  # bump version first, then release
+#   ./scripts/release.sh 6.5.1.0         # bump version first, then release
 #   ./scripts/release.sh --after-ci       # finish release after CI passes
 #
 # The script has two phases:

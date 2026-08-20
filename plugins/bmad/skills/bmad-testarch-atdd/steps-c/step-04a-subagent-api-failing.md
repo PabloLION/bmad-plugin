@@ -1,39 +1,41 @@
 ---
 name: 'step-04a-subagent-api-failing'
-description: 'Subagent: Generate FAILING API tests (TDD red phase)'
+description: 'Subagent: Generate red-phase API test scaffolds (TDD red phase)'
 subagent: true
 outputFile: '/tmp/tea-atdd-api-tests-{{timestamp}}.json'
 ---
 
-# Subagent 4A: Generate Failing API Tests (TDD Red Phase)
+# Subagent 4A: Generate Red-Phase API Test Scaffolds (TDD Red Phase)
 
 ## SUBAGENT CONTEXT
 
-This is an **isolated subagent** running in parallel with E2E failing test generation.
+This is an **isolated subagent** running in parallel with E2E red-phase test generation.
 
 **What you have from parent workflow:**
 
 - Story acceptance criteria from Step 1
 - Test strategy and scenarios from Step 3
-- Knowledge fragments loaded: api-request, data-factories, api-testing-patterns
-- Config: test framework, Playwright Utils enabled/disabled, Pact.js Utils enabled/disabled (`use_pactjs_utils`), Pact MCP mode (`pact_mcp`)
+- Knowledge fragments loaded: playwright-utils-mandate, overview, api-request, recurse, log, auth-session, data-factories, api-testing-patterns
+- Config: test framework, `use_playwright_utils` (default `true`), Pact.js Utils enabled/disabled (`use_pactjs_utils`), Pact MCP mode (`pact_mcp`)
 - Provider Endpoint Map (if `use_pactjs_utils` enabled and provider source accessible)
 
-**If `use_pactjs_utils` is enabled:** Also generate consumer contract tests alongside API tests. Use the loaded pactjs-utils fragments (`pactjs-utils-overview`, `pactjs-utils-consumer-helpers`, `pactjs-utils-provider-verifier`, `pactjs-utils-request-filter`, `pact-consumer-di`) for patterns. If `pact_mcp` is `"mcp"`, use SmartBear MCP tools (Fetch Provider States, Generate Pact Tests) to inform test generation.
+**When `use_playwright_utils` is `true`, `playwright-utils-mandate.md` binds this worker.** A red-phase scaffold is real test code; generate it in the playwright-utils style without being asked.
 
-**Your task:** Generate API tests that will FAIL because the feature is not implemented yet (TDD RED PHASE).
+**If `use_pactjs_utils` is enabled AND the relevance gate opened in Step 1 AND `@seontechnologies/pactjs-utils` is installed:** Also generate consumer contract tests alongside API tests. All three are required. The flag on its own means "write Pact this way when you write it", never "this story needs a contract test", and scaffolding against an uninstalled package produces imports that do not resolve. When any of the three is false, generate the API tests and say in the output which condition was missing. `pactjs-utils-mandate.md` binds them: `.given(...createProviderState({ name, params }))`, `setJsonContent` / `setJsonBody` for builder callbacks, `createRequestFilter` for auth injection, `zodToPactMatchers` where a Zod schema exists, and the `pact-consumer-di.md` injection so `executeTest` exercises the real client instead of raw `fetch`. A red-phase contract test is still the file the developer keeps. Use the loaded pactjs-utils fragments (`pactjs-utils-overview`, `pactjs-utils-consumer-helpers`, `pactjs-utils-provider-verifier`, `pactjs-utils-request-filter`, `pact-consumer-di`, `pact-consumer-framework-setup`) for patterns. When generating consumer tests, enforce **one `pact.addInteraction()` per `it()` block** (see `pactjs-utils-consumer-helpers.md` Example 6) — PactV4's Rust FFI non-deterministically drops interactions if multiple are chained in one test. Gate broker calls on `pact_mcp_reachable`, not on `pact_mcp`. When it is `true`, use the SmartBear MCP tools (Fetch Provider States, Generate Pact Tests). When it is `false`, take provider states from `pact_fallback_source` and say so in the output. Step 1 probed once; do not probe again.
+
+**Your task:** Generate API test scaffolds for the feature's expected behavior. They stay in `test.skip()` until the developer activates them for the current task (TDD RED PHASE).
 
 ---
 
 ## MANDATORY EXECUTION RULES
 
 - 📖 Read this entire subagent file before acting
-- ✅ Generate FAILING API tests ONLY
-- ✅ Tests MUST fail when run (feature not implemented yet)
+- ✅ Generate red-phase API test scaffolds ONLY
+- ✅ Tests MUST be emitted with `test.skip()` until the developer activates them
 - ✅ Output structured JSON to temp file
 - ✅ Follow knowledge fragment patterns
 - ❌ Do NOT generate E2E tests (that's subagent 4B)
-- ❌ Do NOT generate passing tests (this is TDD red phase)
+- ❌ Do NOT generate active passing tests (this is TDD red phase)
 - ❌ Do NOT run tests (that's step 5)
 
 ---
@@ -59,60 +61,87 @@ Story: User Registration
 - System returns 422 Unprocessable Entity if validation fails
 ```
 
-### 2. Generate FAILING API Test Files
+### 2. Generate Red-Phase API Test Files
 
 For each API endpoint, create test file in `tests/api/[feature].spec.ts`:
 
-**Test Structure (ATDD - Red Phase):**
+**Test Structure — when `use_playwright_utils` is `true` (the default). This is the shape you emit:**
 
 ```typescript
-import { test, expect } from '@playwright/test';
-// If Playwright Utils enabled:
-// import { apiRequest } from '@playwright-utils/api';
+import { test, expect } from '../support/merged-fixtures';
+import { registrationPayload } from '../support/factories';
 
 test.describe('[Story Name] API Tests (ATDD)', () => {
-  test.skip('[P0] should register new user successfully', async ({ request }) => {
+  test.skip('[P0] should register new user successfully', async ({ apiRequest }) => {
     // THIS TEST WILL FAIL - Endpoint not implemented yet
-    const response = await request.post('/api/users/register', {
-      data: {
-        email: 'newuser@example.com',
-        password: 'SecurePass123!',
-      },
+    const { status, body } = await apiRequest<RegisteredUser>({
+      method: 'POST',
+      path: '/api/users/register',
+      body: registrationPayload({ email: 'newuser@example.com' }),
     });
 
     // Expect 201 but will get 404 (endpoint doesn't exist)
-    expect(response.status()).toBe(201);
-
-    const user = await response.json();
-    expect(user).toMatchObject({
+    expect(status).toBe(201);
+    expect(body).toMatchObject({
       id: expect.any(Number),
       email: 'newuser@example.com',
     });
   });
 
-  test.skip('[P1] should return 400 if email exists', async ({ request }) => {
+  test.skip('[P1] should return 400 if email exists', async ({ apiRequest }) => {
     // THIS TEST WILL FAIL - Endpoint not implemented yet
-    const response = await request.post('/api/users/register', {
-      data: {
-        email: 'existing@example.com',
-        password: 'SecurePass123!',
-      },
+    const { status, body } = await apiRequest({
+      method: 'POST',
+      path: '/api/users/register',
+      body: registrationPayload({ email: 'existing@example.com' }),
     });
 
-    expect(response.status()).toBe(400);
-    const error = await response.json();
-    expect(error.message).toContain('Email already exists');
+    expect(status).toBe(400);
+    expect(body.message).toContain('Email already exists');
   });
 });
 ```
 
+`apiRequest` retries 5xx by default. In the red phase the endpoint returns 404, which is not retried, so the scaffold fails fast rather than burning the retry budget.
+
+**Test Structure — when `use_playwright_utils` is `false`:**
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test.describe('[Story Name] API Tests (ATDD)', () => {
+  test.skip('[P0] should register new user successfully', async ({ request }) => {
+    const response = await request.post('/api/users/register', {
+      data: { email: 'newuser@example.com', password: 'SecurePass123!' },
+    });
+
+    expect(response.status()).toBe(201);
+    expect(await response.json()).toMatchObject({ id: expect.any(Number) });
+  });
+});
+```
+
+**Playwright Utils Mandate (when `use_playwright_utils` is `true`):**
+
+Follow `playwright-utils-mandate.md`. The red phase does not relax it — the scaffold is the file the developer un-skips and keeps.
+
+- ✅ `apiRequest({ method, path, body?, headers? })` for every endpoint the story introduces. Returns `{ status, body }` already parsed.
+- ✅ `test` imported from the project's merged fixtures. `expect` comes from the same module, which re-exports Playwright's — playwright-utils does not export one of its own.
+- ✅ `recurse` for any acceptance criterion that is eventually consistent.
+- ✅ `log.step` for anything the report should narrate. Never `console.log`.
+- ✅ `authToken` from the auth-session fixture when the criteria describe an authenticated call.
+- ❌ `request.get/post/put/patch/delete`, `await response.json()`, `page.waitForTimeout`, `console.log`.
+
+Package and subpaths are exactly `@seontechnologies/playwright-utils` and its documented subpaths. No other package name is valid.
+
+If the merged-fixtures file does not exist yet, generate the import against `../support/merged-fixtures` anyway and record it as a fixture need. Step 4C creates the file. Do not downgrade the import to `@playwright/test` because the target is missing.
+
 **CRITICAL ATDD Requirements:**
 
-- ✅ Use `test.skip()` to mark tests as intentionally failing (red phase)
+- ✅ Use `test.skip()` to mark tests as red-phase scaffolds
 - ✅ Write assertions for EXPECTED behavior (even though not implemented)
 - ✅ Use realistic test data (not placeholder data)
 - ✅ Test both happy path and error scenarios from acceptance criteria
-- ✅ Use `apiRequest()` helper if Playwright Utils enabled
 - ✅ Use data factories for test data (from data-factories fragment)
 - ✅ Include priority tags [P0], [P1], [P2], [P3]
 
@@ -213,7 +242,7 @@ Write JSON to temp file: `/tmp/tea-atdd-api-tests-{{timestamp}}.json`
     {
       "file": "tests/api/user-registration.spec.ts",
       "content": "[full TypeScript test file content with test.skip()]",
-      "description": "ATDD API tests for user registration (RED PHASE)",
+      "description": "ATDD API test scaffolds for user registration (RED PHASE)",
       "expected_to_fail": true,
       "acceptance_criteria_covered": [
         "User can register with email/password",
@@ -239,7 +268,7 @@ Write JSON to temp file: `/tmp/tea-atdd-api-tests-{{timestamp}}.json`
   "test_count": 3,
   "tdd_phase": "RED",
   "provider_scrutiny": "completed",
-  "summary": "Generated 3 FAILING API tests for user registration story"
+  "summary": "Generated 3 red-phase API test scaffolds for user registration story"
 }
 ```
 
@@ -263,7 +292,7 @@ Write JSON to temp file: `/tmp/tea-atdd-api-tests-{{timestamp}}.json`
 Subagent completes when:
 
 - ✅ All API endpoints from acceptance criteria have test files
-- ✅ All tests use `test.skip()` (documented failing tests)
+- ✅ All tests use `test.skip()` (documented red-phase scaffolds)
 - ✅ All tests assert EXPECTED behavior (not placeholder assertions)
 - ✅ JSON output written to temp file
 - ✅ Fixture needs to be tracked
@@ -286,7 +315,7 @@ Subagent completes when:
 
 ### ❌ FAILURE:
 
-- Generated passing tests (wrong - this is RED phase)
+- Generated active passing tests (wrong - this is RED phase)
 - Tests without test.skip() (will break CI)
 - Placeholder assertions (expect(true).toBe(true))
 - Did not follow knowledge fragment patterns

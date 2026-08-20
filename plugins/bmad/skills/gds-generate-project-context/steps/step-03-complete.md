@@ -248,7 +248,7 @@ Your optimized project context file is ready at:
 
 **Next Steps:**
 
-1. AI agents will automatically read this file when implementing
+1. Production workflows (create-story, dev-story, code-review) read this file automatically when implementing. The conversational agents do not — add `"file:{project-root}/**/project-context.md"` to an agent's `persistent_facts` to opt it in
 2. Update this file when your technology stack or patterns evolve
 3. Review quarterly to optimize and remove outdated rules
 
@@ -278,3 +278,9 @@ Your project context will help ensure high-quality, consistent game implementati
 This is the final step of the Generate Project Context workflow. The user now has a comprehensive, optimized project context file that will ensure consistent, high-quality game implementation across all AI agents working on the project.
 
 The project context file serves as the critical "rules of the road" that agents need to implement game code consistently with the project's standards and patterns.
+
+## On Complete
+
+Run: `uv run {project-root}/_bmad/scripts/resolve_customization.py --skill {skill-root} --key workflow.on_complete`
+
+If the resolved `workflow.on_complete` is non-empty, follow it as the final terminal instruction before exiting.
