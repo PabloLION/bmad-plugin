@@ -18,20 +18,11 @@ import {
   getEnabledSources,
   readVersion,
   readVersionInfo,
+  type UpstreamSource,
 } from './lib/upstream-sources.ts';
 
-/** Display labels for upstream source IDs */
-const SOURCE_LABELS: Record<string, string> = {
-  core: 'BMAD Method',
-  tea: 'TEA',
-  bmb: 'BMB',
-  cis: 'CIS',
-  gds: 'GDS',
-  loop: 'Loop',
-};
-
 const GITHUB_RAW_BASE =
-  'https://raw.githubusercontent.com/PabloLION/bmad-plugin/main';
+  'https://raw.githubusercontent.com/tgorka/bmad-plugin/main';
 
 const readmePath = join(ROOT, 'README.md');
 
@@ -42,17 +33,31 @@ const pluginVersion = (
 const sources = getEnabledSources();
 const rows: string[] = [];
 
+/**
+ * A vendored source is pinned by commit (no upstream tags exist), so the
+ * table and badge show an abbreviated SHA rather than 40 hex characters.
+ */
+const DELIVERY: Record<UpstreamSource['kind'], string> = {
+  core: 'installer',
+  registry: 'installer module',
+  custom: 'custom source',
+  vendored: 'vendored asset',
+};
+
+function displayVersion(source: UpstreamSource, version: string): string {
+  return source.kind === 'vendored' ? version.slice(0, 8) : version;
+}
+
 for (const source of sources) {
   const info = await readVersionInfo(source.id);
-  const label = SOURCE_LABELS[source.id] ?? source.id.toUpperCase();
   rows.push(
-    `| [${label}](https://github.com/${source.repo}) | ${info.version} | ${info.syncedAt} |`,
+    `| [${source.label}](https://github.com/${source.repo}) | ${displayVersion(source, info.version)} | ${DELIVERY[source.kind]} | ${info.syncedAt} |`,
   );
 }
 
 const table = [
-  '| Module | Version | Last Checked |',
-  '|---|---|---|',
+  '| Module | Version | Delivery | Last Checked |',
+  '|---|---|---|---|',
   ...rows,
 ].join('\n');
 
@@ -71,7 +76,7 @@ for (const source of sources) {
     source.id === 'core'
       ? 'upstream-version.json'
       : `upstream-version-${source.id}.json`;
-  const label = SOURCE_LABELS[source.id] ?? source.id.toUpperCase();
+  const label = source.label;
   const badgeLabel =
     source.id === 'core' ? 'BMAD Method version' : `${label} Module version`;
   const badgeUrl = `https://img.shields.io/endpoint?url=${GITHUB_RAW_BASE}/.github/badges/${badgeFile}`;
@@ -108,13 +113,21 @@ if (updated === readme) {
 const BADGES_DIR = join(ROOT, '.github', 'badges');
 
 for (const source of sources) {
-  const version = await readVersion(source.id);
+  const version = displayVersion(source, await readVersion(source.id));
   const badgeFile =
     source.id === 'core'
       ? 'upstream-version.json'
       : `upstream-version-${source.id}.json`;
   const badgePath = join(BADGES_DIR, badgeFile);
-  const badge = await Bun.file(badgePath).json();
+  // Generated from the registry, so a newly registered source does not
+  // need a hand-authored badge file first.
+  const badge = (await Bun.file(badgePath).exists())
+    ? await Bun.file(badgePath).json()
+    : {
+        schemaVersion: 1,
+        label: source.id === 'core' ? 'BMAD Method' : `${source.label} Module`,
+        color: 'green',
+      };
   badge.message = version;
   await Bun.write(badgePath, `${JSON.stringify(badge, null, 2)}\n`);
 }
