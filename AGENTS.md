@@ -14,7 +14,7 @@ All scripts use `bun run <script>`. For local tooling (biome, tsc), use
 | typecheck | `bun run typecheck` | Type-check all TypeScript (no emit) |
 | lint | `bun run lint` | Biome lint + format check |
 | lint:staged | `bun run lint:staged` | Biome lint + auto-fix staged files |
-| validate | `bun run validate` | Validate plugin (version consistency + skill-tree sanity) |
+| validate | `bun run validate` | Validate version pinning, marketplace integrity, skill surface, templatization |
 | sync | `bun run sync` | Regenerate plugin tree from `npx bmad-method install` |
 | sync:dry | `bun run sync:dry` | Preview a sync without writing files |
 | update-readme | `bun run update-readme` | Update README version table + badge files |
@@ -29,53 +29,73 @@ The plugin delegates 100% of content shaping to the official
 upstream version:
 
 ```sh
-# 1. Pin the new core version
-echo '{"version":"v6.10.0","syncedAt":"2026-07-04"}' > .upstream-versions/core.json
+# Regenerate against a new core release (also rewrites the pin)
+bun run sync -- --tag v6.11.0
 
-# 2. Run the installer-based sync
-bun run sync                     # uses .upstream-versions/core.json
-# OR
-bun run sync -- --tag v6.10.0    # ad-hoc tag override
+# …or re-run against the currently pinned versions
+bun run sync
 
-# 3. Verify
+# Verify
 bun run typecheck && bun run lint && bun run validate && bun run test
 ```
 
+Two installer runs happen, into two throwaway directories:
+
+1. `.upstream-install/` — the registry modules
+   (`bmm,bmb,cis,gds,tea,bmad-loop`). Feeds the `bmad` plugin.
+2. `.upstream-install-<id>/` — one per **custom source**: a real BMad
+   module absent from upstream's `bmad-modules.yaml` registry, cloned at
+   a pinned tag and handed to the installer as a local
+   `--custom-source` path. Feeds its own sibling plugin. Currently just
+   `manticore` → `plugins/bmad-manticore`.
+
+Splitting the runs keeps each plugin's runtime template describing only
+the modules that plugin ships.
+
 The `sync` script:
 
-1. Runs `npx -y bmad-method@<version> install --yes --directory
-   .upstream-install --modules bmm,bmb,cis,gds,tea --tools claude-code`
-2. Wipes `plugins/bmad/skills/`, `plugins/bmad/_shared/`,
-   `plugins/bmad/agents/`, `plugins/bmad/templates/`,
-   `plugins/bmad/runtime/`
-3. Copies `.upstream-install/.claude/skills/*` 1:1 into
-   `plugins/bmad/skills/`
-4. Syncs the bmad-loop skill module: clones
-   `bmad-code-org/bmad-loop` at the tag pinned in
-   `.upstream-versions/loop.json` (`--loop-tag` to override) and
-   copies `src/bmad_loop/data/skills/*` (bmad-loop is a Python
-   orchestrator tool, not an npx-installer module)
-5. Prunes deprecated upstream compatibility shims (any skill whose
-   frontmatter description starts with `DEPRECATED`) — the plugin
-   ships only the current skill surface
-6. Captures `.upstream-install/_bmad/` into `plugins/bmad/runtime/_bmad/`
-   (the working-repo template consumed by `plugins/bmad/scripts/init.sh`
-   / the `/bmad:init` command), templatizing the project name as
-   `__BMAD_PROJECT_NAME__` and stripping pruned-shim rows from the
-   `_config/*.csv` manifests
-7. Bumps `.plugin-version`, `package.json`, `plugin.json`,
-   `marketplace.json`, and every `.upstream-versions/<id>.json` to
-   match the installed module versions
-8. Updates the README version table
+1. Clones every custom source at the tag in
+   `.upstream-versions/<id>.json` (`--<id>-tag` to override). A local
+   path, not a URL — `--custom-source <url>` resolves the moving default
+   branch.
+2. Runs the registry installer into `.upstream-install/`.
+3. Wipes `plugins/bmad/{skills,runtime,_shared,agents}`,
+   `plugins/bmad/templates/module-template`, and each sibling plugin's
+   `skills/` + `runtime/`.
+4. Copies `.upstream-install/.claude/skills/*` 1:1 into
+   `plugins/bmad/skills/`. **Deprecated shims are not pruned** — upstream
+   keeps them because external module repos still invoke those IDs, and
+   removes them at the v7 cut.
+5. Captures `.upstream-install/_bmad/` into `plugins/bmad/runtime/_bmad/`,
+   replacing the installing machine's values with
+   `__BMAD_PROJECT_NAME__`, `__BMAD_USER_NAME__` and
+   `__BMAD_INSTALL_DATE__`, and storing nested `.gitignore` files as
+   `dot.gitignore`.
+6. Vendors `bmad-module-template` at its pinned commit into
+   `plugins/bmad/templates/module-template/`.
+7. Per custom source: second installer run, copy the prefixed skills into
+   the sibling plugin, capture its `_bmad/<code>/`.
+8. Bumps `.plugin-version`, `package.json`, `plugin.json`,
+   `marketplace.json`, and every `.upstream-versions/<id>.json` — module
+   versions read back from the installer's own
+   `_bmad/_config/manifest.yaml`, never guessed.
+9. Regenerates the README version table and the badge files.
 
-**Never hand-edit `plugins/bmad/skills/` or `plugins/bmad/runtime/`** —
-both are wiped and regenerated on every sync, and both are excluded
-from biome so upstream content stays byte-for-byte identical to the
+**Never hand-edit `plugins/*/skills/`, `plugins/*/runtime/` or
+`plugins/bmad/templates/module-template/`** — all are wiped and
+regenerated on every sync, and all are excluded from biome, markdownlint
+and tsc so upstream content stays byte-for-byte identical to the
 installer output.
 
-If only a non-core module changed, the installer still pulls the
-latest matching versions for that core release — there's no separate
-"bump-module" anymore (the installer auto-resolves compatible versions).
+`scripts/lib/upstream-sources.ts` is the single registry of upstream
+sources. Each entry carries a `kind`: `core`, `registry`, `custom`, or
+`vendored`. Adding a source there is enough to get a README row, a badge
+file, and a weekly release-watcher job — `.github/workflows/sync-upstream.yml`
+builds its matrix from `scripts/list-sources.ts`. See
+`docs/module-integration.md`.
+
+Registry module versions cannot be bumped independently: the installer
+resolves them for the pinned core release.
 
 ## Release
 
@@ -95,26 +115,44 @@ and exits with instructions. Fix the issue, then `--after-ci` completes Phase 2.
 
 ## Git Workflow
 
-- **main** is for releases only — never commit directly to main
-- **dev** branch accepts PRs from feature branches
-- PRs target **dev**, not main
-- When merging PRs to dev: **do not squash** — preserve individual commits
-- Releases: merge dev → main (unidirectional)
-- One branch per module/story
+- **main** is the trunk. Every merged PR to date targets `main`; the
+  `dev` branch is 51 commits behind and carries nothing of its own.
+  Base new work on `main` unless `dev` is revived.
+- Do not commit directly to the trunk — open a PR.
+- Related changes ship as a **stack** of one-concern PRs
+  (`gh stack init --base main <branch>` / `gh stack add`), each of which
+  passes its own gates alone.
+- When merging: **do not squash** — preserve individual commits.
+- One branch per concern.
+
+## Marketplace
+
+`.claude-plugin/marketplace.json` publishes two plugins:
+
+| Plugin | Source | Version tracks |
+| --- | --- | --- |
+| `bmad` | `./plugins/bmad` | the plugin version (`<core>.<patch>`) |
+| `bmad-manticore` | `./plugins/bmad-manticore` | the upstream module version |
+
+Every directory under `plugins/` must be published — `bun run validate`
+fails on an unlisted one, because a marketplace install is a git clone of
+the whole repo and unpublished directories are dead weight in it. That is
+also why `plugins/bmad/templates/module-template/` lives inside the
+`bmad` plugin rather than as a directory of its own.
 
 ## Agents and Skills
 
 As of v6.5.0+, the plugin treats **agents as skills**. Every agent
-persona — from BMM (Mary, Winston, Amelia, John, Paige, Sally) to TEA
-(Murat) to GDS (Cloud Dragonborn, Samus Shepard, …) — ships as a
-SKILL.md under `plugins/bmad/skills/<name>/`. Invoke them via
-`/bmad:bmad-agent-pm`, `/bmad:bmad-tea`, etc.
+persona — from BMM (Mary, Winston, Amelia, John, Sally) to TEA (Murat)
+to GDS (Cloud Dragonborn, Samus Shepard, …) — ships as a SKILL.md under
+`plugins/bmad/skills/<name>/`. Invoke them via `/bmad:bmad-agent-pm`,
+`/bmad:bmad-tea`, etc.
 
 There is no longer a separate `plugins/bmad/agents/` directory. The
 upstream `module.yaml` agent rosters and the upstream installer are
 authoritative for the agent list — no plugin-side mirror is needed.
 
-### Reference: BMM agent roster (from upstream module.yaml)
+### Reference: agent roster (from `_bmad/config.toml`, 17 personas)
 
 | Slug                    | Persona  | Role                       |
 | ----------------------- | -------- | -------------------------- |
@@ -123,11 +161,15 @@ authoritative for the agent list — no plugin-side mirror is needed.
 | bmad-agent-ux-designer  | Sally    | UX Designer                |
 | bmad-agent-architect    | Winston  | System Architect           |
 | bmad-agent-dev          | Amelia   | Senior Software Engineer   |
-| bmad-agent-tech-writer  | Paige    | Technical Writer           |
 | bmad-tea (TEA)          | Murat    | Master Test Architect      |
-| bmad-cis-agent-*  (CIS) | various  | Brainstorming, design-thinking, problem-solving, etc. |
+| bmad-cis-agent-*  (CIS) | various  | Brainstorming, design-thinking, problem-solving, innovation, storytelling, presentation |
 | bmad-agent-builder (BMB)| Bond     | Agent builder              |
 | gds-agent-* (GDS)       | various  | Game architect, designer, dev, solo-dev, tech-writer |
+
+`bmad-agent-tech-writer` (Paige, BMM) was **retired upstream in
+v6.11.0**; the game-scoped `gds-agent-tech-writer` is unaffected.
+`mc-agent` (Manny) ships with the `bmad-manticore` plugin but upstream
+does not write it into the core roster.
 
 For the full canonical list, see the SKILL.md frontmatter of each
 `plugins/bmad/skills/*-agent-*` (or `bmad-tea`, `gds-agent-*`)

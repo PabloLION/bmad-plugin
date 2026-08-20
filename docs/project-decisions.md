@@ -1,5 +1,54 @@
 # BMAD Plugin - Project Decisions & Plans
 
+> **📌 Superseded (2026-08-20). Historical document.** The blockquote and
+> sections below record the original planning sessions and are kept as a
+> record of them. They are **no longer the source of truth**, and several
+> architectural decisions in them were reversed. Current state:
+> [docs/plan-6.11-rebuild.md](plan-6.11-rebuild.md) for the v6.11.0
+> rebuild and its rationale, [docs/bmad-ecosystem.md](bmad-ecosystem.md)
+> for the module inventory, and
+> [docs/upstream-sync-design.md](upstream-sync-design.md) for the
+> pipeline.
+>
+> What specifically no longer holds, verified against the tree on
+> 2026-08-20:
+>
+> - **"Roles -> Subagents" (section 4) was reversed. Agents ship as
+>   skills.** There is no subagent layer and no `plugins/bmad/agents/`
+>   directory — `ls plugins/bmad` returns `README.md`, `commands`,
+>   `runtime`, `scripts`, `skills`, `templates`. Personas are ordinary
+>   skills (`bmad-agent-*`, `bmad-cis-agent-*`, `gds-agent-*`), and the
+>   roster lives in the `[agents.*]` tables of
+>   `plugins/bmad/runtime/_bmad/config.toml` (17 entries: bmm 5, cis 6,
+>   gds 5, tea 1).
+> - **The target tree in section 7 does not describe this repo.**
+>   `plugins/bmad/skills/` is flat — 110 sibling skill directories, no
+>   `workflows/` or `knowledge/` split. `plugins/bmad/commands/` holds one
+>   file, `init.md`; there is no `status.md`. `plugins/bmad/templates/`
+>   holds `README.md` and the vendored `module-template/`, not document
+>   templates.
+> - **Content is generated, not authored.** Since v6.5.0 the plugin tree
+>   is a full regeneration: `bun run sync` wipes `skills/` and `runtime/`
+>   and rebuilds them from a real installer run. The per-file progress
+>   tracker in section 12 describes a hand-curated tree that no longer
+>   exists.
+> - **Two plugins, not one.** `.claude-plugin/marketplace.json` publishes
+>   `bmad` (6.11.0.0) and `bmad-manticore` (1.0.1).
+> - **The upstream slug moved.** Sections 2, 6 and 11 say
+>   `bmadcode/BMAD-METHOD`; the canonical slug is
+>   `bmad-code-org/BMAD-METHOD`.
+> - **The install path moved.** Section 5 says
+>   `/plugin marketplace add PabloLION/bmad-plugin`; README now uses
+>   `tgorka/bmad-plugin` throughout. `marketplace.json`'s `owner` block
+>   still records the fork parent.
+> - **`check-workarounds.yml` is gone** (section 12), deleted with the
+>   workaround it monitored. `.github/workflows/` now holds `ci.yml`,
+>   `claude-code-review.yml`, `claude.yml`,
+>   `dependency-submission.yml` and `sync-upstream.yml`.
+>
+> The open questions in section 9 and the pending items in section 12 are
+> historical; do not pick work up from them.
+
 > Decisions made during planning sessions. This is our source of truth.
 
 ## 1. Project Goal

@@ -20,9 +20,10 @@ Steps:
    the whole repo, so the presence of a `plugins/bmad-manticore/`
    directory proves nothing — only your loaded skills do.
 
-2. Run the initializer via the Bash tool (idempotent — never overwrites
-   existing files, only fills in missing ones), adding one
-   `--with-plugin` for each active sibling plugin:
+2. Run the initializer via the Bash tool, adding one `--with-plugin` for
+   each active sibling plugin. It is idempotent, and it upgrades as well
+   as seeds: `_bmad/custom/**` is never touched, everything else is
+   refreshed when it differs from the shipped template.
 
    ```sh
    bash "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh"
@@ -30,10 +31,12 @@ Steps:
    bash "${CLAUDE_PLUGIN_ROOT}/scripts/init.sh" --with-plugin bmad-manticore
    ```
 
-3. Report what was created and what was already present (the script
-   prints a `+` line per created file and a summary). If everything was
-   already present, say the repo was already initialized and no changes
-   were made.
+3. Report the three counts the script prints: created, refreshed, and
+   already current (`+` marks a new file, `~` a refreshed one). A
+   refresh means an installer-managed file was brought up to the
+   plugin's current template — say so plainly if the repo was on an
+   older plugin version. If the script says "Repo was already
+   initialized", relay that nothing changed.
 
 4. If the script warned that `uv` is missing, relay it: BMAD v6.11
    renders `bmad-build` and `bmad-build-auto` through
